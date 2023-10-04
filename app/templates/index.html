@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html>
 <head>
@@ -9,7 +10,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="static/assets/images/brand/img/businessgatelogo.png">
 
     <!-- CSS here -->
-    <link rel="stylesheet" href="static/assets/css/mainpage-style.css">
+    <link rel="stylesheet" href="static/assets/css/index.css">
 </head>
 
 <body>
@@ -21,8 +22,8 @@
                         <div class="row align-items-center">
                             <div class="col-xl-3 col-lg-2">
                                 <div class="logo">
-                                    <a href="/">
-                                        <img id="logoimg"src="static/assets/images/brand/img/logo-white.png" alt="Businessgate logo">
+                                    <a href="#signin">
+                                        <img id="logoimg"src="img/logo-white.png" alt="Businessgate logo">
                                     </a>
                                 </div>
                             </div>
@@ -30,10 +31,11 @@
                                 <div class="main-menu  d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a class="active" href="/">home</a></li>
-                                            <li><a href="services">Business units services </a></li>
+                                            <li><a class="active" href="#signin">Sign in</a></li>
+                                            <li><a class="active" href="#about">about Business unit</a></li>
+                                            <li><a href="#services"> services </a></li>
                                             <li><a href="https://kai.ksu.edu.sa/en"> more about KAI</a></li>
-                                            <li><a href="contact">Contact</a></li>
+                                            <li><a href="#contact">Contact</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -47,23 +49,22 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </header>
     <!-- header-end -->
 
-    <!-- slider_area_start -->
-    <div class="slider_area">
+    <!-- slider_area_start -->   
+    <div class="slider_area" id="signin">
         <div class="slider_active owl-carousel">
                 <div class="single_slider  d-flex align-items-center slider_bg_1 overlay">
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-xl-9 col-md-9">
                                     <div class="slider_text">
-                                        <h4>Business Units bridging the business world and the world of higher education together for brighter future in line with Saudi Arabia vision 2030 </h4>
-                                        <a href="login-1" class="boxed-btn3">Sign in</a>
+                                        <h4>Business Gate bridging the business world and the world of higher education together for brighter future in line with Saudi Arabia vision 2030 </h4>
+                                        <a href="login" class="boxed-btn3">Sign in</a>
                                     </div>
                                 </div>
                             </div>
@@ -73,17 +74,20 @@
     </div>
     <!-- slider_area_end -->
 
-    <!-- prise_area_start  -->
-    <!--the second prize if wanted-->
-    
-    <div class="prise_area">
-        <div class="container-fluid p-0">
+<!-- prise_area_start  -->
+    <div class="prise_area" id="about">
+        <div class="container-fluid p-0" >
             <div class="row no-gutters">
                 <div class="col-xl-4 col-lg-4 col-md-4">
                     <div class="single_prise">
                         <div class="prise_header">
                             <h5>Why were Business Units (BUs) established in KSU?</h5>
-                            <p class="prise_text">Aligned with Saudi Arabia's Vision 2030, King Saud University established Business Units (BUs) to diversify the economy, reduce oil dependence, and enhance public services. The BUs utilize the university's resources to promote sustainable development, contribute to the knowledge economy, and generate self-revenue </p>
+                            <p class="prise_text">Aligned with Saudi Arabia's Vision 2030,
+                                 King Saud University established Business Units (BUs) to diversify the economy,
+                                 reduce oil dependence, and enhance public services. The BUs utilize the university's 
+                                 resources to promote sustainable development, contribute to the knowledge economy, 
+                                 and generate self-revenue
+                            </p>
                         </div>
                         <div class="prise_number">
                                 01
@@ -94,7 +98,10 @@
                     <div class="single_prise">
                         <div class="prise_header">
                             <h5>What are the functions and activities of Business Units (BUs) in KSU?</h5>
-                            <p class="prise_text">The Business Units (BUs) provide services like training, advisory offerings, projects, research and studies, and consultancy to society. These BUs aim to drive sustainable development through multidirectional knowledge transfer between KSU faculty, students, and private/public partners.
+                            <p class="prise_text">The Business Units (BUs) provide services like training,
+                                 advisory offerings, projects, research and studies, and consultancy to society.
+                                  These BUs aim to drive sustainable development through multidirectional knowledge
+                                   transfer between KSU faculty, students, and private/public partners.
                             </p>
                         </div>
                         <div class="prise_number">
@@ -106,7 +113,11 @@
                     <div class="single_prise">
                         <div class="prise_header">
                             <h5>King Abdullah Institution for Research and Consulting Studies role? </h5>
-                            <p class="prise_text">The King Abdullah Institution for Research and Consulting Studies (KAI) connects King Saud University's (KSU) academic knowledge with public and private partners through project collaborations, consulting, and contractual agreements. This facilitates applying academic insights more broadly.                                                                                                                                                                                                                      </p>
+                            <p class="prise_text">The King Abdullah Institution for Research and Consulting Studies
+                                 (KAI) connects King Saud University's (KSU) academic knowledge with public and private
+                                  partners through project collaborations, consulting, and contractual agreements.
+                                   This facilitates applying academic insights more broadly.                                                                                                                                                                                                                      
+                            </p>
                         </div>
                         <div class="prise_number">
                                03
@@ -118,42 +129,113 @@
     </div>
     
     <!-- prise_area_end  -->
-
-    
-
-    <!-- footer start -->
-    <div class="footer-wrapper">
-        <div class="footer-widgets">
-    
-            <div class="widget widget-about">
-            <img src="static/assets/images/brand/img/businessgatelogo.png" class="footer-logo">
+    <div class="bradcam_area bradcam_bg_2" id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="bradcam_text">
+                        <h3>More about Business Units services</h3>
+                    </div>
+                </div>
             </div>
-        
-            <div class="widget widget-links">
-            <h4>Useful Links</h4>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="services">More about business units services</a></li>
-                <li><a href="contact">Contact</a></li>
-                <li><a herf="https://kai.ksu.edu.sa/en"></a></li>
-            </ul>
-            </div>
-        
-            <div class="widget widget-contact">
-            <h4>Contact Us</h4>
-            <ul>
-                <li>Email:</li>
-                <li>Phone:</li>
-                <li>Address:</li>
-            </ul>
-            </div>
-
         </div>
+    </div>
+<!--/ bradcam_area  -->
+
+<!-- works_area-start -->
+    <div class="works_area">
+        <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+            <div class="section_title mb-70">
+                <h3>Business Units in various colleges provides:</h3>
+            </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <ul class="service_area_list">
+                    <li>Traning Programs:</li>
+                    <ul class="service_details">
+                        <li>Provides training courses and workshops in latest fields and topics relevant to the college's specialization. Courses can be customized as per beneficiary needs.</li>
+                        <li>Training courses and workshops are offered during flexible periods (morning or evening) according to the requirements of the beneficiary.</li>
+                        <li>Provide summer programs in various fields, llowing participants to benefit from the college's resources and educational environment during the summer vacation.  </li>
+                    </ul>
+
+                    <li>Consultation Services:</li>
+                    <ul class="service_details">
+                        <li>Provides consulting and training services to private and public sector entities through partnerships.</li>
+                        <li>Builds new partnerships to ensure continued delivery of advisory services.</li>
+
+                    </ul>
+                    <li>Projects and Domain-Specific Solutions:</li>
+                    <ul class="service_details">
+                        <li>Implements project teams from faculty to deliver solutions tailored to beneficiary needs.</li>
+                        <li>Submits proposals and bids for projects requested by public/private sector.</li>
+                        <li>Formulates and reviews proposals for beneficiaries.</li>
+
+                    </ul>
+                    <li>Seminars:</li>
+                    <ul class="service_details">
+                        <li>Organizes academic and professional seminars.</li>
+                    </ul>
+                    <li>Research and Studies:</li>
+                    <ul class="service_details">
+                        <li>Supports establishing and improving research activities relevant to beneficiaries.
+                        </li>
+                        <li>Collaborates on joint research projects with industry and government.</li>
+
+
+                    </ul>
+                    <li>Executive Education Programs:</li>
+                    <ul class="service_details">
+                        <li>Offers professional diplomas and certificate programs tailored to specific sectors.</li>
+
+                    </ul>
+                    <li>Resource Utilization:</li>
+                    <ul class="service_details">
+                        <li>Rents out college facilities during vacations to external entities.
+                        </li>
+
+                    </ul>
+                    <li class="list_summary">
+                        In summary, the Business Units leverage the college's facilities, faculty and capabilities to offer customized services in training, research, consultancy and other domains to public and private sector organizations based on their needs.
+                    </li>
+                
+            </div>
+        </div>
+        </div>
+    </div>
+  <!--/ works_area-end -->
+    
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_3" id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Contact</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ bradcam_area  -->
+
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+<p>This page will contain contact information</p>
+
+    <!-- footer  -->
+    <div class="footer-wrapper">
         <p class="footer-p">Business Gate is a workflow management system for KSU Business Units. It aims to improve operational efficiency and facilitate collaboration.</p> 
     </div>
-<!-- </div> -->
-  <!--Footer end-->
-
+    
 
     <!--js code for logo replace-->
     <script>
