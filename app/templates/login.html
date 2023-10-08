@@ -1,73 +1,75 @@
 {% extends 'components/custom-base.html' %}
 {% load static %}
 
-    {% block styles %}
+{% block styles %}
 
-    {% endblock %}
+{% endblock %}
 
-		{% block switcher-icon %}
-        <div class="page  responsive-log login-bg">
-        {% endblock %}
-        {% block content %}
-		<!-- PAGE -->
-			<div class="page-single">
-				<div class="container">
-					<div class="row">
-						<div class="col mx-auto">
-							<div class="row justify-content-center">
-								<div class="col-md-8 col-lg-6 col-xl-4 col-xxl-4">
-									<div class="card my-5">
-										<div class="p-4 pt-6 text-center">
-											<h1 class="mb-2">Login</h1>
-											<p class="text-muted">Sign In to your account</p>
-										</div>
-										<form class="card-body pt-3" id="login" name="login">
-											<div class="form-group">
-											<label class="form-label">Mail or Username</label>
-												<div class="input-group mb-4">
-													<div class="input-group">
-													   <a href="" class="input-group-text">
-																<i class="fe fe-mail" aria-hidden="true"></i>
-															</a>
-														<input class="form-control" placeholder="Email">
-													</div>
-												</div>
-											</div>
-											<div class="form-group">
-											<label class="form-label">Password</label>
-												<div class="input-group mb-4">
-													<div class="input-group" id="Password-toggle">
-														<a href="" class="input-group-text">
-															<i class="fe fe-eye-off" aria-hidden="true"></i>
-														</a>
-														<input class="form-control" type="password" placeholder="Password">
-													</div>
-												</div>
-											</div>
-											
-											<div class="submit">
-												<a class="btn btn-primary btn-block" href="Home">Login</a>
-											</div>
-											<div class="text-center mt-3">
-												<p class="mb-2"><a  href="forgot-password">Forgot My Password</a></p>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-        <!-- END PAGE -->				
-        {% endblock %}
+{% block switcher-icon %}
+<div class="page  responsive-log login-bg">
+{% endblock %}
+{% block content %}
+<!-- PAGE -->
+<div class="page-single">
+    <div class="container">
+        <div class="row">
+            <div class="col mx-auto">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-4 col-xxl-4">
+                        <div class="card my-5">
+                            <div class="p-4 pt-6 text-center">
+                                <h1 class="mb-2">Login</h1>
+                                <p class="text-muted">Sign In to your account</p>
+                            </div>
+                            <form class="card-body pt-3" id="login" name="login" method="post" action="{% url 'app:login' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="form-label">Mail or Username</label>
+                                    <div class="input-group mb-4">
+                                        <div class="input-group">
+                                           <a href="" class="input-group-text">
+                                                <i class="fe fe-mail" aria-hidden="true"></i>
+                                            </a>
+                                            <input class="form-control" placeholder="Email" name="email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group mb-4">
+                                        <div class="input-group" id="Password-toggle">
+                                            <a href="" class="input-group-text">
+                                                <i class="fe fe-eye-off" aria-hidden="true"></i>
+                                            </a>
+                                            <input class="form-control" type="password" placeholder="Password" name="password">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submit">
+                                    <button class="btn btn-primary btn-block" type="submit">Login</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'app:forgot_password' %}">Forgot My Password</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+<!-- END PAGE -->				
+{% endblock %}
 
-		<!-- {% block modal %}
-			
-        {% endblock %} -->
-		
-    {% block scripts %}
-        <!-- THEME COLOR JS -->
-		<script src="{% static 'assets/js/themeColors.js'%}"></script>
-	{% endblock %}
+{% block scripts %}
+<!-- THEME COLOR JS -->
+<script src="{% static 'assets/js/themeColors.js'%}"></script>
+{% endblock %}

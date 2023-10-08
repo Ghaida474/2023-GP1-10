@@ -1,0 +1,39 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+
+    {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-lg-flex d-block">
+							<div class="page-leftheader">
+								<div class="page-title">Empty</div>
+							</div>
+							<div class="page-rightheader ms-md-auto">
+							</div>
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										Typing Something text here....
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END ROW -->
+        {% endblock %}
+
+		{% block modal %}
+			
+        {% endblock %}
+		
+    {% block scripts %}
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+	{% endblock %}

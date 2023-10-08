@@ -3,3 +3,5 @@ include/
 lib/
 db.sqlite3
 .DS_Store
+testenv
+myenv
