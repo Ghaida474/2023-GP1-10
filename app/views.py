@@ -11,32 +11,7 @@ def login(request):
     # This view renders the login page.
     return render(request, 'login.html')
 
-def home(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
 
-        # Attempt to authenticate each user type
-        admin = Admin.objects.filter(email=email, password=password).first()
-        faculty_staff = FacultyAndStaff.objects.filter(email=email, password=password).first()
-        kai = KAI.objects.filter(email=email, password=password).first()
-        business_unit = BusinessUnit.objects.filter(email=email, password=password).first()
-
-        # Redirect to the 'home' view of each user type's application if authentication is successful
-        if admin:
-            return redirect('admin_account:home') # Redirects to the 'home' view of the 'admin_account' application
-        elif faculty_staff:
-            return redirect('faculty_staff_account:home')  # Redirects to the 'home' view of the 'faculty_staff_account' application
-        elif kai:
-            return redirect('kai_account:home')  # Redirects to the 'home' view of the 'kai_account' application
-        elif business_unit:
-            return redirect('business_unit_account:home')  # Redirects to the 'home' view of the 'business_unit_account' application
-        else:
-            # If authentication fails, show an error message and redirect back to the login page
-            messages.error(request, 'Invalid email or password')
-            return redirect('app:login')
-
-    return render(request, 'login.html')
 ''''
 def login_view(request):
     if request.method == "POST":
@@ -70,103 +45,108 @@ def login_view(request):
 
     return render(request, 'login.html')
     '''
-'''from django.contrib.auth.hashers import check_password
+
+
+
+
+
+
+
+
+def forgot_password(request):
+    return redirect('app:index')
+    # Your code here
+
+
+
+
+from django.contrib import messages
+from .models import Admin
 
 def login_view(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
+    if request.method == 'POST':
+        email1 = request.POST.get('email')
+        password1 = request.POST.get('password')
+        print('Input Email:', email1)
+        print('Input Password:', password1)
+        temp = False
 
-        # Attempt to authenticate a 'User' type
-        User = get_user_model()
-        user = User.objects.filter(username=email).first()
+        admins = Admin.objects.all()
+        print('Number of Admins:', admins.count())  # Print the number of Admin objects
 
-        if user is not None and check_password(password, user.password):
-            # Check the type of user and redirect to the corresponding home view
-            if isinstance(user, FacultyAndStaff):
-                return redirect('faculty_staff_account:home')
-            elif isinstance(user, KAI):
-                return redirect('kai_account:home')
+        for admin in admins:
+            email = admin.email
+            password = admin.password
+            print('Admin Email:', email)
+            print('Admin Password:', password)
+
+            if email == email1 and password == password1:
+                temp = True
+                break
+
+        if temp:
+            # If you're using Django's built-in authentication system, you can log the user in here.
+            # login(request, admin)
+            return redirect('app:index')
         else:
-            # If not a 'User', try with 'Admin' and 'BusinessUnit'
-            admin = Admin.objects.filter(email=email).first()
-            if admin and admin.password == password:
-                return redirect('admin_account:home')
-
-            business_unit = BusinessUnit.objects.filter(email=email).first()
-            if business_unit and business_unit.password == password:
-                return redirect('business_unit_account:home')
-
-            # If authentication fails, show an error message and redirect back to the login page
-            messages.error(request, 'Invalid email or password')
-            return redirect('app:login')
-
-    return render(request, 'login.html')'''
-
-
-
-
-'''this is just a temporary function that will be changed later when we change the database'''
-'''def login_view(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
-
-        # Attempt to authenticate a 'User' type
-        User = get_user_model()
-        user = User.objects.filter(email__startswith=email[0]).first()
-
-        if user is not None and user.password[0] == password[0]:
-            # Check the type of user and redirect to the corresponding home view
-            if isinstance(user, FacultyAndStaff):
-                return redirect('faculty_staff_account:home')
-            elif isinstance(user, KAI):
-                return redirect('kai_account:home')
-
-        # If not a 'User', try with 'Admin' and 'BusinessUnit'
-        admin = Admin.objects.filter(Email__startswith=email[0]).first()
-        if admin and admin.Password[0] == password[0]:
-            return redirect('admin_account:home')
-
-        business_unit = BusinessUnit.objects.filter(BUemail__startswith=email[0]).first()
-        if business_unit and business_unit.Password[0] == password[0]:
-            return redirect('business_unit_account:home')
-
-        # If authentication fails, show an error message and redirect back to the login page
-        messages.error(request, 'Invalid email or password')
-        return redirect('app:login')
-
-    return render(request, 'login.html')'''
-
-def login_view(request):
-    if request.method == "POST":
-        email = request.POST['email']
-        password = request.POST['password']
-
-        # Attempt to authenticate a 'User' type
-        User = get_user_model()
-        user = User.objects.filter(username=email).first()
-
-        if user is not None and user.password == password:
-            # Check the type of user and redirect to the corresponding home view
-            if user.role == 'faculty_staff':
-                return redirect('faculty_staff_account:home')
-            elif user.role == 'kai':
-                return redirect('kai_account:home')
-
-        # If not a 'User', try with 'Admin' and 'BusinessUnit'
-        admin = Admin.objects.filter(email=email).first()
-        if admin and admin.password == password:
-            return redirect('admin_account:home')
-
-        business_unit = BusinessUnit.objects.filter(email=email).first()
-        if business_unit and business_unit.password == password:
-            return redirect('business_unit_account:home')
-
-        # If authentication fails, show an error message and redirect back to the login page
-        messages.error(request, 'Invalid email or password')
-        return redirect('app:login')
+            messages.error(request, 'Invalid credentials.')
 
     return render(request, 'login.html')
-def forgot_password (request): 
-    return render(request, 'forgot-password.html')
+'''
+def login_view(request):
+    if request.method == 'POST':
+        email1 = request.POST.get('email')
+        password1 = request.POST.get('password')
+        print('Input Email:', email1)
+        print('Input Password:', password1)
+        temp = False
+
+        admins = Admin.objects.all()
+        print('Number of Admins:', admins.count())  # Print the number of Admin objects
+        for admin in admins:
+            email = admin.email
+            password = admin.password
+            print('Admin Email:', email)
+            print('Admin Password:', password)
+
+            if email == email1 and password == password1:
+                temp = True
+                break
+        if temp == False
+            faculty_staff_members = FacultyAndStaff.objects.all()
+            print('Number of Faculty and Staff:', faculty_staff_members.count())  # Print the number of FacultyAndStaff objects
+            for member in faculty_staff_members:
+                email = member.email
+                passwordm = member.password
+                print('Faculty/Staff Email:', email)
+                print('Faculty/Staff Password:', password)
+
+                if email == email1 and password == password1:
+                    temp = True
+                    break
+        if temp==False
+            kai_members = KAI.objects.all()
+            print('Number of KAI:', kai_members.count())  # Print the number of KAI objects
+            for member in kai_members:
+                email = member.email
+                password = member.password
+                print('KAI Email:', email)
+                print('KAI Password:', password)
+
+                if email == email1 and password == password1:
+                    temp = True
+                    break
+        if temp==False        
+            business_units = BusinessUnit.objects.all()
+            print('Number of Business Units:', business_units.count())  # Print the number of BusinessUnit objects
+            for unit in business_units:
+                email = unit.email
+        # No password field exists in BusinessUnit model
+    print('Business Unit Email:', email)
+
+    if email == email1:
+        temp = True
+        break
+    
+        
+    return render(request, 'login.html')'''
