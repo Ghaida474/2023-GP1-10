@@ -87,7 +87,7 @@ def login_view(request):
         if temp:
             # If you're using Django's built-in authentication system, you can log the user in here.
             # login(request, admin)
-            return redirect('app:index')
+            return redirect('app:home')
         else:
             messages.error(request, 'Invalid credentials.')
 
@@ -150,3 +150,6 @@ def login_view(request):
     
         
     return render(request, 'login.html')'''
+
+def home_view(request):
+    return render(request, 'home.html')
