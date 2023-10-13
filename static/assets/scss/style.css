@@ -359,7 +359,7 @@ hr.message-inner-separator {
 }
 
 .alert-light {
-  color: #263871;
+  color: #095590;
   background-color: #fefefe;
   border-color: #fdfdfe;
 }
@@ -767,7 +767,7 @@ body {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
-  color: #263871;
+  color: #095590;
   text-align: left;
   background: #f1f4fb;
   min-height: 100vh;
@@ -1425,7 +1425,7 @@ textarea[cols] {
 }
 
 .breadcrumb-item.active {
-  color: #263871;
+  color: #095590;
 }
 
 .breadcrumb1 {
@@ -1464,7 +1464,7 @@ textarea[cols] {
 }
 
 .breadcrumb-item1.active {
-  color: #263871;
+  color: #095590;
 }
 
 .breadcrumb-arrow {
@@ -1558,7 +1558,7 @@ textarea[cols] {
 }
 
 .breadcrumb-arrow li span {
-  color: #263871;
+  color: #095590;
 }
 
 @media (max-width: 375px) {
@@ -2441,7 +2441,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 }
 
 .btn-outline-light {
-  color: #263871;
+  color: #095590;
   background-color: transparent;
   background-image: none;
   border-color: #eceef7;
@@ -2461,7 +2461,7 @@ a.btn.disabled, fieldset:disabled a.btn {
 }
 
 .btn-outline-light.disabled, .btn-outline-light:disabled {
-  color: #263871;
+  color: #095590;
   background-color: transparent;
 }
 
@@ -3693,7 +3693,7 @@ input[type="submit"].btn-block, input[type="reset"].btn-block, input[type="butto
   background-color: #fff;
   background-image: none;
   border: 1px solid #e9ebfa;
-  color: #263871;
+  color: #095590;
 }
 
 .btn-white:hover {
@@ -4682,14 +4682,14 @@ input[type="submit"].btn-block, input[type="reset"].btn-block, input[type="butto
 }
 
 .card-options a:not(.btn) {
-  color: #263871;
+  color: #095590;
   display: inline-block;
   min-width: 1rem;
 }
 
 .card-options a:not(.btn):hover {
   text-decoration: none;
-  color: #263871;
+  color: #095590;
 }
 
 .card-options a:not(.btn) i {
@@ -6414,7 +6414,7 @@ a.card-tabs-item.active {
   padding: 0.5rem 1.5rem;
   clear: both;
   font-weight: 400;
-  color: #263871;
+  color: #095590;
   text-align: inherit;
   white-space: nowrap;
   background-color: #fff;
@@ -6474,7 +6474,7 @@ a.card-tabs-item.active {
 .dropdown-item-text {
   display: block;
   padding: 0.25rem 1.5rem;
-  color: #263871;
+  color: #095590;
 }
 
 .dropdown-toggle-split {
@@ -7164,7 +7164,7 @@ ul.dropdown-menu li.dropdown ul.dropdown-menu .dropdown-plus-title {
 
 .list-group-item-action {
   width: 100%;
-  color: #263871;
+  color: #095590;
   text-align: inherit;
 }
 
@@ -7176,7 +7176,7 @@ ul.dropdown-menu li.dropdown ul.dropdown-menu .dropdown-plus-title {
 }
 
 .list-group-item-action:active {
-  color: #263871;
+  color: #095590;
   background-color: #ebeff8;
   z-index: 0;
 }
@@ -9513,7 +9513,7 @@ ol.list-order-style {
   line-height: 1.25;
   background-color: #fff;
   border: 1px solid #e9ebfa;
-  color: #263871;
+  color: #095590;
   -webkit-box-shadow: none;
           box-shadow: none;
 }
@@ -10581,7 +10581,7 @@ table.dataTable thead th, table.dataTable thead td {
 }
 
 .dt-button-collection .dt-button.dropdown-item.active {
-  color: #263871;
+  color: #095590;
 }
 
 @media (max-width: 767px) {
@@ -10607,7 +10607,7 @@ thead, tbody, tfoot, tr, td, th {
 /*---- Tags-----*/
 .tag {
   font-size: 0.75rem;
-  color: #263871;
+  color: #095590;
   background-color: #ebeff8;
   border-radius: 3px;
   padding: 0 .5rem;
@@ -12138,13 +12138,13 @@ a.tag-addon:hover {
 .inbox-message .message-body {
   margin-left: 85px;
   font-size: 15px;
-  color: #263871;
+  color: #095590;
 }
 
 .message-body-heading h5 {
   font-weight: 600;
   display: inline-block;
-  color: #263871;
+  color: #095590;
   margin: 0 0 7px 0;
   padding: 0;
 }
@@ -13493,7 +13493,7 @@ div.conv-form-wrapper div#messages div.message.from {
 }
 
 .main-contact-body h6 {
-  color: #263871;
+  color: #095590;
   font-weight: 600;
   margin-bottom: 2px;
 }
@@ -13567,7 +13567,7 @@ div.conv-form-wrapper div#messages div.message.from {
   width: 32px;
   height: 32px;
   background-color: #e3e7f5;
-  color: #263871;
+  color: #095590;
   font-size: 18px;
   line-height: .9;
   -webkit-box-shadow: 0 0 0 2px #fff;
@@ -13585,7 +13585,7 @@ div.conv-form-wrapper div#messages div.message.from {
 }
 
 .main-contact-info-header .media-body h4 {
-  color: #263871;
+  color: #095590;
   font-size: 22px;
   font-weight: 500;
   margin-bottom: 4px;
@@ -13766,7 +13766,7 @@ div.conv-form-wrapper div#messages div.message.from {
 
 .main-contact-info-body .media-body span {
   display: block;
-  color: #263871;
+  color: #095590;
   font-weight: 500;
 }
 
@@ -13943,7 +13943,7 @@ div.conv-form-wrapper div#messages div.message.from {
   transition: all 0.2s ease-in-out;
   padding: 5px;
   background-color: #fff;
-  color: #263871;
+  color: #095590;
   padding: 6px 10px;
   display: block;
   font-weight: 400;
@@ -13957,7 +13957,7 @@ div.conv-form-wrapper div#messages div.message.from {
   transition: all 0.2s ease-in-out;
   padding: 5px;
   background-color: #fff;
-  color: #263871;
+  color: #095590;
   padding: 6px 10px;
   display: block;
   font-weight: 400;
@@ -15773,7 +15773,7 @@ h2.animate {
   display: block;
   padding: 15px 20px;
   font-weight: 700;
-  background: #17263a;
+  background: var(--cloud-blue);
   color: #fff;
   font-size: 1.125rem;
 }
@@ -16144,7 +16144,7 @@ h2.animate {
   top: calc(18px + 5px + 15px / 1.5);
   padding: 0.2em 0.4em;
   background: #d3d5da;
-  color: #263871;
+  color: #095590;
   font-size: 0.9em;
   white-space: nowrap;
   border-radius: 0.3em;
@@ -16152,7 +16152,7 @@ h2.animate {
 
 .jsr_label--minmax {
   background: #d3d5da;
-  color: #263871;
+  color: #095590;
   -webkit-transition: opacity 0.2s ease-in-out;
   transition: opacity 0.2s ease-in-out;
 }
@@ -19927,7 +19927,7 @@ table.table-bordered.dataTable td:first-child {
 
 .under-countdown .countdown {
   background: #eaeefa;
-  color: #263871;
+  color: #095590;
   height: 100px;
   line-height: 100px;
   border-radius: 5px;
@@ -20418,7 +20418,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 }
 
 .apexcharts-text .apexcharts-xaxis text {
-  fill: #263871;
+  fill: #095590;
 }
 
 .date-range-btn i {
@@ -20992,7 +20992,7 @@ ul.timeline > li.success:before {
 }
 
 .emp-award {
-  background: #17263a;
+  background: var(--cloud-blue);
   position: absolute;
   top: -7px;
   border-radius: 50%;
@@ -21048,7 +21048,7 @@ ul.timeline > li.success:before {
 
 .apex-dount text:nth-child(2) {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  fill: #263871 !important;
+  fill: #095590 !important;
   font-size: 32px !important;
   font-weight: 500 !important;
   font-family: "Roboto", sans-serif !important;
@@ -31498,7 +31498,7 @@ body.fixed-header .header {
     height: 40px;
     margin: 0 auto;
     background: #fff !important;
-    color: #263871;
+    color: #095590;
     border: 1px solid #e9ebfa;
   }
   .search-show .search-element {
@@ -31515,7 +31515,7 @@ body.fixed-header .header {
   }
   .header .navsearch i {
     font-size: 20px;
-    color: #263871;
+    color: #095590;
     padding-top: 5px;
   }
   .header .form-inline .btn {
@@ -31592,7 +31592,7 @@ body.fixed-header .header {
   }
   .header .navsearch i {
     font-size: 20px;
-    color: #263871;
+    color: #095590;
     padding-top: 4px;
   }
   .app-header .header-brand .header-brand-img.mobile-logo {
@@ -38578,7 +38578,7 @@ body.rtl {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   font-weight: 500 !important;
-  color: #263871;
+  color: #095590;
 }
 
 .horizontalMenu .cl {
@@ -39226,7 +39226,7 @@ video {
     height: auto;
     min-height: 100%;
     width: 240px;
-    background: #17263a;
+    background: var(--cloud-blue);
     padding-bottom: 0;
     margin-left: -240px;
     display: block;
@@ -39975,7 +39975,7 @@ video {
 }
 
 .horizontal-main.hor-menu {
-  background: #17263a;
+  background: var(--cloud-blue);
   border-bottom: 1px solid #ebedfa;
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.1);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.1);
@@ -41142,7 +41142,7 @@ div.online-status .status.online {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
   border-radius: 5px;
   outline: 0;
-  color: #263871;
+  color: #095590;
   opacity: 1;
 }
 
@@ -41772,7 +41772,7 @@ select [aria-selected=true]:focus {
   height: 1rem;
   text-align: center;
   line-height: 1rem;
-  color: #263871;
+  color: #095590;
   background: #eaeefa;
   border-radius: 50%;
   font-size: 0.75rem;
@@ -41933,7 +41933,7 @@ select [aria-selected=true]:focus {
 
 .wizard > .content > .title {
   font-size: 18px;
-  color: #263871;
+  color: #095590;
   font-weight: 600;
   padding-bottom: 15px;
   display: none;
@@ -42001,12 +42001,12 @@ select [aria-selected=true]:focus {
 
 .wizard > .actions .disabled a {
   background-color: #e8ebf2;
-  color: #263871;
+  color: #095590;
 }
 
 .wizard > .actions .disabled a:hover, .wizard > .actions .disabled a:active {
   background-color: #e8ebf2;
-  color: #263871;
+  color: #095590;
 }
 
 .wizard.vertical > .steps {
@@ -42888,7 +42888,7 @@ select [aria-selected=true]:focus {
   left: 0;
   width: 270px;
   z-index: 1000;
-  background: #17263a;
+  background: var(--cloud-blue);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
@@ -44152,7 +44152,7 @@ select [aria-selected=true]:focus {
   left: 0;
   width: 270px;
   z-index: 1000;
-  background: #17263a;
+  background: var(--cloud-blue);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
@@ -45458,7 +45458,7 @@ select [aria-selected=true]:focus {
   left: 0;
   width: 270px;
   z-index: 1000;
-  background: #17263a;
+  background: var(--cloud-blue);
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
   -webkit-transition: left 0.2s ease, width 0.2s ease;
@@ -46018,7 +46018,7 @@ select [aria-selected=true]:focus {
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
   z-index: 999;
-  background: #17263a;
+  background: var(--cloud-blue);
 }
 
 .hover-submenu .close-toggle {
@@ -46301,7 +46301,7 @@ select [aria-selected=true]:focus {
   }
   .hover-submenu.sidebar-mini.sidenav-toggled.sidenav-toggled1 .slide-menu {
     position: absolute;
-    background: #17263a;
+    background: var(--cloud-blue);
     opacity: 1;
     visibility: hidden;
     z-index: 999;
@@ -46679,7 +46679,7 @@ select [aria-selected=true]:focus {
   left: 0;
   width: 270px;
   z-index: 1000;
-  background: #17263a;
+  background: var(--cloud-blue);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
@@ -47247,7 +47247,7 @@ select [aria-selected=true]:focus {
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
   z-index: 999;
-  background: #17263a;
+  background: var(--cloud-blue);
 }
 
 .hover-submenu1 .close-toggle {
@@ -47529,7 +47529,7 @@ select [aria-selected=true]:focus {
   }
   .hover-submenu1.sidebar-mini.sidenav-toggled.sidenav-toggled1 .slide-menu {
     position: absolute;
-    background: #17263a;
+    background: var(--cloud-blue);
     max-height: inherit;
     opacity: 1;
     visibility: hidden;
@@ -47911,7 +47911,7 @@ select [aria-selected=true]:focus {
   left: 0;
   width: 270px;
   z-index: 1000;
-  background: #17263a;
+  background: var(--cloud-blue);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   -webkit-box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
           box-shadow: 0px 6px 18px rgba(196, 205, 224, 0.2);
@@ -48069,7 +48069,8 @@ select [aria-selected=true]:focus {
   align-items: center;
   border-radius: 7px;
   font-size: 14px;
-  font-weight: 40 0;
+  font-weight: 40
+ 0;
   -webkit-transition: border-left-color 0.3s ease, background-color 0.3s ease;
   transition: border-left-color 0.3s ease, background-color 0.3s ease;
   margin: 1px 15px;
@@ -48475,7 +48476,7 @@ select [aria-selected=true]:focus {
   -webkit-transition: left 0.2s ease, width 0.2s ease;
   transition: left 0.2s ease, width 0.2s ease;
   z-index: 999;
-  background: #17263a;
+  background: var(--cloud-blue);
 }
 
 .icon-text .close-toggle {
@@ -50248,7 +50249,7 @@ button.bg-dark:hover, button.bg-dark:focus {
 }
 
 .bg-gray-900 {
-  background-color: #263871;
+  background-color: #095590;
 }
 
 .bg-white-1 {
@@ -54124,7 +54125,7 @@ a.text-light:hover, a.text-light:focus {
 }
 
 .text-dark {
-  color: #263871 !important;
+  color: #095590 !important;
 }
 
 a.text-dark:hover, a.text-dark:focus {
