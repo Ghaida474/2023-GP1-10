@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import Admin, FacultyAndStaff, KAI, BusinessUnit
+from django.contrib.auth.hashers import make_password, check_password
+from .models import Admin,User,FacultyAndStaff,Businessunit,Kai,Collage,Program,Project,Register,Request,Trainee,Trainingprogram
 from django.contrib.auth import get_user_model
+# from django.contrib.auth.models import User
+from .forms import adminform ,FASform,Loginform
+
+
 def index(request):
     # This view renders the 'index.html' for the main app.
     return render(request, 'index.html')
@@ -47,23 +52,14 @@ def login_view(request):
     '''
 
 
-
-
-
-
-
-
 def forgot_password(request):
     return redirect('app:index')
     # Your code here
 
+# هنا
+'''def login_view(request):
 
-
-
-from django.contrib import messages
-from .models import Admin
-
-def login_view(request):
+    form = loginform(request.POST or None)
     if request.method == 'POST':
         email1 = request.POST.get('email')
         password1 = request.POST.get('password')
@@ -91,7 +87,10 @@ def login_view(request):
         else:
             messages.error(request, 'Invalid credentials.')
 
-    return render(request, 'login.html')
+        return render(request, 'login.html' ,{'form': form})
+'''
+
+
 '''
 def login_view(request):
     if request.method == 'POST':
@@ -150,3 +149,107 @@ def login_view(request):
     
         
     return render(request, 'login.html')'''
+
+
+def addAdmin(request):
+
+    form1 = adminform(request.POST or None)
+    if request.method == 'POST' and form1.is_valid():
+    
+            email = form1.cleaned_data.get('email')
+            password = form1.cleaned_data.get('password')
+
+            newadmin = Admin(email=email , password =make_password(password))
+            print(email,password)
+    
+            newadmin.save()
+            messages.success(request ,'user created')
+    else:
+        form1 = adminform()
+
+    return render(request, 'add-admin.html', {'form1': form1})
+
+  
+            
+def addSANDF (request):
+    form2 = FASform(request.POST or None)
+    if request.method == 'POST' and form2.is_valid():
+
+        emaill = form2.cleaned_data.get('email')
+        passw = form2.cleaned_data.get('password')
+        fname = form2.cleaned_data.get('firstname')
+        lname = form2.cleaned_data.get('lastname')
+        phoneNumber = form2.cleaned_data.get('phonenumber')
+        Gender = form2.cleaned_data.get('gender')
+        Nationality = form2.cleaned_data.get('nationality')
+        adminemail = form2.cleaned_data.get('adminemail')
+        employeeid = form2.cleaned_data.get('employeeid')
+        position = form2.cleaned_data.get('position')
+        major = form2.cleaned_data.get('major')
+        collage = form2.cleaned_data.get('collage')
+
+        newFacultyAndStaff = FacultyAndStaff(
+            email=emaill, password=make_password(passw), firstname=fname, lastname=lname,
+            phonenumber=phoneNumber, gender=Gender, nationality=Nationality, adminemail=adminemail,
+            employeeid=employeeid, position=position, major=major , collage=collage
+        )
+        newFacultyAndStaff.save()
+        messages.success(request ,'user created')
+    else:
+         form2 = FASform()
+    return render(request, 'add-SANDF.html', {'form2': form2})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = Loginform(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            role = form.cleaned_data.get('role')
+            
+            if role == 'admin':
+                # Check if the user is an admin
+                if Admin.objects.filter(email=email).exists():
+                    admin = Admin.objects.get(email=email)
+                    if check_password(password, admin.password):
+                        # login(request, admin)
+                        return redirect('app:index') 
+                    else:
+                        messages.error(request, 'Invalid password.')
+                else:
+                    messages.error(request, 'This email does not exist.')
+
+            elif role == 'BU' or role == 'dean' or role =='facultyandstaff' :
+  
+                if FacultyAndStaff.objects.filter(email=email).exists():
+                    staff = FacultyAndStaff.objects.get(email=email)
+                    if check_password(password, staff.password):
+                        return redirect('app:index')
+                    else:
+                        messages.error(request, 'Invalid password.')
+                else:
+                    messages.error(request, 'This email does not exist.')
+                
+            elif role == 'Hkai' or role == 'kaistaff' :
+                if Kai.objects.filter(email=email).exists():
+                    KAI = Kai.objects.get(email=email)
+                    if check_password(password, KAI.password):
+                        return redirect('app:index')
+                    else:
+                        messages.error(request, 'Invalid password.')
+                else:
+                    messages.error(request, 'This email does not exist.')
+            else:
+                messages.error(request, 'Invalid role.')
+        else:
+            messages.error(request, 'Form is invalid. Please check your input.')
+
+    else:
+        form = Loginform()
+
+    return render(request, 'login.html', {'form': form})
+
+
+def home (request):
+    return render(request, 'Home.html')

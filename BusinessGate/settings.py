@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'faculty_staff_account',
     'kai_account',
     'business_unit_account',
+    'inspectdb_refactor',
 ]
 
 MIDDLEWARE = [
@@ -86,8 +87,9 @@ WSGI_APPLICATION = 'BusinessGate.wsgi.application'
 
 DATABASES = {
    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'BusinessGate',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'businessgate',
+        # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',
         'HOST': 'localhost',
@@ -114,6 +116,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# PASSWORD_HASHERS = ['django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+#                     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+#                     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+#                     'django.contrib.auth.hashers.Argon2PasswordHasher', ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
