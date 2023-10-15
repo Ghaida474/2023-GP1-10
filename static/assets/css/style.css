@@ -1941,9 +1941,9 @@ fieldset:disabled a.btn {
 }
 
 .btn-info {
-    color: #fff !important;
-    background-color: #128af9;
-    border-color: #0c85f5;
+    color: var(--ksu-blue) !important;
+    background-color: var(--ksu-blue);
+    border-color: var(--ksu-blue);
     box-shadow: 0 0px 10px -5px rgba(12, 133, 245, 0.5);
 }
 
@@ -2091,7 +2091,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-light {
-    color: #565b95;
+    color:var(--ksu-cream);
     background-color: #dee5f7;
     border-color: #dee5f7;
     box-shadow: 0 0 10px -5px rgba(68, 84, 195, 0.2);
@@ -2140,7 +2140,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-default {
-    color: #495057;
+    color: var(--ksu-blue);
     background-color: #eceef7;
     border-color: #dae0e5;
     box-shadow: 0 0 10px -5px rgba(68, 84, 195, 0.2);
@@ -2713,6 +2713,7 @@ input[type=submit].btn-block,
 input[type=reset].btn-block,
 input[type=button].btn-block {
     width: 100%;
+    color: var(--ksu-blue);
 }
 
 .fade {

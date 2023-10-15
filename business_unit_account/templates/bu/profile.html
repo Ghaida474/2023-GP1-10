@@ -1,0 +1,141 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+
+    {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-lg-flex d-block">
+							<div class="page-leftheader">
+								<div class="page-title">Profile</div>
+							</div>
+							<div class="page-rightheader ms-md-auto">
+							</div>
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- ROW -->
+						<div class="row">	
+							<div class="col-xl-9 col-lg-8 col-md-12">
+								<div class=" card mg-b-20  user-pro-list overflow-hidden" style="margin: 150px; margin-top: -15px;">
+									<!-- main-profile-body -->
+									<div class="main-profile-body">
+										<div class="tab-content">
+											<div class="tab-pane show active" id="about">
+												<div class="card-body">
+													<div class=" text-center">
+														<div class="pro-user mt-3">
+															<h4 class="card-title">Personal Details</h4>
+															<div class="table-responsive">
+																<table class="table mb-0">
+																	<tbody>
+																		<tr>
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Full Name</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.first_name}} {{user.last_name}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Email</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.email}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Phone Number</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.phonenumber}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Major</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.major}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">ID </span>
+																			</td>
+																			<td class="py-2 px-0">{{user.employeeid}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Collage</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.collage}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Position</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.position}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Work State</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.workstatus}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Iban</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.iban}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">OfficeNO </span>
+																			</td>
+																			<td class="py-2 px-0">{{user.officeno}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Specialization</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.specialization}}</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">Research Interest</span>
+																			</td>
+																			<td class="py-2 px-0">
+																				{% for ri in user.researchinterest %}
+																					<a class="btn btn-sm btn-white mt-1" >{{ri}}</a>
+																					{% empty %}
+																					<a class="btn btn-sm btn-white mt-1" >None</a>
+																				{% endfor %}
+																			</td>
+																		</tr>
+																		<tr class="border-top">
+																			<td class="py-2 px-0">
+																				<span class="font-weight-semibold w-50">CV</span>
+																			</td>
+																			<td class="py-2 px-0">{{user.cv}}</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+															<div class="btn-list">
+																<a href="edit-profile" class="btn btn-primary mt-3">Edit Profile</a>
+															</div>
+														</div>
+													</div>
+												</div>	
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                        <!-- END ROW -->
+        {% endblock %}
+
+		
+    {% block scripts %}
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+	{% endblock %}

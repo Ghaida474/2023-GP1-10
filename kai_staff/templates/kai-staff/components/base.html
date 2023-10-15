@@ -1,0 +1,82 @@
+{% load static %}
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+
+		<!-- META DATA -->
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta content="" name="description">
+		<meta content="" name="author">
+		<!-- <meta name="keywords" content=""> -->
+
+		<!-- TITLE -->
+		<title>Business Gate</title>
+        {% include 'kai-staff/components/layouts/styles.html' %} 
+        {% block styles %}
+        {% endblock %}
+        <!-- END STYLES -->
+
+    </head>
+
+    <body class="ltr app sidebar-mini">
+
+        <!-- GLOBAL-LOADER -->
+		<div id="global-loader">
+			<img src="{% static 'assets/images/svgs/loader.svg'%}" alt="loader">
+		</div>
+		<!-- GLOBAL-LOADER END -->
+
+        <!-- PAGE -->
+		<div class="page">
+			<div class="page-main">
+
+                <!-- APP-HEADER -->
+                {% include 'kai-staff/components/layouts/app-header.html' %}
+                <!-- APP-HEADER END-->
+
+                <!-- APP-SIDEBAR -->
+                {% include 'kai-staff/components/layouts/app-sidebar.html' %}
+                <!-- APP-SIDEBAR END-->
+
+                <!-- APP-CONTENT -->
+                <div class="app-content main-content">
+                    <div class="side-app main-container">
+                            {% block content %}
+                            
+                            {% endblock %}
+                    </div>
+                </div>
+                    <!-- APP-CONTENT END -->
+            </div>
+            <!-- PAGE-MAIN END -->
+            {% block modal %}
+        
+            {% endblock %}
+            <!-- CHANGE PASSWORD MODAL -->
+            {% include 'kai-staff/components/layouts/modal.html' %}
+            <!-- CHANGE PASSWORD MODAL END-->
+
+            <!-- RIGHT-SIDEBAR -->
+            {% include 'kai-staff/components/layouts/right-sidebar.html' %}
+            <!-- RIGHT-SIDEBAR END-->
+
+            <!-- FOOTER -->
+            {% include 'kai-staff/components/layouts/footer.html' %}
+            <!-- FOOTER END-->
+
+        </div>
+        <!-- PAGE END -->
+
+        <!-- SCRIPTS -->
+        {% include 'kai-staff/components/layouts/scripts.html' %}
+        {% block scripts %}
+        {% endblock %}
+        <!-- CUSTOM JS -->
+		<script src="{% static 'assets/js/custom.js'%}"></script>
+
+        <!-- SCRIPTS END-->
+
+    </body>
+
+</html>

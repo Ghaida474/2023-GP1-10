@@ -17,14 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
-    # path('', include('business_unit_account.urls')),
-    # path('', include('faculty_staff_account.urls')),
-    # path('', include('admin_account.urls')),
-    # path('', include('kai_account.urls')),
-
+    path('admin-account/', include('admin_account.urls')),
+    path('business-unit-account/', include('business_unit_account.urls')),
+    path('faculty-staff-account/', include('faculty_staff_account.urls')),
+    path('kai-account/', include('kai_account.urls')),
 ]

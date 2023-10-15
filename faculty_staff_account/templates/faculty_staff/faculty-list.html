@@ -1,0 +1,95 @@
+{% extends 'faculty_staff/components/faculty-base.html' %}
+{% load static %}
+
+    {% block styles %}
+
+    {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-xl-flex d-block">
+							<div class="page-leftheader">
+								<div class="page-title">Faculty List</div>
+							</div>
+							<div class="page-rightheader ms-md-auto">
+								<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">	
+								</div>
+							</div>
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-md-12 col-lg-12">
+								<div class="card">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
+												<thead>
+													<tr>
+														<th class="border-bottom-0">#ID</th>
+														<th class="border-bottom-0">Name</th>
+														<th class="border-bottom-0">Email</th>
+														<th class="border-bottom-0">Position</th>
+														<th class="border-bottom-0">Specialization</th>
+														<th class="border-bottom-0">View</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for faculty_member in faculty %}
+													<tr>
+														<td>{{faculty_member.employeeid}}</td>
+														<td>
+															<a href="faculty-view" class="d-flex">
+																<div class="me-3 mt-0 mt-sm-2 d-block">
+																	<h6 class="mb-1 fs-14">{{ faculty_member.firstname }} {{ faculty_member.lastname }}</h6>
+																</div>
+															</a>
+														</td>
+														<td>{{faculty_member.email}}</td>
+														<td>{{faculty_member.position}}</td>
+														<td>{{faculty_member.specialization}}</td>		
+														<td>
+															<div class="d-flex">
+																<a href="faculty-view" class="action-btns1" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="feather feather-eye text-primary"></i></a>
+															</div>
+														</td>
+													</tr>
+													{% empty %}
+													<tr>No faculty members found.</tr>
+												  {% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END ROW -->
+        {% endblock %}
+
+		
+    {% block scripts %}
+		<!-- NOTIFICATIONS JS -->
+        <script src="{% static 'assets/plugins/notify/js/notifIt.js'%}"></script>
+
+        <!-- INTERNAL CHART JS -->
+        <script src="{% static 'assets/plugins/chart/chart.bundle.js'%}"></script>
+
+        <!-- INTERNAL DATEPICKER JS -->
+        <script src="{% static 'assets/plugins/modal-datepicker/datepicker.js'%}"></script>
+
+        <!-- INTERNAL DATA TABLES  -->
+        <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+
+        <!-- INTERNAL INDEX JS -->
+        <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+
+		<!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+	{% endblock %}

@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+
+		<!-- META DATA -->
+		<meta charset="UTF-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+		<meta content="" name="description">
+		<meta content="" name="author">
+		<!-- <meta name="keywords" content=""> -->
+
+		<!-- TITLE -->
+		<title>Business Gate</title>
+
+        <!-- STYLES -->
+        {% include 'bu/components/layouts/custom-styles.html' %}
+        {% block styles %}
+        {% endblock %}
+ 
+        <!-- END STYLES -->
+
+    </head>
+
+    <body class="login-img">
+
+ 
+            {% block switcher-icon %}
+            {% endblock %}
+            {% block content %}
+            
+            {% endblock %}
+
+        <!-- SCRIPTS -->
+        {% include 'bu/components/layouts/custom-scripts.html' %}
+        {% block scripts %}
+        {% endblock %}
+        <!-- CUSTOM1 JS -->
+		<script src="{% static 'assets/js/custom.js'%}"></script>
+
+        <!-- END SCRIPTS -->
+        
+    </body>
+</html>

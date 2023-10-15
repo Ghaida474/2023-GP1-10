@@ -1,0 +1,82 @@
+{% load static %}
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+
+		<!-- META DATA -->
+		<meta charset="UTF-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+		<meta content="" name="description">
+		<meta content="" name="author">
+		<!-- <meta name="keywords" content=""> -->
+
+		<!-- TITLE -->
+		<title>Business Gate</title>
+
+        <!-- STYLES -->
+        {% include 'faculty_staff/components/layouts/styles.html' %}
+        {% block styles %}{% endblock %}
+
+    </head>
+
+    <body class="ltr app sidebar-mini">
+
+        {% block themeswitcher %}
+        
+        {% endblock %}
+        <!-- GLOBAL-LOADER -->
+		<div id="global-loader">
+			<img src="{% static 'assets/images/svgs/loader.svg'%}" class="loader-img" alt="Loader">
+		</div>
+		<!-- GLOBAL-LOADER END -->
+
+        <!-- PAGE -->
+		<div class="page">
+			<div class="page-main">
+
+                <!-- APP-HEADER -->
+                {% include 'faculty_staff/components/layouts/app-header1.html' %}
+
+                <!-- APP-SIDEBAR -->
+                {% include 'faculty_staff/components/layouts/app-sidebar.html' %}
+
+                <!-- APP-CONTENT -->
+                <div class="app-content main-content">
+                    <div class="side-app main-container">
+                            {% block content %}
+                            
+                            {% endblock %}
+                    </div>
+                </div>
+                    <!-- APP-CONTENT END -->
+            </div>
+            <!-- PAGE-MAIN END -->
+            <!-- MODAL -->
+            {% include 'faculty_staff/components/layouts/modal.html' %}
+            {% block modal %}
+        
+            {% endblock %}
+            <!-- END MODAL -->
+
+            <!-- RIGHT-SIDEBAR -->
+            {% include 'faculty_staff/components/layouts/right-sidebar.html' %}
+            <!-- RIGHT-SIDEBAR END-->
+
+            <!-- FOOTER -->
+            {% include 'faculty_staff/components/layouts/footer.html' %}
+            <!-- END FOOTER -->
+
+        </div>
+        <!-- PAGE END -->
+
+        <!-- SCRIPTS -->
+        {% include 'faculty_staff/components/layouts/scripts.html' %}
+        {% block scripts %}{% endblock %}
+
+        <!-- CUSTOM1 JS -->
+		<script src="{% static 'assets/js/custom1.js'%}"></script>
+
+        <!-- END SCRIPTS -->
+    </body>
+
+</html>

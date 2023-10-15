@@ -1,3 +1,4 @@
+
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -6,7 +7,8 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import AbstractUser , Group, Permission , UserManager
+from django.utils.translation import gettext as _
 
 class Admin(models.Model):
     email = models.CharField(db_column='Email', primary_key=True, max_length=130)  # Field name made lowercase.
@@ -21,7 +23,7 @@ class Businessunit(models.Model):
     buemail = models.CharField(db_column='BUemail', primary_key=True, max_length=130)  # Field name made lowercase.
     phonenumber = models.CharField(db_column='phoneNumber', max_length=130)  # Field name made lowercase.
     collageid = models.ForeignKey('Collage', models.DO_NOTHING, db_column='CollageID')  # Field name made lowercase.
-    employeeid = models.ForeignKey('FacultyAndStaff', models.DO_NOTHING, db_column='EmployeeID')  # Field name made lowercase.
+    employeeid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='EmployeeID')  # Field name made lowercase.
     adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
     password = models.CharField(max_length=130)
 
@@ -31,14 +33,14 @@ class Businessunit(models.Model):
 
 
 class Collage(models.Model):
-    collageid = models.IntegerField(db_column='CollageID', primary_key=True)  # Field name made lowercase.
+    collageid = models.AutoField(db_column='CollageID', primary_key=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=130)  # Field name made lowercase.
     nostudents = models.IntegerField(db_column='NoStudents')  # Field name made lowercase.
     nofaculty = models.IntegerField(db_column='NoFaculty')  # Field name made lowercase.
     nostaff = models.IntegerField(db_column='NoStaff')  # Field name made lowercase.
     nofemalestudents = models.IntegerField(db_column='NoFemaleStudents', blank=True, null=True)  # Field name made lowercase.
     nomalestudents = models.IntegerField(db_column='NoMaleStudents', blank=True, null=True)  # Field name made lowercase.
-    # employeeid = models.ForeignKey('FacultyAndStaff', models.DO_NOTHING, db_column='EmployeeID')  # Field name made lowercase.
+    # employeeid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='EmployeeID', blank=True, null=True)  # Field name made lowercase.
     adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
     departments = models.TextField(db_column='Departments')  # Field name made lowercase. This field type is a guess.
 
@@ -47,55 +49,101 @@ class Collage(models.Model):
         db_table = 'Collage'
 
 
-class FacultyAndStaff(models.Model):
-    firstname = models.CharField(db_column='firstName', max_length=130)  # Field name made lowercase.
-    lastname = models.CharField(db_column='lastName', max_length=130)  # Field name made lowercase.
-    phonenumber = models.CharField(db_column='phoneNumber', max_length=130)  # Field name made lowercase.
-    email = models.CharField(max_length=130)
-    # userid = models.IntegerField(db_column='UserID')  # Field name made lowercase.
-    gender = models.CharField(db_column='Gender', max_length=130)  # Field name made lowercase.
-    nationality = models.CharField(db_column='Nationality', max_length=130)  # Field name made lowercase.
-    adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
-    password = models.CharField(max_length=130)
+class FacultyStaff(AbstractUser):
+    # id = models.AutoField()
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(max_length=150, blank=True, null=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254 , unique=True)
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)  # Field name made lowercase.
+    is_staff = models.BooleanField(blank=True, null=True)
     employeeid = models.CharField(db_column='EmployeeID', primary_key=True, max_length=130)  # Field name made lowercase.
     position = models.CharField(db_column='Position', max_length=130)  # Field name made lowercase.
     major = models.CharField(db_column='Major', max_length=130)  # Field name made lowercase.
     specialization = models.CharField(db_column='Specialization', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    collage = models.CharField(db_column='Collage', max_length=130)  # Field name made lowercase.
-    # workstatus = models.CharField(db_column='WorkStatus', max_length=130)  # Field name made lowercase.
-    # assignedorganization = models.CharField(db_column='assignedOrganization', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    # cv = ArrayField(models.CharField(max_length=50, blank=True), blank=True) # Field name made lowercase. This field type is a guess.
-    # iban = models.CharField(db_column='Iban', max_length=130)  # Field name made lowercase.
-    # officeno = models.CharField(db_column='OfficeNo', max_length=130 ,blank=True, null=True)  # Field name made lowercase.
-    # researchinterest = ArrayField(models.CharField(max_length=50, blank=True),  blank=True) # Field name made lowercase. This field type is a guess.
-    # previouswork = ArrayField(models.CharField(max_length=50, blank=True), blank=True)  # Field name made lowercase. This field type is a guess.
+    collage = models.CharField(db_column='Collage', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    workstatus = models.CharField(db_column='WorkStatus', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    assignedorganization = models.CharField(db_column='assignedOrganization', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    iban = models.CharField(db_column='Iban', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    officeno = models.CharField(db_column='OfficeNo', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    researchinterest = models.TextField(db_column='ResearchInterest', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    previouswork = models.TextField(db_column='PreviousWork', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    cv = models.BinaryField(db_column='CV', blank=True, null=True)
+    
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        related_name='faculty_staff'  # Provide a unique related name
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        related_name='faculty_staff'  # Provide a unique related name
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name','last_name'] 
+
+    objects = UserManager()
 
     class Meta:
         managed = False
-        db_table = 'Faculty and staff'
+        db_table = 'Faculty_Staff'
 
 
-
-class Kai(models.Model):
-    firstname = models.CharField(db_column='firstName', max_length=130)  # Field name made lowercase.
-    lastname = models.CharField(db_column='lastName', max_length=130)  # Field name made lowercase.
-    phonenumber = models.CharField(db_column='phoneNumber', max_length=130)  # Field name made lowercase.
-    email = models.CharField(max_length=130)
-    userid = models.IntegerField(db_column='UserID')  # Field name made lowercase.
+class Kaibuemployee(AbstractUser):
+    # id = models.AutoField()
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(max_length=150, blank=True, null=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254 , unique=True)
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  # Field name made lowercase.
     gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  # Field name made lowercase.
     nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
-    password = models.CharField(max_length=130)
-    kaiemployeeid = models.CharField(db_column='KAIEmployeeID', primary_key=True, max_length=130)  # Field name made lowercase.
-    kaiposition = models.CharField(db_column='KAIPosition', max_length=130)  # Field name made lowercase.
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)  # Field name made lowercase.
+    is_staff = models.BooleanField(blank=True, null=True)
+    kaiemployeeid = models.CharField(db_column='KAIEmployeeID', primary_key=True)  # Field name made lowercase.
+    kaiposition = models.CharField(db_column='KAIPosition')  # Field name made lowercase.
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_('groups'),
+        blank=True,
+        related_name='kaibuemployee_groups'
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_('user permissions'),
+        blank=True,
+        related_name='kaibuemployee_permissions'
+    )
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name','last_name']  
+
+    objects = UserManager()
 
     class Meta:
         managed = False
-        db_table = 'KAI'
+        db_table = 'KAIBUEmployee'
 
 
 class Program(models.Model):
-    programid = models.IntegerField(db_column='ProgramID', primary_key=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=130)  # Field name made lowercase.
     totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  # Field name made lowercase.
     taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  # Field name made lowercase.
@@ -108,6 +156,7 @@ class Program(models.Model):
     enddate = models.DateField(db_column='endDate', blank=True, null=True)  # Field name made lowercase.
     adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
     programstatus = models.TextField(db_column='programStatus')  # Field name made lowercase. This field type is a guess.
+    programid = models.AutoField(db_column='programID', primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -115,7 +164,6 @@ class Program(models.Model):
 
 
 class Project(models.Model):
-    programid = models.IntegerField(db_column='ProgramID')  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=130)  # Field name made lowercase.
     totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  # Field name made lowercase.
     taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  # Field name made lowercase.
@@ -128,6 +176,7 @@ class Project(models.Model):
     enddate = models.DateField(db_column='endDate')  # Field name made lowercase.
     adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
     programstatus = models.TextField(db_column='programStatus')  # Field name made lowercase. This field type is a guess.
+    # programid = models.AutoField(db_column='programID')  # Field name made lowercase.
     companyname = models.CharField(db_column='companyName', max_length=130)  # Field name made lowercase.
     offeringdate = models.DateField(db_column='OfferingDate')  # Field name made lowercase.
     acceptancedeadline = models.DateField(db_column='AcceptanceDeadline')  # Field name made lowercase.
@@ -139,6 +188,7 @@ class Project(models.Model):
     rejectionreason = models.CharField(db_column='RejectionReason', max_length=130, blank=True, null=True)  # Field name made lowercase.
     technicalproposalstatus = models.CharField(db_column='TechnicalProposalStatus', max_length=130, blank=True, null=True)  # Field name made lowercase.
     financialproposalstatus = models.CharField(db_column='FinancialProposalStatus', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    projectid = models.AutoField(db_column='ProjectID', primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -146,8 +196,8 @@ class Project(models.Model):
 
 
 class Register(models.Model):
-    registerid = models.IntegerField(db_column='RegisterID', primary_key=True)  # Field name made lowercase.
-    nationalid = models.ForeignKey('Trainee', models.DO_NOTHING, db_column='NationalID')  # Field name made lowercase.
+    registerid = models.AutoField(db_column='RegisterID', primary_key=True)  # Field name made lowercase.
+    nationalid = models.ForeignKey('Trainees', models.DO_NOTHING, db_column='NationalID')  # Field name made lowercase.
     trainingprogramid = models.ForeignKey('Trainingprogram', models.DO_NOTHING, db_column='TrainingProgramID')  # Field name made lowercase.
     registerstatus = models.CharField(db_column='RegisterStatus', max_length=130)  # Field name made lowercase.
 
@@ -157,9 +207,9 @@ class Register(models.Model):
 
 
 class Request(models.Model):
-    requestid = models.IntegerField(db_column='RequestID', primary_key=True)  # Field name made lowercase.
+    requestid = models.AutoField(db_column='RequestID', primary_key=True)  # Field name made lowercase.
     buemail = models.ForeignKey(Businessunit, models.DO_NOTHING, db_column='BUemail')  # Field name made lowercase.
-    kaiemployeeid = models.ForeignKey(Kai, models.DO_NOTHING, db_column='KAIEmployeeID')  # Field name made lowercase.
+    kaiemployeeid = models.ForeignKey(Kaibuemployee, models.DO_NOTHING, db_column='KAIEmployeeID')  # Field name made lowercase.
     documment = models.TextField(db_column='Documment')  # Field name made lowercase. This field type is a guess.
 
     class Meta:
@@ -167,26 +217,31 @@ class Request(models.Model):
         db_table = 'Request'
 
 
-class Trainee(models.Model):
-    firstname = models.CharField(db_column='firstName', max_length=130)  # Field name made lowercase.
-    lastname = models.CharField(db_column='lastName', max_length=130)  # Field name made lowercase.
-    phonenumber = models.CharField(db_column='phoneNumber', max_length=130)  # Field name made lowercase.
-    email = models.CharField(max_length=130)
-    userid = models.IntegerField(db_column='UserID')  # Field name made lowercase.
+class Trainees(models.Model):
+    # id = models.AutoField()
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(max_length=150, blank=True, null=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  # Field name made lowercase.
     gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  # Field name made lowercase.
     nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
-    password = models.CharField(max_length=130)
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)  # Field name made lowercase.
+    is_staff = models.BooleanField(blank=True, null=True)
+    nationalid = models.CharField(db_column='NationalID', primary_key=True)  # Field name made lowercase.
     certifications = models.TextField(blank=True, null=True)  # This field type is a guess.
-    nationalid = models.CharField(db_column='NationalID', primary_key=True, max_length=130)  # Field name made lowercase.
 
     class Meta:
         managed = False
-        db_table = 'Trainee'
+        db_table = 'Trainees'
 
 
 class Trainingprogram(models.Model):
-    programid = models.IntegerField(db_column='ProgramID')  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=130)  # Field name made lowercase.
     totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  # Field name made lowercase.
     taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  # Field name made lowercase.
@@ -199,31 +254,16 @@ class Trainingprogram(models.Model):
     enddate = models.DateField(db_column='endDate')  # Field name made lowercase.
     adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
     programstatus = models.TextField(db_column='programStatus')  # Field name made lowercase. This field type is a guess.
+    # programid = models.AutoField(db_column='programID')  # Field name made lowercase.
     starttime = models.TimeField(db_column='startTime')  # Field name made lowercase.
     endtime = models.TimeField(db_column='endTime')  # Field name made lowercase.
     capacity = models.IntegerField()
     attendeescount = models.IntegerField(db_column='AttendeesCount', blank=True, null=True)  # Field name made lowercase.
-    trainingprogramid = models.IntegerField(db_column='TrainingProgramID', primary_key=True)  # Field name made lowercase.
+    trainingprogramid = models.AutoField(db_column='TrainingProgramID', primary_key=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'TrainingProgram'
-
-
-class User(models.Model):
-    firstname = models.CharField(db_column='firstName', max_length=130)  # Field name made lowercase.
-    lastname = models.CharField(db_column='lastName', max_length=130)  # Field name made lowercase.
-    phonenumber = models.CharField(db_column='phoneNumber', max_length=130)  # Field name made lowercase.
-    email = models.CharField(max_length=130)
-    userid = models.AutoField(db_column='UserID', primary_key=True)  # Field name made lowercase.
-    gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
-    password = models.CharField(max_length=130)
-
-    class Meta:
-        managed = False
-        db_table = 'User'
 
 
 class AuthGroup(models.Model):
@@ -260,13 +300,17 @@ class AuthUser(models.Model):
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.BooleanField()
-    username = models.CharField(unique=True, max_length=150)
+    username = models.CharField(unique=True, max_length=150, blank=True, null=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
     is_active = models.BooleanField()
     date_joined = models.DateTimeField()
+    phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  # Field name made lowercase.
+    adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail', blank=True, null=True)  # Field name made lowercase.
+    is_staff = models.BooleanField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -341,8 +385,8 @@ class DjangoSession(models.Model):
 
 
 class Workson(models.Model):
-    worksonid = models.IntegerField(db_column='worksOnID', primary_key=True)  # Field name made lowercase.
-    employeeid = models.ForeignKey(FacultyAndStaff, models.DO_NOTHING, db_column='EmployeeID')  # Field name made lowercase.
+    worksonid = models.AutoField(db_column='worksOnID', primary_key=True)  # Field name made lowercase.
+    employeeid = models.ForeignKey(FacultyStaff, models.DO_NOTHING, db_column='EmployeeID')  # Field name made lowercase.
     programid = models.ForeignKey(Program, models.DO_NOTHING, db_column='programID')  # Field name made lowercase.
     employeepercentage = models.FloatField(db_column='employeePercentage')  # Field name made lowercase.
 
