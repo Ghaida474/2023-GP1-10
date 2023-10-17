@@ -24,6 +24,6 @@ def profile_view(request):
 @login_required
 def facultylist_view (request):
     user = request.user
-    faculty = FacultyStaff.objects.all(collage =user.collage)
+    faculty = FacultyStaff.objects.filter(collageid =user.collageid)
     
     return render(request, 'bu/faculty-list.html', {'faculty' : faculty})

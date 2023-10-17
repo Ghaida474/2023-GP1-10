@@ -23,5 +23,7 @@ urlpatterns = [
     path('admin-account/', include('admin_account.urls')),
     path('business-unit-account/', include('business_unit_account.urls')),
     path('faculty-staff-account/', include('faculty_staff_account.urls')),
-    path('kai-account/', include('kai_account.urls')),
+    path('kai_account/', include('kai_account.urls')),
+    path('dean/', include('dean.urls')),
+    path('kai_staff/', include('kai_staff.urls')),
 ]

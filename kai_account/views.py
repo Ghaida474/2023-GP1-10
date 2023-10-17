@@ -11,9 +11,7 @@ from app.models import FacultyStaff
 @login_required
 def kai_home (request):
     user = request.user
-    context = {'user': user }
-
-    return render(request, 'kai/empty-page.html', context)
+    return render(request, 'kai/empty-page.html', {'user': user })
       
 @login_required
 def profile_view(request):

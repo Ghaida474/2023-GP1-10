@@ -11,7 +11,6 @@ from app.models import FacultyStaff
 def dean_account_home (request):
     user = request.user
     context = {'user': user }
-
     return render(request, 'dean/empty-page.html', context)
       
 @login_required
@@ -27,6 +26,6 @@ def emptypage_view(request):
 @login_required
 def facultylist_view (request):
     user = request.user
-    faculty = FacultyStaff.objects.all(collage =user.collage)
+    faculty = FacultyStaff.objects.filter(collageid =user.collageid)
     
     return render(request, 'dean/faculty-list.html', {'faculty' : faculty})

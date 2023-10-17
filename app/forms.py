@@ -7,7 +7,7 @@ ROLE_CHOICES= [
     ('admin', 'Admin'),
     ('BU', 'Head of Business Unit'),
     ('dean', 'Dean of Collage'),
-    ('facultyandstaff', 'Faculty Member'),
+    ('facultyandstaff', 'Faculty/Staff Member'),
     ('Hkai', 'Head of KAI Business Unit'),
     ('kaistaff', 'KAI Business Unit Staff'),
     ]
@@ -16,7 +16,7 @@ ROLE_CHOICES= [
 class Loginform(forms.Form):
     email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}))
     password= forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control' , 'placeholder': '*************'}))
-    # role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
+    role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
   
     
 class adminform(forms.ModelForm):
@@ -54,7 +54,7 @@ class FASform(forms.ModelForm):
             'employeeid',
             'position',
             'major',
-            'collage'
+            # 'collage'
             # 'specialization',
             # 'collage',
             # 'workstatus',

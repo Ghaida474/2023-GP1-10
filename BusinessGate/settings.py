@@ -31,6 +31,13 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_URL = 'app:login'
+# LOGIN_REDIRECT_URLS = {
+#     'faculty_staff_account': 'faculty_staff_account:faculty_staff_home',
+#     'kai_staff': 'kaistaff_account:kaistaff_home',
+#     'kai_account': 'kai_account:kai_home',
+#     'dean': 'dean_account:dean-account-home',
+#     'business_unit_account': 'business_unit_account:business_unit_home',
+# }
 LOGOUT_REDIRECT_URL = 'app:login'
 
 # Application definition
@@ -48,7 +55,6 @@ INSTALLED_APPS = [
     'business_unit_account',
     'kai_staff',
     'dean',
-    'inspectdb_refactor',
 ]
 
 
@@ -99,8 +105,8 @@ AUTH_USER_MODEL = 'app.FacultyStaff'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bg',
-        # 'NAME': 'businessgate',
+        # 'NAME': 'bg',
+         'NAME': 'businessgate',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',
