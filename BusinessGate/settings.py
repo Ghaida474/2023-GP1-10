@@ -105,15 +105,22 @@ AUTH_USER_MODEL = 'app.FacultyStaff'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'bg',
-         'NAME': 'businessgate',
+        'NAME': 'BGDB',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5344',
     }
 }
+# email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'businessgate.ksu@gmail.com'
+EMAIL_HOST_PASSWORD = 'bvfqbztmwvyfhmkm'
+
 
 
 
