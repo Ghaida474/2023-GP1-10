@@ -12,6 +12,12 @@ ROLE_CHOICES= [
     ('kaistaff', 'KAI Business Unit Staff'),
     ]
 
+class emailcheckform(forms.Form):
+     email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Mail or Username'}))
+     role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
+class ForgetPasswordForm(forms.Form):
+
+  role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.Select())
 
 class Loginform(forms.Form):
     email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}))
@@ -134,3 +140,4 @@ class updateFASform(forms.ModelForm):
 
         return phone_number
   
+
