@@ -44,15 +44,33 @@ String firstName = '';
     return lastName;
   }
 
+  String UpdateLN = 'OK';
+  Future<String> updatelname(String email, String lname) async {
+    await AppDatabase().UpdateLName(email, lname);
+    return UpdateLN;
+  }
+
   String PhoneNumber= '';
   Future<String> FetchPhoneNum(String email) async {
     PhoneNumber = await AppDatabase().FetchPHone(email);
     return PhoneNumber;
   }
 
+  String UpdatePN = 'OK';
+  Future<String> updatephonenum(String email, String PhoneNum) async {
+    await AppDatabase().UpdatePhone(email, PhoneNum);
+    return UpdatePN;
+  }
+
   String Password= '';
   Future<String> FetchPassword(String email) async {
     Password = await AppDatabase().FetchPass(email);
     return Password;
+  }
+
+  String UpdatePass = 'OK';
+  Future<String> updatepass(String email, String pass) async {
+    await AppDatabase().UpdatePass(email, pass);
+    return UpdatePass;
   }
 }

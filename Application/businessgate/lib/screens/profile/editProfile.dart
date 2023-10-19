@@ -65,17 +65,20 @@ class _EditProfileState extends State<EditProfile> {
           phoneField(size, context),
           passField(size, context),
           SizedBox(height: size.height * 0.05),
-          updateButton(size,nameController.text),
+          updateButton(size,nameController.text,emailController.text,phoneController.text,passwordController.text),
         ],
       ),
     );
   }
 
-  updateButton(Size size,String fname) {
+  updateButton(Size size,String fname,String lname,String phone, String pass ) {
     return Center(
       child: GestureDetector(
         onTap: () {
           ModelsUsers().updatefname(myGlobalEmail, fname);
+          ModelsUsers().updatelname(myGlobalEmail, lname);
+          ModelsUsers().updatephonenum(myGlobalEmail, phone);
+          ModelsUsers().updatepass(myGlobalEmail, pass);
         },
         child: Container(
           alignment: Alignment.center,

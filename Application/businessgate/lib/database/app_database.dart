@@ -227,6 +227,26 @@ String updatePassword = 'ok';
     return FName;
   }
 
+  Future<void> UpdateLName(String email, String NameL) async {
+    try {
+      await connection!.open();
+      await connection!.transaction((loginConnection) async {
+        //Check email registered or no
+        loginResult = await loginConnection.query(
+          'UPDATE public."Trainee" SET "lastName" = @lNameValue WHERE "email" = @emailValue',
+      substitutionValues: {
+        'emailValue': email,
+        'lNameValue': NameL
+      },
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+    } catch (exc) {
+      exc.toString();
+    }
+  }
+
   String PhoneNum = '' ;
   Future<String> FetchPHone(String email) async {
     try {
@@ -253,6 +273,26 @@ String updatePassword = 'ok';
     return PhoneNum;
   }
 
+  Future<void> UpdatePhone(String email, String phone) async {
+    try {
+      await connection!.open();
+      await connection!.transaction((loginConnection) async {
+        //Check email registered or no
+        loginResult = await loginConnection.query(
+          'UPDATE public."Trainee" SET "phoneNumber" = @phoneNumberValue WHERE "email" = @emailValue',
+      substitutionValues: {
+        'emailValue': email,
+        'phoneNumberValue': phone
+      },
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+    } catch (exc) {
+      exc.toString();
+    }
+  }
+
   String Pass = '' ;
   Future<String> FetchPass(String email) async {
     try {
@@ -277,6 +317,26 @@ String updatePassword = 'ok';
       exc.toString();
     }
     return Pass;
+  }
+
+  Future<void> UpdatePass(String email, String pass) async {
+    try {
+      await connection!.open();
+      await connection!.transaction((loginConnection) async {
+        //Check email registered or no
+        loginResult = await loginConnection.query(
+          'UPDATE public."Trainee" SET "password" = @passwordValue WHERE "email" = @emailValue',
+      substitutionValues: {
+        'emailValue': email,
+        'passwordValue': pass
+      },
+          allowReuse: true,
+          timeoutInSeconds: 30,
+        );
+      });
+    } catch (exc) {
+      exc.toString();
+    }
   }
 
 
