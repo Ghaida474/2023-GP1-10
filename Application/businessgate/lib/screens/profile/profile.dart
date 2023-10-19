@@ -14,30 +14,48 @@ class _ProfileState extends State<Profile> {
   
   String myGlobalEmail = Globals.globalEmailString;
   
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return  Scaffold(
-      backgroundColor: hexStringColor("#6FBCF6"),
-      appBar: AppBar(
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Profile',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+ @override
+Widget build(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return Scaffold(
+    extendBodyBehindAppBar: true,
+    appBar: AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: Text(
+        'Profile',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ),
+    body: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            hexStringColor("#6FBCF6"),
+            hexStringColor("#E3E0D2"),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          heightbox(size.height * 0.03),
-          profileinfo(size, context),
-          heightbox(size.height * 0.03),
-          profileList(size, context)
-        ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            20, MediaQuery.of(context).size.height * 0.2, 20, 400),
+          child: Column(
+            children: <Widget>[
+              heightbox(size.height * 0.03),
+              profileinfo(size, context),
+              heightbox(size.height * 0.03),
+              profileList(size, context),
+            ],
+          ),
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   heightbox(double height) {
   return SizedBox(height: height);

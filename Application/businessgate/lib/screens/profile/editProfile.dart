@@ -28,45 +28,58 @@ class _EditProfileState extends State<EditProfile> {
     passwordController.text = '';
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: hexStringColor("#6FBCF6"),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        centerTitle: false,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 22,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        titleSpacing: 0,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
           "Edit Profile",
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: ListView(
-        children: [
-          SizedBox(height: 10),
-          SizedBox(height: 10),
-          SizedBox(height: 10 / 2),
-          profileContainer(size),
-          SizedBox(height: 10),
-          userinfo(),
-          SizedBox(height: 10),
-          SizedBox(height: 10 / 2),
-          nameField(size, context),
-          emailField(size, context),
-          phoneField(size, context),
-          passField(size, context),
-          SizedBox(height: size.height * 0.05),
-          updateButton(size,nameController.text,emailController.text,phoneController.text,passwordController.text),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringColor("#6FBCF6"),
+              hexStringColor("#E3E0D2"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20, size.height * 0.2, 20, 400),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 10),
+                SizedBox(height: 10),
+                SizedBox(height: 10 / 2),
+                profileContainer(size),
+                SizedBox(height: 10),
+                userinfo(),
+                SizedBox(height: 10),
+                SizedBox(height: 10 / 2),
+                nameField(size, context),
+                emailField(size, context),
+                phoneField(size, context),
+                passField(size, context),
+                SizedBox(height: size.height * 0.05),
+                updateButton(
+                    size,
+                    nameController.text,
+                    emailController.text,
+                    phoneController.text,
+                    passwordController.text),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
