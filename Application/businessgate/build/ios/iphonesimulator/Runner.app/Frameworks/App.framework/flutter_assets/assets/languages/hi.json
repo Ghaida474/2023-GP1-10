@@ -1,0 +1,285 @@
+{
+    "login": {
+        "welcome": "वापसी पर स्वागत है",
+        "content": "ई-लर्निंग के अपने मौजूदा खाते में लॉगिन करें",
+        "account": "कोई खाता नहीं है?",
+        "sign_up": "साइन अप करें",
+        "or_text": "या उपयोग करके कनेक्ट करें",
+        "login": "लॉग इन करें",
+        "forget": "पासवर्ड भूल गए?",
+        "create_password": "पासवर्ड बनाएं",
+        "email_address": "ईमेल पता"
+    },
+    "app_exit": {
+        "exit_app": "बाहर निकलने के लिए एक बार फिर से दबाएं"
+    },
+    "otp": {
+        "number_text": "कृपया सत्यापन कोड दर्ज करें यहां हमने आपको +9188 ****** 10 पर भेजा है",
+        "otp_verification": "ओटीपी सत्यापन",
+        "please_wait": "कृपया प्रतीक्षा करें",
+        "confirm": "पुष्टि करें",
+        "resend": "पुन: भेजें"
+    },
+    "signup": {
+        "get_started": "आएँ शुरू करें!",
+        "content": "सभी सुविधाओं को प्राप्त करने के लिए ई-लर्निंग के लिए एक खाता बनाएं",
+        "account": "क्या आपके पास पहले से एक खाता मौजूद है?",
+        "login_now": "अब प्रवेश करें",
+        "or_text": "या उपयोग करके कनेक्ट करें",
+        "sign_up": "साइन अप करें",
+        "create_password": "पासवर्ड बनाएं",
+        "email_address": "ईमेल पता",
+        "confirm_password": "पासवर्ड की पुष्टि कीजिये",
+        "name": "नाम",
+        "mobile_number": "मोबाइल नंबर"
+    },
+    "bottom_navi": {
+        "reset": "रीसेट",
+        "categories": "श्रेणियाँ",
+        "design": "डिज़ाइन",
+        "marketing": "विपणन",
+        "helth": "Helth",
+        "music": "संगीत",
+        "photography": "फोटोग्राफी",
+        "programmimg": "क्रमादेश",
+        "art": "कला",
+        "price": "कीमत",
+        "paid": "भुगतान किया गया",
+        "free": "मुक्त",
+        "both": "दोनों",
+        "level": "स्तर",
+        "all_level": "सभी स्तर",
+        "beginner": "शुरुआती",
+        "intermediate": "मध्यवर्ती",
+        "advance": "अग्रिम",
+        "other": "अन्य",
+        "filter": "फ़िल्टर",
+        "profile": "प्रोफ़ाइल",
+        "wishlist": "इच्छा-सूची",
+        "courses": "पाठ्यक्रम",
+        "search": "खोज",
+        "home": "घर"
+    },
+    "catergory": {
+        "catergory": "कैटरगरी"
+    },
+    "detail": {
+        "student_feedback": "छात्र प्रतिक्रिया",
+        "name": "अकलीमा अकतार",
+        "date": "20 मार्च 2020",
+        "overall_rating": "समग्र रेटिंग",
+        "review": "समीक्षा",
+        "min": "मिनट",
+        "lifetime": "आजीवन सदस्यता",
+        "subscribe": "सदस्यता लेने के",
+        "method": "अपने भुगतान का तरीका चुनें",
+        "credit_card": "क्रेडिट कार्ड/डेबिट कार्ड",
+        "net_banking": "शुद्ध बैंकिंग",
+        "other_UPI": "अन्य यूपीआई ऐप",
+        "about": "के बारे में",
+        "video": "वीडियो",
+        "review_text": "समीक्षा",
+        "detail_name": "हीरो को डिजिटल मार्केटिंग शून्य",
+        "author": "मार्गरीटा स्टोरेन द्वारा",
+        "creat_by": "द्वारा",
+        "author_name": "मार्गरिटा स्टोरेन",
+        "new_york": "न्यूयॉर्क",
+        "view_profile": "प्रोफ़ाइल देखें",
+        "subscribed": "सदस्यता लिया",
+        "courses": "पाठ्यक्रम",
+        "average_rating": "औसत रेटिंग",
+        "description": "विवरण",
+        "course_brief": "संक्षेप में",
+        "total_timing": "कुल समय",
+        "total_video": "कुल वीडियो",
+        "hours": "घंटे",
+        "accesssibility": "अभिगम्यता",
+        "life_time": "जीवन काल",
+        "course_uploaded": "कोर्स अपलोड किया गया"
+    },
+    "video_download": {
+        "download": "डाउनलोड"
+    },
+    "home": {
+        "hello_shriya": "Hello Shriya",
+        "good_morning": "सुबह बख़ैर",
+        "feature_course": "फ़ीचर कोर्स",
+        "review": "समीक्षा",
+        "popular_course": "लोकप्रिय पाठ्यक्रम",
+        "see_all": "सभी देखें",
+        "recommended": "अनुशंसित",
+        "catergory": "कैटरगरी",
+        "learn_text": "मूल बातों से सीखें",
+        "content": "पूर्ण यूआई और यूएक्स डिजाइन",
+        "know_more": "अधिक जानते हैं"
+    },
+    "myCourses": {
+        "my_courses": "मेरे पाठ्यक्रम",
+        "purchase_courses": "आपके खरीद पाठ्यक्रम",
+        "ongoing_course": "चल रहा पाठ्यक्रम",
+        "course_name": "पूर्ण ux/ui डिजाइन",
+        "completed": "पूरा किया हुआ"
+    },
+    "notification": {
+        "notification": "अधिसूचना",
+        "yesterday": "कल",
+        "minutes": "कुछ मिनट पहले",
+        "today": "आज",
+        "no_notification": "कोई नई अधिसूचना नहीं",
+        "remove_notification": "अधिसूचना से रोमो"
+    },
+    "onboarding": {
+        "title1": "मोहित शिक्षा",
+        "skip": "छोड़ें",
+        "next": "अगला",
+        "title2": "अपने सीखने को सशक्त बनाएं",
+        "title3": "अपने नए पाठ्यक्रम का अन्वेषण करें",
+        "login": "लॉग इन करें"
+    },
+    "payment": {
+        "credit_card": "क्रेडिट कार्ड",
+        "pay_securely": "सुरक्षित रूप से भुगतान करें",
+        "cvv": "सी वी वी कोड",
+        "enter_cvv": "CVV दर्ज करें",
+        "date": "Dd/mm/yy",
+        "card_number": "कार्ड नंबर",
+        "enter_number": "कार्ड नंबर दर्ज करें",
+        "holder_name": "कार्डधारक का नाम",
+        "Enetr_name": "कार्ड धारक का नाम दर्ज करें"
+    },
+    "success": {
+        "congratulations": "बधाई हो!",
+        "content": "आपका भुगतान सफलतापूर्वक प्रक्रिया हो गई है अब आप अपने पसंदीदा पाठ्यक्रम को सीख सकते हैं और अपना उज्ज्वल भविष्य बना सकते हैं",
+        "back_home": "घर वापिस जा रहा हूँ"
+    },
+    "popular": {
+        "popular_course": "लोकप्रिय पाठ्यक्रम"
+    },
+    "changePassword": {
+        "change_password": "पासवर्ड बदलें",
+        "current_password": "वर्तमान पासवर्ड",
+        "new_password": "नया पासवर्ड",
+        "repeat_password": "नया पासवर्ड दोहराएँ",
+        "save_change": "परिवर्तन को संग्रहित करें"
+    },
+    "download": {
+        "download": "डाउनलोड"
+    },
+    "editProfile": {
+        "change_photo": "प्रोफ़ाइल फोटो बदलें",
+        "camera": "कैमरा",
+        "gallery": "गेलरी",
+        "remove_image": "छवि निकालें",
+        "edit_profile": "प्रोफ़ाइल संपादित करें",
+        "update": "अद्यतन",
+        "name": "नाम",
+        "email_address": "ईमेल पता",
+        "mobile_number": "मोबाइल नंबर",
+        "date_birth": "जन्म की तारीख",
+        "user_name": "सामंथा स्मिथ"
+    },
+    "help": {
+        "help_support": "सहायता और समर्थन",
+        "enter_name": "अपना नाम दर्ज करें",
+        "enter_email": "अपना ईमेल आईडी दर्ज करें",
+        "write_message": "यहां अपना संदेश लिखें",
+        "send": "भेजना"
+    },
+    "languages": "भाषाओं",
+    "notifiSetting": {
+        "notification_settings": "अधिसूचना सेटिंग्स",
+        "app_notification": "ऐप अधिसूचना",
+        "recommended_class": "अनुशंसित वर्ग",
+        "promotion": "पदोन्नति"
+    },
+    "profile": {
+        "profile": "प्रोफ़ाइल",
+        "edit_profile": "प्रोफ़ाइल संपादित करें",
+        "notification": "अधिसूचना",
+        "settings": "समायोजन",
+        "downloads": "डाउनलोड",
+        "languages": "बोली",
+        "logout": "लॉग आउट",
+        "logout_que": "क्या आप लॉग आउट करना चाहते हैं?",
+        "cancel": "रद्द करना",
+        "user_name": "सामंथा स्मिथ"
+    },
+    "settings": {
+        "settings": "समायोजन",
+        "change_password": "पासवर्ड बदलें",
+        "terms_condition": "नियम व शर्तें",
+        "help": "मदद करना"
+    },
+    "termsCondition": {
+        "terms_condition": "नियम व शर्तें",
+        "term_use": "उपयोग की शर्त",
+        "condition": "भाग लेने की शर्त"
+    },
+    "program": {
+        "programming": "प्रोग्रामिंग",
+        "review": "समीक्षा"
+    },
+    "queans": {
+        "q&a": "क्यू एंड ए",
+        "add_question": "नया प्रश्न जोड़ें",
+        "name_que": "Human Akhatar",
+        "class": "कक्षा",
+        "question": "इस वीडियो में आपने कौन सा टूल उपयोग किया है?",
+        "name_ans": "मर्दाना"
+    },
+    "rate": {
+        "rate_review": "दर नियत करें और समीक्षा करें",
+        "submit": "प्रस्तुत करना",
+        "write_review": "अपनी समीक्षा लिखिए",
+        "rate_question": "आपकी दर क्या है?",
+        "rate_content": "हमें रेटिंग के साथ अपनी प्रतिक्रिया दें, इसलिए हम \n जानिए अगर आपको यह पसंद है?",
+        "not_now": "अभी नहीं"
+    },
+    "recommended": {
+        "recommended": "अनुशंसित",
+        "review": "समीक्षा"
+    },
+    "search": {
+        "search": "खोज",
+        "popular_courses": "लोकप्रिय पाठ्यक्रम",
+        "popular_search": "लोकप्रिय खोज"
+    },
+    "similarCourse": {
+        "similar_course": "समान पाठ्यक्रम",
+        "review": "समीक्षा"
+    },
+    "videoScreen": {
+        "q&a": "क्यू एंड ए",
+        "course_discription": "पाठ्यक्रम",
+        "share_course": "इस पाठ्यक्रम को साझा करें",
+        "Add_wishlist": "इच्छा सूची में जोड़ें",
+        "download": "डाउनलोड",
+        "rate_review": "इस पाठ्यक्रम की दर और समीक्षा करें",
+        "view_similar": "समान पाठ्यक्रम देखें",
+        "min": "मिनट",
+        "by": "द्वारा",
+        "course_included": "पाठ्यक्रम शामिल है",
+        "more": "अधिक"
+    },
+    "view_profile": {
+        "review": "समीक्षा",
+        "about_margarita": "मार्गरिटा के बारे में",
+        "show_less": "कम दिखाएं",
+        "read_more": "अधिक पढ़ें",
+        "social_link": "सामाजिक लिंक",
+        "about": "के बारे में",
+        "course": "पाठ्यक्रम",
+        "name": "मार्गरिटा स्टोरेन",
+        "new_york": "न्यूयॉर्क",
+        "average_rating": "औसत रेटिंग"
+    },
+    "wishlist": {
+        "wishlist": "इच्छा-सूची",
+        "empty_whishlist": "खाली whishlist",
+        "content": "यह आपकी सूची में बचाने के लिए कुछ भी नहीं लगता है। \n किसी को जोड़ते हैं",
+        "total": "कुल",
+        "lession": "लापरवाह",
+        "romove_wishList": "इच्छा सूची से हटाया गया",
+        "add_wishlist": "इच्छा सूची में जोड़ना"
+    }
+}
