@@ -19,16 +19,23 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-/*
+
   @override
-  void initState() async {
+  void initState()  {
     super.initState();
-     nameController.text = await ModelsUsers().FetchFirstName(_myEmail.myVariable).toString();
-     print( ModelsUsers().FetchFirstName(_myEmail.myVariable));
-    lastNameController.text = await ModelsUsers().FetchLastName(_myEmail.myVariable).toString();
-    phoneController.text = await ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString();
-    passwordController.text = await ModelsUsers().FetchPassword(_myEmail.myVariable).toString();
-  }*/
+    fetchData();
+  }
+
+    Future<void> fetchData() async {
+    nameController.text = await ModelsUsers().FetchFirstName(_myEmail.myVariable);
+    print(await ModelsUsers().FetchFirstName(_myEmail.myVariable));
+    lastNameController.text = await ModelsUsers().FetchLastName(_myEmail.myVariable);
+    print(await ModelsUsers().FetchLastName(_myEmail.myVariable));
+    phoneController.text = await ModelsUsers().FetchPhoneNum(_myEmail.myVariable);
+    print(await ModelsUsers().FetchPhoneNum(_myEmail.myVariable));
+    passwordController.text = await ModelsUsers().FetchPassword(_myEmail.myVariable);
+    print(await ModelsUsers().FetchPassword(_myEmail.myVariable));
+  }
 
     @override
   Widget build(BuildContext context) {
@@ -59,28 +66,40 @@ class _EditProfileState extends State<EditProfile> {
             padding: EdgeInsets.fromLTRB(20, size.height * 0.2, 20, 400),
             child: Column(
               children: <Widget>[
-                SizedBox(height: 10),
-                SizedBox(height: 10),
-                SizedBox(height: 10 / 2),
                 profileContainer(size),
                 SizedBox(height: 10),
                 userinfo(),
                 SizedBox(height: 10),
                 SizedBox(height: 10 / 2),
+                Container(alignment : Alignment.centerLeft,
+                child :
+                  Text("First Name :",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 nameField(size, context),
                 SizedBox(height: 8),
+                Container(alignment : Alignment.centerLeft,
+                child :
+                  Text("Last Name :",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 emailField(size, context),
                 SizedBox(height: 8),
+                Container(alignment : Alignment.centerLeft,
+                child :
+                  Text("Mobile Number :",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 phoneField(size, context),
                 SizedBox(height: 8),
+                Container(alignment : Alignment.centerLeft,
+                child :
+                  Text("Password :",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 passField(size, context),
-                SizedBox(height: size.height * 0.05),
-                updateButton(
-                    size,
-                    nameController.text,
-                    lastNameController.text,
-                    phoneController.text,
-                    passwordController.text),
+                SizedBox(height: 8),
+                updateButton(context, () {
+                  processUpdate(context,
+                  nameController.text, lastNameController.text,
+                  phoneController.text, passwordController.text);
+                }),
               ],
             ),
           ),
@@ -89,31 +108,280 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  updateButton(Size size,String fname,String lname,String phone, String pass ) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          ModelsUsers().updatefname(_myEmail.myVariable, fname);
-          ModelsUsers().updatelname(_myEmail.myVariable, lname);
-          ModelsUsers().updatephonenum(_myEmail.myVariable, phone);
-          ModelsUsers().updatepass(_myEmail.myVariable, pass);
-        },
-        child: Container(
-          alignment: Alignment.center,
-          height: 50,
-          width:  MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(70),
-            color: hexStringColor("#095590"),
-          ),
-          child: Text(
-            "Update",
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+  updateButton(BuildContext context, Function onTap) {
+    return Container(width: MediaQuery.of(context).size.width,
+    height: 50,
+    margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(70)),
+    child: ElevatedButton(onPressed: () { 
+      onTap();
+       }, 
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.pressed)) {
+            return hexStringColor("#01253D");
+          }
+          return hexStringColor("#095590") ;
+        }),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))
+        )
         ),
-      ),
-    );
+        child: Text ('Update', 
+      style: const TextStyle(
+        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+    )
+    ); 
   }
+      
+  Future<void> processUpdate(BuildContext context, String fname, String lname, String phone, String pass ) async {
+  
+        ModelsUsers().updatefname(_myEmail.myVariable, fname) 
+        .then((UpdateFN) {
+         if (UpdateFN.toString().contains('not')) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is not Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+            
+          });
+        } else if(UpdateFN.toString().contains('ok')){
+           setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+
+             Navigator.pushNamed(context, '/profile');
+            
+          });
+         
+        }
+  });
+        ModelsUsers().updatelname(_myEmail.myVariable, lname)
+        .then((UpdateLN) {
+         if (UpdateLN.toString().contains('not')) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is not Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+            
+          });
+        } else if(UpdateLN.toString().contains('ok')){
+           setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+
+             Navigator.pushNamed(context, '/profile');
+            
+          });
+         
+        }
+  });
+        ModelsUsers().updatephonenum(_myEmail.myVariable, phone)
+        .then((UpdatePN) {
+         if (UpdatePN.toString().contains('not')) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is not Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+            
+          });
+        } else if(UpdatePN.toString().contains('ok')){
+           setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+
+             Navigator.pushNamed(context, '/profile');
+            
+          });
+         
+        }
+  });
+        ModelsUsers().updatepass(_myEmail.myVariable, pass)
+        .then((UpdatePass) {
+         if (UpdatePass.toString().contains('not')) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is not Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+            
+          });
+        } else if(UpdatePass.toString().contains('ok')){
+           setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.white,
+                elevation: 10.0,
+                shape: Border.all(
+                    color: Colors.red, width: 0.5, style: BorderStyle.solid),
+                content: Text(
+                  "Update is Successfull",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    letterSpacing: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+            nameController.clear();
+            lastNameController.clear();
+            phoneController.clear();
+            passwordController.clear();
+
+             Navigator.pushNamed(context, '/profile');
+            
+          });
+         
+        }
+  });
+         
+}
 
   nameField(Size size, BuildContext context) {
     return TextField(controller: nameController,
@@ -129,7 +397,6 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      labelText: ModelsUsers().FetchFirstName(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -156,7 +423,6 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      labelText: ModelsUsers().FetchLastName(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -182,7 +448,6 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      labelText: ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -208,7 +473,6 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      labelText: ModelsUsers().FetchPassword(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -226,7 +490,7 @@ class _EditProfileState extends State<EditProfile> {
   return Column(
     children: [
       Text(
-        "Edit User Name",
+        "Edit User Information",
         style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
       ),
       SizedBox(height: 10 / 2),
@@ -253,6 +517,7 @@ class _EditProfileState extends State<EditProfile> {
               child: ClipRRect(
                 child: Image.asset(
                   "assets/images/Profile.png",
+                  color : hexStringColor("#095590"),
                   fit: BoxFit.cover,
                 ),
               ),

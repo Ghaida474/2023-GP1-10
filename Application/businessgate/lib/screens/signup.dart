@@ -98,7 +98,7 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                     height: 20,
                   ),
-                    textField("Enter ID", Icons.person, false, _IDTextController),
+                    textField("Enter National ID", Icons.person, false, _IDTextController),
                     const SizedBox(
                     height: 20,
                   ),
@@ -134,7 +134,7 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                     height: 20,
                   ),
-                  textField("Enter Phone Number", Icons.phone, false, _phoneNumberTextController),
+                  textField("Enter Mobile Number", Icons.phone, false, _phoneNumberTextController),
                     const SizedBox(
                     height: 20,
                   ),

@@ -32,9 +32,9 @@ String firstName = '';
     return firstName;
   }
 
-  String UpdateFN = 'OK';
+  String UpdateFN = '';
   Future<String> updatefname(String email, String fname) async {
-    await AppDatabase().UpdateFName(email, fname);
+    UpdateFN = await AppDatabase().UpdateFName(email, fname);
     return UpdateFN;
   }
 
@@ -44,9 +44,9 @@ String firstName = '';
     return lastName;
   }
 
-  String UpdateLN = 'OK';
+  String UpdateLN = '';
   Future<String> updatelname(String email, String lname) async {
-    await AppDatabase().UpdateLName(email, lname);
+    UpdateLN = await AppDatabase().UpdateLName(email, lname);
     return UpdateLN;
   }
 
@@ -56,9 +56,9 @@ String firstName = '';
     return PhoneNumber;
   }
 
-  String UpdatePN = 'OK';
+  String UpdatePN = '';
   Future<String> updatephonenum(String email, String PhoneNum) async {
-    await AppDatabase().UpdatePhone(email, PhoneNum);
+    UpdatePN = await AppDatabase().UpdatePhone(email, PhoneNum);
     return UpdatePN;
   }
 
@@ -68,9 +68,9 @@ String firstName = '';
     return Password;
   }
 
-  String UpdatePass = 'OK';
+  String UpdatePass = '';
   Future<String> updatepass(String email, String pass) async {
-    await AppDatabase().UpdatePass(email, pass);
+    UpdatePass = await AppDatabase().UpdatePass(email, pass);
     return UpdatePass;
   }
 }

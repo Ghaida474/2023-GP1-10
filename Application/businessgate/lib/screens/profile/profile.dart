@@ -44,7 +44,8 @@ Widget build(BuildContext context) {
             20, MediaQuery.of(context).size.height * 0.2, 20, 400),
           child: Column(
             children: <Widget>[
-              heightbox(size.height * 0.03),
+              ProfileWidget("assets/images/Profile.png"),
+               SizedBox(height: 30),
               profileinfo(size, context),
               heightbox(size.height * 0.03),
               profileList(size, context),
@@ -58,7 +59,7 @@ Widget build(BuildContext context) {
 
 
   heightbox(double height) {
-  return SizedBox(height: height);
+  return SizedBox(height: height * 3);
 }
 
 widthbox(double width) {
@@ -67,11 +68,11 @@ widthbox(double width) {
 
   profileList(Size size, BuildContext context) {
     return Container(
-      height: size.height * 0.51,
-      width: double.infinity,
+      height: 200,
+      width: 400,
       margin: const EdgeInsets.symmetric(horizontal: 10 * 2),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: hexStringColor("#095590"),
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -93,11 +94,9 @@ widthbox(double width) {
           ),
           devider(),
           profilelistTile(
-            () {
-              //Navigator.pushNamed(context, '/setting');
-            },
-            Icons.settings,
-            Colors.black,
+            () {},
+            Icons.document_scanner,
+            Colors.white,
             "Certificates",
           ),
           devider(),
@@ -112,11 +111,21 @@ widthbox(double width) {
               );
             },
             Icons.logout,
-            Colors.blue,
+            Color.fromARGB(255, 101, 215, 247),
             "Sign Out",
           )
         ],
       ),
+    );
+  }
+
+  Image ProfileWidget(String imageName) {
+    return Image.asset(
+      imageName,
+      color: hexStringColor("#095590"),
+      fit: BoxFit.fitWidth,
+      width: 100,
+      height: 100,
     );
   }
 
@@ -125,6 +134,7 @@ widthbox(double width) {
     return ListTile(
       onTap: onTap,
       leading: Image.asset(
+        color: Colors.white ,
         image,
         height: 22,
         width: 22,
@@ -132,12 +142,12 @@ widthbox(double width) {
       minLeadingWidth: 0,
       title: Text(
         title,
-        style:  TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600).copyWith(fontWeight: FontWeight.w500),
+        style:  TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600).copyWith(fontWeight: FontWeight.w500),
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,
         size: 18,
-        color: Colors.black,
+        color: Colors.white,
       ),
     );
   }
@@ -195,7 +205,7 @@ widthbox(double width) {
                   child: Container(
                     height: size.height * 0.065,
                     decoration: BoxDecoration(
-                      color: Color(0xffE6482C),
+                      color: Color.fromARGB(255, 10, 23, 118),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
@@ -231,13 +241,13 @@ widthbox(double width) {
       minLeadingWidth: 0,
       title: Text(
         title,
-        style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600).copyWith(
+        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600).copyWith(
             color: color, fontWeight: FontWeight.w500),
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,
         size: 18,
-        color: Colors.black,
+        color: Colors.white,
       ),
     );
   }
@@ -255,7 +265,7 @@ widthbox(double width) {
       children: [
         Text(
           _myEmail.myVariable,
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
         ),
         heightbox(10 / 3),
       ],

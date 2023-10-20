@@ -130,9 +130,9 @@ String updatePassword = 'ok';
   UpdatePassword (String email, String password) async{
      try {
       await connection!.open();
-      await connection!.transaction((loginConnection) async {
+      await connection!.transaction((UpdateConnection) async {
         //Check email registered or no
-        loginResult = await loginConnection.query(
+        loginResult = await UpdateConnection.query(
           'UPDATE public."Trainee" SET "password" = @passwordValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
@@ -173,7 +173,6 @@ String updatePassword = 'ok';
         if (loginResult != null && loginResult!.isNotEmpty) {
         // Assuming the query returns a single row, you can get the first name like this
         FName = loginResult![0][0].toString();
-
       }
       });
     } catch (exc) {
@@ -182,7 +181,8 @@ String updatePassword = 'ok';
     return FName;
   }
 
-  Future<void> UpdateFName(String email, String NameF) async {
+String updatefname = '';
+  Future<String> UpdateFName(String email, String NameF) async {
     try {
       await connection!.open();
       await connection!.transaction((loginConnection) async {
@@ -196,10 +196,18 @@ String updatePassword = 'ok';
           allowReuse: true,
           timeoutInSeconds: 30,
         );
+        if (loginResult!.affectedRowCount > 0) {
+          //emailAddress = loginResult!.first
+              //.elementAt(0); //This to use when update seller details
+              updatefname = 'ok';
+        } else {
+          updatefname = 'not';
+        }
       });
     } catch (exc) {
       exc.toString();
     }
+    return updatefname ;
   }
 
   String LName = '' ;
@@ -225,10 +233,11 @@ String updatePassword = 'ok';
       userLoginFuture = 'exc';
       exc.toString();
     }
-    return FName;
+    return LName;
   }
 
-  Future<void> UpdateLName(String email, String NameL) async {
+ String updatelname = '';
+  Future<String> UpdateLName(String email, String NameL) async {
     try {
       await connection!.open();
       await connection!.transaction((loginConnection) async {
@@ -242,10 +251,18 @@ String updatePassword = 'ok';
           allowReuse: true,
           timeoutInSeconds: 30,
         );
+      if (loginResult!.affectedRowCount > 0) {
+          //emailAddress = loginResult!.first
+              //.elementAt(0); //This to use when update seller details
+              updatelname = 'ok';
+        } else {
+          updatelname = 'not';
+        }
       });
     } catch (exc) {
       exc.toString();
     }
+    return updatelname ;
   }
 
   String PhoneNum = '' ;
@@ -274,7 +291,8 @@ String updatePassword = 'ok';
     return PhoneNum;
   }
 
-  Future<void> UpdatePhone(String email, String phone) async {
+ String updatephonenum = '';
+  Future<String> UpdatePhone(String email, String phone) async {
     try {
       await connection!.open();
       await connection!.transaction((loginConnection) async {
@@ -288,10 +306,18 @@ String updatePassword = 'ok';
           allowReuse: true,
           timeoutInSeconds: 30,
         );
+       if (loginResult!.affectedRowCount > 0) {
+          //emailAddress = loginResult!.first
+              //.elementAt(0); //This to use when update seller details
+              updatephonenum = 'ok';
+        } else {
+          updatephonenum = 'not';
+        }
       });
     } catch (exc) {
       exc.toString();
     }
+    return updatephonenum;
   }
 
   String Pass = '' ;
@@ -320,7 +346,8 @@ String updatePassword = 'ok';
     return Pass;
   }
 
-  Future<void> UpdatePass(String email, String pass) async {
+ String updateppass= '';
+  Future<String> UpdatePass(String email, String pass) async {
     try {
       await connection!.open();
       await connection!.transaction((loginConnection) async {
@@ -334,13 +361,18 @@ String updatePassword = 'ok';
           allowReuse: true,
           timeoutInSeconds: 30,
         );
+       if (loginResult!.affectedRowCount > 0) {
+          //emailAddress = loginResult!.first
+              //.elementAt(0); //This to use when update seller details
+              updateppass = 'ok';
+        } else {
+          updateppass = 'not';
+        }
       });
     } catch (exc) {
       exc.toString();
     }
+    return updatephonenum;
   }
-////test
-
-
   
 }
