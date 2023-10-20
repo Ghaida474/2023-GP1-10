@@ -19,15 +19,16 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+/*
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    nameController.text = ModelsUsers().FetchFirstName(_myEmail.myVariable).toString();
-    lastNameController.text = ModelsUsers().FetchLastName(_myEmail.myVariable).toString();
-    phoneController.text = ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString();
-    passwordController.text = ModelsUsers().FetchPassword(_myEmail.myVariable).toString();
-  }
+     nameController.text = await ModelsUsers().FetchFirstName(_myEmail.myVariable).toString();
+     print( ModelsUsers().FetchFirstName(_myEmail.myVariable));
+    lastNameController.text = await ModelsUsers().FetchLastName(_myEmail.myVariable).toString();
+    phoneController.text = await ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString();
+    passwordController.text = await ModelsUsers().FetchPassword(_myEmail.myVariable).toString();
+  }*/
 
     @override
   Widget build(BuildContext context) {
@@ -128,6 +129,7 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
+      labelText: ModelsUsers().FetchFirstName(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -154,6 +156,7 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
+      labelText: ModelsUsers().FetchLastName(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -179,6 +182,7 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
+      labelText: ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -204,6 +208,7 @@ class _EditProfileState extends State<EditProfile> {
         Icons.person,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
+      labelText: ModelsUsers().FetchPassword(_myEmail.myVariable).toString(),
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,

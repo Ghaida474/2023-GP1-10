@@ -172,7 +172,8 @@ String updatePassword = 'ok';
         );
         if (loginResult != null && loginResult!.isNotEmpty) {
         // Assuming the query returns a single row, you can get the first name like this
-        FName = loginResult![0][0] as String;
+        FName = loginResult![0][0].toString();
+
       }
       });
     } catch (exc) {
@@ -217,7 +218,7 @@ String updatePassword = 'ok';
         );
         if (loginResult!.isNotEmpty) {
         // Assuming the query returns a single row, you can get the first name like this
-        LName = loginResult![0][0] as String;
+        LName = loginResult![0][0].toString();
       }
       });
     } catch (exc) {
@@ -263,7 +264,7 @@ String updatePassword = 'ok';
         );
         if (loginResult!.isNotEmpty) {
         // Assuming the query returns a single row, you can get the first name like this
-        PhoneNum = loginResult![0][0]as String;
+        PhoneNum = loginResult![0][0].toString();
       }
       });
     } catch (exc) {
@@ -309,7 +310,7 @@ String updatePassword = 'ok';
         );
         if (loginResult!.isNotEmpty) {
         // the query returns a single row, you can get the first name like this
-        Pass = loginResult![0][0] as String;
+        Pass = loginResult![0][0].toString();
       }
       });
     } catch (exc) {
