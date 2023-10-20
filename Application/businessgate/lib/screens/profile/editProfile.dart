@@ -1,7 +1,7 @@
 import 'package:businessgate/models/model_user.dart';
 import 'package:flutter/material.dart';
 
-import '../../globals.dart';
+import '../../myservice.dart';
 import '../../utils/colors.dart';
 
 class EditProfile extends StatefulWidget {
@@ -13,7 +13,8 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
 
-  
+  MyService _myEmail = MyService();
+
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -88,10 +89,10 @@ class _EditProfileState extends State<EditProfile> {
     return Center(
       child: GestureDetector(
         onTap: () {
-          ModelsUsers().updatefname(myGlobalEmail, fname);
-          ModelsUsers().updatelname(myGlobalEmail, lname);
-          ModelsUsers().updatephonenum(myGlobalEmail, phone);
-          ModelsUsers().updatepass(myGlobalEmail, pass);
+          ModelsUsers().updatefname(_myEmail.myVariable, fname);
+          ModelsUsers().updatelname(_myEmail.myVariable, lname);
+          ModelsUsers().updatephonenum(_myEmail.myVariable, phone);
+          ModelsUsers().updatepass(_myEmail.myVariable, pass);
         },
         child: Container(
           alignment: Alignment.center,
@@ -311,14 +312,13 @@ class _EditProfileState extends State<EditProfile> {
       ),
       SizedBox(height: 10 / 2),
       Text(
-        myGlobalEmail,
+        _myEmail.myVariable,
         style: TextStyle(fontSize: 14, color: Colors.grey),
       )
     ],
   );
 }
 
-String myGlobalEmail = Globals.globalEmailString;
 
 
   profileContainer(Size size) {

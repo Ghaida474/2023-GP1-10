@@ -1,7 +1,7 @@
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../../globals.dart';
+import '../../myservice.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,7 +12,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   
-  String myGlobalEmail = Globals.globalEmailString;
+   MyService _myEmail = MyService();
   
  @override
 Widget build(BuildContext context) {
@@ -151,7 +151,7 @@ widthbox(double width) {
       title: Column(
         children: [
           Text(
-            "Siggn Out",
+            "Sign Out",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           SizedBox(height: 10),
@@ -206,7 +206,7 @@ widthbox(double width) {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      "Sign Outt",
+                      "Sign Out",
                       style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -254,7 +254,7 @@ widthbox(double width) {
     return Column(
       children: [
         Text(
-          "User Name",
+          _myEmail.myVariable,
           style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         heightbox(10 / 3),

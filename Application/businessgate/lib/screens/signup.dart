@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:businessgate/screens/home.dart';
 import 'package:flutter/material.dart';
 
-import '../globals.dart';
+import '../myservice.dart';
 import '../models/model_user.dart';
 import '../utils/colors.dart';
 
@@ -34,6 +34,8 @@ Future<List<String>> fetchNationalities() async {
 enum Genders { male, female, other }
 
 class _SignUpState extends State<SignUp> {
+
+    MyService _myEmail = MyService();
 
     Genders selectedGender = Genders.male;
 
@@ -465,7 +467,7 @@ if (PhoneNumber.toString().length != 10 && !numeric.hasMatch(PhoneNumber) && Num
                 textAlign: TextAlign.center,
               ),
             ));
-            Globals.globalEmailString   = _emailTextController.text;
+            _myEmail.myVariable = _emailTextController.text;
 
             _FnameTextController.clear();
             _LnameTextController.clear();

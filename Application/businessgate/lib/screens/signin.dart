@@ -5,7 +5,7 @@ import 'package:businessgate/screens/signup.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../globals.dart';
+import '../myservice.dart';
 import '../models/model_user.dart';
 
 class SignIn extends StatefulWidget {
@@ -17,7 +17,7 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
 
-  String myGlobalEmail = Globals.globalEmailString;
+  MyService _myEmail = MyService();
 
   TextEditingController _passwordTextController = TextEditingController() ;
   TextEditingController _emailTextController = TextEditingController() ;
@@ -241,9 +241,6 @@ Future<void> processLoginData(BuildContext context) async {
                 ),
               ),
             );
-            
-            Globals.globalEmailString  = _emailTextController.text;
-
             _emailTextController.clear();
             _passwordTextController.clear();
             Timer(Duration(seconds: 3), () {
@@ -251,6 +248,9 @@ Future<void> processLoginData(BuildContext context) async {
             });
           });
         } else if(login.toString().contains('ok')){
+          
+          _myEmail.myVariable = _emailTextController.text;
+
           Timer(Duration(seconds: 3), () {
               Navigator.pushNamed(context, '/profile');
             });
