@@ -32,9 +32,9 @@ class AppDatabase {
  connection = PostgreSQLConnection(
   'localhost',
   5432,
-  'bg',
-  username: 'postgres',
-  password: 'Lina1234',
+  'businessgate',
+  username: 'admina',
+  password: 'data12345',
 
  );
     //fetchDataFuture = [];
@@ -50,7 +50,7 @@ class AppDatabase {
       await connection!.transaction((newTraineesConnection) async {
         //Stage 1 : Make sure email or mobile not registered.
         alreadyRegistered = await newTraineesConnection.query(
-          'select * from public."Trainees" where email = @emailValue',
+          'select * from public."Trainee" where email = @emailValue',
           substitutionValues: {
             'emailValue': email, 
             },
@@ -63,7 +63,7 @@ class AppDatabase {
         } else {
           //Stage 2 : If user not already registered then we start the registration
           newRegisterResult = await newTraineesConnection.query(
-            'INSERT INTO public."Trainees"("firstName","lastName","phoneNumber", "email", "Gender", "Nationality","AdminEmail","password","certifications","NationalID") '
+            'INSERT INTO public."Trainee"("firstName","lastName","phoneNumber", "email", "Gender", "Nationality","AdminEmail","password","certifications","NationalID") '
             'VALUES (@fNameValue,@lNameValue,@phoneNumberValue, @emailValue, @genderValue, Null, @adminEmailValue, @passwordValue, Null, @idValue )',
             substitutionValues: {
               'emailValue': email,
@@ -103,7 +103,7 @@ class AppDatabase {
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'SELECT * FROM public."Trainees" WHERE "email" = @emailValue AND "password" = @passwordValue',
+          'SELECT * FROM public."Trainee" WHERE "email" = @emailValue AND "password" = @passwordValue',
       substitutionValues: {
         'emailValue': email,
         'passwordValue': password,
@@ -133,7 +133,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'UPDATE public."Trainees" SET "password" = @passwordValue WHERE "email" = @emailValue',
+          'UPDATE public."Trainee" SET "password" = @passwordValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
         'passwordValue': password,
@@ -163,7 +163,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'SELECT "firstName" FROM public."Trainees" WHERE "email" = @emailValue',
+          'SELECT "firstName" FROM public."Trainee" WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
       },
@@ -187,7 +187,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'UPDATE public."Trainees" SET "firstName" = @fNameValue WHERE "email" = @emailValue',
+          'UPDATE public."Trainee" SET "firstName" = @fNameValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
         'fNameValue': NameF
@@ -208,7 +208,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'SELECT "lastName" FROM public."Trainees" WHERE "email" = @emailValue',
+          'SELECT "lastName" FROM public."Trainee" WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
       },
@@ -233,7 +233,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'UPDATE public."Trainees" SET "lastName" = @lNameValue WHERE "email" = @emailValue',
+          'UPDATE public."Trainee" SET "lastName" = @lNameValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
         'lNameValue': NameL
@@ -254,7 +254,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'SELECT "phoneNumber" FROM public."Trainees" WHERE "email" = @emailValue',
+          'SELECT "phoneNumber" FROM public."Trainee" WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
       },
@@ -279,7 +279,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'UPDATE public."Trainees" SET "phoneNumber" = @phoneNumberValue WHERE "email" = @emailValue',
+          'UPDATE public."Trainee" SET "phoneNumber" = @phoneNumberValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
         'phoneNumberValue': phone
@@ -300,7 +300,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'SELECT "password" FROM public."Trainees" WHERE "email" = @emailValue',
+          'SELECT "password" FROM public."Trainee" WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
       },
@@ -325,7 +325,7 @@ String updatePassword = 'ok';
       await connection!.transaction((loginConnection) async {
         //Check email registered or no
         loginResult = await loginConnection.query(
-          'UPDATE public."Trainees" SET "password" = @passwordValue WHERE "email" = @emailValue',
+          'UPDATE public."Trainee" SET "password" = @passwordValue WHERE "email" = @emailValue',
       substitutionValues: {
         'emailValue': email,
         'passwordValue': pass

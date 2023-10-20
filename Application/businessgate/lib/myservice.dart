@@ -16,6 +16,8 @@ class MyService {
   String get myVariable => _myVariable;
 
   //short setter for my variable
-  set myVariable(String value) => myVariable = value;
+  set myVariable(String value) {
+     _myVariable = value;
+  }
 
 }

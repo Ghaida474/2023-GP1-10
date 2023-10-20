@@ -220,6 +220,7 @@ Future<void> processLoginData(BuildContext context) async {
             _emailTextController.text, 
             _passwordTextController.text)
           .then((login) {
+          _myEmail.myVariable = _emailTextController.text;
          if (login.toString().contains('not')) {
           setState(() {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -248,9 +249,6 @@ Future<void> processLoginData(BuildContext context) async {
             });
           });
         } else if(login.toString().contains('ok')){
-          
-          _myEmail.myVariable = _emailTextController.text;
-
           Timer(Duration(seconds: 3), () {
               Navigator.pushNamed(context, '/profile');
             });

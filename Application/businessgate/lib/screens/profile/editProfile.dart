@@ -16,17 +16,17 @@ class _EditProfileState extends State<EditProfile> {
   MyService _myEmail = MyService();
 
   TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = '';
-    emailController.text = '';
-    phoneController.text = '';
-    passwordController.text = '';
+    nameController.text = ModelsUsers().FetchFirstName(_myEmail.myVariable).toString();
+    lastNameController.text = ModelsUsers().FetchLastName(_myEmail.myVariable).toString();
+    phoneController.text = ModelsUsers().FetchPhoneNum(_myEmail.myVariable).toString();
+    passwordController.text = ModelsUsers().FetchPassword(_myEmail.myVariable).toString();
   }
 
     @override
@@ -67,14 +67,17 @@ class _EditProfileState extends State<EditProfile> {
                 SizedBox(height: 10),
                 SizedBox(height: 10 / 2),
                 nameField(size, context),
+                SizedBox(height: 8),
                 emailField(size, context),
+                SizedBox(height: 8),
                 phoneField(size, context),
+                SizedBox(height: 8),
                 passField(size, context),
                 SizedBox(height: size.height * 0.05),
                 updateButton(
                     size,
                     nameController.text,
-                    emailController.text,
+                    lastNameController.text,
                     phoneController.text,
                     passwordController.text),
               ],
@@ -96,21 +99,15 @@ class _EditProfileState extends State<EditProfile> {
         },
         child: Container(
           alignment: Alignment.center,
-          height: size.height * 0.068,
-          width: size.width * 0.65,
+          height: 50,
+          width:  MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: Color(0xffE6482C),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xffE6482C).withOpacity(0.3),
-                blurRadius: 5,
-              ),
-            ],
+            borderRadius: BorderRadius.circular(70),
+            color: hexStringColor("#095590"),
           ),
           child: Text(
             "Update",
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -118,185 +115,102 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   nameField(Size size, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 10 * 2,
-        vertical: 10,
+    return TextField(controller: nameController,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        Icons.person,
+        color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 5),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(primary: Color(0xffE6482C)),
-        ),
-        child: TextField(
-          controller: nameController,
-          keyboardType: TextInputType.name,
-          style: const TextStyle(
-            fontSize: 15.5,
-          ),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            errorBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10)),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color(0xffE6482C),
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: "Edit First Name",
-            hintStyle: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w600).copyWith(height: 0.5),
-            prefixIcon: const Icon(
-              Icons.person_outline,
-              size: 17,
-            ),
-          ),
-        ),
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
     );
+    
   }
 
   emailField(Size size, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 10 * 2,
-        vertical: 10,
+    return TextField(controller: lastNameController,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        Icons.person,
+        color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 5),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(primary: Color(0xffE6482C)),
-        ),
-        child: TextField(
-          controller: emailController,
-          style: const TextStyle(fontSize: 15.5),
-          keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            errorBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10)),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color(0xffE6482C),
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: "Edit Last Name",
-            hintStyle: TextStyle(fontSize: 14, color: Colors.grey).copyWith(height: 0.5),
-            prefixIcon: const Icon(
-              Icons.mail_outline,
-              size: 16,
-            ),
-          ),
-        ),
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
     );
   }
 
   phoneField(Size size, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 10 * 2,
-        vertical: 10,
+    return TextField(controller: phoneController,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        Icons.person,
+        color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 5),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(primary: Color(0xffE6482C)),
-        ),
-        child: TextField(
-          controller: phoneController,
-          style: const TextStyle(fontSize: 15.5),
-          keyboardType: TextInputType.phone,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            errorBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10)),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color(0xffE6482C),
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: "Edit Phone Number",
-            hintStyle: TextStyle(fontSize: 14, color: Colors.grey).copyWith(height: 0.5),
-            prefixIcon: const Icon(
-              Icons.mail_outline,
-              size: 16,
-            ),
-          ),
-        ),
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
     );
   }
 
   passField(Size size, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 10 * 2,
-        vertical: 10,
+    return TextField(controller: passwordController,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        Icons.person,
+        color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 5),
-        ],
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(primary: Color(0xffE6482C)),
-        ),
-        child: TextField(
-          controller: nameController,
-          keyboardType: TextInputType.name,
-          style: const TextStyle(
-            fontSize: 15.5,
-          ),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            errorBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10)),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Color(0xffE6482C),
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintText: "Edit New Password",
-            hintStyle: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w600).copyWith(height: 0.5),
-            prefixIcon: const Icon(
-              Icons.person_outline,
-              size: 17,
-            ),
-          ),
-        ),
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
     );
   }
@@ -313,7 +227,7 @@ class _EditProfileState extends State<EditProfile> {
       SizedBox(height: 10 / 2),
       Text(
         _myEmail.myVariable,
-        style: TextStyle(fontSize: 14, color: Colors.grey),
+        style: TextStyle(fontSize: 14, color: Colors.black),
       )
     ],
   );
@@ -331,11 +245,7 @@ class _EditProfileState extends State<EditProfile> {
             Container(
               height: size.height * 0.15,
               width: size.height * 0.15,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-              ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
                 child: Image.asset(
                   "assets/images/Profile.png",
                   fit: BoxFit.cover,
