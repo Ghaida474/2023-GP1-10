@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		64rYXLcSdWs2H3jhdw0svquhnoA=
+		aGTPd9uT0Hz28ZlBFl8aFRSAXto=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		rHSe2+DMtgDxA314fb3Yz1bYPQ4=
+		L9Nhe4RUkyvxkoquXCYqtJq0Ars=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		Mc8foAVtn+H+QtcKVZeK+vbJz94=
+		0TAFzr0Cf//ltwUF7Z2O28r8B7E=
 		</data>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
 		<data>
@@ -370,11 +370,11 @@
 		</data>
 		<key>flutter_assets/isolate_snapshot_data</key>
 		<data>
-		x9pyAtuREkv+cPApPiIkL+YcXF8=
+		v838gQ8J3jZ6qbliqEDYbLiFWwY=
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		mQZwIPLgw/L0Bxc1SSrXBjGoFsA=
+		Sg3/YHPl8HsxEDNja6L0yQtRs0Q=
 		</data>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>
 		<data>
@@ -391,14 +391,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			MsnXxahs1srx4xH6no+gLEwDpz/PusKjtG4ijK10Y0Y=
+			KV6mA/udongv0WLpsyj7ygG9bAOUsgg81OrqxCL4q5M=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AGh5iGNFIKmq0lKYxN4r+h+QbsFHD4fCQ2MyjzC7siI=
+			CSEHUMiTB3KpEQTS0nlIgLCBsf9uGsd5yqwri6y1KPM=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -412,7 +412,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			7+9lwthhnuBQd/dLtRYZwpmKzsCw4IbLuYT6e1ceQiI=
+			vtm/G7JoYsdEKKCmClI5W8+IPPOjPezoe2ZvygyQNzg=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
@@ -1007,14 +1007,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Vq+7MGZJ/a2P4axu7S0w0OOKFZrEYApLXiQogFqm0YU=
+			Q3MKecK2WuV9poeiw1fLKIYR/n61LLk5ZpHhUj6YMJw=
 			</data>
 		</dict>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Q3IO83wQ/qAdHBK/+GzKiLKdBkS6j989mpVCE3ilhIc=
+			le4EnCo++a8szlpqqLaQF7KpT2b2xXd3pINkcECUqb4=
 			</data>
 		</dict>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>

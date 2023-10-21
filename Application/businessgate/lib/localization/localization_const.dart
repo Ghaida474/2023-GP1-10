@@ -1,4 +1,4 @@
-/*import 'package:businessgate/localization/localization.dart';
+import 'package:businessgate/localization/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,4 +52,4 @@ Future<Locale> getLocale() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String languageCode = prefs.getString(languageKey) ?? english;
   return _locale(languageCode);
-}*/
+}

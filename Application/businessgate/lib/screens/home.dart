@@ -161,24 +161,7 @@ class _HomeScreenState extends State<Home> {
     );
   }
 
-  featureText() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: fixPadding,
-        horizontal: fixPadding * 2,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Feature Course",
-            style: black18Style,
-          ),
-        ],
-      ),
-    );
-  }
-
+ 
  
 
   poularlist(Size size) {
@@ -186,7 +169,7 @@ class _HomeScreenState extends State<Home> {
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/detail');
+            Navigator.pushNamed(context, '/home');
           },
           child: Container(
             margin: const EdgeInsets.only(
@@ -296,7 +279,7 @@ class _HomeScreenState extends State<Home> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/detail');
+          Navigator.pushNamed(context, '/home');
         },
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: fixPadding),
@@ -396,7 +379,7 @@ class _HomeScreenState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/popular');
+              Navigator.pushNamed(context, '/home');
             },
             child: Text("See all",
                 style: primary14Style),
@@ -412,7 +395,7 @@ class _HomeScreenState extends State<Home> {
           .map(
             (e) => GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/detail');
+                Navigator.pushNamed(context, '/home');
               },
               child: Container(
                 width: double.infinity,
@@ -512,7 +495,7 @@ class _HomeScreenState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/recommended');
+              Navigator.pushNamed(context, '/home');
             },
             child: Text("See all",
                 style: primary14Style),
@@ -589,7 +572,7 @@ class _HomeScreenState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, "/category");
+              Navigator.pushNamed(context, "/home");
             },
             child: Text("See all",
                 style: primary14Style),
@@ -630,7 +613,7 @@ class _HomeScreenState extends State<Home> {
                 height5Space,
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/detail');
+                    Navigator.pushNamed(context, '/home');
                   },
                   child: Container(
                     height: size.height * 0.05,

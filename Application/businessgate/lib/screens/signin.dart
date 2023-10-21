@@ -250,7 +250,9 @@ Future<void> processLoginData(BuildContext context) async {
           });
         } else if(login.toString().contains('ok')){
           Timer(Duration(seconds: 3), () {
-              Navigator.pushNamed(context, '/profile');
+           
+          Navigator.of(context).pushReplacementNamed('/bottomNavi');
+
             });
         }
   });

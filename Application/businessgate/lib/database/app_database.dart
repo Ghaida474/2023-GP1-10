@@ -33,8 +33,8 @@ class AppDatabase {
   'localhost',
   5432,
   'bg',
-  username: 'admina',
-  password: 'data12345',
+  username: 'postgres',
+  password: 'Lina1234',
 
  );
     //fetchDataFuture = [];
