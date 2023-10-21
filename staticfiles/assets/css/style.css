@@ -49817,6 +49817,10 @@ body.rtl {
     color: #095590 !important;
 }
 
+.slide .side-menu_item a:hover, .slide .side-menu__item .sidemenu_icon a:hover{
+    color: #095590;
+}
+
 .light-menu .app-sidebar .side-menu .sidemenu_icon {
     color: #095590 !important;
 }

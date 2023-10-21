@@ -4,7 +4,87 @@
 <div class="page  responsive-log login-bg">
 {% endblock %}
 {% block content %}
-<!-- PAGE -->
+<style>
+    :root {
+      --ksu-blue: #0084BD;
+      --ksu-cream: #E3E0D2;
+      --ksu-gray: #748995;
+      --ksu-black: #000000;
+      --ksu-darkblue: #095590;
+      --cloud-blue: #F5FBFF;
+    }
+    
+    body {
+      color: var(--ksu-darkblue);
+      
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--ksu-darkblue);
+    }
+    
+    a {
+      color: var(--ksu-darkblue);
+    }
+    
+    .page {
+     background-color: white;
+     ;
+    }
+
+    .card {
+      background-color: var(--cloud-blue);
+       position: relative;
+       
+       overflow: hidden;
+       box-shadow: 0 0 10px #095590;
+    }
+    
+    .form-label {
+      color: var(--ksu-darkblue);
+    }
+    
+    .form-control {
+      border-color: var(--cloud-blue);
+      border: 3px var(--ksu-darkblue) solid transparent;
+      width: 500px;
+    }
+    
+    .btn-primary {
+      background-color: var(--ksu-darkblue);
+      border-color: var(--ksu-darkblue);
+    }
+    
+    .error-message {
+      color: red;
+    }
+    
+    .alert {
+      color: red;
+    }
+    .element {
+       width: 300px;
+   }
+   .element {
+    position: relative;
+     top: 50px;
+    left: 20px;
+   }
+   .element {
+  width: 500px;
+  }
+  input.form-control {
+  border: 1px solid var(--ksu-darkblue);
+}
+
+  @media (max-width: 600px) {
+  .element {
+    width: 200px;}
+   }
+
+    </style>
+    
+
 <div class="page-single">
     <div class="container">
         <div class="row">
@@ -13,8 +93,12 @@
                     <div class="col-md-8 col-lg-6 col-xl-4 col-xxl-4">
                         <div class="card my-5">
                             <div class="p-4 pt-6 text-center">
-                                <h1 class="mb-2">Login</h1>
+                                <a href="{% url 'app:index' %}">
+                                    <img src="{% static 'assets/images/brand/businessgatelogo.png' %}" alt="Logo" style="width: 100px; height: auto;" />
+                                </a>
+                                <h1 class="mb-2">Sign In</h1>
                                 <p class="text-muted">Sign In to your account</p>
+                                
                             </div>
                             <div class="container">
                                 {% for message in messages %}
@@ -29,27 +113,31 @@
                                     <label class="form-label">Email</label>
                                     <div class="input-group mb-4">
                                         <div class="input-group">
-                                           <a href="" class="input-group-text">
+                                            <span class="input-group-text">
                                                 <i class="fe fe-mail" aria-hidden="true"></i>
-                                            </a>
-                                            {{ form.email }}
+                                            </span>
+                                           {{form.email}}
+                                            <!-- <input type="email" name="email" class="form-control" required /> -->
                                         </div>
+                                        <div class="error-message" style="display: none; color: red;"></div>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
                                     <div class="input-group mb-4">
                                         <div class="input-group" id="Password-toggle">
                                             <a href="" class="input-group-text">
-                                                <i class="fe fe-eye-off" aria-hidden="true"></i>
+                                               <i class="fe fe-eye-off" aria-hidden="true"></i>
                                             </a>
-                                            {{ form.password }}
+                                            {{form.password}}
+                                            <!-- <input type="password" name="password" class="form-control" required /> -->
                                         </div>
+                                        <div class="error-message" style="display: none; color: red;"></div>
                                     </div>
                                 </div>
-
-                                 <div class="form-group">
+                                
+                                <div class="form-group">
                                     <label class="form-label">Role</label>
                                     <div class="input-group mb-4">
                                         <div class="input-group" id="Password-toggle">
@@ -60,14 +148,20 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <div class="submit">
-                                    <button class="btn btn-primary btn-block" type="submit">Login</button>
+                                    <button class="btn btn-primary btn-block" type="submit">Sign In</button>
                                 </div>
                                 <div class="text-center mt-3">
+                                    
                                     <a href="{% url 'app:forgot_password' %}">Forgot My Password</a>
+                                    <br><a href="{% url 'app:index' %}">Business Gate Home</a>
+                                    
                                 </div>
+                                
+                                
                             </form> 
+                            
 
                         </div>
                     </div>
@@ -76,10 +170,103 @@
         </div>
     </div>
 </div>
-<!-- END PAGE -->				
-{% endblock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  
+  $(document).ready(function() {
+  // Email validation
+  $('input[name="email"]').on('blur', function() {
+    var email = $(this).val();
+    if (email.length === 0) {
+      $(this).addClass('is-invalid');
+      $(this).siblings('.error-message').text('Email is required');
+    } else if (!isValidEmail(email)) {
+      $(this).addClass('is-invalid');
+      $(this).siblings('.error-message').text('Email should end with ksu.edu.sa');
+      alert('Email should end with ksu.edu.sa');
+    } else {
+      $(this).removeClass('is-invalid');
+      $(this).siblings('.error-message').text('');
+    }
+  });
 
-{% block scripts %}
-<!-- THEME COLOR JS -->
-<script src="{% static 'assets/js/themeColors.js'%}"></script>
+  // Password validation
+  $('input[name="password"]').on('blur', function() {
+    var password = $(this).val();
+    if (password.length === 0) {
+      $(this).addClass('is-invalid');
+      $(this).siblings('.error-message').text('Password is required');
+    } else if (password.length < 8) {
+      $(this).addClass('is-invalid');
+      $(this).siblings('.error-message').text('Password should be at least 8 characters long');
+      alert('Password should be at least 8 characters long');
+    } else {
+      $(this).removeClass('is-invalid');
+      $(this).siblings('.error-message').text('');
+    }
+  });
+
+  // Form submission validation
+  $('form#login').on('submit', function(e) {
+    var email = $('input[name="email"]').val();
+    var password = $('input[name="password"]').val();
+
+    if (email.length === 0 || !isValidEmail(email)) {
+      e.preventDefault();
+      alert('Email should end with ksu.edu.sa');
+    }
+
+    if (password.length === 0 || password.length < 8) {
+      e.preventDefault();
+      alert('Password should be at least 8 characters long');
+    }
+  });
+
+  // Helper function to validate email format
+  function isValidEmail(email) {
+    var emailRegex = /^[^\s@]+@([^\s@]+\.)?ksu\.edu\.sa$/i;
+    return emailRegex.test(email);
+  }
+});
+
+    </script>
+
+                
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('.input-group-text a').click(function (e) {
+            e.preventDefault(); // Prevent the anchor tag from reloading the page
+    
+            var $this = $(this).parent(); // Get the parent .input-group-text of the anchor tag
+            var $input = $this.siblings('input');
+    
+            if ($input.attr('type') === 'password') {
+                $input.attr('type', 'text');
+                $this.children('i').removeClass('fe-eye-off').addClass('fe-eye');
+            } else {
+                $input.attr('type', 'password');
+                $this.children('i').removeClass('fe-eye').addClass('fe-eye-off');
+            }
+        });
+    });
+    </script>
+
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 30000); // <-- time in milliseconds, 30000 ms = 0.5 min
+    });
+    </script>
+    
+    <script>
+    $(document).ready(function(){
+        $('#message').hide();
+    });
+    </script>
 {% endblock %}

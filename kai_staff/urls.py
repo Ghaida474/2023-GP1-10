@@ -4,6 +4,9 @@ from . import views
 app_name = 'kaistaff_account'
 
 urlpatterns = [
-    path('kaistaff_home/', views.kaistaff_home, name='kaistaff_home'),
-    path('kaistaff_home/profile', views.profile_view, name='profile'),
+    path('kaistaff-home/', views.kaistaff_home, name='kaistaff-home'),
+    path('kaistaff-home/profile', views.profile_view, name='profile'),
+    path('kaistaff-home/edit-profile', views.editprofile_view, name='edit-profile'),
+    path('kaistaff-home/change-password', views.changepassword_view, name='change-password'),
 ]
+ 

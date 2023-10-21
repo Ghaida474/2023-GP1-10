@@ -41,12 +41,12 @@
 												</a>
 											</div>
 											<!-- noti -->
-											<div class="dropdown header-notify">
+											<!-- <div class="dropdown header-notify">
 												<a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
 													<i class="feather feather-bell header-icon"></i>
 													<span class="bg-dot"></span>
 												</a>
-											</div>
+											</div> -->
 											<!-- profile -->
 											<div class="dropdown profile-dropdown">
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
@@ -55,14 +55,14 @@
 													</span>
 												</a>
 												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
-													<a class="dropdown-item d-flex" href="profile">
+													<a class="dropdown-item d-flex" href="{% url 'business_unit_account:profile'%}">
 														<i class="feather feather-user me-3 fs-16 my-auto"></i>
 														<div class="mt-1">Profile</div>
 													</a>
-													<a class="dropdown-item d-flex" href="chat">
+													<!-- <a class="dropdown-item d-flex" href="#">
 														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
 														<div class="mt-1">Messages</div>
-													</a>
+													</a> -->
 													<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
 														<i class="feather feather-power me-3 fs-16 my-auto"></i>
 														<div class="mt-1">Sign Out</div>

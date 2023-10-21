@@ -27,10 +27,10 @@
 											<table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
 												<thead>
 													<tr>
-														<th class="border-bottom-0">#ID</th>
 														<th class="border-bottom-0">Name</th>
 														<th class="border-bottom-0">Email</th>
-														<th class="border-bottom-0">Position</th>
+														<th class="border-bottom-0">Department</th>
+														<th class="border-bottom-0">Major</th>
 														<th class="border-bottom-0">Specialization</th>
 														<th class="border-bottom-0">View</th>
 													</tr>
@@ -38,18 +38,18 @@
 												<tbody>
 													{% for faculty_member in faculty %}
 													<tr>
-														<td>{{faculty_member.employeeid}}</td>
 														<td>
 															<div class="me-3 mt-0 mt-sm-2 d-block">
 																<h6 class="mb-1 fs-14">{{ faculty_member.first_name }} {{ faculty_member.last_name }}</h6>
 															</div>
 														</td>
-														<td>{{faculty_member.email}}</td>
-														<td>{{faculty_member.position}}</td>
-														<td>{{faculty_member.specialization}}</td>		
+														<td >{{faculty_member.email}}</td>
+														<td>{{faculty_member.department_field|title}}</td>
+														<td>{{faculty_member.major|title}}</td>
+														<td>{{faculty_member.specialization|title}}</td>		
 														<td>
 															<div class="d-flex">
-																<a href="faculty-view" class="action-btns1" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="feather feather-eye text-primary"></i></a>
+																<a href="{% url 'dean_account:faculty-view' faculty_id=faculty_member.id %}" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i class="feather feather-eye text-primary"></i></a>
 															</div>
 														</td>
 													</tr>

@@ -1,11 +1,7 @@
 {% extends 'faculty_staff/components/base.html' %}
 {% load static %}
 
-    {% block styles %}
-
-    {% endblock %}
-
-        {% block content %}
+    {% block content %}
 						<!-- PAGE HEADER -->
                         <div class="page-header d-lg-flex d-block">
 							<div class="page-leftheader">
@@ -15,58 +11,196 @@
 							</div>
 						</div>
 						<!-- END PAGE HEADER -->
-			
+						
 						<!-- ROW -->
 						<div class="row">
 							<div class="col-xl-4 col-lg-5" >
-								<div class="card">
-									<div class="card-header border-bottom-0">
-										<div class="card-title">Edit Password</div>
+								<div class="card" style="width: 350px; margin-left: 40px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;" >
+									<div class="card-header border-bottom-0">		
+										<div class="card-title">Academic Information</div>
 									</div>
-									<div class="card-body">
-										<div class="form-group">
-											<label class="form-label">Current Password</label>
-											<input type="password" class="form-control" value="password">
+
+									<div class="card-body" >
+										<div id="form2-container">
+											<form method="post" enctype="multipart/form-data"  name="form2">
+												{% csrf_token %}
+												{% if messages %}
+													<ul class="messages" class="error-message"style="color: red;">
+														{% for message in messages %}
+														<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+														{% endfor %}
+													</ul>
+													{% endif %}
+												<label>{{ form2.previouswork.label_tag }}</label>
+												<div class="input-group">
+													{{ form2.previouswork }}
+													<button type="submit" id="add-previouswork" name="form_type" value="form2" class="btn btn-primary add-previouswork"><span class="fe fe-check"></span></button>
+												</div>
+	
+											
+												{% for ri in user.previouswork %}
+													<div class="d-flex align-items-center">
+														<a class="btn btn-sm btn-white mt-1 remove-previouswork" data-value="{{ ri }}" href="{% url 'faculty_staff_account:delete_previouswork' value_to_delete=ri %}">{{ ri|title }} <span class="fe fe-x"></span></a>
+													</div>
+												{% empty %}
+													<a class="btn btn-sm btn-white mt-1">None</a>
+												{% endfor %}
+												<br>
+												<br>
+											
+												<label>{{ form2.researchinterest.label_tag }}</label>
+												<div class="input-group">
+													{{ form2.researchinterest }}
+													<button type="submit" id="add-researchinterest"  name="form_type" value="form2" class="btn btn-primary add-researchinterest"><span class="fe fe-check"></span></button>
+												</div>
+												
+											
+												{% for ri in user.researchinterest %}
+													<div class="d-flex align-items-center">
+														<a class="btn btn-sm btn-white mt-1 remove-researchinterest" data-value="{{ ri }}" href="{% url 'faculty_staff_account:delete_researchinterest' value_to_delete=ri %}">{{ ri|title }} <span class="fe fe-x"></span></a>
+													</div>
+												{% empty %}
+													<a class="btn btn-sm btn-white mt-1">None</a>
+												{% endfor %}
+												<br>
+											</form>
 										</div>
-										<div class="form-group">
-											<label class="form-label">New Password</label>
-											<input type="password" class="form-control" value="password">
-										</div>
-										<div class="form-group">
-											<label class="form-label">Confirm Password</label>
-											<input type="password" class="form-control" value="password">
-										</div>
-									</div>
-									<div class="card-footer text-end">
-										<a  href="javascript:void(0);" class="btn btn-primary">Updated</a>
-										<a  href="javascript:void(0);" class="btn btn-danger">Cancel</a>
+								
 									</div>
 								</div>
 							</div>
+
 							<div class="col-xl-8 col-lg-7">
-								<div class="card">
+								<div class="card"  style="width: 600px; margin-left: 50px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
 									<div class="card-body">
-										<div class="card-title">Personal info:</div>
+										<div class="card-title">Personal Information:</div>
 										<div class="row">
-											<form method="post" enctype="multipart/form-data" value="form"  name="form_name">
-                                                {% csrf_token %}
-												{{form.as_p}}
-												{{ form.phone_number.errors }}
-												<div class="card-footer text-end">
-													<button  type="submit" class="btn btn-lg btn-primary">Updated</button>
-													<button type="reset" class="btn btn-lg btn-danger">Cancel</button>
+											<form method="post" enctype="multipart/form-data"  name="form1">
+												{% csrf_token %}
+
+												<label>{{ form.username.label_tag }} <span style="color: red;">*</span></label>
+												{{ form.username }}
+												{% if form.username.errors %}
+													{% for error in form.username.errors %} 
+													<span style="color: red;" class="error-message">{{error}}</span>
+													{% endfor %}
+												{% endif %} 
+												<br>
+
+												<label>{{ form.email.label_tag }} <span style="color: red;">*</span></label>
+												{{ form.email }}
+												{% if form.email.errors %}
+													{% for error in form.email.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+
+												<label>{{ form.phonenumber.label_tag }} <span style="color: red;">*</span></label>
+												{{ form.phonenumber }}
+												{% if form.phonenumber.errors %}
+													{% for error in form.phonenumber.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+
+												{{ form.iban.label_tag }}
+												{{ form.iban }}
+												{% if form.iban.errors %}
+													{% for error in form.iban.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+
+												{{ form.specialization.label_tag }}
+												{{ form.specialization }}
+												{% if form.specialization.errors %}
+													{% for error in form.specialization.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+
+												{{ form.officeno.label_tag }}
+												{{ form.officeno }}
+												{% if form.officeno.errors %}
+													{% for error in form.officeno.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+												<br>
+
+												{{ form.cv.label_tag }}
+												{{ form.cv }}
+												{% if form.cv.errors %}
+													{% for error in form.cv.errors %}
+													<p style="color: red;" class="error-message">{{ error }}</p>
+													{% endfor %}
+												{% endif %}
+												<br>
+												
+												
+												<div class="card-footer text-center">
+													<button type="submit" value="form1" name="form_type" class="btn btn-lg btn-primary">Update</button>
+													<a href="{% url 'faculty_staff_account:profile' %}" class="btn btn-lg btn-danger">Cancel</a>
 												</div>
-											</form>	
+											</form>
+											
 										</div>
-									</div>
+									</div>											
 								</div>
 							</div>
 						</div>
 						<!-- END ROW -->
-        {% endblock %}
+    {% endblock %}
 
 	
     {% block scripts %}
         <!-- THEME COLOR JS -->
 		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- 
+		<script>
+			 $(document).ready(function() {
+							
+						$('input[name="username"]').on('blur', function() {
+			 					var username = $(this).val();
+			 					if (username.length < 10) {
+			 					$(this).addClass('is-invalid');
+			 					$(this).siblings('.error-message').text(' Username should be at least 10 characters long');
+			 					} else if (username.length = 0){
+			 					$(this).addClass('is-invalid');
+			 					$(this).siblings('.error-message').text('Username is required');
+			 					}else {
+			 					$(this).removeClass('is-invalid');
+			 					$(this).siblings('.error-message').text('');
+			 					}
+			 				});
+
+							$('input[name="email"]').on('blur', function() {
+			 					var email = $(this).val();
+			 					if (email.length === 0) {
+			 					$(this).addClass('is-invalid');
+			 					$(this).siblings('.error-message').text('Email is required');
+			 					} else if (!isValidEmail(email)) {
+			 					$(this).addClass('is-invalid');
+			 					$(this).siblings('.error-message').text('Email should end with ksu.edu.sa');
+			 					alert('Email should end with ksu.edu.sa');
+			 					} else {
+			 					$(this).removeClass('is-invalid');
+			 					$(this).siblings('.error-message').text('');
+			 					}
+			 				});			
+			 });
+
+		</script> -->
+	
+	
+	
+	
+	
 	{% endblock %}

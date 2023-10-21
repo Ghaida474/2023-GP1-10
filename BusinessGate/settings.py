@@ -31,13 +31,16 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_URL = 'app:login'
+LOGIN_REDIRECT_URL = '/'
+
 # LOGIN_REDIRECT_URLS = {
 #     'faculty_staff_account': 'faculty_staff_account:faculty_staff_home',
-#     'kai_staff': 'kaistaff_account:kaistaff_home',
-#     'kai_account': 'kai_account:kai_home',
-#     'dean': 'dean_account:dean-account-home',
-#     'business_unit_account': 'business_unit_account:business_unit_home',
+#      'kai-staff': 'kaistaff_account:kaistaff-home',
+#      'kai-account': 'kai_account:kai-home',
+#      'dean': 'dean_account:dean-account-home',
+#      'business_unit_account': 'business_unit_account:business_unit_home',
 # }
+    
 LOGOUT_REDIRECT_URL = 'app:login'
 
 # Application definition
@@ -88,6 +91,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BusinessGate.wsgi.application'
 
+MIME_TYPES = {
+    '.pdf': 'application/pdf',
+    # Add more file extensions and content types as needed
+}
 
 AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
@@ -105,8 +112,8 @@ AUTH_USER_MODEL = 'app.FacultyStaff'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'bg',
-         'NAME': 'businessgate',
+        'NAME': 'bg',
+        #  'NAME': 'businessgate',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',
@@ -115,7 +122,13 @@ DATABASES = {
     }
 }
 
-
+# email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'businessgate.ksu@gmail.com'
+EMAIL_HOST_PASSWORD = 'bvfqbztmwvyfhmkm'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -155,6 +168,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR]
 print(STATIC_DIR)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATIC_URL = '/static/'
+# # STATICFILES_DIRS = [STATIC_DIR]
+# print(STATIC_DIR)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

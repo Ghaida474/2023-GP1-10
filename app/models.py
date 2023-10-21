@@ -8,7 +8,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser , Group, Permission , UserManager
 from django.utils.translation import gettext as _
-
+from django.contrib.postgres.fields import ArrayField
 
 class Admin(models.Model):
     email = models.CharField(db_column='Email', primary_key=True, max_length=130)  # Field name made lowercase.
@@ -28,7 +28,7 @@ class Collage(models.Model):
     nofemalestudents = models.IntegerField(db_column='NoFemaleStudents', blank=True, null=True)  # Field name made lowercase.
     nomalestudents = models.IntegerField(db_column='NoMaleStudents', blank=True, null=True)  # Field name made lowercase.
     adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
-    departments = models.TextField(db_column='Departments')  # Field name made lowercase. This field type is a guess.
+    departments = ArrayField(models.TextField(),db_column='Departments',default=list)   # Field name made lowercase. This field type is a guess.
     buemail = models.CharField(db_column='BUemail')  # Field name made lowercase.
     userid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='userid')
     buphonenumber = models.CharField(db_column='BUphoneNumber')  # Field name made lowercase.
@@ -61,12 +61,13 @@ class FacultyStaff(AbstractUser):
     assignedorganization = models.CharField(db_column='assignedOrganization', max_length=130, blank=True, null=True)  # Field name made lowercase.
     iban = models.CharField(db_column='Iban', max_length=130, blank=True, null=True , default='SA')  # Field name made lowercase.
     officeno = models.CharField(db_column='OfficeNo', max_length=130, blank=True, null=True)  # Field name made lowercase.
-    researchinterest = models.TextField(db_column='ResearchInterest', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
-    previouswork = models.TextField(db_column='PreviousWork', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    researchinterest = ArrayField(models.TextField(),blank=True, null=True,db_column='ResearchInterest',default=list)  # Field name made lowercase. This field type is a guess.
+    previouswork = ArrayField(models.TextField(),blank=True, null=True,db_column='PreviousWork',default=list)  # Field name made lowercase. This field type is a guess.
     cv = models.BinaryField(db_column='CV', blank=True, null=True)  # Field name made lowercase.
     collageid = models.ForeignKey(Collage, models.DO_NOTHING, db_column='CollageID', blank=True, null=True)  # Field name made lowercase.
     is_buhead = models.BooleanField(db_column='is_BUhead', blank=True, null=True)  # Field name made lowercase.
     username = models.CharField(max_length=150, unique=True)
+    department_field = models.CharField(db_column='Department ')
 
     groups = models.ManyToManyField(
         Group,

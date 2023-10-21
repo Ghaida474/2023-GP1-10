@@ -48700,7 +48700,7 @@ select [aria-selected=true]:focus {
 }
 
 .icon-text .side-menu .slide a {
-  color: #aab3cc;
+  color: #095590;
   background: none;
 }
 
@@ -48711,7 +48711,7 @@ select [aria-selected=true]:focus {
 }
 
 .icon-text .slide a.active .sidemenu_icon, .icon-text .side-menu__item:hover .sidemenu_icon {
-  color: #fff;
+  color: #095590;
 }
 
 @media (min-width: 768px) {
