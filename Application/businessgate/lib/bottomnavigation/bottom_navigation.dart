@@ -4,7 +4,7 @@ import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/profile/profile.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:businessgate/home/home.dart';
+import 'package:businessgate/screens/home.dart';
 //import 'package:businessgate/profile/editProfile.dart';
 class BottomNaviScreen extends StatefulWidget {
   const BottomNaviScreen({Key? key}) : super(key: key);
@@ -21,8 +21,8 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
   int levelIndex = 0;
 
   List bodyItems = [
-    const HomeScreen(),
-    const ProfileScreen()
+    const Home(),
+     Profile()
   ];
 
   final Shader linearGradient = const LinearGradient(
@@ -55,13 +55,13 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
       child: Scaffold(
         drawerEnableOpenDragGesture: false,
         endDrawerEnableOpenDragGesture: false,
-        backgroundColor: whiteColor,
+        backgroundColor: Color.fromARGB(255, 208, 231, 249),
         endDrawer: drawer(size, context),
         body: bodyItems.elementAt(selectedIndex),
         bottomNavigationBar: Container(
           height: size.height * 0.085,
           width: double.infinity,
-          decoration: BoxDecoration(color: whiteColor, boxShadow: [
+          decoration: BoxDecoration(color: Color.fromARGB(255, 209, 231, 248), boxShadow: [
             BoxShadow(
               color: grey94Color.withOpacity(0.4),
               blurRadius: 4,
@@ -362,7 +362,7 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
               width: double.maxFinite,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: selectedIndex == 4
+                  colors: selectedIndex == 1
                       ? gradient
                       : [Colors.transparent, Colors.transparent],
                   begin: Alignment.topLeft,
@@ -379,11 +379,11 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                         return LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomRight,
-                                colors: selectedIndex == 4
+                                colors: selectedIndex == 1
                                     ? gradient
                                     : <Color>[
-                                        greyb7Color,
-                                        greyb7Color,
+                                        Color.fromARGB(255, 60, 59, 59),
+                                        Color.fromARGB(255, 60, 59, 59),
                                       ])
                             .createShader(bounds);
                       },
@@ -401,13 +401,8 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                     getTranslate(context, 'bottom_navi.profile'),
                     style: TextStyle(
                       foreground: Paint()
-                        ..shader = selectedIndex == 4
-                            ? const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.topRight,
-                                colors: gradient,
-                              ).createShader(
-                                const Rect.fromLTRB(350, 0, 400, 0))
+                        ..shader = selectedIndex == 1
+                            ? linearGradient
                             : linearGradient2,
                     ),
                   )
@@ -457,8 +452,8 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                               colors: selectedIndex == 0
                                   ? gradient
                                   : <Color>[
-                                      greyb7Color,
-                                      greyb7Color,
+                                      Color.fromARGB(255, 60, 59, 59),
+                                      Color.fromARGB(255, 60, 59, 59),
                                     ])
                           .createShader(bounds);
                     },

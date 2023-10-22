@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
         '/signup': (context) => SignUp(),
         '/home': (context) => Home(),
         '/forget': (context) => Forget(),
-        '/profile': (context) => ProfileScreen(),
+        '/profile': (context) => Profile(),
         '/editprofile': (context) => EditProfile(),
         '/bottomNavi': (context) => BottomNaviScreen(), 
       },

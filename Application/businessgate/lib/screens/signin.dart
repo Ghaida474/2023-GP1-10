@@ -17,6 +17,8 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
 
+  final formkey = GlobalKey<FormState>() ;
+
   MyService _myEmail = MyService();
 
   TextEditingController _passwordTextController = TextEditingController() ;
@@ -29,7 +31,7 @@ class _SignInState extends State<SignIn> {
         gradient: LinearGradient(
           colors: [
           hexStringColor("#6FBCF6"), 
-          hexStringColor("##E3E0D2")
+          hexStringColor("#E3E0D2")
           ], begin: Alignment.topCenter, 
           end: Alignment.bottomCenter ),
           ),
@@ -37,13 +39,15 @@ class _SignInState extends State<SignIn> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 20, MediaQuery.of(context).size.height * 0.18, 20, 280),
+                 child: Form(
+                  key: formkey,
               child: Column(
                 children: [ //<Widget>
                   logoWidgetSignIN("assets/images/Logo.jpg"),
                   const SizedBox(
                     height: 50,
                   ),
-                  textField("Enter Your Email", Icons.person, false, _emailTextController),
+                  emailField("Enter Your Email", Icons.person, false, _emailTextController),
                   const SizedBox(
                     height: 30,
                   ),
@@ -65,7 +69,7 @@ class _SignInState extends State<SignIn> {
                 ],
               ),)),
           ),
-          );
+    ));
   }
 
   Image logoWidgetSignIN(String imageName) {
@@ -77,9 +81,9 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  TextField textField (String text, IconData icon, bool isPasswordType, 
+  TextFormField emailField (String text, IconData icon, bool isPasswordType, 
   TextEditingController controller) {
-    return TextField( controller: controller,
+    return TextFormField( controller: controller,
     cursorColor: Colors.white,
     style: TextStyle(color: Colors.white.withOpacity(0.9)),
     decoration: InputDecoration(
@@ -101,13 +105,19 @@ class _SignInState extends State<SignIn> {
         borderRadius: BorderRadius.circular(30.0),
         borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
+          return "Enter a Correct Email";
+        } else
+        return null ;
+      },
     );
 
-  } 
+  }
 
-  TextField PasswordField (String text, IconData icon, bool isPasswordType, 
+  TextFormField PasswordField (String text, IconData icon, bool isPasswordType, 
   TextEditingController controller) {
-    return TextField( controller: controller,
+    return TextFormField( controller: controller,
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     cursorColor: Colors.white,
@@ -133,7 +143,7 @@ class _SignInState extends State<SignIn> {
                 size: 16,
               ),
             ),
-            hintText: 'The password must be of 8 character long',
+            hintText: 'Must be 8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -144,6 +154,12 @@ class _SignInState extends State<SignIn> {
         borderRadius: BorderRadius.circular(30.0),
         borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
+          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+        } else
+        return null ;
+      },
      keyboardType: isPasswordType
       ? TextInputType.visiblePassword
       : TextInputType.none
@@ -193,7 +209,9 @@ Container signInButton (BuildContext context, Function onTap) {
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(70)),
     child: ElevatedButton(onPressed: () { 
-      onTap(); }, 
+      if(formkey.currentState!.validate()) {
+       onTap();  
+      }}, 
         style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith((states) {
           if (states.contains(MaterialState.pressed)) {
             return hexStringColor("#01253D");

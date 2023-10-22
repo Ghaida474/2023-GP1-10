@@ -1,6 +1,10 @@
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../models/model_user.dart';
+import '../myservice.dart';
+import '../utils/colors.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -9,11 +13,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<Home> {
+  MyService _myEmail = MyService();
+  
   final category = [
     {
       "name": "Business",
       "icon": Icons.add_business_outlined,
-      "color": const Color(0xff6B97F8),
+      "color": Color.fromARGB(255, 21, 82, 213),
       "isimage": false,
     },
     {
@@ -35,13 +41,13 @@ class _HomeScreenState extends State<Home> {
   final recommeded = [
     {
       "name": "Web Development Course",
-      "price": "\$45",
+      "price": "300 SR",
       "review": 125,
       "image": "assets/home/web.jpg",
     },
     {
       "name": "The Web devlopment bootcamp",
-      "price": "\$45",
+      "price": "450 SR",
       "review": 125,
       "image": "assets/home/web.jpg",
     }
@@ -53,35 +59,38 @@ class _HomeScreenState extends State<Home> {
     {
       "image": "assets/home/Rectangle 14.png",
       "course": "Google ux design",
-      "name": "Albert portila",
+      "name": "Ahmed",
       "review": 125,
-      "Price": "\$25.00",
+      "Price": " 350 SR",
     },
     {
       "image": "assets/home/Rectangle 14.png",
       "course": "Google ux design",
-      "name": "Albert portila",
+      "name": "Saad",
       "review": 125,
-      "Price": "\$25.00",
+      "Price": "200 SR",
     },
     {
       "image": "assets/home/Rectangle 14.png",
       "course": "Data science",
-      "name": "Albert portila",
+      "name": "Noura",
       "review": 125,
-      "Price": "\$25.00",
+      "Price": "450 SR",
     }
   ];
+
+    Future<String> Name() async {
+    return "Hello " + await ModelsUsers().FetchFirstName(_myEmail.myVariable);
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: whiteColor,
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: whiteColor,
+        backgroundColor: Color.fromARGB(255, 209, 231, 248),
         toolbarHeight: size.height * 0.085,
         elevation: 3,
         shadowColor: Colors.grey.withOpacity(0.3),
@@ -92,7 +101,6 @@ class _HomeScreenState extends State<Home> {
               width: size.height * 0.07,
               padding: const EdgeInsets.all(1.5),
               decoration: const BoxDecoration(
-               // gradient: LinearGradient(colors: gradient),
                 shape: BoxShape.circle,
               ),
               child: const CircleAvatar(
@@ -103,7 +111,7 @@ class _HomeScreenState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Hello Lina",
+                   Name().toString(),
                   style: black16Style,
                 ),
                 heightbox(2),
@@ -144,25 +152,17 @@ class _HomeScreenState extends State<Home> {
         ],
       ),
       body: ListView(
-        physics: const BouncingScrollPhysics(),
         children: [
           topContainer(size),
           categorytext(),
           categoryList(size),
           height5Space,
-          recommededText(),
-          recommededList(size),
           popularText(),
           poularlist(size),
-          height5Space,
-        
         ],
       ),
     );
   }
-
- 
- 
 
   poularlist(Size size) {
     return Column(
@@ -245,11 +245,11 @@ class _HomeScreenState extends State<Home> {
                           ],
                         ),
                         const Text(
-                          "Albert portila",
+                          "Ahmed",
                           style: grey14Style,
                         ),
                         const Text(
-                          "\$25.00",
+                          "350 SR",
                           style: primary16Style,
                         )
                       ],
@@ -320,7 +320,7 @@ class _HomeScreenState extends State<Home> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const Text(
-                        "Albert portila",
+                        "Saad",
                         style: grey14Style,
                       ),
                       Row(
@@ -350,7 +350,7 @@ class _HomeScreenState extends State<Home> {
                         ],
                       ),
                       const Text(
-                        "\$25.00",
+                        "200 SR",
                         style: primary16Style,
                       )
                     ],

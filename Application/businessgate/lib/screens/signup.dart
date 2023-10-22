@@ -11,6 +11,7 @@ import '../myservice.dart';
 import '../models/model_user.dart';
 import '../utils/colors.dart';
 
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -34,6 +35,8 @@ Future<List<String>> fetchNationalities() async {
 enum Genders { male, female, other }
 
 class _SignUpState extends State<SignUp> {
+
+  final formkey = GlobalKey<FormState>() ;
 
     MyService _myEmail = MyService();
 
@@ -81,24 +84,25 @@ class _SignUpState extends State<SignUp> {
           hexStringColor("##E3E0D2")
           ], begin: Alignment.topCenter, 
           end: Alignment.bottomCenter ),
-    ),
-    child: SingleChildScrollView(child: Padding(
+    ),child : SingleChildScrollView(child: Padding(
               padding: EdgeInsets.fromLTRB(
                 20, MediaQuery.of(context).size.height * 0.2, 20, 400),
+    child: Form(
+      key: formkey,
                 child: Column( children: <Widget>[
                   logoWidgetSignUP("assets/images/Logo.jpg"),
                   const SizedBox(
-                    height: 30,
+                    height: 25,
                   ),
-                    textField("Enter First Name", Icons.person, false, _FnameTextController),
+                    nameField("Enter First Name", Icons.person, false, _FnameTextController),
                     const SizedBox(
                     height: 20,
                   ),
-                  textField("Enter Last Name", Icons.person, false, _LnameTextController),
+                  nameField("Enter Last Name", Icons.person, false, _LnameTextController),
                     const SizedBox(
                     height: 20,
                   ),
-                    textField("Enter National ID", Icons.person, false, _IDTextController),
+                    IDField("Enter National ID", Icons.person, false, _IDTextController),
                     const SizedBox(
                     height: 20,
                   ),
@@ -134,7 +138,7 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                     height: 20,
                   ),
-                  textField("Enter Mobile Number", Icons.phone, false, _phoneNumberTextController),
+                  mobileField("Enter Mobile Number", Icons.phone, false, _phoneNumberTextController),
                     const SizedBox(
                     height: 20,
                   ),
@@ -157,10 +161,10 @@ class _SignUpState extends State<SignUp> {
     });
   },
 ),*/
-const SizedBox(
-                    height: 20,
-                  ),
-                  textField("Enter Email", Icons.email, false, _emailTextController),
+/*const SizedBox(
+                    height: 10,
+                  ),*/
+                  emailField("Enter Email", Icons.email, false, _emailTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -174,8 +178,7 @@ const SizedBox(
                 ],),),
                 
     )
-    )
-    );
+     ) ));
   }
 
   Image logoWidgetSignUP(String imageName) {
@@ -187,9 +190,9 @@ const SizedBox(
     );
   }
 
-  TextField textField (String text, IconData icon, bool isPasswordType, 
+  TextFormField nameField (String text, IconData icon, bool isPasswordType, 
   TextEditingController controller) {
-    return TextField( controller: controller,
+    return TextFormField( controller: controller,
     cursorColor: Colors.white,
     style: TextStyle(color: Colors.white.withOpacity(0.9)),
     decoration: InputDecoration(
@@ -211,13 +214,121 @@ const SizedBox(
         borderRadius: BorderRadius.circular(30.0),
         borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)){
+          return "Enter a Correct Name";
+        } else
+        return null ;
+      },
     );
 
   } 
 
-  TextField PasswordField (String text, IconData icon, bool isPasswordType, 
+  TextFormField IDField (String text, IconData icon, bool isPasswordType, 
   TextEditingController controller) {
-    return TextField( controller: controller,
+    return TextFormField( controller: controller,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        icon,
+        color: const Color.fromARGB(179, 255, 255, 255),
+      ),
+      labelText: text,
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
+      ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^\d{10}$').hasMatch(value!)){
+          return "Enter a Correct ID";
+        } else
+        return null ;
+      },
+    );
+
+  } 
+
+  TextFormField emailField (String text, IconData icon, bool isPasswordType, 
+  TextEditingController controller) {
+    return TextFormField( controller: controller,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        icon,
+        color: const Color.fromARGB(179, 255, 255, 255),
+      ),
+      labelText: text,
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
+      ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
+          return "Enter a Correct Email";
+        } else
+        return null ;
+      },
+    );
+
+  } 
+
+  TextFormField mobileField (String text, IconData icon, bool isPasswordType, 
+  TextEditingController controller) {
+    return TextFormField( controller: controller,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        icon,
+        color: const Color.fromARGB(179, 255, 255, 255),
+      ),
+      labelText: text,
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
+      ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value!)){
+          return "Enter a Correct Mobile Number";
+        } else
+        return null ;
+      },
+    );
+
+  } 
+
+  TextFormField PasswordField (String text, IconData icon, bool isPasswordType, 
+  TextEditingController controller) {
+    return TextFormField( controller: controller,
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     cursorColor: Colors.white,
@@ -243,7 +354,7 @@ const SizedBox(
                 size: 16,
               ),
             ),
-            hintText: 'The password must be of 8 character long',
+            hintText: 'Must be 8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -254,6 +365,12 @@ const SizedBox(
         borderRadius: BorderRadius.circular(30.0),
         borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
+          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+        } else
+        return null ;
+      },
      keyboardType: isPasswordType
       ? TextInputType.visiblePassword
       : TextInputType.none
@@ -267,8 +384,9 @@ const SizedBox(
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(onPressed: () { 
-
-      onTap(); }, 
+      if(formkey.currentState!.validate()) {
+       onTap();  
+      }}, 
       child: Text ('SIGN UP', 
       style: const TextStyle(
         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
@@ -296,149 +414,7 @@ const SizedBox(
     String Email = _emailTextController.text;
     String Password = _passwordTextController.text;
     String Gender = selectedGender.toString();
-    
-      // Validate input fields
-  /*if (Fname.isEmpty || Lname.isEmpty || ID.isEmpty ||
-      PhoneNumber.isEmpty || Email.isEmpty || Password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.blue[100],
-        elevation: 10.0,
-        shape: Border.all(
-          color: Colors.red,
-          width: 0.5,
-          style: BorderStyle.solid,
-        ),
-        content: Text(
-          "Please fill in all required fields",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-    return; // Prevent further processing if any field is empty
-  }
-
-  final numeric = RegExp(r'^[0-9]+$');
-
-  if (ID.length != 10  && !numeric.hasMatch(ID)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.blue[100],
-        elevation: 10.0,
-        shape: Border.all(
-          color: Colors.red,
-          width: 0.5,
-          style: BorderStyle.solid,
-        ),
-        content: Text(
-          "Please enter a valid ID number",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-    return; // Prevent further processing if any field is empty
-  }
-
-  String NumberStart = PhoneNumber.substring(0, 2);
-
-if (PhoneNumber.toString().length != 10 && !numeric.hasMatch(PhoneNumber) && NumberStart == "05") {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.blue[100],
-        elevation: 10.0,
-        shape: Border.all(
-          color: Colors.red,
-          width: 0.5,
-          style: BorderStyle.solid,
-        ),
-        content: Text(
-          "Please enter a valid Phone Number",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-    return; // Prevent further processing if any field is empty
-  }
-
-   final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
-   
-  if (!emailRegex.hasMatch(Email)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.blue[100],
-        elevation: 10.0,
-        shape: Border.all(
-          color: Colors.red,
-          width: 0.5,
-          style: BorderStyle.solid,
-        ),
-        content: Text(
-          "Please enter a valid Email address",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-    return; // Prevent further processing if any field is empty
-  }
-
   
-
-  if (Password.length < 8 || !Password.contains(RegExp(r'[A-Z]')) ||
-   !Password.contains(RegExp(r'[a-z]')) || !Password.contains(RegExp(r'[0-9]')) ||
-   !Password.contains(RegExp(r'[!@#\$%^&*()_+|~-]'))) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.blue[100],
-        elevation: 10.0,
-        shape: Border.all(
-          color: Colors.red,
-          width: 0.5,
-          style: BorderStyle.solid,
-        ),
-        content: Text(
-          "Please enter a valid Password ",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2.0,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-    return; // Prevent further processing if any field is empty
-  }*/
-
   List<String> parts = Gender.split('.');
   String genderString = parts.last;
 
@@ -479,7 +455,7 @@ if (PhoneNumber.toString().length != 10 && !numeric.hasMatch(PhoneNumber) && Num
             _nationTextController.clear;
   
             Timer(Duration(seconds: 2), () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.pushNamed(context, '/home');
             });
           });
         } else 
