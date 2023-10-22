@@ -1,6 +1,7 @@
 import 'package:businessgate/screens/reset.dart';
 import 'package:flutter/material.dart';
 
+import '../myservice.dart';
 import '../utils/colors.dart';
 
 import 'package:email_otp/email_otp.dart';
@@ -15,6 +16,8 @@ class Forget extends StatefulWidget {
 class _ForgetState extends State<Forget> {
 
   TextEditingController _emailTextController = TextEditingController() ;
+
+  MyService _myEmail = MyService();
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +60,7 @@ class _ForgetState extends State<Forget> {
                   ),
                   MaterialButton(
                   onPressed: () async{ 
+                    _myEmail.myVariable = _emailTextController.text ;
                     EmailOTP myauth = EmailOTP();
         myauth.setConfig(
         appEmail: "businessgate@gmail.com",

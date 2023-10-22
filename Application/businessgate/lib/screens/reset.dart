@@ -25,6 +25,8 @@ class _ResetState extends State<Reset> {
   TextEditingController _emailTextController = TextEditingController() ;
   TextEditingController _passwordTextController = TextEditingController() ;
 
+  bool passToggle = true;
+
   @override
   Widget build(BuildContext context) {
 
@@ -63,11 +65,11 @@ class _ResetState extends State<Reset> {
                   const SizedBox(
                     height: 20,
                   ),
-                  emailField("Enter Your Email", Icons.person, false, _emailTextController),
+                  //emailField("Enter Your Email", Icons.person, false, _emailTextController),
                   const SizedBox(
                     height: 20,
                   ),
-                  PasswordField("Enter Your New Password", Icons.person, true, _passwordTextController),
+                  PasswordField("Enter Your New Password", Icons.person, _passwordTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -151,11 +153,11 @@ class _ResetState extends State<Reset> {
 
   }
 
-  TextFormField PasswordField (String text, IconData icon, bool isPasswordType, 
+  TextFormField PasswordField (String text, IconData icon,  
   TextEditingController controller) {
     return TextFormField( controller: controller,
-    obscureText: isPasswordType,
-    enableSuggestions: !isPasswordType,
+    obscureText: passToggle,
+    //enableSuggestions: !isPasswordType,
     cursorColor: Colors.white,
     style: TextStyle(color: Colors.white.withOpacity(0.9)),
     decoration: InputDecoration(
@@ -168,7 +170,16 @@ class _ResetState extends State<Reset> {
         icon,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      suffixIcon: GestureDetector(
+      suffixIcon: InkWell(
+        onTap:  () {
+          setState(() {
+            passToggle = !passToggle ;
+            
+          });
+        },
+        child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
+      ),
+      /*suffixIcon: GestureDetector(
               onTap: () {
                  setState(() {
                   isPasswordType = !isPasswordType;
@@ -178,7 +189,7 @@ class _ResetState extends State<Reset> {
                 isPasswordType ? Icons.visibility_off : Icons.visibility,
                 size: 16,
               ),
-            ),
+            ),*/
             hintText: 'Must be 8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
@@ -196,9 +207,9 @@ class _ResetState extends State<Reset> {
         } else
         return null ;
       },
-     keyboardType: isPasswordType
+    /*keyboardType: isPasswordType
       ? TextInputType.visiblePassword
-      : TextInputType.none
+      : TextInputType.none()*/
     );
 
   }
@@ -241,7 +252,7 @@ class _ResetState extends State<Reset> {
 
             ModelsUsers()
           .updatePassword(
-            _emailTextController.text, _passwordTextController.text)
+            _myEmail.myVariable, _passwordTextController.text)
           .then((Update) {
          if (Update.toString().contains('not')) {
           setState(() {

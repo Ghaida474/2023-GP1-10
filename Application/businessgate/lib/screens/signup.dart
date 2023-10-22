@@ -56,6 +56,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _nationTextController = TextEditingController() ;
 
   String searchedNationName = '';
+
+  bool passToggle = true ;
 /*
   @override
   void initState() {
@@ -168,7 +170,7 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 20,
                   ),
-                  PasswordField("Enter Password", Icons.lock, true, _passwordTextController),
+                  PasswordField("Enter Password", Icons.lock, _passwordTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -326,11 +328,11 @@ class _SignUpState extends State<SignUp> {
 
   } 
 
-  TextFormField PasswordField (String text, IconData icon, bool isPasswordType, 
+TextFormField PasswordField (String text, IconData icon,  
   TextEditingController controller) {
     return TextFormField( controller: controller,
-    obscureText: isPasswordType,
-    enableSuggestions: !isPasswordType,
+    obscureText: passToggle,
+    //enableSuggestions: !isPasswordType,
     cursorColor: Colors.white,
     style: TextStyle(color: Colors.white.withOpacity(0.9)),
     decoration: InputDecoration(
@@ -343,7 +345,16 @@ class _SignUpState extends State<SignUp> {
         icon,
         color: const Color.fromARGB(179, 255, 255, 255),
       ),
-      suffixIcon: GestureDetector(
+      suffixIcon: InkWell(
+        onTap:  () {
+          setState(() {
+            passToggle = !passToggle ;
+            
+          });
+        },
+        child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
+      ),
+      /*suffixIcon: GestureDetector(
               onTap: () {
                  setState(() {
                   isPasswordType = !isPasswordType;
@@ -353,7 +364,7 @@ class _SignUpState extends State<SignUp> {
                 isPasswordType ? Icons.visibility_off : Icons.visibility,
                 size: 16,
               ),
-            ),
+            ),*/
             hintText: 'Must be 8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
@@ -371,9 +382,9 @@ class _SignUpState extends State<SignUp> {
         } else
         return null ;
       },
-     keyboardType: isPasswordType
+    /*keyboardType: isPasswordType
       ? TextInputType.visiblePassword
-      : TextInputType.none
+      : TextInputType.none()*/
     );
 
   }

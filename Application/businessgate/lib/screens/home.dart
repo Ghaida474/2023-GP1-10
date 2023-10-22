@@ -154,7 +154,9 @@ class _HomeScreenState extends State<Home> {
           )
         ],
       ),
-      body: ListView(
+      body: Container(
+        color: hexStringColor("#E3E0D2"),
+      child : ListView(
         children: [
           topContainer(size),
           categorytext(),
@@ -164,7 +166,7 @@ class _HomeScreenState extends State<Home> {
           poularlist(size),
         ],
       ),
-    );
+    ));
   }
 
   poularlist(Size size) {
