@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:businessgate/models/model_user.dart';
 import 'package:flutter/material.dart';
 
+import '../myservice.dart';
 import '../utils/colors.dart';
 
 import 'package:email_otp/email_otp.dart';
@@ -18,6 +19,8 @@ class Reset extends StatefulWidget {
 
 class _ResetState extends State<Reset> {
 
+  final formkey = GlobalKey<FormState>() ;
+
   TextEditingController _otpTextController = TextEditingController() ;
   TextEditingController _emailTextController = TextEditingController() ;
   TextEditingController _passwordTextController = TextEditingController() ;
@@ -28,6 +31,7 @@ class _ResetState extends State<Reset> {
     final EmailOTP auth = ModalRoute.of(context)!.settings.arguments as EmailOTP;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -47,6 +51,8 @@ class _ResetState extends State<Reset> {
             child: Padding(
               padding: EdgeInsets.fromLTRB(
                 70, MediaQuery.of(context).size.height * 0.18, 70, 400),
+                child : Form(
+                  key: formkey,
               child: Column(
                 children: [ 
                   logoWidget("assets/images/Logo.jpg"),
@@ -55,15 +61,15 @@ class _ResetState extends State<Reset> {
                   ),
                   textField("Enter Your OTP", Icons.person, false, _otpTextController),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
-                  textField("Enter Your Email", Icons.person, false, _emailTextController),
+                  emailField("Enter Your Email", Icons.person, false, _emailTextController),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   PasswordField("Enter Your New Password", Icons.person, true, _passwordTextController),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   ResetButton(context, () {
                     PasswordReset(auth);
@@ -71,7 +77,7 @@ class _ResetState extends State<Reset> {
                 ],
               ),)),
           ),
-          );
+    ));
   }
 
   Image logoWidget(String imageName) {
@@ -111,9 +117,43 @@ class _ResetState extends State<Reset> {
 
   } 
 
-  TextField PasswordField (String text, IconData icon, bool isPasswordType, 
+    TextFormField emailField (String text, IconData icon, bool isPasswordType, 
   TextEditingController controller) {
-    return TextField( controller: controller,
+    return TextFormField( controller: controller,
+    cursorColor: Colors.white,
+    style: TextStyle(color: Colors.white.withOpacity(0.9)),
+    decoration: InputDecoration(
+      focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 2, 14, 52),
+                )),
+      prefixIcon: Icon(
+        icon,
+        color: const Color.fromARGB(179, 255, 255, 255),
+      ),
+      labelText: text,
+      labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      fillColor: hexStringColor("#095590").withOpacity(0.45),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30.0),
+        borderSide: const BorderSide(width: 0, style: BorderStyle.none))
+      ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
+          return "Enter a Correct Email";
+        } else
+        return null ;
+      },
+    );
+
+  }
+
+  TextFormField PasswordField (String text, IconData icon, bool isPasswordType, 
+  TextEditingController controller) {
+    return TextFormField( controller: controller,
     obscureText: isPasswordType,
     enableSuggestions: !isPasswordType,
     cursorColor: Colors.white,
@@ -139,7 +179,7 @@ class _ResetState extends State<Reset> {
                 size: 16,
               ),
             ),
-            hintText: 'The password must be of 8 character long',
+            hintText: 'Must be 8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -150,6 +190,12 @@ class _ResetState extends State<Reset> {
         borderRadius: BorderRadius.circular(30.0),
         borderSide: const BorderSide(width: 0, style: BorderStyle.none))
       ),
+      validator: (value) {
+        if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
+          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+        } else
+        return null ;
+      },
      keyboardType: isPasswordType
       ? TextInputType.visiblePassword
       : TextInputType.none
@@ -158,8 +204,8 @@ class _ResetState extends State<Reset> {
   }
 
   Container ResetButton (BuildContext context, Function onTap) {
-    return Container(width: 100,
-    height: 80,
+    return Container(width: MediaQuery.of(context).size.width,
+    height: 50,
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(70)),
     child: ElevatedButton(onPressed: () { 
@@ -182,6 +228,8 @@ class _ResetState extends State<Reset> {
     ); 
 
   }
+  
+  MyService _myEmail = MyService();
   
   Future<void> PasswordReset(EmailOTP myauth) async {
 

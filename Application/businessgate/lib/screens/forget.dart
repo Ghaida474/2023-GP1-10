@@ -19,6 +19,7 @@ class _ForgetState extends State<Forget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -44,15 +45,15 @@ class _ForgetState extends State<Forget> {
                   const SizedBox(
                     height: 40,
                   ),
-                  Text("Enter your Email and we will send you an OTP to reset your Password",
+                  Text("Enter your Email to get OTP",
                   style: TextStyle(color: Color.fromARGB(217, 0, 29, 103),
                   fontWeight: FontWeight.bold),),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   textField("Enter Your Email", Icons.person, false, _emailTextController),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   MaterialButton(
                   onPressed: () async{ 
@@ -70,8 +71,12 @@ class _ForgetState extends State<Forget> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) => Reset(),
                   settings: RouteSettings(arguments: myauth ))); },
-                  child: Text("Send OTP"),
-                  color: hexStringColor("#095590"),)
+                  child: Text("Send OTP",
+                  style: TextStyle(color: Colors.white),),
+                  color: hexStringColor("#095590"),
+                  minWidth: 200,
+                  height: 50
+                  ,)
                 ],
               ),)),
           ),

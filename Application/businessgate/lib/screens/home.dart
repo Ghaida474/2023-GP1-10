@@ -13,6 +13,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<Home> {
+
+  /*Future<String> Name() async {
+    print(await ModelsUsers().FetchFirstName(_myEmail.myVariable));
+    return await ModelsUsers().FetchFirstName(_myEmail.myVariable);
+  }*/
+
   MyService _myEmail = MyService();
   
   final category = [
@@ -79,9 +85,6 @@ class _HomeScreenState extends State<Home> {
     }
   ];
 
-    Future<String> Name() async {
-    return "Hello " + await ModelsUsers().FetchFirstName(_myEmail.myVariable);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +114,7 @@ class _HomeScreenState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                   Name().toString(),
+                   "Hello ",
                   style: black16Style,
                 ),
                 heightbox(2),
