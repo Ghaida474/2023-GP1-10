@@ -1,10 +1,9 @@
 # # app/auth_backends.py
 from django.contrib.auth.backends import ModelBackend
-from .models import Kaibuemployee, FacultyStaff, Collage, Admin
+from .models import Kaibuemployee, FacultyStaff, Admin
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
 
 
 class KaibuemployeeAuthBackend(ModelBackend):
@@ -17,15 +16,19 @@ class KaibuemployeeAuthBackend(ModelBackend):
         except Kaibuemployee.DoesNotExist:
             return None 
 
+
 class FacultyStaffAuthBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
         try:
             user = FacultyStaff.objects.get(email__iexact=email)
+
             if user.check_password(password):
                 print(user)
                 return user
+                  
         except FacultyStaff.DoesNotExist:
             return None
+   
 
 
 

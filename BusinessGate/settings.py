@@ -30,20 +30,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = 'app:login'
-LOGIN_REDIRECT_URL = '/'
 
-# LOGIN_REDIRECT_URLS = {
-#     'faculty_staff_account': 'faculty_staff_account:faculty_staff_home',
-#      'kai-staff': 'kaistaff_account:kaistaff-home',
-#      'kai-account': 'kai_account:kai-home',
-#      'dean': 'dean_account:dean-account-home',
-#      'business_unit_account': 'business_unit_account:business_unit_home',
-# }
+
+LOGIN_REDIRECT_URL = 'app:login' 
+
+LOGIN_URL = '/login/'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
     
 LOGOUT_REDIRECT_URL = 'app:login'
 
-# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,10 +51,10 @@ INSTALLED_APPS = [
     'app',
     'admin_account',
     'faculty_staff_account',
-    'kai_account',
     'business_unit_account',
-    'kai_staff',
     'dean',
+    'headofkai',
+    'kai_staff',
 ]
 
 
@@ -93,14 +90,12 @@ WSGI_APPLICATION = 'BusinessGate.wsgi.application'
 
 MIME_TYPES = {
     '.pdf': 'application/pdf',
-    # Add more file extensions and content types as needed
 }
 
 AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
     'app.auth_backends.FacultyStaffAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
-    # Add any other authentication backends you need.
 ]
 
 AUTH_USER_MODEL = 'app.Kaibuemployee' 
@@ -168,11 +163,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR]
 print(STATIC_DIR)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# STATIC_URL = '/static/'
-# # STATICFILES_DIRS = [STATIC_DIR]
-# print(STATIC_DIR)
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
