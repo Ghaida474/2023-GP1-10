@@ -30,7 +30,6 @@ class Loginform(forms.Form):
     password= forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control' , 'placeholder': '*************'}))
     role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
 
-
 class adminform(forms.ModelForm):
 
      class Meta:
@@ -48,7 +47,6 @@ class adminform(forms.ModelForm):
                 'placeholder': 'Email'
                 })
         }
-
 
 class FASform(forms.ModelForm):
      
@@ -68,19 +66,26 @@ class FASform(forms.ModelForm):
             'major',
         ]
 
-
 class updateFASform(forms.ModelForm):
     cv = forms.FileField(label='Upload your CV (PDF only)', required=False)
 
     class Meta:
          model = FacultyStaff
-         fields = [ 'phonenumber','specialization','iban','officeno']
+         fields = ['username', 'phonenumber', 'email','specialization','iban','officeno']
          labels = {
             'phonenumber': 'Mobile Number',
             'iban':'IBAN',
             'officeno':'OfficeNo',
         }
          widgets = {
+            'username': forms.TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 250px;',
+                }),
+            'email': forms.EmailInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 250px;',
+                }),
             'specialization': forms.TextInput(attrs={
                 'placeholder': 'Specialization',
                 'class': "form-control", 
@@ -107,6 +112,34 @@ class updateFASform(forms.ModelForm):
                 }),
         }
          
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+
+        if not username:
+            raise ValidationError("Username cannot be empty.")
+        if len(username) < 10 or username[0].isdigit():
+            raise ValidationError("Username must be at least 10 characters and not start with a digit.")
+
+        # Check if the username is already in use
+        if FacultyStaff.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
+            raise ValidationError("This username is already in use.")
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+ 
+            # Add your custom email validation logic here
+        if not email.endswith('ksu.edu.sa'):
+            raise forms.ValidationError('Email must be from ksu.edu.sa')
+           
+        if email.find('@') == -1:
+            raise forms.ValidationError('Email must contain the "@" symbol.')
+            
+        if not email:
+            raise ValidationError("Email cannot be empty.")
+        
+        return email
     
     def clean_phonenumber(self):
         phonenumber = self.cleaned_data['phonenumber']
@@ -137,7 +170,7 @@ class updateFASform(forms.ModelForm):
         iban = self.cleaned_data['iban']
         if iban is not None:
             if not iban.lower().startswith('sa') or not iban[2:].isdigit() or len(iban) != 24:
-                raise ValidationError("IBAN must start with 'SA' and be exactly 22 digits long after SA.")
+                raise ValidationError("IBAN must start with 'SA' and be exactly 24 digits long after 'SA.")
             iban = 'SA' + iban[2:]
             return iban
     
@@ -149,7 +182,6 @@ class updateFASform(forms.ModelForm):
                     raise forms.ValidationError('CV must be in PDF format.')
 
             return cv_file 
-
 
 class UserLoginForm(forms.Form):
     email = forms.EmailField()
@@ -193,8 +225,7 @@ class previousworkform(forms.ModelForm):
                      'style': 'max-width: 220px;',
                      }),
             }
-
-
+            
 class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
         label="Current Password",

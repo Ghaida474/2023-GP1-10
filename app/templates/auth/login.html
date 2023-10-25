@@ -148,7 +148,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="{{ REDIRECT_FIELD_NAME }}" value="{{ request.GET.next }}">
+                                
                                 <div class="submit">
                                     <button class="btn btn-primary btn-block" type="submit">Sign In</button>
                                 </div>
@@ -172,20 +172,6 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-  <!-- {% if loggedout %}
-  <script>
-    function preventBack() {
-        window.history.forward();
-    }
-
-    setTimeout("preventBack()", 0);
-    window.onunload = function() {
-        null
-    };
-  </script>
-  {% endif %} -->
-
 <script>
   
   $(document).ready(function() {

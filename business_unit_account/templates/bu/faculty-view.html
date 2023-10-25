@@ -223,8 +223,8 @@
 																			<p class="text-muted">
 																				<!-- <tr class="border-top"> -->
 																					
-																						{% if faculty_member.cv %}
-																						 <a href="{% url 'business_unit_account:view_file' faculty_member.id %}" style="color: #0084BD;" target="_blank">View CV</a> 
+																						{% if user.cv %}
+																						 <a href="{% url 'business_unit_account:view_file' user.id %}" style="color: #0084BD;" target="_blank">View CV</a> 
 																						{% else %}
 																							CV not uploaded
 																						{% endif %}

@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login , logout, REDIRECT_FIELD_NAME
+from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect
 from .forms import Loginform  # Import your login form
@@ -19,14 +19,10 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from .forms import emailcheckform
 import certifi
+from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from datetime import timedelta
 from django.urls import reverse
-from django.views.decorators.cache import cache_control
-
-
-
-
 
 def clear_messages(request):
     storage = messages.get_messages(request)
@@ -41,7 +37,6 @@ def index(request):
 #     return redirect('app:index')
 #     # Your code here
 
-
 def login_view(request):
     if request.method == 'POST':
         form = Loginform(request.POST)
@@ -51,27 +46,26 @@ def login_view(request):
             role = form.cleaned_data.get('role')
             user = authenticate(request, email=email, password=password)
             print(user)
-            
+
             if user is not None:
-                r = login(request, user)
-                print(r)
                 login(request, user)
                 # Redirect to the appropriate page based on the user's type
                 if role == 'facultyandstaff' and user.position == 'Collage faculty' or user.position == 'Collage staff':
                     return redirect('faculty_staff_account:faculty_staff_home')
+                
+                elif role =='kaistaff' and user.position == 'KAI staff':
+                    next_url = request.GET.get("next", "kaistaff_account:kaistaff-home")
+                    return redirect(next_url)
+                
+                elif role =='Hkai' and  user.position == 'KAI head':
+                    next_url = request.GET.get("next", "kai_account:kai-home")
+                    return redirect(next_url)
                 
                 elif  role == 'dean' and user.position == 'Dean of collage':
                     return redirect('dean_account:dean-account-home')
                 
                 elif  role == 'BU' and user.is_buhead == True:
                     return redirect('business_unit_account:business_unit_home') 
-                
-                elif role =='kaistaff' and user.position == 'KAI staff':
-                    return redirect('kaistaff_account:kaistaff-home')
-                
-                elif role =='Hkai' and  user.position == 'KAI head':
-                    return redirect('head-kai-account:kai-home')
-                
                 else:
                     clear_messages(request)
                     messages.error(request, 'Incorrect Role.')
@@ -85,10 +79,8 @@ def login_view(request):
                     messages.error(request, 'Incorrect Email.')
             return render(request, 'auth/login.html', {'form': form})
     else: 
-         form = Loginform()
+        form = Loginform()
     return render(request, 'auth/login.html', {'form': form})
-
-
 
 
 def forgot_password(request):
@@ -114,13 +106,14 @@ def check_user_to_role(request, email, role):
             print("Matched FacultyStaff with position 'facultyandstaff'")
             return True
 
-        if role == 'dean' and user.position == 'Dean of collage':
-                print("Matched FacultyStaff with position 'dean'")
-                return True
 
-        if role == 'bu' and user.is_buhead:
-                print("Matched FacultyStaff with position 'bu'")
-                return True
+    if role == 'dean' and user.position == 'Dean of collage':
+            print("Matched FacultyStaff with position 'dean'")
+            return True
+
+    if role == 'bu' and user.is_buhead:
+            print("Matched FacultyStaff with position 'bu'")
+            return True
 
     elif role in ['kaistaff', 'hkai']:
         try:
@@ -293,11 +286,11 @@ def reset_password_action(request, email, role):
             # Show a message for incorrect OTP
        
        
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+
+
+
 def logout_view(request):
     logout(request)
     clear_messages(request)
     messages.error(request, 'You have been logged out successfully.')
-    loggedout = True
     return redirect('app:login')
-

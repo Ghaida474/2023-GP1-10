@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.http import FileResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
-from django.contrib.auth.hashers import check_password, make_password
+
 
 
 @login_required
@@ -59,7 +59,7 @@ def editprofile_view(request):
     user = request.user
     form = updateFASform(instance=user)
     form2 = previousworkform()
-    success = False
+
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
 
@@ -71,8 +71,7 @@ def editprofile_view(request):
                     user.cv = cv_file.file.read()              
                 
                 form.save()
-                success = True
-                # return redirect('business_unit_account:profile')
+                return redirect('business_unit_account:profile')
             
         elif form_type == 'form2':  
             form2 = previousworkform(request.POST)  
@@ -84,12 +83,8 @@ def editprofile_view(request):
                     previous_work = user.previouswork or []
                     for item in previouswork:
                         pw = item
-                    if len(pw) < 5 :
-                         messages.error(request,'Previous Work must be at least 5 characters.')
-                    elif pw.isdigit():
-                         messages.error(request,'Previous Work must not contain only digits.')
-                    elif pw[0].isdigit():
-                         messages.error(request,'The first character is a digit.')
+                    if len(pw) < 5 or pw.isdigit():
+                         messages.error(request,'Previous Work must be at least 5 characters and not contain only digits.')
                     else: 
                         previous_work.extend(previouswork)
                         user.previouswork = previous_work
@@ -100,23 +95,17 @@ def editprofile_view(request):
                     research_interest = user.researchinterest or []
                     for item in researchinterest:
                         ri = item
-                    if len(ri) < 5:
-                        messages.error(request,'Research Interest must be at least 5.')
-                    elif ri.isdigit():
-                        messages.error(request,'Research Interest must not contain only digits.')
-                    elif ri[0].isdigit():
-                         messages.error(request,'The first character is a digit.')
+                    if len(ri) < 5 or ri.isdigit():
+                        messages.error(request,'Research Interest must be at least 5 characters and not contain only digits.')
                     else:
                         research_interest.extend(researchinterest)
                         user.researchinterest = research_interest
                         user.save()
                         return redirect('business_unit_account:edit-profile')
 
-    return render(request, 'bu/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'success':success})
+    return render(request, 'bu/edit-profile.html', {'form': form ,'form2':form2, 'user' : user})
 
 
-
-@login_required
 def delete_previouswork(request, value_to_delete):
     user = request.user
 
@@ -131,7 +120,7 @@ def delete_previouswork(request, value_to_delete):
 
     return redirect('business_unit_account:edit-profile')
 
-@login_required
+
 def delete_researchinterest(request, value_to_delete):
     user = request.user
 
@@ -146,11 +135,11 @@ def delete_researchinterest(request, value_to_delete):
 
     return redirect('business_unit_account:edit-profile')
 
-@login_required
+
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
-    success = False
+    
     if request.method == 'POST':
         print('here1')
         form = ChangePasswordForm(user, request.POST)
@@ -159,13 +148,11 @@ def changepassword_view(request):
             user.set_password(new_password)
             user.save()
             update_session_auth_hash(request, user)
-            # messages.success(request, 'Password changed successfully.') 
-            success = True
-            # return redirect('business_unit_account:profile')
+            messages(request, 'Password changed successfully.') 
+            return redirect('business_unit_account:profile')
 
-    return render(request, 'bu/change-password.html', {'user': user, 'form': form , 'success':success})
+    return render(request, 'bu/change-password.html', {'user': user, 'form': form})
 
-@login_required
 def facultyinfo_view(request,faculty_id):
     faculty_member = get_object_or_404(FacultyStaff, id=faculty_id)
     collage_id = faculty_member.collageid.collageid

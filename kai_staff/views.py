@@ -13,44 +13,47 @@ from django.contrib.messages import get_messages
 @login_required
 def kaistaff_home (request):
     user = request.user
-    return render(request, 'kai_staff/Home.html', {'user': user })
+    return render(request, 'kai-staff/empty-page.html', {'user': user })
       
+
 @login_required
 def profile_view(request):
     user = request.user
-    return render(request, 'kai_staff/profile.html' ,{'user': user}) 
+    return render(request, 'kai-staff/profile.html' ,{'user': user}) 
 
 
 @login_required
 def editprofile_view(request):
     user = request.user
     form = updateFASform(instance=user)
-    success = False
+ 
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
 
         if form_type == 'form1': 
-            form = updateFASform(request.POST, request.FILES, instance=user)   
-            if form.is_valid():    
+            form = updateFASform(request.POST, instance=user)   
+            if form.is_valid():  
+                    
                 form.save()
-                success = True
+                return redirect('kaistaff_account:profile')
             
-    return render(request, 'kai_staff/edit-profile.html', {'form': form , 'user' : user , 'success':success})
+    return render(request, 'kai-staff/edit-profile.html', {'form': form , 'user' : user})
 
 
-@login_required
+
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
-    success = False
+    
     if request.method == 'POST':
-        print('here1')
         form = ChangePasswordForm(user, request.POST)
         if form.is_valid():
             new_password = form.cleaned_data['new_password']
             user.set_password(new_password)
             user.save()
             update_session_auth_hash(request, user)
-            success = True
+            # messages(request, 'Password changed successfully.') 
+            return redirect('kaistaff_account:profile')
 
-    return render(request, 'kai_staff/change-password.html', {'user': user, 'form': form , 'success':success})
+    return render(request, 'kai-staff/change-password.html', {'user': user, 'form': form})
+

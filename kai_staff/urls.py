@@ -9,3 +9,4 @@ urlpatterns = [
     path('kaistaff-home/edit-profile', views.editprofile_view, name='edit-profile'),
     path('kaistaff-home/change-password', views.changepassword_view, name='change-password'),
 ]
+ 

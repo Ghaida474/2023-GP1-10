@@ -114,13 +114,13 @@ class Kaibuemployee(AbstractUser):
         Group,
         verbose_name=_('groups'),
         blank=True,
-        related_name='kaibuemployee'
+        related_name='kaibuemployee_groups'
     )
     user_permissions = models.ManyToManyField(
         Permission,
         verbose_name=_('user permissions'),
         blank=True,
-        related_name='kaibuemployee'
+        related_name='kaibuemployee_permissions'
     )
 
     USERNAME_FIELD = 'email'

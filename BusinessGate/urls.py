@@ -25,9 +25,9 @@ urlpatterns = [
     path('admin-account/', include('admin_account.urls')),
     path('business-unit-account/', include('business_unit_account.urls')),
     path('faculty-staff-account/', include('faculty_staff_account.urls')),
+    path('kai-account/', include('kai_account.urls')),
     path('dean/', include('dean.urls')),
-    path('headofkai/', include('headofkai.urls')),
-    path('kai_staff/', include('kai_staff.urls')),
+    path('kai-staff/', include('kai_staff.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
