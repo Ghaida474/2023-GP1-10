@@ -23,6 +23,10 @@ from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from datetime import timedelta
 from django.urls import reverse
+from django.contrib.auth.backends import ModelBackend
+import logging
+
+logger = logging.getLogger(__name__)
 
 def clear_messages(request):
     storage = messages.get_messages(request)
@@ -37,6 +41,7 @@ def index(request):
 #     return redirect('app:index')
 #     # Your code here
 
+
 def login_view(request):
     if request.method == 'POST':
         form = Loginform(request.POST)
@@ -45,31 +50,32 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             role = form.cleaned_data.get('role')
             user = authenticate(request, email=email, password=password)
-            print(user)
+            # print(user)
 
             if user is not None:
                 login(request, user)
+                logger.info(f"User '{user.email}' authenticated successfully.")
                 # Redirect to the appropriate page based on the user's type
                 if role == 'facultyandstaff' and user.position == 'Collage faculty' or user.position == 'Collage staff':
                     return redirect('faculty_staff_account:faculty_staff_home')
                 
-                elif role =='kaistaff' and user.position == 'KAI staff':
-                    next_url = request.GET.get("next", "kaistaff_account:kaistaff-home")
-                    return redirect(next_url)
-                
-                elif role =='Hkai' and  user.position == 'KAI head':
-                    next_url = request.GET.get("next", "kai_account:kai-home")
-                    return redirect(next_url)
+                elif role == 'kaistaff' and user.position == 'KAI staff':
+                    print("Before redirection")
+                    return redirect('kai_staff:kaistaff-home')
+            
+                elif role == 'Hkai' and user.position == 'KAI head':
+                    return redirect('head-kai-account:kai-home')
                 
                 elif  role == 'dean' and user.position == 'Dean of collage':
                     return redirect('dean_account:dean-account-home')
                 
-                elif  role == 'BU' and user.is_buhead == True:
+                elif  role == 'BU' and FacultyStaff.objects.filter(email=email).exists() and user.is_buhead == True:
                     return redirect('business_unit_account:business_unit_home') 
                 else:
                     clear_messages(request)
                     messages.error(request, 'Incorrect Role.')
             else:
+                logger.error(f"Login failed for email: {email}")
                 # Check if the email exists in the Kaibuemployee or FacultyStaff tables
                 if Kaibuemployee.objects.filter(email=email).exists() or FacultyStaff.objects.filter(email=email).exists():
                     clear_messages(request)
@@ -81,6 +87,8 @@ def login_view(request):
     else: 
         form = Loginform()
     return render(request, 'auth/login.html', {'form': form})
+
+
 
 
 def forgot_password(request):

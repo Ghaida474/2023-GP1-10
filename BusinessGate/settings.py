@@ -18,6 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
+SESSION_COOKIE_SECURE = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -31,15 +32,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_URL = 'app:login'
-LOGIN_REDIRECT_URL = '/'
 
-# LOGIN_REDIRECT_URLS = {
-#     'faculty_staff_account': 'faculty_staff_account:faculty_staff_home',
-#      'kai-staff': 'kaistaff_account:kaistaff-home',
-#      'kai-account': 'kai_account:kai-home',
-#      'dean': 'dean_account:dean-account-home',
-#      'business_unit_account': 'business_unit_account:business_unit_home',
-# }
+LOGIN_REDIRECT_URL = '/'
     
 LOGOUT_REDIRECT_URL = 'app:login'
 
@@ -54,7 +48,7 @@ INSTALLED_APPS = [
     'app',
     'admin_account',
     'faculty_staff_account',
-    'kai_account',
+    'headofkai',
     'business_unit_account',
     'kai_staff',
     'dean',
@@ -178,3 +172,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

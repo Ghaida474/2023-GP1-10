@@ -21,17 +21,17 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('app.urls')),
+    path('', include('app.urls' , namespace='app')),
     path('admin-account/', include('admin_account.urls')),
-    path('business-unit-account/', include('business_unit_account.urls')),
-    path('faculty-staff-account/', include('faculty_staff_account.urls')),
-    path('kai-account/', include('kai_account.urls')),
-    path('dean/', include('dean.urls')),
-    path('kai-staff/', include('kai_staff.urls')),
+    path('business-unit-account/', include('business_unit_account.urls',namespace='business_unit_account')),
+    path('faculty-staff-account/', include('faculty_staff_account.urls',namespace='faculty_staff_account')),
+    path('headofkai/', include('headofkai.urls',namespace='head-kai-account')),
+    path('dean/', include('dean.urls',namespace='dean_account')),
+    path('kai-staff/', include('kai_staff.urls', namespace='kai_staff')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += [
-    path('login/', include('app.urls')),  # Include the login URL from app/urls.py
-]
+# urlpatterns += [
+#     path('login/', include('app.urls')),  # Include the login URL from app/urls.py
+# ]

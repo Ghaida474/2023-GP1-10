@@ -1,0 +1,98 @@
+  {% load static %}   
+  <style>
+.side-menu__item a:hover {
+    color: #095590 !important
+}
+  </style>        
+				<div class="sticky">
+					<aside class="app-sidebar">
+						<div class="app-sidebar__logo">
+							<a class="header-brand" href="{% url 'head-kai-account:kai-home' %}">
+								<img src="" class="header-brand-img desktop-lgo" alt="businessgatelogo">
+								<img src="{% static 'assets/images/brand/logowithname.png'%}" class="header-brand-img dark-logo" alt="businessgatelogo" height="60" >
+								<img src="" class="header-brand-img mobile-logo" alt="businessgatelogo">
+								<img src="{% static 'assets/images/brand/businessgatelogo.png'%}" class="header-brand-img darkmobile-logo" alt="businessgatelogo"  height="55" >
+							</a>
+						</div>
+						<div class="app-sidebar3" >
+							<div class="main-menu"  >
+								<div class="app-sidebar__user" >
+									<div class="dropdown user-pro-body text-center">
+										<div class="user-info" style="color:#0084BD;">
+											<h5 class=" mb-2" >{{user.first_name}} {{user.last_name}}</h5>
+											<span class="text-muted app-sidebar__user-name text-sm" >Head of KAI Business Unit</span>
+										</div>
+									</div>
+								</div>
+								<div class="slide-left disabled" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"><path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"/></svg></div>
+								<ul class="side-menu" >
+									<!-- ********************** -->
+									<li class="slide" >
+										<a href="{% url 'head-kai-account:kai-home'%}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather feather-home  sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">Dashboard</span>
+										</a>
+									</li>
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="{% url 'business_unit_account:faculty-list' %}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-address-book sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">Faculty List</span>
+										</a>
+									</li> -->
+									
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="project-list" class="side-menu__item">
+											<i class="feather fa fa-opera  sidemenu_icon"></i>
+											<span class="side-menu__label">Projects</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="empty-page" class="side-menu__item">
+											<i class="feather fa fa-ravelry  sidemenu_icon"></i>
+											<span class="side-menu__label">Courses</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="empty-page" class="side-menu__item">
+											<i class="feather ion-university sidemenu_icon"></i>
+											<span class="side-menu__label">Master</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="hr-award" class="side-menu__item">
+											<i class="feather ion-ribbon-b sidemenu_icon"></i>
+											<span class="side-menu__label">Awards</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="empty-page" class="side-menu__item">
+											<i class="feather ion-cash sidemenu_icon"></i>
+											<span class="side-menu__label">Revenues</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a class="side-menu__item"  href="chat">
+											<i class="feather feather-message-square sidemenu_icon"></i>
+											<span class="side-menu__label">Chat</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+									<!-- <li class="slide">
+										<a href="settings" class="side-menu__item" >
+											<i class="feather fa fa-cog sidemenu_icon"></i>
+											<span class="side-menu__label">Settings</span>
+										</a>
+									</li> -->
+									<!-- ********************** -->
+								</ul>
+							</div>
+						</div>
+					</aside>
+				</div>

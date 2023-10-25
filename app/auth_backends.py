@@ -12,10 +12,11 @@ class KaibuemployeeAuthBackend(ModelBackend):
         try:
             user = Kaibuemployee.objects.get(email__iexact=email)
             if user.check_password(password):
-                print(user)
+                print(f"User '{user.email}' authenticated successfully.")
                 return user
         except Kaibuemployee.DoesNotExist:
-            return None 
+            print(f"User with email '{email}' does not exist.")
+        return None
 
 class FacultyStaffAuthBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):

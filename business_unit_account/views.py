@@ -135,7 +135,7 @@ def delete_researchinterest(request, value_to_delete):
 
     return redirect('business_unit_account:edit-profile')
 
-
+@login_required
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
@@ -153,6 +153,7 @@ def changepassword_view(request):
 
     return render(request, 'bu/change-password.html', {'user': user, 'form': form})
 
+@login_required
 def facultyinfo_view(request,faculty_id):
     faculty_member = get_object_or_404(FacultyStaff, id=faculty_id)
     collage_id = faculty_member.collageid.collageid

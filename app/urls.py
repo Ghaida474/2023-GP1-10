@@ -1,5 +1,6 @@
 from . import views
 from django.urls import include, path
+from kai_staff import views as kai_staff_views
 
 app_name = 'app'
 
@@ -11,5 +12,4 @@ urlpatterns = [
     path('forgot-password-to-reset/', views.forgot_password_view, name='forgot-password-to-reset'),
     path('reset-password/<str:email>/<str:role>/', views.reset_password, name='reset_password'),
     path('reset_password_action/<str:email>/<str:role>/', views.reset_password_action, name='reset_password_action'),
-    
 ]

@@ -1,6 +1,6 @@
 from django import forms
 import re
-from .models import Admin,FacultyStaff
+from .models import Admin,FacultyStaff,Kaibuemployee
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
@@ -200,7 +200,6 @@ class UserLoginForm(forms.Form):
             raise ValidationError("Password must be at least 8 characters")
         return password
 
-
 class previousworkform(forms.ModelForm):
 
     class Meta:
@@ -267,6 +266,35 @@ class ChangePasswordForm(forms.Form):
             self.add_error('new_password', e)
 
         return cleaned_data
+
+class updateKai(forms.ModelForm):
+    class Meta:
+                model = Kaibuemployee
+                fields = ['phonenumber']
+                widgets = {
+                'phonenumber': forms.TextInput(attrs={
+                'placeholder': '05**********',
+                'class': "form-control", 
+                'style': 'max-width: 250px;',
+                }),
+              
+            }
+    def clean_phonenumber(self):
+        phonenumber = self.cleaned_data['phonenumber']
+
+        if not phonenumber:
+            raise ValidationError("Mobile number cannot be empty.")
+        
+        if  not phonenumber.isdigit():
+            raise ValidationError("Mobile number must start with '05' and be exactly 10 digits long.")
+        
+        if not phonenumber.startswith('05'): 
+             raise ValidationError("Mobile number must start with '05.")
+
+        if  len(phonenumber) != 10:
+            raise ValidationError("Mobile number be exactly 10 digits long.")
+
+        return phonenumber
 
 
           

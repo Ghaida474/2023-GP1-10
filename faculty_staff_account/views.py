@@ -125,7 +125,7 @@ def delete_researchinterest(request, value_to_delete):
 
     return redirect('faculty_staff_account:edit-profile')
 
-
+@login_required
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
