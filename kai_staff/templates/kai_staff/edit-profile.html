@@ -2,23 +2,30 @@
 {% load static %}
 
     {% block content %}
+	<style>
+		.error {
+      border: 1px solid red;
+    }
+    .is-invalid {
+        border: 1px solid red;
+    }
+	</style>
 						<!-- PAGE HEADER -->
                         <div class="page-header d-lg-flex d-block">
 							<div class="page-leftheader">
-								<div class="page-title">Editprofile</div>
+								<div class="page-title">تحديث المعلومات الشخصية</div>
 							</div>
 							<div class="page-rightheader ms-md-auto">
 							</div>
 						</div>
 						<!-- END PAGE HEADER -->
-						
 						<!-- ROW -->
 						<div class="row">
-
+						
 							<div class="col-xl-8 col-lg-7">
 								<div class="card"  style="width: 600px; margin-left: 50px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
 									<div class="card-body">
-										<div class="card-title">Personal Information:</div>
+										<div class="card-title">تحديث رقم الهاتف المحمول</div>
 										<div class="row">
 											<form method="post" enctype="multipart/form-data"  name="form1">
 												{% csrf_token %}
@@ -35,8 +42,8 @@
 
 											
 												<div class="card-footer text-center">
-													<button type="submit" value="form1" name="form_type" class="btn btn-lg btn-primary">Update</button>
-													<a href="{% url 'kaistaff_account:profile' %}" class="btn btn-lg btn-danger">Cancel</a>
+													<button type="submit" value="form1" name="form_type" class="btn btn-lg btn-primary">تحديث</button>
+													<a href="{% url 'kai_staff:profile' %}" class="btn btn-lg btn-danger">رجوع</a>
 												</div>
 											</form>
 											
@@ -56,8 +63,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		{% if success %}
 			<script>
-			alert('Information Updated Successfully.');
-			window.location.href = "{% url 'faculty_staff_account:profile' %}";  // Redirect after alert
+			alert('تم تحديث رقم الهاتف المحمول بنجاح.');
+			window.location.href = "{% url 'kai_staff:profile' %}";  
 			</script>
 		{% endif %}
 	

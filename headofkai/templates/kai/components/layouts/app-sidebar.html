@@ -20,7 +20,7 @@
 									<div class="dropdown user-pro-body text-center">
 										<div class="user-info" style="color:#0084BD;">
 											<h5 class=" mb-2" >{{user.first_name}} {{user.last_name}}</h5>
-											<span class="text-muted app-sidebar__user-name text-sm" >Head of KAI Business Unit</span>
+											<span class="text-muted app-sidebar__user-name text-sm" >{{user.position}}</span>
 										</div>
 									</div>
 								</div>
@@ -30,7 +30,7 @@
 									<li class="slide" >
 										<a href="{% url 'head-kai-account:kai-home'%}" class="side-menu__item" style="color:#0084BD;">
 											<i class="feather feather-home  sidemenu_icon" style="color:#0084BD;"></i>
-											<span class="side-menu__label">Dashboard</span>
+											<span class="side-menu__label">لوحة القيادة</span>
 										</a>
 									</li>
 									<!-- ********************** -->

@@ -9,15 +9,15 @@ from django.contrib.auth.hashers import check_password
 
 ROLE_CHOICES= [
     
-    ('BU', 'Head of Business Unit'),
-    ('dean', 'Dean of Collage'),
-    ('facultyandstaff', 'Faculty/Staff Member'),
-    ('Hkai', 'Head of KAI Business Unit'),
-    ('kaistaff', 'KAI Business Unit Staff'),
+    ('BU', 'رئيس وحدة الأعمال'),
+    ('dean', 'عميد الكلية'),
+    ('facultyandstaff', 'عضو هيئة التدريس - موظف/ة'),
+    ('Hkai', 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله'),
+    ('kaistaff', 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله'),
     ]
 
 class emailcheckform(forms.Form):
-     email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Mail or Username'}))
+     email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'البريد الإلكتروني'}))
      role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
 
 
@@ -26,7 +26,7 @@ class ForgetPasswordForm(forms.Form):
 
 
 class Loginform(forms.Form):
-    email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}))
+    email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'البريد الإلكتروني'}))
     password= forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control' , 'placeholder': '*************'}))
     role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
 
@@ -67,36 +67,30 @@ class FASform(forms.ModelForm):
         ]
 
 class updateFASform(forms.ModelForm):
-    cv = forms.FileField(label='Upload your CV (PDF only)', required=False)
+    cv = forms.FileField(label='قم بتحميل سيرتك الذاتية (PDF فقط)', required=False)
 
     class Meta:
          model = FacultyStaff
-         fields = ['username', 'phonenumber', 'email','specialization','iban','officeno']
+         fields = ['username', 'phonenumber','specialization','iban','officeno']
          labels = {
-            'phonenumber': 'Mobile Number',
-            'iban':'IBAN',
-            'officeno':'OfficeNo',
+            'username':'اسم المستخدم',
+            'phonenumber': 'رقم الهاتف المحمول',
+            'iban':'الإيبان',
+            'officeno':'رقم المكتب',
+            'specialization':'التخصص الدقيق'
         }
          widgets = {
             'username': forms.TextInput(attrs={
                 'class': "form-control",
                 'style': 'max-width: 250px;',
                 }),
-            'email': forms.EmailInput(attrs={
-                'class': "form-control", 
-                'style': 'max-width: 250px;',
-                }),
             'specialization': forms.TextInput(attrs={
-                'placeholder': 'Specialization',
+                'placeholder': 'التخصص الدقيق',
                 'class': "form-control", 
                 'style': 'max-width: 250px;',
                 }),
             'phonenumber': forms.TextInput(attrs={
                 'placeholder': '05**********',
-                'class': "form-control", 
-                'style': 'max-width: 250px;',
-                }),
-            'email': forms.TextInput(attrs={
                 'class': "form-control", 
                 'style': 'max-width: 250px;',
                 }),
@@ -106,7 +100,7 @@ class updateFASform(forms.ModelForm):
                 'style': 'max-width: 250px;',
                 }),
             'officeno': forms.TextInput(attrs={
-                'placeholder': 'OfficeNo',
+                'placeholder': 'رقم المكتب',
                 'class': "form-control", 
                 'style': 'max-width: 250px;',
                 }),
@@ -119,42 +113,27 @@ class updateFASform(forms.ModelForm):
         if not username:
             raise ValidationError("Username cannot be empty.")
         if len(username) < 10 or username[0].isdigit():
-            raise ValidationError("Username must be at least 10 characters and not start with a digit.")
+            raise ValidationError("يجب أن لا يقل اسم المستخدم عن 10 أحرف وألا يبدأ برقم.")
 
         # Check if the username is already in use
         if FacultyStaff.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
-            raise ValidationError("This username is already in use.")
+            raise ValidationError("اسم المستخدم هذا تم استخدامه.")
     
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        
- 
-            # Add your custom email validation logic here
-        if not email.endswith('ksu.edu.sa'):
-            raise forms.ValidationError('Email must be from ksu.edu.sa')
-           
-        if email.find('@') == -1:
-            raise forms.ValidationError('Email must contain the "@" symbol.')
-            
-        if not email:
-            raise ValidationError("Email cannot be empty.")
-        
-        return email
     
     def clean_phonenumber(self):
         phonenumber = self.cleaned_data['phonenumber']
 
         if not phonenumber:
-            raise ValidationError("Mobile number cannot be empty.")
+            raise ValidationError("لا يمكن أن يكون رقم الهاتف المحمول فارغا.")
         
         if  not phonenumber.isdigit():
-            raise ValidationError("Mobile number must start with '05' and be exactly 10 digits long.")
+            raise ValidationError("يجب أن يبدأ رقم الهاتف المحمول بـ '05' وأن يتكون من 10 أرقام بالضبط.")
         
         if not phonenumber.startswith('05'): 
-             raise ValidationError("Mobile number must start with '05.")
+             raise ValidationError("'رقم الهاتف المحمول يجب أن يبدأ بـ '05.")
 
         if  len(phonenumber) != 10:
-            raise ValidationError("Mobile number be exactly 10 digits long.")
+            raise ValidationError("رقم الهاتف المحمول يجب أن يتكون من 10 أرقام بالضبط.")
 
         return phonenumber
 
@@ -162,7 +141,7 @@ class updateFASform(forms.ModelForm):
         specialization = self.cleaned_data['specialization']
         if specialization is not None:
             if len(specialization) < 5 or specialization.isdigit():
-                raise ValidationError("Specialization must be at least 5 characters and not contain only digits.")
+                raise ValidationError("يجب أن لا يقل التخصص الدقيق عن 5 أحرف ولا يحتوي على أرقام فقط.")
 
             return specialization
 
@@ -170,7 +149,7 @@ class updateFASform(forms.ModelForm):
         iban = self.cleaned_data['iban']
         if iban is not None:
             if not iban.lower().startswith('sa') or not iban[2:].isdigit() or len(iban) != 24:
-                raise ValidationError("IBAN must start with 'SA' and be exactly 24 digits long after 'SA.")
+                raise ValidationError("يجب أن يبدأ الإيبان بـ 'SA' ويتكون من رقم 22 بالضبط بعد 'SA'.")
             iban = 'SA' + iban[2:]
             return iban
     
@@ -179,7 +158,7 @@ class updateFASform(forms.ModelForm):
         if cv_file is not None:
             if cv_file:
                 if not cv_file.name.endswith('.pdf'):
-                    raise forms.ValidationError('CV must be in PDF format.')
+                    raise forms.ValidationError('يجب أن تكون السيرة الذاتية بصيغة PDF.')
 
             return cv_file 
 
@@ -209,17 +188,17 @@ class previousworkform(forms.ModelForm):
              'researchinterest',
          ]
           labels = {
-            'previouswork': 'Previous Work',
-            'researchinterest':'Research Interest',
+            'previouswork': 'الأعمال السابقة',
+            'researchinterest':'الإهتمامات',
         }
           widgets = {
              'previouswork': forms.TextInput(attrs={
-                     'placeholder': 'Previous Work',
+                     'placeholder': 'الأعمال السابقة',
                      'class': "form-control", 
                      'style': 'max-width: 220px;',
                      }),
             'researchinterest': forms.TextInput(attrs={
-                     'placeholder':'Research Interest',
+                     'placeholder':'الإهتمامات',
                      'class': "form-control", 
                      'style': 'max-width: 220px;',
                      }),
@@ -227,16 +206,16 @@ class previousworkform(forms.ModelForm):
             
 class ChangePasswordForm(forms.Form):
     current_password = forms.CharField(
-        label="Current Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Current Password'}),
+        label="كلمة السر الحالية",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'كلمة السر الحالية' }),
     )
     new_password = forms.CharField(
-        label="New Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Password' }),
+        label="كلمة السر الجديدة ",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'كلمة السر الجديدة ' }),
     )
     confirm_password = forms.CharField(
-        label="Confirm New Password",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm New Password' }),
+        label="تأكيد كلمة المرور الجديدة",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'تأكيد كلمة المرور الجديدة' }),
     )
 
     def __init__(self, user, *args, **kwargs):
@@ -253,11 +232,11 @@ class ChangePasswordForm(forms.Form):
 
         # Check if the current password is correct
         if not user.check_password(current_password):
-            raise forms.ValidationError("Current password does not match the your password.")
+            raise forms.ValidationError("كلمة المرور الحالية لا تتطابق مع كلمة المرور الخاصة بك.")
 
         # Check if the new password and confirmation password match
         if new_password != confirm_password:
-            raise forms.ValidationError("New password and confirmation password do not match.")
+            raise forms.ValidationError("كلمة المرور الجديدة وكلمة مرور التأكيد غير متطابقتين.")
 
         # Validate the new password based on Django's built-in password validation
         try:
@@ -271,28 +250,30 @@ class updateKai(forms.ModelForm):
     class Meta:
                 model = Kaibuemployee
                 fields = ['phonenumber']
+                labels = {
+                    'phonenumber': 'رقم الهاتف المحمول',
+                }
                 widgets = {
                 'phonenumber': forms.TextInput(attrs={
                 'placeholder': '05**********',
                 'class': "form-control", 
                 'style': 'max-width: 250px;',
                 }),
-              
-            }
+                }
     def clean_phonenumber(self):
         phonenumber = self.cleaned_data['phonenumber']
 
         if not phonenumber:
-            raise ValidationError("Mobile number cannot be empty.")
+            raise ValidationError("لا يمكن أن يكون رقم الهاتف المحمول فارغا.")
         
         if  not phonenumber.isdigit():
-            raise ValidationError("Mobile number must start with '05' and be exactly 10 digits long.")
+            raise ValidationError("يجب أن يبدأ رقم الهاتف المحمول بـ '05' وأن يتكون من 10 أرقام بالضبط.")
         
         if not phonenumber.startswith('05'): 
-             raise ValidationError("Mobile number must start with '05.")
+             raise ValidationError("'رقم الهاتف المحمول يجب أن يبدأ بـ '05.")
 
         if  len(phonenumber) != 10:
-            raise ValidationError("Mobile number be exactly 10 digits long.")
+            raise ValidationError("رقم الهاتف المحمول يجب أن يتكون من 10 أرقام بالضبط.")
 
         return phonenumber
 

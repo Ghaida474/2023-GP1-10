@@ -106,8 +106,8 @@ AUTH_USER_MODEL = 'app.FacultyStaff'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bg',
-        #  'NAME': 'businessgate',
+        # 'NAME': 'bg',
+        'NAME': 'businessgate',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',

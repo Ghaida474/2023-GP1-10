@@ -3,178 +3,179 @@
   
         {% block content %}
 						<!-- PAGE HEADER -->
-                        <div class="page-header d-lg-flex d-block">
-							<div class="page-leftheader">
-								<div class="page-title">Profile</div>
-							</div>
-							<div class="page-rightheader ms-md-auto">
-							</div>
-						</div>
-						<!-- END PAGE HEADER -->
+<div class="page-header d-lg-flex d-block">
+	<div class="page-leftheader">
+		<div class="page-title">الحساب التعريفي</div>
+	</div>
+	<div class="page-rightheader ms-md-auto">
+	</div>
+</div>
+<!-- END PAGE HEADER -->
 
-						<!-- ROW -->
-						<div class="row">	
-							<div class="col-xl-9 col-lg-8 col-md-12">
-								<div class=" card mg-b-20   overflow-hidden" style="margin:350px; margin-top: -15px; width: 650px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
-									<!-- main-profile-body -->
-									<div class="main-profile-body">
-										<div class="tab-content">
-											<div class="tab-pane show active" id="about">
-												<div class="card-body">
-														<div class=" mt-3">
-															<h4 class="card-title text-center">Personal Details</h4>
-															<div class="table-responsive">
-																<table class="table mb-0">
-																	<tbody>
-																		<tr>
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Full Name</span>
-																			</td>
-																			<td class="py-2 px-0">{{ user.first_name|title }} {{ user.last_name|title }}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">User Name</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.username}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Nationality</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.nationality|title}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Email</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.email}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Mobile Number</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.phonenumber}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Major</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.major}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">ID </span>
-																			</td>
-																			<td class="py-2 px-0">{{user.employeeid}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Collage</span>
-																			</td>
-																			<td class="py-2 px-0">{{collagename|title}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Department</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.department_field|title }}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Position</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.position}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Work State</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.workstatus}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Assigned Organization</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.assignedorganization|title}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">IBAN</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.iban}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">OfficeNO </span>
-																			</td>
-																			<td class="py-2 px-0">{{user.officeno}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Specialization</span>
-																			</td>
-																			<td class="py-2 px-0">{{user.specialization|title}}</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Research Interest</span>
-																			</td>
-																			<td class="py-2 px-0">
-																				{% for ri in user.researchinterest %}
-																					<a class="btn btn-sm btn-white mt-1" >{{ri|title}}</a>
-																					{% empty %}
-																					<a class="btn btn-sm btn-white mt-1" >None</a>
-																				{% endfor %}
-																			</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">Previous Work</span>
-																			</td>
-																			<td class="py-2 px-0">
-																				{% for ri in user.previouswork %}
-																					<a class="btn btn-sm btn-white mt-1" >{{ri|title}}</a>
-																					{% empty %}
-																					<a class="btn btn-sm btn-white mt-1" >None</a>
-																				{% endfor %}
-																			</td>
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">
-																				<span class="font-weight-semibold w-50">CV</span>
-																			</td>
-																			<td class="py-2 px-0">
-																				{% if user.cv %}
-																				 <a href="{% url 'faculty_staff_account:view_file' user.id %}" target="_blank">View CV</a> 
-																				{% else %}
-																					CV not uploaded
-																				{% endif %}
-																			</td>																																																									
-																		</tr>
-																		<tr class="border-top">
-																			<td class="py-2 px-0">			
-																			</td>
-																			<td class="py-2 px-0">
-																			</td>																																																									
-																		</tr>
-																	</tbody>
-																</table>
-															</div>
-															<div class="btn-list text-center">
-																<a href="{% url 'faculty_staff_account:edit-profile' %}" class="btn btn-lg btn-primary  ">  Edit Profile  </a>
-																<a href="{% url 'faculty_staff_account:change-password' %}" class="btn btn-lg btn-primary ">Edit Password</a>
-															</div>
-														</div>
-													
-												</div>	
-												</div>
-											</div>
-										</div>
+<!-- ROW -->
+<div class="row">	
+	<div class="col-xl-9 col-lg-8 col-md-12">
+		<div class=" card mg-b-20   overflow-hidden" style="margin:350px; margin-top: -15px; width: 650px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+			<!-- main-profile-body -->
+			<div class="main-profile-body">
+				<div class="tab-content">
+					<div class="tab-pane show active" id="about">
+						<div class="card-body">
+								<div class=" mt-3">
+									<h4 class="card-title text-center">معلوماتي الشخصية</h4>
+									<div class="table-responsive">
+										<table class="table mb-0">
+											<tbody>
+												<tr>
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الإسم الكامل</span>
+													</td>
+													<td class="py-2 px-0">{{ user.first_name|title }} {{ user.last_name|title }}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">إسم المستخدم</span>
+													</td>
+													<td class="py-2 px-0">{{user.username}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الجنسية</span>
+													</td>
+													<td class="py-2 px-0">{{user.nationality|title}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">البريد الإلكتروني</span>
+													</td>
+													<td class="py-2 px-0">{{user.email}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">رقم الهاتف المحمول</span>
+													</td>
+													<td class="py-2 px-0">{{user.phonenumber}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">التخصص الدراسي</span>
+													</td>
+													<td class="py-2 px-0">{{user.major}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الهوية الوظيفية</span>
+													</td>
+													<td class="py-2 px-0">{{user.employeeid}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الكلية</span>
+													</td>
+													<td class="py-2 px-0">{{collagename|title}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">القسم</span>
+													</td>
+													<td class="py-2 px-0">{{user.department_field|title }}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">نوع المستخدم</span>
+													</td>
+													<td class="py-2 px-0">{{user.position}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">وضع العمل</span>
+													</td>
+													<td class="py-2 px-0">{{user.workstatus}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الجهة المعار لها</span>
+													</td>
+													<td class="py-2 px-0">{{user.assignedorganization|title}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الإيبان</span>
+													</td>
+													<td class="py-2 px-0">{{user.iban}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">رقم المكتب</span>
+													</td>
+													<td class="py-2 px-0">{{user.officeno}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">التخصص الدقيق</span>
+													</td>
+													<td class="py-2 px-0">{{user.specialization|title}}</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الإهتمامات</span>
+													</td>
+													<td class="py-2 px-0">
+														{% for ri in user.researchinterest %}
+															<a class="btn btn-sm btn-white mt-1" >{{ri|title}}</a>
+															{% empty %}
+															<a class="btn btn-sm btn-white mt-1" >None</a>
+														{% endfor %}
+													</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">الأعمال السابقة</span>
+													</td>
+													<td class="py-2 px-0">
+														{% for ri in user.previouswork %}
+															<a class="btn btn-sm btn-white mt-1" >{{ri|title}}</a>
+															{% empty %}
+															<a class="btn btn-sm btn-white mt-1" >None</a>
+														{% endfor %}
+													</td>
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">
+														<span class="font-weight-semibold w-50">السيرة الذاتية</span>
+													</td>
+													<td class="py-2 px-0">
+														{% if user.cv %}
+														 <a href="{% url 'faculty_staff_account:view_file' user.id %}" target="_blank">الإطلاع على السيرة الذاتية</a> 
+														{% else %}
+															CV not uploaded
+														{% endif %}
+													</td>																																																									
+												</tr>
+												<tr class="border-top">
+													<td class="py-2 px-0">			
+													</td>
+													<td class="py-2 px-0">
+													</td>																																																									
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div class="btn-list text-center">
+										<a href="{% url 'faculty_staff_account:edit-profile' %}" class="btn btn-lg btn-primary  ">تغيير معلوماتي الشخصية</a>
+										<a href="{% url 'faculty_staff_account:change-password' %}" class="btn btn-lg btn-primary ">تغيير كلمة المرور</a>
 									</div>
 								</div>
-							</div>
+							
+						</div>	
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END ROW -->
                         <!-- END ROW -->
         {% endblock %}
 

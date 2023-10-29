@@ -41,8 +41,15 @@ def emptypage_view(request):
 def facultylist_view (request):
     user = request.user
     faculty = FacultyStaff.objects.filter(collageid =user.collageid)
+    collage = Collage.objects.get(collageid=user.collageid.collageid)
+    departments = collage.departments
+
+    context = {
+        'faculty': faculty,
+        'departments': departments,
+    }
     
-    return render(request, 'dean/faculty-list.html', {'faculty' : faculty})
+    return render(request, 'dean/faculty-list.html', context)
 
 def view_file(request, user_id):
     # Retrieve the user based on the user_id
@@ -62,7 +69,8 @@ def editprofile_view(request):
     user = request.user
     form = updateFASform(instance=user)
     form2 = previousworkform()
-
+    success = False
+    form2updated = False
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
 
@@ -74,7 +82,8 @@ def editprofile_view(request):
                     user.cv = cv_file.file.read()              
                 
                 form.save()
-                return redirect('dean_account:profile')
+                success = True
+                # return redirect('dean_account:profile')
             
         elif form_type == 'form2':  
             form2 = previousworkform(request.POST)  
@@ -86,27 +95,38 @@ def editprofile_view(request):
                     previous_work = user.previouswork or []
                     for item in previouswork:
                         pw = item
-                    if len(pw) < 5 or pw.isdigit():
-                         messages.error(request,'Previous Work must be at least 5 characters and not contain only digits.')
+                    if len(pw) < 5 :
+                         messages.error(request,'يجب أن يكون  5 أحرف على الأقل.')
+                    elif pw.isdigit():
+                         messages.error(request,'يجب ألا يحتوي على أرقام فقط.')
+                    elif pw[0].isdigit():
+                         messages.error(request,'الحرف الأول لا يمكن ان يكون رقم.')
                     else: 
                         previous_work.extend(previouswork)
                         user.previouswork = previous_work
                         user.save()
-                        return redirect('dean_account:edit-profile')
+                        form2updated = True
+                        # return redirect('dean_account:edit-profile')
                    
                 if researchinterest:
                     research_interest = user.researchinterest or []
                     for item in researchinterest:
                         ri = item
-                    if len(ri) < 5 or ri.isdigit():
-                        messages.error(request,'Research Interest must be at least 5 characters and not contain only digits.')
+                    if len(ri) < 5:
+                       messages.error(request,'يجب أن يكون  5 أحرف على الأقل.')
+                    elif ri.isdigit():
+                        messages.error(request,'يجب ألا يحتوي على أرقام فقط.')
+                    elif ri[0].isdigit():
+                        messages.error(request,'الحرف الأول لا يمكن ان يكون رقم.')
                     else:
                         research_interest.extend(researchinterest)
                         user.researchinterest = research_interest
                         user.save()
                         return redirect('dean_account:edit-profile')
 
-    return render(request, 'dean/edit-profile.html', {'form': form ,'form2':form2, 'user' : user})
+    return render(request, 'dean/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'success':success , 'form2updated':form2updated })
+
+
 
 
 def delete_previouswork(request, value_to_delete):
@@ -142,6 +162,7 @@ def delete_researchinterest(request, value_to_delete):
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
+    success = False
     
     if request.method == 'POST':
         print('here1')
@@ -154,7 +175,7 @@ def changepassword_view(request):
             # messages(request, 'Password changed successfully.') 
             return redirect('dean_account:profile')
 
-    return render(request, 'dean/change-password.html', {'user': user, 'form': form})
+    return render(request, 'dean/change-password.html', {'user': user, 'form': form , 'success':success })
 
 @login_required
 def facultyinfo_view(request,faculty_id):

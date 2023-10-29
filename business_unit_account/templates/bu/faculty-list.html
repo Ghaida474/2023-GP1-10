@@ -9,7 +9,7 @@
 						<!-- PAGE HEADER -->
                         <div class="page-header d-xl-flex d-block">
 							<div class="page-leftheader">
-								<div class="page-title">Faculty List</div>
+								<div class="page-title">قائمة هيئة التدريس</div>
 							</div>
 							<div class="page-rightheader ms-md-auto">
 								<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">	
@@ -23,16 +23,28 @@
 							<div class="col-xl-12 col-md-12 col-lg-12">
 								<div class="card">
 									<div class="card-body">
-										<div class="table-responsive">
+										<div class="table-vcenter">
 											<table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
+												
 												<thead>
+												<div class="row mt-2">
+													<div class="" style="margin-right: 802px; height: 40px;">
+														<label for="department_filter" class="d-inline-block">تصفية حسب القسم </label>
+														<select name="department_filter" id="department_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+															<option value="all">جميع الأقسام</option>
+															{% for department in departments %}
+																<option value="{{ department }}">{{ department }}</option>
+															{% endfor %}
+														</select>
+													</div>
+												</div>
 													<tr>
-														<th class="border-bottom-0">Name</th>
-														<th class="border-bottom-0">Email</th>
-														<th class="border-bottom-0">Department</th>
-														<th class="border-bottom-0">Major</th>
-														<th class="border-bottom-0">Specialization</th>
-														<th class="border-bottom-0">View</th>
+														<th class="border-bottom-0">الإسم الكامل</th>
+														<th class="border-bottom-0">البريد الإلكتروني</th>
+														<th class="border-bottom-0">القسم</th>
+														<th class="border-bottom-0">التخصص الدارسي</th>
+														<th class="border-bottom-0">التخصص الدقيق</th>
+														<th class="border-bottom-0">مزيد من المعلومات</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -47,9 +59,9 @@
 														<td>{{faculty_member.department_field|title}}</td>
 														<td>{{faculty_member.major|title}}</td>
 														<td>{{faculty_member.specialization|title}}</td>		
-														<td>
-															<div class="d-flex">
-																<a href="{% url 'business_unit_account:faculty-view' faculty_id=faculty_member.id %}" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i class="feather feather-eye text-primary"></i></a>
+														<td >
+															<div class="d-flex" >
+																<a href="{% url 'business_unit_account:faculty-view' faculty_id=faculty_member.id %}" style="width:50px; margin-right: 35px;" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i style="width:20px;"class="feather feather-eye text-primary"></i></a>
 															</div>
 														</td>
 													</tr>
@@ -90,4 +102,22 @@
 
 		<!-- THEME COLOR JS -->
 		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		<script>
+			$(document).ready(function() {
+				$('#department_filter').change(function() {
+					var selectedDepartment = $(this).val();
+					if (selectedDepartment == 'all') {
+						// Show all rows
+						$('tbody tr').show();
+					} else {
+						// Hide all rows
+						$('tbody tr').hide();
+						// Show only rows with the selected department
+						$('tbody tr').filter(function() {
+							return $(this).find('td:nth-child(3)').text() == selectedDepartment;
+						}).show();
+					}
+				});
+			});
+		</script>
 	{% endblock %}

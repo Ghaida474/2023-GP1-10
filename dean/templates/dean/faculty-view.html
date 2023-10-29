@@ -5,252 +5,251 @@
 
     {% endblock %}
 
-        {% block content %}
-						<!-- PAGE HEADER -->
-                        <div class="page-header d-xl-flex d-block">
-							<div class="page-leftheader">
-								<div class="page-title">{{faculty_member.position}}</div>
-							</div>
-							<div class="page-rightheader ms-md-auto">
-								<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
-								</div>
+	{% block content %}
+	<!-- PAGE HEADER -->
+	<div class="page-header d-xl-flex d-block">
+		<div class="page-leftheader">
+			<div class="page-title">{{faculty_member.position}}</div>
+		</div>
+		<div class="page-rightheader ms-md-auto">
+			<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+			</div>
+		</div>
+	</div>
+	<!-- END PAGE HEADER -->
+	<!-- ROW -->
+	<div class="row">
+		<div class="col-xl-3 col-md-12 col-lg-12">
+			<div class="card  overflow-hidden"  style=" background-color: #F5FBFF; box-shadow:1px 1px 1px 1px #0084BD; width: 450px; margin-left: 20px;">
+				<div class="card-body">
+					<div class="">
+						<div class="pro-user mt-3">
+							<h4 class="card-title text-center">المعلومات الشخصية</h4>
+							<div class="table-responsive">
+								<table class="table mb-0">
+									<tbody>
+										<tr >
+											<td class="py-2 px-0"></td>	
+										</tr>
+										<tr>
+											<td class="py-2 px-0 ">
+												<span class="font-weight-semibold w-50">الإسم الكامل </span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.first_name|title}} {{faculty_member.last_name|title}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">البريد الإلكتروني</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.email}}</td>
+										</tr>
+										
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">رقم الهاتف المحمول</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.phonenumber}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">الجنسية</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.nationality|title}}</td>
+										</tr>
+										
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">الجنس</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.gender|title}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">التخصص الدراسي</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.major|title}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">الكلية</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{collagename|title}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">القسم</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.department_field|title}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">الإيبان</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.iban}}</td>
+										</tr>
+										<tr class="border-top">
+											<td class="py-2 px-0">
+												<span class="font-weight-semibold w-50">رقم المكتب</span>
+											</td>
+											<td class="py-2 px-0 text-center">{{faculty_member.officeno}}</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
-						<!-- END PAGE HEADER -->
-
-						<!-- ROW -->
-						<div class="row">
-							<div class="col-xl-3 col-md-12 col-lg-12">
-								<div class="card  overflow-hidden"  style=" background-color: #F5FBFF; box-shadow:1px 1px 1px 1px #0084BD; width: 450px; margin-left: 20px;">
-									<div class="card-body">
-										<div class="">
-											<div class="pro-user mt-3">
-												<h4 class="card-title text-center">Personal Details</h4>
-												<div class="table-responsive">
-													<table class="table mb-0">
-														<tbody>
-															<tr >
-																<td class="py-2 px-0"></td>	
-															</tr>
-															<tr>
-																<td class="py-2 px-0 ">
-																	<span class="font-weight-semibold w-50">Full Name </span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.first_name|title}} {{faculty_member.last_name|title}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Email</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.email}}</td>
-															</tr>
-															
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Mobile Number</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.phonenumber}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Nationality</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.nationality|title}}</td>
-															</tr>
-															
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Gender</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.gender|title}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Major</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.major|title}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Collage</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{collagename|title}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">Department</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.department_field|title}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">IBAN</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.iban}}</td>
-															</tr>
-															<tr class="border-top">
-																<td class="py-2 px-0">
-																	<span class="font-weight-semibold w-50">OfficeNO</span>
-																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.officeno}}</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>	
-								</div>
-							</div>
+					</div>
+				</div>	
+			</div>
+		</div>
 
 
-							<div class="col-xl-9 col-md-12 col-lg-12" >
-								<div class="tab-menu-heading hremp-tabs p-0 ">
-									<div class="tabs-menu1">
-										<!-- Tabs -->
-										<ul class="nav panel-tabs" style=" margin-left: 200px;" >
-											<li class="ms-4" ><a href="#tab5" class="active"  data-bs-toggle="tab">Overview</a></li>
-											<li><a href="#tab6" data-bs-toggle="tab">Projects</a></li>
-										</ul>
-									</div>
-								</div>
+		<div class="col-xl-9 col-md-12 col-lg-12" >
+			<div class="tab-menu-heading hremp-tabs p-0 ">
+				<div class="tabs-menu1" >
+					<!-- Tabs -->
+					<ul class="nav panel-tabs" style=" margin-right: 210px;" >
+						<li class="ms-4" ><a href="#tab5" class="active"  data-bs-toggle="tab">المعلومات الأكاديمية</a></li>
+						<li><a href="#tab6" data-bs-toggle="tab">المشاريع</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="panel-body tabs-menu-body hremp-tabs1 p-0" style="width: 630px; margin-right: 200px;">
+				<div class="tab-content">
+					<div class="tab-pane active" id="tab5">
+						<div class="card-body">
+							<div class="row">
 								
-								<div class="panel-body tabs-menu-body hremp-tabs1 p-0" style="width: 630px; margin-left: 215px;">
-									<div class="tab-content">
-										<div class="tab-pane active" id="tab5">
-											<div class="card-body">
-												<div class="row">
-													
-													<div class="col-xl-4 col-lg-4 col-md-12">
-														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
-															<div class="card-body" style="width: 300px;">
-																<div class="row">
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Work Status</span>
-																			<p class="text-muted">
-																				{{faculty_member.workstatus|title}}
-																			</p>
-																		</div>
-																	</div>
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Assigned Organization</span>
-																			<p class="text-muted">
-																				{{faculty_member.assignedorganization|title}}
-																			</p>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+										<div class="card-body" style="width: 300px;">
+											<div class="row">
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">وضع العمل</span>
+														<p class="text-muted">
+															{{faculty_member.workstatus|title}}
+														</p>
 													</div>
-
-													<div class="col-xl-4 col-lg-4 col-md-12">
-														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
-															<div class="card-body" style="width: 300px;">
-																<div class="row">
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Specialization</span>
-																			<p class="text-muted">
-																				{{faculty_member.specialization|title}}
-																			</p>
-																		</div>
-																	</div>
-																	
-																</div>
-															</div>
-														</div>
+												</div>
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">الجهة المعار لها</span>
+														<p class="text-muted">
+															{{faculty_member.assignedorganization|title}}
+														</p>
 													</div>
-
-													<div class="col-xl-4 col-lg-4 col-md-12">
-														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
-															<div class="card-body" style="width: 300px;">
-																<div class="row">
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Research Interest</span>
-																			<p class="text-muted">
-																				{% for ri in faculty_member.researchinterest %}
-																				<div class="d-flex align-items-center">
-																					<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
-																				</div>
-																				{% empty %}
-																					<a class="btn btn-sm btn-white mt-1">None</a>
-																				{% endfor %}
-																			</p>
-																		</div>
-																	</div>
-																	
-																</div>
-															</div>
-														</div>
-													</div>
-						
-													<div class="col-xl-4 col-lg-4 col-md-12">
-														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
-															<div class="card-body" style="width: 300px;">
-																<div class="row">
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Previous Work</span>
-																			<p class="text-muted">
-																				{% for ri in faculty_member.previouswork %}
-																				<div class="d-flex align-items-center">
-																					<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
-																				</div>
-																				{% empty %}
-																					<a class="btn btn-sm btn-white mt-1">None</a>
-																				{% endfor %}
-																			</p>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<div class="col-xl-4 col-lg-4 col-md-12">
-														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
-															<div class="card-body" style="width: 300px;">
-																<div class="row">
-																	<div class="col-8">
-																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">CV</span>
-																			<p class="text-muted">
-																				<!-- <tr class="border-top"> -->
-																					
-																						{% if user.cv %}
-																						 <a href="{% url 'dean_account:view_file' user.id %}" style="color: #0084BD;" target="_blank">View CV</a> 
-																						{% else %}
-																							CV not uploaded
-																						{% endif %}
-																					</td>																																																									
-																				
-																			</p>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-
-
 												</div>
 											</div>
 										</div>
-										
-										
-										<div class="tab-pane" id="tab6" >
-											<div class="card-body">
-												<div class="row">
-													<h1>to be continued....</h1>
-												</div>	
-											</div>
-										</div>
+									</div>
+								</div>
 
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+										<div class="card-body" style="width: 300px;">
+											<div class="row">
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">التخصص الدقيق</span>
+														<p class="text-muted">
+															{{faculty_member.specialization|title}}
+														</p>
+													</div>
+												</div>
+												
+											</div>
 										</div>
 									</div>
 								</div>
+
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+										<div class="card-body" style="width: 300px;">
+											<div class="row">
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">الإهتمامات</span>
+														<p class="text-muted">
+															{% for ri in faculty_member.researchinterest %}
+															<div class="d-flex align-items-center">
+																<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
+															</div>
+															{% empty %}
+																<a class="btn btn-sm btn-white mt-1">None</a>
+															{% endfor %}
+														</p>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+	
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+										<div class="card-body" style="width: 300px;">
+											<div class="row">
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">الأعمال السابقة</span>
+														<p class="text-muted">
+															{% for ri in faculty_member.previouswork %}
+															<div class="d-flex align-items-center">
+																<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
+															</div>
+															{% empty %}
+																<a class="btn btn-sm btn-white mt-1">None</a>
+															{% endfor %}
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-xl-4 col-lg-4 col-md-12">
+									<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+										<div class="card-body" style="width: 300px;">
+											<div class="row">
+												<div class="col-8">
+													<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">السيرة الذاتية</span>
+														<p class="text-muted">
+															<!-- <tr class="border-top"> -->
+																
+																	{% if user.cv %}
+																	 <a href="{% url 'dean_account:view_file' user.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
+																	{% else %}
+																	لم يتم تحميل السيرة الذاتية
+																	{% endif %}
+																</td>																																																									
+															
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
 							</div>
-						
-						<!-- END ROW -->
-        {% endblock %}
+						</div>
+					</div>
+					
+					
+					<div class="tab-pane" id="tab6" >
+						<div class="card-body">
+							<div class="row">
+								<h1>to be continued....</h1>
+							</div>	
+						</div>
+					</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<!-- END ROW -->
+{% endblock %}
 
 		
     {% block scripts %}

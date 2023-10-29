@@ -2,10 +2,18 @@
 {% load static %}
 
     {% block content %}
+	<style>
+		.error {
+      border: 1px solid red;
+    }
+    .is-invalid {
+        border: 1px solid red;
+    }
+	</style>
 						<!-- PAGE HEADER -->
                         <div class="page-header d-lg-flex d-block">
 							<div class="page-leftheader">
-								<div class="page-title">Editprofile</div>
+								<div class="page-title">تحديث المعلومات الشخصية</div>
 							</div>
 							<div class="page-rightheader ms-md-auto">
 							</div>
@@ -17,7 +25,7 @@
 							<div class="col-xl-4 col-lg-5" >
 								<div class="card" style="width: 350px; margin-left: 40px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;" >
 									<div class="card-header border-bottom-0">		
-										<div class="card-title">Academic Information</div>
+										<div class="card-title">المعلومات الأكاديمية</div>
 									</div>
 
 									<div class="card-body" >
@@ -73,7 +81,7 @@
 							<div class="col-xl-8 col-lg-7">
 								<div class="card"  style="width: 600px; margin-left: 50px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
 									<div class="card-body">
-										<div class="card-title">Personal Information:</div>
+										<div class="card-title">معلوماتي الشخصية</div>
 										<div class="row">
 											<form method="post" enctype="multipart/form-data"  name="form1">
 												{% csrf_token %}
@@ -87,14 +95,6 @@
 												{% endif %} 
 												<br>
 
-												<label>{{ form.email.label_tag }} <span style="color: red;">*</span></label>
-												{{ form.email }}
-												{% if form.email.errors %}
-													{% for error in form.email.errors %}
-													<p style="color: red;" class="error-message">{{ error }}</p>
-													{% endfor %}
-												{% endif %}
-												<br>
 
 												<label>{{ form.phonenumber.label_tag }} <span style="color: red;">*</span></label>
 												{{ form.phonenumber }}
@@ -144,8 +144,8 @@
 												
 												
 												<div class="card-footer text-center">
-													<button type="submit" value="form1" name="form_type" class="btn btn-lg btn-primary">Update</button>
-													<a href="{% url 'business_unit_account:profile' %}" class="btn btn-lg btn-danger">Cancel</a>
+													<button type="submit" value="form1" name="form_type" class="btn btn-lg btn-primary">تحديث</button>
+													<a href="{% url 'business_unit_account:profile' %}" class="btn btn-lg btn-danger">رجوع</a>
 												</div>
 											</form>
 											
@@ -164,42 +164,119 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-		<script>
-			// $(document).ready(function() {
-							
-			// 				$('input[name="username"]').on('blur', function() {
-			// 					var username = $(this).val();
-			// 					if (username.length < 10) {
-			// 					$(this).addClass('is-invalid');
-			// 					$(this).siblings('.error-message').text(' Username should be at least 10 characters long');
-			// 					} else if (username.length = 0){
-			// 					$(this).addClass('is-invalid');
-			// 					$(this).siblings('.error-message').text('Username is required');
-			// 					}else {
-			// 					$(this).removeClass('is-invalid');
-			// 					$(this).siblings('.error-message').text('');
-			// 					}
-			// 				});
+        {% if success %}
+          <script>
+          alert('تم تحديث المعلومات بنجاح.');
+          window.location.href = "{% url 'business_unit_account:profile' %}";  // Redirect after alert
+          </script>
+        {% endif %}
 
-			// 				$('input[name="email"]').on('blur', function() {
-			// 					var email = $(this).val();
-			// 					if (email.length === 0) {
-			// 					$(this).addClass('is-invalid');
-			// 					$(this).siblings('.error-message').text('Email is required');
-			// 					} else if (!isValidEmail(email)) {
-			// 					$(this).addClass('is-invalid');
-			// 					$(this).siblings('.error-message').text('Email should end with ksu.edu.sa');
-			// 					alert('Email should end with ksu.edu.sa');
-			// 					} else {
-			// 					$(this).removeClass('is-invalid');
-			// 					$(this).siblings('.error-message').text('');
-			// 					}
-			// 				});
+		
 
-							
-			// });
 
-		</script>
+      <script>
+        $(document).ready(function() {
+        // Phone number validation
+            $('input[name="phonenumber"]').on('blur', function() {
+              var phoneNumber = $(this).val();
+              var phoneRegex = /^05\d{8}$/; // Adjusted the regex to make sure the phone number starts with '05' and is 10 digits long
+              if (!phoneRegex.test(phoneNumber)) {
+                $(this).addClass('is-invalid');
+                $(this).siblings('.error-message').text('رقم الهاتف المحمول غير صحيح. يجب أن يبدأ بـ 05 وأن يتكون من 10 أرقام.');
+              } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+              }
+            });
+        
+            // IBAN validation
+            $('input[name="iban"]').on('blur', function() {
+              var iban = $(this).val();
+              var ibanRegex = /^SA\d{22}$/; // Adjusted the regex to make sure the IBAN starts with 'SA' and is 24 digits long
+              if (iban != "" && !ibanRegex.test(iban)) { // Added condition to allow empty IBAN
+                $(this).addClass('is-invalid');
+                $(this).siblings('.error-message').text('الإيبان غير صالح. يجب أن يبدأ بـ SA وأن يتكون من 22 رقمًا.');
+              } else {
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+              }
+            });
+        
+        // Specialization validation
+        $('input[name="specialization"]').on('blur', function() {
+            var specialization = $(this).val();
+            var specialCharRegex = /[^a-zA-Z\s]/; // Regex to check for non-alphabetical and non-space characters
+
+            // Added conditions to check the length and presence of special characters or digits
+            if ((specialization != '' && specialization.length < 5) || specialCharRegex.test(specialization)) { 
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message').text('التخصص الدقيق غير صالح. يجب أن يبلغ طوله 5 أحرف على الأقل، ويجب ألا يحتوي على أرقام أو أحرف خاصة فقط.');
+            } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message').text('');
+            }
+          });
+        // Office number validation
+        
+        
+        // CV file validation
+        $('input[name="cv"]').on('change', function() {
+          var cvFile = $(this).val();
+          var label = $('label[for="' + this.id + '"]');
+          if (cvFile) { // checks if a file has been selected
+            var fileExtension = cvFile.split('.').pop().toLowerCase();
+            if(fileExtension != 'pdf') { // only 'pdf' is allowed
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message').text('نوع الملف غير صالح. يُسمح فقط بملفات .pdf');
+              label.css('color', 'red');
+            } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message').text('');
+              label.css('color', '');
+            }
+          } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            label.css('color', '');
+          }
+        });
+
+
+        $('#form1').on('submit', function(e) {
+        // ... [your code to get form field values and set up validation rules]
+            var isPhoneNumberValid = phoneRegex.test(phoneNumber);
+            var isIbanValid = (iban == "" || ibanRegex.test(iban));
+            var isSpecializationValid = (specialization == '' || (specialization.length >= 5 && !specialCharRegex.test(specialization)));
+            var isOfficeNoValid = officeNoRegex.test(officeno);
+            var isCvFileTypeValid = ($.inArray(cvFileType, allowedFileTypes) != -1);
+
+            console.log('phoneNumber:', phoneNumber, 'Matches regex:', isPhoneNumberValid);
+            console.log('iban:', iban, 'Matches regex:', isIbanValid);
+            console.log('specialization:', specialization, 'Length >= 5:', specialization.length >= 5, 'لا يحتوي على أحرف خاصة:', !specialCharRegex.test(specialization));
+            console.log('officeno:', officeno, 'Matches regex:', isOfficeNoValid);
+            console.log('cvFileType:', cvFileType, 'Is allowed:', isCvFileTypeValid);
+
+            if (!isPhoneNumberValid || !isIbanValid || !isSpecializationValid || !isOfficeNoValid || !isCvFileTypeValid) {
+              e.preventDefault();
+              alert('يرجى تعبئة جميع الحقول بشكل صحيح');
+
+              // If CV file type is invalid, change color of label to red
+              if (!isCvFileTypeValid) {
+                cvFileLabel.css('color', 'red');
+              }
+            }
+          });
+        });
+	</script>
+		 
+      <script>
+          $(document).ready(function() {
+            setTimeout(function() {
+              $('.alert').fadeOut('slow');
+            }, 30000); // <-- time in milliseconds, 30000 ms = 0.5 min
+          });
+      </script>
+
 	
 	
 	

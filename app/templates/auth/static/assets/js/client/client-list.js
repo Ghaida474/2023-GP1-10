@@ -7,7 +7,7 @@
 		order: [],
 		columnDefs: [ { orderable: false, targets: [5] } ],
 		language: {
-			searchPlaceholder: 'Search...',
+			searchPlaceholder: 'إبحث.....',
 			sSearch: '',
 
 		}

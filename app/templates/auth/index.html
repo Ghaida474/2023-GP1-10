@@ -1,10 +1,10 @@
 {% load static %}
-<!doctype html>
-<html>
+<!doctype html >
+<html lang="ar">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Business Gate</title>
+    <title>بوابة الأعمال</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{% static '/assets/images/brand/img/businessgatelogo.png' %}">
@@ -35,16 +35,37 @@
     .bradcam_bg_3 {
     background-image: url('../static/assets/images/ksu/con.JPG');}
 
-.footer-wrapper{
+    .footer-wrapper{
     background-color: var(--cloud-blue);
     box-shadow: 0px 3px 16px 0px rgba(0, 0, 0, 0.1);
-    height: 60px;
+    height: 30px;
     color: var(--ksu-darkblue);
     text-align: center;
     padding: 17px;
     font-weight: 450;
     font-size: 16px;
 }
+
+.service_area_list {
+            text-align: right; 
+            direction: rtl; 
+            padding: 20px; 
+        }
+
+        .service_area_list li {
+            font-weight: bold; 
+            margin-top: 10px; 
+        }
+
+        .service_details {
+            /* margin-left: -90px;   */
+            margin-right: 90px;
+        }
+
+        .list_summary {
+            margin-top: 20px; 
+        }
+
 </style>
 
    </style>
@@ -68,11 +89,11 @@
                                 <div class="main-menu  d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a class="active" href="#signin">Sign in</a></li>
-                                            <li><a class="active" href="#about">about Business unit</a></li>
-                                            <li><a href="#services"> services </a></li>
-                                            <li><a href="https://kai.ksu.edu.sa/en"> more about KAI</a></li>
-                                            <li><a href="#contact">Contact</a></li>
+                                            <li><a href="#contact">التواصل</a></li>
+                                            <li><a href="https://kai.ksu.edu.sa/en"> المزيد من معهد الملك عبدالله</a></li>
+                                            <li><a href="#services"> الخدمات </a></li>
+                                            <li><a class="active" href="#about">عن وحدة الأعمال</a></li>
+                                            <li><a class="active" href="#signin">تسجيل الدخول</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -99,9 +120,9 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col-xl-9 col-md-9">
-                                    <div class="slider_text">
-                                        <h4>Business Gate bridging the business world and the world of higher education together for brighter future in line with Saudi Arabia vision 2030 </h4>
-                                        <a href="{% url 'app:login' %}" class="boxed-btn3">Sign in</a>
+                                    <div class="slider_text" style="text-align: right;">
+                                        <h4>بوابة الأعمال تربط بين عالم الأعمال وعالم التعليم العالي معًا من أجل مستقبل أكثر إشراقًا تماشيًا مع رؤية المملكة العربية السعودية 2030</h4>
+                                        <a href="{% url 'app:login' %}" class="boxed-btn3">تسجيل الدخول</a>
                                     </div>
                                 </div>
                             </div>
@@ -118,46 +139,46 @@
                 <div class="col-xl-4 col-lg-4 col-md-4">
                     <div class="single_prise">
                         <div class="prise_header">
-                            <h5>Why were Business Units (BUs) established in KSU?</h5>
-                            <p class="prise_text">Aligned with Saudi Arabia's Vision 2030,
-                                 King Saud University established Business Units (BUs) to diversify the economy,
-                                 reduce oil dependence, and enhance public services. The BUs utilize the university's 
-                                 resources to promote sustainable development, contribute to the knowledge economy, 
-                                 and generate self-revenue
-                            </p>
+                            <h5>لماذا تم إنشاء وحدات الأعمال (BUs) في جامعة الملك سعود؟</h5>
+                             <p class="prise_text">تماشيًا مع رؤية المملكة العربية السعودية 2030،
+                                  أنشأت جامعة الملك سعود وحدات أعمال لتنويع الاقتصاد،
+                                  تقليل الاعتماد على النفط، وتعزيز الخدمات العامة. تستخدم BUs الجامعة
+                                  الموارد اللازمة لتعزيز التنمية المستدامة، والمساهمة في اقتصاد المعرفة،
+                                  وتحقيق الإيرادات الذاتية
+                             </p>
                         </div>
-                        <div class="prise_number">
-                                01
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-4 col-lg-4 col-md-4">
-                    <div class="single_prise">
-                        <div class="prise_header">
-                            <h5>What are the functions and activities of Business Units (BUs) in KSU?</h5>
-                            <p class="prise_text">The Business Units (BUs) provide services like training,
-                                 advisory offerings, projects, research and studies, and consultancy to society.
-                                  These BUs aim to drive sustainable development through multidirectional knowledge
-                                   transfer between KSU faculty, students, and private/public partners.
-                            </p>
-                        </div>
-                        <div class="prise_number">
-                                02
+                        <div class="prise_number" style="margin-left: 12px;">
+                                ٣
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-4 col-md-4">
                     <div class="single_prise">
                         <div class="prise_header">
-                            <h5>King Abdullah Institution for Research and Consulting Studies role? </h5>
-                            <p class="prise_text">The King Abdullah Institution for Research and Consulting Studies
-                                 (KAI) connects King Saud University's (KSU) academic knowledge with public and private
-                                  partners through project collaborations, consulting, and contractual agreements.
-                                   This facilitates applying academic insights more broadly.                                                                                                                                                                                                                      
+                            <h5>ما هي وظائف وأنشطة وحدات الأعمال في جامعة الملك سعود؟</h5>
+                            <p class="prise_text">توفر وحدات الأعمال (BUs) خدمات مثل التدريب،
+                                 تقديم عروض استشارية ومشاريع وأبحاث ودراسات واستشارات للمجتمع.
+                                  تهدف وحدات الأعمال هذه إلى دفع التنمية المستدامة من خلال المعرفة متعددة الاتجاهات
+                                   النقل بين أعضاء هيئة التدريس والطلاب والشركاء من القطاعين الخاص والعام بجامعة الملك سعود.
                             </p>
                         </div>
                         <div class="prise_number">
-                               03
+                                ٢
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4">
+                    <div class="single_prise">
+                        <div class="prise_header">
+                            <h5>دور مؤسسة الملك عبدالله للبحوث والدراسات الاستشارية؟ </h5>
+                              <p class="prise_text">مؤسسة الملك عبدالله للبحوث والدراسات الاستشارية
+                                   (KAI) يربط المعرفة الأكاديمية لجامعة الملك سعود مع القطاعين العام والخاص
+                                    الشركاء من خلال التعاون في المشروع والاستشارات والاتفاقيات التعاقدية.
+                                     وهذا يسهل تطبيق الرؤى الأكاديمية على نطاق أوسع.
+                              </p>
+                        </div>
+                        <div class="prise_number">
+                               ١
                         </div>
                     </div>
                 </div>
@@ -170,8 +191,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-xl-12">
-                    <div class="bradcam_text">
-                        <h3>More about Business Units services</h3>
+                    <div class="bradcam_text" style="margin-left: 450px;">
+                        <h3>المزيد عن خدمات وحدات الأعمال</h3>
                     </div>
                 </div>
             </div>
@@ -180,70 +201,70 @@
 <!--/ bradcam_area  -->
 
 <!-- works_area-start -->
-    <div class="works_area">
+    <div class="works_area" style="margin-left:600px;">
         <div class="container">
-        <div class="row">
-            <div class="col-xl-12">
-            <div class="section_title mb-70">
-                <h3>Business Units in various colleges provides:</h3>
-            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="section_title mb-70">
+                        <h3>:توفر وحدات الأعمال في الكليات المختلفة ما يلي</h3>
+                    </div>
+                </div>
             </div>
         </div>
-        
+    </div>
+
         <div class="row">
             <div class="col-12">
                 <ul class="service_area_list">
-                    <li>Traning Programs:</li>
-                    <ul class="service_details">
-                        <li>Provides training courses and workshops in latest fields and topics relevant to the college's specialization. Courses can be customized as per beneficiary needs.</li>
-                        <li>Training courses and workshops are offered during flexible periods (morning or evening) according to the requirements of the beneficiary.</li>
-                        <li>Provide summer programs in various fields, llowing participants to benefit from the college's resources and educational environment during the summer vacation.  </li>
-                    </ul>
+                    
+                    <li style="margin-right: 90px;"> برامج التدريب</li>
+                     <ul class="service_details">
+                         <li> تقديم الدورات التدريبية وورش العمل في أحدث المجالات والموضوعات ذات الصلة بتخصص الكلية. يمكن تخصيص الدورات حسب احتياجات المستفيد</li>
+                         <li>يتم تقديم الدورات التدريبية وورش العمل خلال فترات مرنة (صباحية أو مسائية) حسب متطلبات المستفيد </li>
+                         <li>تقديم برامج صيفية في مجالات مختلفة تتيح للمشاركين الاستفادة من موارد الكلية والبيئة التعليمية خلال العطلة الصيفية  </li>
+                     </ul>
 
-                    <li>Consultation Services:</li>
-                    <ul class="service_details">
-                        <li>Provides consulting and training services to private and public sector entities through partnerships.</li>
-                        <li>Builds new partnerships to ensure continued delivery of advisory services.</li>
-
-                    </ul>
-                    <li>Projects and Domain-Specific Solutions:</li>
-                    <ul class="service_details">
-                        <li>Implements project teams from faculty to deliver solutions tailored to beneficiary needs.</li>
-                        <li>Submits proposals and bids for projects requested by public/private sector.</li>
-                        <li>Formulates and reviews proposals for beneficiaries.</li>
-
-                    </ul>
-                    <li>Seminars:</li>
-                    <ul class="service_details">
-                        <li>Organizes academic and professional seminars.</li>
-                    </ul>
-                    <li>Research and Studies:</li>
-                    <ul class="service_details">
-                        <li>Supports establishing and improving research activities relevant to beneficiaries.
-                        </li>
-                        <li>Collaborates on joint research projects with industry and government.</li>
-
-
-                    </ul>
-                    <li>Executive Education Programs:</li>
-                    <ul class="service_details">
-                        <li>Offers professional diplomas and certificate programs tailored to specific sectors.</li>
-
-                    </ul>
-                    <li>Resource Utilization:</li>
-                    <ul class="service_details">
-                        <li>Rents out college facilities during vacations to external entities.
-                        </li>
-
-                    </ul>
-                    <li class="list_summary">
-                        In summary, the Business Units leverage the college's facilities, faculty and capabilities to offer customized services in training, research, consultancy and other domains to public and private sector organizations based on their needs.
-                    </li>
-                
-            </div>
+                     <li style="margin-right: 90px;">الخدمات الاستشارية</li>
+                     <ul class="service_details">
+                         <li>تقدم خدمات استشارية وتدريبية لهيئات القطاعين العام والخاص من خلال الشراكات </li>
+                         <li> بناء شراكات جديدة لضمان استمرار تقديم الخدمات الاستشارية </li>
+                     </ul>
+                   
+                     <li style="margin-right: 90px;">المشاريع والحلول الخاصة بالمجال</li>
+                     <ul class="service_details">
+                         <li>ينفذ فرق المشروع من أعضاء هيئة التدريس لتقديم حلول مصممة خصيصًا لتلبية احتياجات المستفيدين </li>
+                         <li>تقديم العروض والعطاءات للمشاريع التي يطلبها القطاع العام/الخاص  </li>
+                         <li>صياغة ومراجعة المقترحات للمستفيدين </li>
+                     </ul>
+                    
+                     <li style="margin-right: 90px;">الندوات</li>
+                     <ul class="service_details">
+                         <li>تنظم الندوات الأكاديمية والمهنية</li>
+                     </ul>
+                     
+                     <li style="margin-right: 90px;">الأبحاث والدراسات</li>
+                     <ul class="service_details">
+                         <li>يدعم إنشاء وتحسين الأنشطة البحثية ذات الصلة بالمستفيدين 
+                         </li>
+                         <li>يتعاون في مشاريع بحثية مشتركة مع الصناعة والحكومة  </li>
+                     </ul>
+                     
+                     <li style="margin-right: 90px;">برامج التعليم التنفيذي </li>
+                     <ul class="service_details">
+                         <li>  تقدم الدبلومات المهنية وبرامج الشهادات المصممة خصيصًا لقطاعات محددة </li>
+                     </ul>
+                   
+                     <li style="margin-right: 90px;">استخدام الموارد</li>
+                     <ul class="service_details">
+                         <li>يؤجر مرافق الكلية أثناء الإجازات لجهات خارجية </li>
+                     </ul>
+                    <br>
+                     <li class="list_summary" style="margin-right: 90px;">
+                          باختصار، تستفيد وحدات الأعمال من مرافق الكلية وأعضاء هيئة التدريس والقدرات لتقديم خدمات مخصصة في التدريب والبحث والاستشارات والمجالات الأخرى لمؤسسات القطاعين العام والخاص بناءً على احتياجاتها   
+                     </li>
+</div>
         </div>
-        </div>
-    </div>
+        
   <!--/ works_area-end -->
     
 <!-- bradcam_area  -->
@@ -251,8 +272,8 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-12">
-                <div class="bradcam_text">
-                    <h3>Contact Us</h3>
+                <div class="bradcam_text" style="margin-left: 930px;">
+                    <h3>التواصل</h3>
                 </div>
             </div>
         </div>
@@ -261,18 +282,20 @@
 <!--/ bradcam_area  -->
 
 
-    
+<br>
+
 <span class="email-icon" style="font-size: 22px; margin-left: 40px; color: #095590;">
-    <i class="fa fa-envelope" style="font-size:28px;">   </i>  businessgate.ksu@gmail.com
+    <i class="fa fa-envelope" style="font-size:25px;">   </i>  businessgate.ksu@gmail.com
 </span>
+   <br>
    <br>
 
 
     <footer class="footer-wrapper">
         <div class="container">
             <div class="row align-items-center flex-row-reverse">
-                <div class="col-md-12 col-sm-12 mt-3 mt-lg-0 text-center">
-                    &copy; 2023 Business Gate. All rights reserved. Business Gate is a workflow management system for KSU Business Units. It aims to improve operational efficiency and facilitate collaboration.
+                <div class="col-md-12 col-sm-12 mt-3 mt-lg-0 text-center" style=" margin-left: 260px;">
+                    بوابة الأعمال&copy;2023  كل الحقوق محفوظة.نظام لإدارة سير العمل لوحدات الأعمال بجامعة الملك سعود. 
                 </div>
             </div>
         </div>

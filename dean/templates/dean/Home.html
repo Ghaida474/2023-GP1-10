@@ -6,7 +6,7 @@
 							<!-- PAGE-HEADER -->
 							<div class="page-header d-xl-flex d-block">
 								<div class="page-leftheader">
-									<div class="page-title"><span class="font-weight-normal text-muted ms-2">Dashboard</span></div>
+									<div class="page-title"><span class="font-weight-normal text-muted ms-2">لوحة القيادة</span></div>
 								</div>
 								<div class="page-rightheader ms-md-auto">
 									<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
@@ -41,11 +41,11 @@
 								<div class="col-xl-9 col-md-12 col-lg-12">
 									<div class="row">
 										<div class="col-xl-4 col-lg-4 col-md-12">
-											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-left:50px; box-shadow: inset; background-color: aliceblue;">
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:50px; box-shadow: inset; background-color: aliceblue;">
 												<div class="card-body">
 													<div class="row">
 														<div class="col-8">
-															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Employee</span>
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">موظف</span>
 																<h3 class="mb-0 mt-1 mb-2">{{emp}}</h3>
 															</div>
 														</div>
@@ -58,11 +58,11 @@
 										</div>
 
 										<div class="col-xl-4 col-lg-4 col-md-12" >
-											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-left:120px; background-color: aliceblue;">
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:120px; background-color: aliceblue;">
 												<div class="card-body">
 													<div class="row">
 														<div class="col-8">
-															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Department</span>
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">قسم</span>
 																<h3 class="mb-0">{{department}}</h3>	
 															</div>
 														</div>
@@ -75,14 +75,14 @@
 										</div>
 
 										<div class="col-xl-4 col-lg-4 col-md-12" >
-											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-left:190px; background-color: aliceblue;">
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:190px; background-color: aliceblue;">
 												<div class="card-body">
 													<div class="row">
 														<div class="col-8">
-															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">Student </span>
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">طالب</span>
 																<h3 class="mb-0 mt-1 mb-2">{{collage.nostudents}}</h3>
 																<span class="text-muted mb-0 mt-1 mb-2">
-																	<p>{{collage.nofemalestudents}} Female {{collage.nomalestudents}} Male</p>
+																	<p>{{collage.nofemalestudents}} انثى  {{collage.nomalestudents}} ذكر</p>
 																</span>	
 															</div>
 														</div>
@@ -92,16 +92,15 @@
 													</div>
 												</div>
 											</div>
-										</div>
-										
+										</div>	
 								</div>
 							</div>
 								
 							<!-- *********************************************************** -->
 								<div class="col-xl-4 col-md-12 col-lg-6">
-									<div class="card" style=" width:1000px; height: 434px; box-shadow:1px 1px 2px 1px #0084BD; margin-left: 55px; box-shadow: inset; background-color: aliceblue;">
+									<div class="card" style=" width:1005px; height: 434px; box-shadow:1px 1px 2px 1px #0084BD; margin-right:55px; box-shadow: inset; background-color: aliceblue;">
 										<div class="card-header border-0">
-											<h4 class="card-title">Project Overview</h4>
+											<h4 class="card-title">المشاريع</h4>
 											<!-- <div class="card-options">
 												<div class="dropdown"> <a  href="javascript:void(0);" class="btn btn-outline-light" data-bs-toggle="dropdown" aria-expanded="false"> Week <i class="feather feather-chevron-down"></i> </a>
 													<ul class="dropdown-menu dropdown-menu-end" role="menu">
@@ -117,14 +116,13 @@
 												<canvas id="sales-summary" class=""></canvas>
 											</div>
 											<div class="sales-chart mt-4 row text-center">
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-primary me-2 my-auto"></span>On progress</div>
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-secondary me-2 my-auto"></span>Pending</div>
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-light4  me-2 my-auto"></span>Completed</div>
+												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-primary me-2 my-auto"></span>قيد العمل</div>
+												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-secondary me-2 my-auto"></span>قيد الإنتظار</div>
+												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-light4  me-2 my-auto"></span>مكتمل</div>
 											</div>
 										</div>
 									</div>
 								</div>
-								
 								
 								
 							<!-- END ROW -->

@@ -2,31 +2,25 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
 from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect
-from .forms import Loginform  # Import your login form
+from .forms import Loginform 
 from .models import Admin, FacultyStaff, Kaibuemployee
 from django.conf import settings
 from .forms import ForgetPasswordForm
-from django.conf import settings
 from django.core.mail import send_mail
 import random
 import string
-#from .models import PasswordResetTable
 import smtplib
 import ssl
 from datetime import datetime, timedelta
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from .forms import emailcheckform
 import certifi
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
-from datetime import timedelta
-from django.urls import reverse
 from django.contrib.auth.backends import ModelBackend
-import logging
 
-logger = logging.getLogger(__name__)
 
 def clear_messages(request):
     storage = messages.get_messages(request)
@@ -34,12 +28,7 @@ def clear_messages(request):
         pass
 
 def index(request):
-    # This view renders the 'index.html' for the main app.
     return render(request, 'auth/index.html')
-
-# def forgot_password(request):
-#     return redirect('app:index')
-#     # Your code here
 
 
 def login_view(request):
@@ -49,52 +38,52 @@ def login_view(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             role = form.cleaned_data.get('role')
+            next_url = request.POST.get('next')
             user = authenticate(request, email=email, password=password)
+
             # print(user)
 
             if user is not None:
-                login(request, user)
-                logger.info(f"User '{user.email}' authenticated successfully.")
                 # Redirect to the appropriate page based on the user's type
-                if role == 'facultyandstaff' and user.position == 'Collage faculty' or user.position == 'Collage staff':
+                if role == 'facultyandstaff' and user.position == 'عضو هيئة التدريس' or user.position == 'موظف في الكلية':
+                    login(request, user)
                     return redirect('faculty_staff_account:faculty_staff_home')
                 
-                elif role == 'kaistaff' and user.position == 'KAI staff':
-                    print("Before redirection")
+                elif role == 'kaistaff' and user.position == 'موظف في المعهد':
+                    login(request, user)
                     return redirect('kai_staff:kaistaff-home')
             
-                elif role == 'Hkai' and user.position == 'KAI head':
+                elif role == 'Hkai' and user.position == 'رئيس المعهد':
+                    login(request, user)
                     return redirect('head-kai-account:kai-home')
                 
-                elif  role == 'dean' and user.position == 'Dean of collage':
+                elif  role == 'dean' and user.position == 'عميد الكلية':
+                    login(request, user)
                     return redirect('dean_account:dean-account-home')
                 
                 elif  role == 'BU' and FacultyStaff.objects.filter(email=email).exists() and user.is_buhead == True:
+                    login(request, user)
                     return redirect('business_unit_account:business_unit_home') 
                 else:
                     clear_messages(request)
-                    messages.error(request, 'Incorrect Role.')
+                    messages.error(request, 'فئة المستخدم غير صحيحة')
             else:
-                logger.error(f"Login failed for email: {email}")
                 # Check if the email exists in the Kaibuemployee or FacultyStaff tables
                 if Kaibuemployee.objects.filter(email=email).exists() or FacultyStaff.objects.filter(email=email).exists():
                     clear_messages(request)
-                    messages.error(request, 'Incorrect Password.')
+                    messages.error(request, 'كلمة السر غير صحيحة.')
                 else:
                     clear_messages(request)
-                    messages.error(request, 'Incorrect Email.')
+                    messages.error(request, ' البريد الإلكتروني غير صحيح.')
             return render(request, 'auth/login.html', {'form': form})
     else: 
         form = Loginform()
-    return render(request, 'auth/login.html', {'form': form})
+    return render(request, 'auth/login.html', {'form': form })
 
-
-
-
-def forgot_password(request):
-    #form = ForgetPasswordForm()
-    form = Loginform()
-    return render(request, 'auth/forgot-password.html', {'form':form} )
+# def forgot_password(request):
+#     #form = ForgetPasswordForm()
+#     form = Loginform()
+#     return render(request, 'auth/forgot-password.html', {'form':form} )
 
 
 def check_user_to_role(request, email, role):
@@ -110,12 +99,12 @@ def check_user_to_role(request, email, role):
             print(f"No FacultyStaff found with email: {email}")
             return False
 
-        if role == 'facultyandstaff' and user.position in ['Collage faculty', 'Collage staff']:
+        if role == 'facultyandstaff' and user.position in ['عضو هيئة التدريس', 'موظف في الكلية']:
             print("Matched FacultyStaff with position 'facultyandstaff'")
             return True
 
 
-    if role == 'dean' and user.position == 'Dean of collage':
+    if role == 'dean' and user.position == 'عميد الكلية':
             print("Matched FacultyStaff with position 'dean'")
             return True
 
@@ -130,11 +119,11 @@ def check_user_to_role(request, email, role):
             print(f"No Kaibuemployee found with email: {email}")
             return False
 
-        if role == 'kaistaff' and user.position == 'KAI staff':
+        if role == 'kaistaff' and user.position == 'موظف في المعهد':
             print("Matched Kaibuemployee with position 'kaistaff'")
             return True
 
-        if role == 'hkai' and user.position == 'KAI head':
+        if role == 'hkai' and user.position == 'رئيس المعهد':
             print("Matched Kaibuemployee with position 'hkai'")
             return True
 
@@ -148,7 +137,7 @@ def forgot_password_view(request):
         form = emailcheckform(request.POST)
         print("Form errors before validation:", form.errors)  # Debug print
         if form.is_valid():
-            email = form.cleaned_data['email'].lower()
+            email = form.cleaned_data['email']
             role = form.cleaned_data['role']
             print(email, role)
 
@@ -162,20 +151,13 @@ def forgot_password_view(request):
                 print("User's credentials fail")
                 if Kaibuemployee.objects.filter(email=email).exists() or FacultyStaff.objects.filter(email=email).exists():
                     clear_messages(request)
-                    messages.error(request, 'Incorrect Role.')
+                    messages.error(request, 'فئة المستخدم غير صحيحة')
                 else:
                     clear_messages(request)
-                    messages.error(request, 'Incorrect Email.')
-            # Stay on the current page with the form displaying the error 
-                '''form = emailcheckform()
-                return render(request, 'auth/forgot-password.html', {'form': form})'''
+                    messages.error(request, ' البريد الإلكتروني غير صحيح.')
         
     form = emailcheckform()
-
     return render(request, 'auth/forgot-password.html', {'form': form})
-
-
-from django.utils import timezone
 
 
 def send_email_to_reset_password(request, email, role):
@@ -220,16 +202,11 @@ def send_email_to_reset_password(request, email, role):
 
     return HttpResponse("Password reset email sent.")
 
+
 def reset_password(request, email, role):
     context = {'email': email, 'role': role}
     return render(request, 'auth/reset-password.html', context)
 
-#from .forms import ResetPasswordForm
-
-from django.contrib import messages
-from django.shortcuts import redirect, render
-from django.utils import timezone
-from datetime import datetime, timedelta
 
 def reset_password_action(request, email, role):
     # Retrieve password and otp from post data
@@ -256,7 +233,7 @@ def reset_password_action(request, email, role):
 
         # Show a message for expired OTP
         clear_messages(request)
-        messages.error(request, 'OTP expired, a new OTP was sent to your email.')
+        messages.error(request, 'انتهت صلاحية كلمة المرور لمرة واحدة(OTP)، وتم إرسال كلمة مرور لمرة واحدة جديدة إلى بريدك الإلكتروني.')
         return reset_password(request, email, role)
     else:
         # OTP not expired
@@ -270,7 +247,7 @@ def reset_password_action(request, email, role):
 
             # Show a message for incorrect OTP
             clear_messages(request)
-            messages.error(request, 'Incorrect OTP, a new OTP was sent to your email.')
+            messages.error(request, 'كلمة مرور لمرة واحدة غير صحيحة(OTP)، تم إرسال كلمة مرور لمرة واحدة جديدة إلى بريدك الإلكتروني.')
             return reset_password(request, email, role)
         else:
             # OTP matches, delete it from session
@@ -289,16 +266,13 @@ def reset_password_action(request, email, role):
 
             # Show a message for successful password reset
             clear_messages(request)
-            messages.error(request, 'Password reset successfully.')
+            messages.error(request, 'تم إعادة تعيين كلمة المرور بنجاح.')
             return redirect('app:login')
             # Show a message for incorrect OTP
-       
-       
-
 
 
 def logout_view(request):
     logout(request)
     clear_messages(request)
-    messages.error(request, 'You have been logged out successfully.')
+    messages.error(request, 'لقد تم تسجيل خروجك بنجاح.')
     return redirect('app:login')
