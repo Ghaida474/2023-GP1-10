@@ -118,6 +118,8 @@ License        :   Licensed under ThemeForest License
     --ksu-black: #000000;
     --cloud-blue:#F5FBFF;
     }
+
+
 .accordion .card:not(:first-of-type):not(:last-of-type) {
     border-bottom: 0;
     border-radius: 0;

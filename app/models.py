@@ -33,6 +33,7 @@ class Collage(models.Model):
     userid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='userid')
     buphonenumber = models.CharField(db_column='BUphoneNumber')  # Field name made lowercase.
     password = models.CharField()
+    domain = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -67,7 +68,7 @@ class FacultyStaff(AbstractUser):
     collageid = models.ForeignKey(Collage, models.DO_NOTHING, db_column='CollageID', blank=True, null=True)  # Field name made lowercase.
     is_buhead = models.BooleanField(db_column='is_BUhead', blank=True, null=True)  # Field name made lowercase.
     username = models.CharField(max_length=150, unique=True)
-    department_field = models.CharField(db_column='Department ')
+    department_field = models.CharField(db_column='Department')
 
     groups = models.ManyToManyField(
         Group,
@@ -84,6 +85,9 @@ class FacultyStaff(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name','last_name'] 
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
     objects = UserManager()
 
@@ -209,27 +213,39 @@ class Trainees(models.Model):
 
 
 class Trainingprogram(models.Model):
-    name = models.CharField(db_column='Name', max_length=130)  # Field name made lowercase.
+    subject = models.CharField(max_length=130)
     totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  # Field name made lowercase.
     taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  # Field name made lowercase.
     kaipercentage = models.FloatField(db_column='KAIPercentage', blank=True, null=True)  # Field name made lowercase.
-    acceptancestatus = models.CharField(db_column='acceptanceStatus', max_length=130)  # Field name made lowercase.
     programtype = models.CharField(db_column='programType', max_length=130)  # Field name made lowercase.
-    collage = models.CharField(db_column='Collage', max_length=130)  # Field name made lowercase.
-    leaderid = models.CharField(db_column='LeaderID', max_length=130, blank=True, null=True)  # Field name made lowercase.
     startdate = models.DateField(db_column='startDate')  # Field name made lowercase.
     enddate = models.DateField(db_column='endDate')  # Field name made lowercase.
-    adminemail = models.CharField(db_column='AdminEmail', max_length=130)  # Field name made lowercase.
-    programstatus = models.TextField(db_column='programStatus')  # Field name made lowercase. This field type is a guess.
     starttime = models.TimeField(db_column='startTime')  # Field name made lowercase.
     endtime = models.TimeField(db_column='endTime')  # Field name made lowercase.
     capacity = models.IntegerField()
     attendeescount = models.IntegerField(db_column='AttendeesCount', blank=True, null=True)  # Field name made lowercase.
     programid = models.AutoField(db_column='programID', primary_key=True)  # Field name made lowercase.
+    collageid = models.IntegerField(db_column='CollageID')  # Field name made lowercase.
+    topic = models.CharField(db_column='Topic', max_length=500)  # Field name made lowercase.
+    dataoffacultyproposal = models.DateField(db_column='dataOfFacultyProposal', blank=True, null=True)  # Field name made lowercase.
+    dataofbuproposal = models.DateField(db_column='dataOfBuProposal', blank=True, null=True)  # Field name made lowercase.
+    dataofbuacceptance = models.DateField(db_column='dataOfBuAcceptance', blank=True, null=True)  # Field name made lowercase.
+    dataofburejection = models.DateField(db_column='dataOfBuRejection', blank=True, null=True)  # Field name made lowercase.
+    dataofkaiacceptance = models.DateField(db_column='dataOfKaiAcceptance', blank=True, null=True)  # Field name made lowercase.
+    dataoffacultyacceptance = models.DateField(db_column='dataOfFacultyAcceptance', blank=True, null=True)  # Field name made lowercase.
+    dataofkairejection = models.DateField(db_column='dataOfKaiRejection', blank=True, null=True)  # Field name made lowercase.
+    dataoffacultyrejection = models.DateField(db_column='dataOfFacultyRejection', blank=True, null=True)  # Field name made lowercase.
+    isfacultyfound = models.BooleanField(blank=True, null=True)
+    iskaiaccepted = models.BooleanField(blank=True, null=True)
+    isreleased_field = models.BooleanField(db_column='isreleased ', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it ended with '_'.
+    attachment = models.BinaryField(db_column='Attachment', blank=True, null=True)  # Field name made lowercase.
+    instructorid = models.IntegerField(db_column='InstructorID')  # Field name made lowercase.
+    program_domain = models.CharField(db_column='Program_domain', max_length=130, blank=True, null=True) 
 
     class Meta:
         managed = False
         db_table = 'TrainingProgram'
+
 
 
 class AuthGroup(models.Model):

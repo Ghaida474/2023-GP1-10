@@ -2,12 +2,13 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from app.models import FacultyStaff,Collage
+from app.models import FacultyStaff,Collage, Trainingprogram
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
+from django.utils import timezone
 
 
 
@@ -178,3 +179,70 @@ def facultyinfo_view(request,faculty_id):
     collage = Collage.objects.get(collageid=collage_id)
     collagename = collage.name 
     return render(request, 'bu/faculty-view.html', {'faculty_member': faculty_member , 'collagename': collagename})
+
+@login_required
+def traningprogram_view(request):
+    user = request.user
+    collage_id = user.collageid.collageid
+    programs = Trainingprogram.objects.filter(collageid=collage_id)
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+    
+    for program in programs:
+        instructor_id = program.instructorid
+        try:
+            faculty_staff = FacultyStaff.objects.get(id=instructor_id)
+            program.instructor_first_name = faculty_staff.first_name
+            program.instructor_last_name = faculty_staff.last_name
+        except FacultyStaff.DoesNotExist:
+            program.instructor_first_name = ""
+            program.instructor_last_name = ""
+
+    if request.method == 'POST':
+        programtype = request.POST.get('reqType')
+        topic = request.POST.get('topic')
+        Domain = request.POST.get('domain')
+        price = request.POST.get('price')
+        capacity = request.POST.get('numoftrainee')
+        instructor_id = request.POST.get('instructor')
+        start_date = request.POST.get('startdate')
+        end_date = request.POST.get('enddate')
+        start_time = request.POST.get('starttime')
+        end_time = request.POST.get('endtime')
+        subject = request.POST.get('subject')
+        attachment = request.FILES.get('attachment')
+        
+    
+        new_program = Trainingprogram(
+            programtype=programtype,
+            instructorid=instructor_id,
+            capacity=capacity,
+            subject=subject,
+            topic=topic,
+            program_domain=Domain,
+            totalcost=price,
+            startdate=start_date,
+            enddate=end_date,
+            starttime=start_time,
+            endtime=end_time,
+            attachment=attachment,
+            collageid=collage_id,
+            dataoffacultyproposal = timezone.now().date()
+        )
+        new_program.save()
+
+    return render(request, 'bu/TraningPrograms.html', {'user': user , 'programs':programs,'faculty':faculty, 'domain':domain })
+
+
+@login_required
+def delete_course(request, value_to_delete):
+    # user = request.user
+    program = Trainingprogram.objects.get(programid=value_to_delete)
+
+    if program:
+        program.delete()
+    else:
+        messages.error(request, 'No researchinterest values to delete.')
+
+    return redirect('business_unit_account:traning-program')

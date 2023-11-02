@@ -1,9 +1,10 @@
 from django import forms
 import re
-from .models import Admin,FacultyStaff,Kaibuemployee
+from .models import Admin,FacultyStaff,Kaibuemployee,Trainingprogram
 from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
+
 
 
 
@@ -278,8 +279,33 @@ class updateKai(forms.ModelForm):
         return phonenumber
 
 
-          
+'''class TrainingProgramForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Get the 'user' argument if passed
+        super(TrainingProgramForm, self).__init__(*args, **kwargs)
+        
+        # Filter the queryset of faculty members based on the user's collage
+        if user:
+            collage_id = user.collageid.collageid
+            faculty_members = FacultyStaff.objects.filter(collageid =collage_id)
+            queryset = faculty_members
 
-
-
-    
+    reqType = forms.ChoiceField(
+        choices=[('دورة تدريبية', 'دورة تدريبية'), ('ورشة عمل', 'ورشة عمل')],
+        label="النوع",
+    )
+    topic = forms.CharField(label="الموضوع", max_length=255)
+    domain = forms.CharField(label="المجال", required=False)
+    price = forms.IntegerField(label="السعر")
+    numoftrainee = forms.IntegerField(label="عدد المتدربين")
+    instructor = forms.ModelMultipleChoiceField(
+        queryset= ,
+        label="المدرب",
+        widget=forms.SelectMultiple(attrs={'class': 'form-control custom-select select2'}),
+    )
+    statedate = forms.DateField(label="تاريخ البداية", input_formats=['%Y-%m-%d'])
+    enddate = forms.DateField(label="تاريخ الانتهاء", input_formats=['%Y-%m-%d'])
+    starttime = forms.TimeField(label="وقت البداية", input_formats=['%H:%M'])
+    endtime = forms.TimeField(label="وقت الانتهاء", input_formats=['%H:%M'])
+    subject = forms.CharField(label="وصف المتطلبات", widget=forms.Textarea)
+    attachment = forms.FileField(label="ارفاق ملف", required=False)'''

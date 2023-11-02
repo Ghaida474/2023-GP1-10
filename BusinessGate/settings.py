@@ -90,11 +90,16 @@ MIME_TYPES = {
     # Add more file extensions and content types as needed
 }
 
+# AUTHENTICATION_BACKENDS = [
+#     'app.auth_backends.KaibuemployeeAuthBackend',
+#     'app.auth_backends.FacultyStaffAuthBackend',
+#     'django.contrib.auth.backends.ModelBackend',
+#     # Add any other authentication backends you need.
+# ]
+
 AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
     'app.auth_backends.FacultyStaffAuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
-    # Add any other authentication backends you need.
 ]
 
 AUTH_USER_MODEL = 'app.Kaibuemployee' 

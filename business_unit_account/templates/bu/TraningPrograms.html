@@ -1,0 +1,454 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+{% block styles %}
+<!-- Add your custom style references here -->
+{% endblock %}
+
+{% block content %}
+    <div class="page-header d-lg-flex d-block">
+        <div class="page-leftheader">
+            <div class="page-title"> دورات التدربية و ورش العمل</div>
+        </div>
+        <div class="page-rightheader ms-md-auto">
+            <!-- Add filter form here -->
+            <div class="page-rightheader ms-md-auto">
+                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+                    <div class="btn-list">
+                        <a  href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newprojectmodal"><i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+    
+
+    <div class="row">
+        <div class="col-md-12" style="margin-left: 40px;"> 
+            <div class="card" >
+                <div class="card-body" style=" display: flex; flex-wrap: wrap; justify-content: space-between;">
+                    {% for program in programs %}
+                        <div class="col-xl-4 col-md-12" style="flex: 0 1 calc(33.333% - 20px); margin: 10px;">
+                            <div class="card border overflow-hidden" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+                                <div class="card-header  border-0">
+                                    <div  style="color: #3366ff;">
+                                        <h4 class="card-title">{{ program.topic }}</h4>
+                                    </div>
+                                    <div class="card-options">
+                                        <a  href="javascript:void(0);" class="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="feather feather-more-vertical fs-18"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" role="menu">
+                                            <li><a  href=""><i class="feather feather-eye me-2"></i>الإطلاع</a></li>
+                                            <li><a  href=""><i class="feather feather-edit-2 me-2"></i>تعديل</a></li>
+                                            <li><a  href="{% url 'business_unit_account:delete_course' value_to_delete=program.programid %}"><i class="feather feather-trash-2 me-2"></i>حذف</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-3">
+                                    <div class="teams">
+                                        
+                                        <div class="d-flex align-items-center mt-2 border-top" >
+                                            <h6 class="mt-2"> المجال :</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{program.program_domain}}</div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mt-2"  style="font-size:11px;">
+                                            <h6 class="mt-2" style="margin-right:10px; font-size:11px; ">تاريخ البدء:</h6>
+                                            <div class="ms-2" style="color: #3366ff;" >{{program.startdate}}</div>
+                                            <h6 class="mt-2" style="margin-right:10px; font-size:11px;">تاريخ الانتهاء:</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{program.enddate}}</div>
+                                        </div>
+                                                                                
+                                    
+                                        <div class="d-flex align-items-center mt-2" style="font-size:11px;">
+                                            <h6 class="mt-2" style="margin-right:10px; font-size:11px;">وقت البدء:</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{program.starttime}}</div>
+                                            <h6 class="mt-2" style="margin-right:10px; font-size:11px;">وقت الانتهاء:</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{program.endtime}}</div>
+                                        </div>
+                                       
+                                    
+                                        <div class="d-flex align-items-center mt-2 border-top">
+                                            <h6 class="mt-2">  عدد المتدربين المسموح:</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{program.capacity}}</div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mt-2">
+                                            <h6 class="mt-2">  المدرب:</h6>
+                                            <div class="ms-2" style="color: #3366ff;">{{ program.instructor_first_name }} {{ program.instructor_last_name }}</div>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-center mt-2 border-top">
+                                            <h6 class="mt-2">حالة الطلب:</h6>
+                                            {% if program.isfacultyfound %}
+                                                {% if program.iskaiaccepted %}
+                                                    <div class="badge badge-warning ms-2" style="color: #3366ff;">تم القبول </div>
+                                                {% else %}
+                                                    <div class="badge badge-warning ms-2" style="color: #3366ff;">رفض من المعهد</div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div class="badge badge-warning ms-2" style="color: #3366ff;">في انتظار قبول المدرب</div>
+                                            {% endif %}   
+                                            
+                                        </div>     
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade"  id="newprojectmodal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="smartwizard-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">طلب إنشاء</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">نوع الطلب<span style="color: red;">*</span></label>
+                                <select  class="form-control custom-select select2"  data-placeholder= "إختار النوع" name="reqType" required> 
+                                    <option label="إختار النوع" disabled selected></option>
+                                    <option value="دورة تدريبية">دورة تدريبية</option>
+                                    <option value="ورشة عمل">ورشة عمل</option>
+                                </select>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">الموضوع <span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="الموضوع" name="topic" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">المجال</label>
+                                <select class="form-control custom-select select2" data-placeholder="اختار المجال" name="domain" required>
+                                    <option label="اختار المجال" disabled selected></option>
+                                    {% for i in domain %}
+                                    <option value="{{i}}">{{i}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">السعر<span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="السعر" type="number" name="price" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">عدد المتدربين <span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="عدد المتدربين" type="number" name="numoftrainee" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">المدرب <span style="color: red;">*</span></label>
+                                <select class="form-control custom-select select2" data-placeholder="اختار المدرب" name="instructor" required>
+                                    <option label="اختار المدرب" disabled selected></option>
+                                    {% for faculty_member in faculty %}
+                                    <option value="{{faculty_member.id}}">{{faculty_member.first_name}} {{faculty_member.last_name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ البداية <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr" placeholder="DD-MM-YYYY" type="date" data-input name="startdate" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ الانتهاء <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">وقت البداية <span style="color: red;">*</span></label>                    
+                                <input class="form-control flatpickr" placeholder="HH:MM" type="time" data-input name="starttime" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">وقت الانتهاء <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr" placeholder="HH:MM"  type="time" data-input name="endtime" required>
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label class="form-label">وصف المتطلبات</label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="" name="subject"></textarea>
+                        <span class="error-message" style="color: red;"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">ارفاق ملف</label>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <input class="form-control" type="file" name="attachment">
+                            <span class="error-message" style="color: red;"></span>
+                        </div>
+                    </div>    
+                </div>
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal %}
+<!-- Add modal content here if needed -->
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/themeColors.js'%}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('input[name="topic"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic.length < 5) {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('.يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('input[name="domain"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic.length < 5) {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ان يكون اكثر من خمسة حروف.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('select[name="reqType"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic === '') {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ملئ الحقل.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('select[name="instructor"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic === '') {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ملئ الحقل.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('input[name="price"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic < 0) {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ملئ الحقل برقم صحيح.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('input[name="numoftrainee"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic < 0) {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ملئ الحقل برقم صحيح.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+        $('input[name="startdate"]').on('blur', function() {
+            var startDate = $(this).val();
+            var endDate = $('input[name="enddate"]').val();
+
+            if (startDate === '' || endDate === '') {
+                // Handle empty input fields
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+            } else {
+                startDate = new Date(startDate);
+                endDate = new Date(endDate);
+
+                if (startDate > endDate) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.error-message').text('يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء.');
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.error-message').text('');
+                }
+            }
+        });
+        $('input[name="enddate"]').on('blur', function() {
+            var startDate = $('input[name="startdate"]').val();
+            var endDate = $(this).val();
+
+            if (startDate === '' || endDate === '') {
+                // Handle empty input fields
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+            } else {
+                startDate = new Date(startDate);
+                endDate = new Date(endDate);
+
+                if (startDate > endDate) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.error-message').text('يجب أن يأتي تاريخ الانتهاء بعد تاريخ البدء.');
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.error-message').text('');
+                }
+            }
+        });
+
+        $('input[name="starttime"]').on('blur', function() {
+            var startTime = $(this).val();
+            var endTime = $('input[name="endtime"]').val();
+
+            if (startTime === '' || endTime === '') {
+                // Handle empty input fields
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+            } else {
+                var startParts = startTime.split(':');
+                var endParts = endTime.split(':');
+
+                var startHour = parseInt(startParts[0]);
+                var startMinute = parseInt(startParts[1]);
+                var endHour = parseInt(endParts[0]);
+                var endMinute = parseInt(endParts[1]);
+
+                if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.error-message').text('يجب أن يكون وقت البدء قبل وقت الانتهاء.');
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.error-message').text('');
+                }
+            }
+        });
+
+        $('input[name="endtime"]').on('blur', function() {
+            var startTime = $('input[name="starttime"]').val();
+            var endTime = $(this).val();
+
+            if (startTime === '' || endTime === '') {
+                // Handle empty input fields
+                $(this).removeClass('is-invalid');
+                $(this).siblings('.error-message').text('');
+            } else {
+                var startParts = startTime.split(':');
+                var endParts = endTime.split(':');
+
+                var startHour = parseInt(startParts[0]);
+                var startMinute = parseInt(startParts[1]);
+                var endHour = parseInt(endParts[0]);
+                var endMinute = parseInt(endParts[1]);
+
+                if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.error-message').text('يجب أن يأتي وقت الانتهاء بعد وقت البدء.');
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.error-message').text('');
+                }
+            }
+        });
+
+        $('textarea[name="subject"]').on('blur', function() {
+            var topic = $(this).val();
+            if (topic.length < 5) {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ان يكون اكثر من خمسة حروف.');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+    });
+
+</script>
+   
+<script>
+    let dropdowns = document.querySelectorAll('.dropdown-button');
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', () => {
+            let content = dropdown.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize flatpickr for date inputs
+        flatpickr('.flatpickr[data-input][data-date]', {
+            dateFormat: "d-m-Y",
+        });
+
+        // Initialize flatpickr for time inputs
+        flatpickr('.flatpickr[data-input][data-time]', {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+        });
+    });
+</script>
+
+
+
+{% endblock %}

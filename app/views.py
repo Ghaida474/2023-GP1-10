@@ -21,7 +21,7 @@ from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from django.contrib.auth.backends import ModelBackend
 
-
+from django.contrib.auth import authenticate, login
 def clear_messages(request):
     storage = messages.get_messages(request)
     for _ in storage:
@@ -29,6 +29,7 @@ def clear_messages(request):
 
 def index(request):
     return render(request, 'auth/index.html')
+
 
 
 def login_view(request):
@@ -39,36 +40,51 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             role = form.cleaned_data.get('role')
             next_url = request.POST.get('next')
-            user = authenticate(request, email=email, password=password)
 
-            # print(user)
+            # Check if the email exists in the correct model based on the role
+            if role in ['facultyandstaff', 'dean', 'BU']:
+                if FacultyStaff.objects.filter(email=email).exists():
+                    user = authenticate(request, email=email, password=password)
+                elif Kaibuemployee.objects.filter(email=email).exists():
+                    clear_messages(request)
+                    messages.error(request, 'فئة المستخدم غير صحيحة')
+                    return render(request, 'auth/login.html', {'form': form})
+ 
+            elif role in ['kaistaff', 'Hkai']:
+                if Kaibuemployee.objects.filter(email=email).exists():
+                    user = authenticate(request, email=email, password=password)
+                elif FacultyStaff.objects.filter(email=email).exists():
+                    clear_messages(request)
+                    messages.error(request, 'فئة المستخدم غير صحيحة')
+                    return render(request, 'auth/login.html', {'form': form})
+
+            else:
+                clear_messages(request)
+                messages.error(request, 'البريد الإلكتروني غير صحيح.')
+                return render(request, 'auth/login.html', {'form': form})
+
+
 
             if user is not None:
-                # Redirect to the appropriate page based on the user's type
-                if role == 'facultyandstaff' and user.position == 'عضو هيئة التدريس' or user.position == 'موظف في الكلية':
+                if role == 'facultyandstaff' and (user.position == 'عضو هيئة التدريس' or user.position == 'موظف في الكلية'):
                     login(request, user)
                     return redirect('faculty_staff_account:faculty_staff_home')
-                
-                elif role == 'kaistaff' and user.position == 'موظف في المعهد':
-                    login(request, user)
-                    return redirect('kai_staff:kaistaff-home')
-            
-                elif role == 'Hkai' and user.position == 'رئيس المعهد':
-                    login(request, user)
-                    return redirect('head-kai-account:kai-home')
-                
                 elif  role == 'dean' and user.position == 'عميد الكلية':
                     login(request, user)
                     return redirect('dean_account:dean-account-home')
-                
-                elif  role == 'BU' and FacultyStaff.objects.filter(email=email).exists() and user.is_buhead == True:
+                elif  role == 'BU' and user.is_buhead == True:
                     login(request, user)
-                    return redirect('business_unit_account:business_unit_home') 
+                    return redirect('business_unit_account:business_unit_home')
+                elif role == 'kaistaff' and user.position == 'موظف في المعهد':
+                    login(request, user)
+                    return redirect('kai_staff:kaistaff-home')
+                elif role == 'Hkai' and user.position == 'رئيس المعهد':
+                    login(request, user)
+                    return redirect('head-kai-account:kai-home')
                 else:
                     clear_messages(request)
                     messages.error(request, 'فئة المستخدم غير صحيحة')
-            else:
-                # Check if the email exists in the Kaibuemployee or FacultyStaff tables
+            else:              
                 if Kaibuemployee.objects.filter(email=email).exists() or FacultyStaff.objects.filter(email=email).exists():
                     clear_messages(request)
                     messages.error(request, 'كلمة السر غير صحيحة.')
@@ -76,15 +92,18 @@ def login_view(request):
                     clear_messages(request)
                     messages.error(request, ' البريد الإلكتروني غير صحيح.')
             return render(request, 'auth/login.html', {'form': form})
-    else: 
+        else:
+            clear_messages(request)
+            messages.error(request,'خطأ ما حصل وقت الارسال حاول تسجيل الدخول مره آخرى')
+            form = Loginform()
+            return render(request, 'auth/login.html', {'form': form })
+    else:
         form = Loginform()
-    return render(request, 'auth/login.html', {'form': form })
-
+        return render(request, 'auth/login.html', {'form': form })
 # def forgot_password(request):
 #     #form = ForgetPasswordForm()
 #     form = Loginform()
 #     return render(request, 'auth/forgot-password.html', {'form':form} )
-
 
 def check_user_to_role(request, email, role):
     role = role.lower()
