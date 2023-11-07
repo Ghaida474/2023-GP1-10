@@ -17,7 +17,7 @@ Widget build(BuildContext context) {
       backgroundColor: Colors.transparent,
       elevation: 0,
       title: Text(
-        'Profile',
+        getTranslate(context, 'profile.profile'),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       automaticallyImplyLeading: false,
@@ -63,7 +63,7 @@ widthbox(double width) {
 
   profileList(Size size, BuildContext context) {
     return Container(
-      height: 200,
+      height: 300,
       width: 400,
       margin: const EdgeInsets.symmetric(horizontal: 10 * 2),
       decoration: BoxDecoration(
@@ -82,9 +82,18 @@ widthbox(double width) {
           imageIconListTile(
             context,
             "assets/images/Profile.png",
-            "Edit Profile",
+            getTranslate(context, 'profile.edit_profile'),
             () {
               Navigator.pushNamed(context, '/editprofile');
+            },
+          ),
+          devider(),
+          imageIconListTile(
+            context,
+            "assets/profile/Shopicons_Filled_World.png",
+            getTranslate(context, 'profile.languages'),
+            () {
+              Navigator.pushNamed(context, '/languages');
             },
           ),
           devider(),
@@ -92,7 +101,7 @@ widthbox(double width) {
             () {},
             Icons.document_scanner,
             Colors.white,
-            "Certificates",
+            getTranslate(context, 'profile.certificates'),
           ),
           devider(),
           profilelistTile(
@@ -107,7 +116,7 @@ widthbox(double width) {
             },
             Icons.logout,
             Color.fromARGB(255, 101, 215, 247),
-            "Sign Out",
+            getTranslate(context, 'profile.logout'),
           )
         ],
       ),
@@ -157,7 +166,7 @@ widthbox(double width) {
       title: Column(
         children: [
           Text(
-            "Sign Out",
+            getTranslate(context, 'profile.logout_que'),
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           SizedBox(height: 10),
@@ -186,7 +195,7 @@ widthbox(double width) {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      "Cancel",
+                      getTranslate(context, 'profile.cancel'),
                       style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 107, 105, 105), fontWeight: FontWeight.w400),
                     ),
                   ),
@@ -214,7 +223,7 @@ widthbox(double width) {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      "Sign Out",
+                      getTranslate(context, 'profile.logout'),
                       style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:businessgate/localization/localization_const.dart';
-import 'package:businessgate/profile/profile.dart';
+import 'package:businessgate/profile.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/home.dart';
@@ -15,13 +15,13 @@ class BottomNaviScreen extends StatefulWidget {
 
 class _BottomNaviScreenState extends State<BottomNaviScreen> {
   int selectedIndex = 0;
-
   int categoryIndex = 0;
   int priceIndex = 0;
   int levelIndex = 0;
 
   List bodyItems = [
     const Home(),
+    //Courses(),
      Profile()
   ];
 
@@ -71,6 +71,7 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               firstItem(size),
+              thirdItem(size),
               fiveItem(size),
             ],
           ),
@@ -403,6 +404,77 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                       foreground: Paint()
                         ..shader = selectedIndex == 1
                             ? linearGradient
+                            : linearGradient2,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  thirdItem(Size size) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = 2;
+        });
+      },
+      child: SizedBox(
+        height: size.height * 0.085,
+        width: size.width / 5,
+        child: Column(
+          children: [
+            Container(
+              height: 2,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: selectedIndex == 2
+                      ? gradient
+                      : [Colors.transparent, Colors.transparent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.topRight,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomRight,
+                              colors: selectedIndex == 2
+                                  ? gradient
+                                  : <Color>[
+                                      greyb7Color,
+                                      greyb7Color,
+                                    ])
+                          .createShader(bounds);
+                    },
+                    child: const Icon(
+                      Icons.play_arrow_sharp,
+                      size: 26,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    getTranslate(context, 'bottom_navi.courses'),
+                    style: TextStyle(
+                      foreground: Paint()
+                        ..shader = selectedIndex == 2
+                            ? const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.topRight,
+                                colors: gradient,
+                              ).createShader(
+                                const Rect.fromLTRB(180, 0, 220, 0))
                             : linearGradient2,
                     ),
                   )

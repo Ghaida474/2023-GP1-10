@@ -50,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Edit Profile",
+          getTranslate(context, 'editProfile.edit_profile'),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -79,25 +79,25 @@ class _EditProfileState extends State<EditProfile> {
                 SizedBox(height: 10 / 2),
                 Container(alignment : Alignment.centerLeft,
                 child :
-                  Text("First Name :",
+                  Text(getTranslate(context, 'editProfile.FN'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 nameField(size, context),
                 SizedBox(height: 8),
                 Container(alignment : Alignment.centerLeft,
                 child :
-                  Text("Last Name :",
+                  Text(getTranslate(context, 'editProfile.LN'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 emailField(size, context),
                 SizedBox(height: 8),
                 Container(alignment : Alignment.centerLeft,
                 child :
-                  Text("Mobile Number :",
+                  Text(getTranslate(context, 'editProfile.mobile'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 phoneField(size, context),
                 SizedBox(height: 8),
                 Container(alignment : Alignment.centerLeft,
                 child :
-                  Text("Password :",
+                  Text(getTranslate(context, 'editProfile.password'),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,)),),
                 passField("Enter Password", Icons.lock,passwordController),
                 SizedBox(height: 8),
@@ -134,7 +134,7 @@ class _EditProfileState extends State<EditProfile> {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))
         )
         ),
-        child: Text ('Update', 
+        child: Text (getTranslate(context, 'editProfile.update'), 
       style: const TextStyle(
         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
@@ -155,7 +155,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is not Successfull",
+                  getTranslate(context, 'editProfile.update_not'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -182,7 +182,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is Successfull",
+                  getTranslate(context, 'editProfile.update_suc'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -216,7 +216,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is not Successfull",
+                  getTranslate(context, 'editProfile.update_not'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -243,7 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is Successfull",
+                  getTranslate(context, 'editProfile.update_suc'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -277,7 +277,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is not Successfull",
+                  getTranslate(context, 'editProfile.update_not'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -304,7 +304,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is Successfull",
+                  getTranslate(context, 'editProfile.update_suc'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -338,7 +338,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is not Successfull",
+                  getTranslate(context, 'editProfile.update_not'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -365,7 +365,7 @@ class _EditProfileState extends State<EditProfile> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Update is Successfull",
+                  getTranslate(context, 'editProfile.update_suc'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -415,7 +415,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)){
-          return "Enter a Correct Name";
+          return getTranslate(context, 'signup.CN');
         } else
         return null ;
       },
@@ -447,7 +447,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)){
-          return "Enter a Correct Name";
+          return getTranslate(context, 'signup.CN');
         } else
         return null ;
       },
@@ -478,7 +478,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
        validator: (value) {
         if(value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value!)){
-          return "Enter a Correct Mobile Number";
+          return getTranslate(context, 'signup.CM');
         } else
         return null ;
       },
@@ -522,7 +522,7 @@ class _EditProfileState extends State<EditProfile> {
                 size: 16,
               ),
             ),*/
-            hintText: 'Must be 8 character long',
+            hintText: '8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -535,7 +535,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
-          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+          return getTranslate(context, 'signup.CP');
         } else
         return null ;
       },
@@ -552,7 +552,7 @@ class _EditProfileState extends State<EditProfile> {
   return Column(
     children: [
       Text(
-        "Edit User Information",
+        getTranslate(context, 'editProfile.change'),
         style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
       ),
       SizedBox(height: 10 / 2),

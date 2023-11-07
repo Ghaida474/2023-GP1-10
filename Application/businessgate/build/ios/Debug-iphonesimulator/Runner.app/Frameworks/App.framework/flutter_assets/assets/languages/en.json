@@ -1,14 +1,16 @@
 {
     "login": {
-        "welcome": "WelcomeBack",
+        "welcome": "Welcome Back",
         "content": "Login to your existing account of e-learning",
         "account": "Don't have an account?",
-        "sign_up": "Sign up",
+        "sign_up": "Sign Up",
         "or_text": "Or connect using",
-        "login": "Login",
-        "forget": "Forgot password?",
-        "create_password": "Create Password",
-        "email_address": "Email Address"
+        "login": "SIGN IN",
+        "forget": "Forgot password ?",
+        "password": "Enter Password",
+        "email_address": "Enter Email Address",
+        "email_not" : "Email is not Registered",
+        "up" : " SIGN UP"
     },
     "app_exit": {
         "exit_app": "Press back once again to exit"
@@ -18,7 +20,13 @@
         "otp_verification": "OTP Verification",
         "please_wait": "Please wait",
         "confirm": "Confirm",
-        "resend": "Resend"
+        "reset_pass": "Reset Password",
+        "forgot" : "Forget Password",
+        "enter_email" : "Enter Your Email To Get OTP",
+        "send_otp" : "Send OTP",
+        "reset" : "Reset Password",
+        "otp_num" : "Enter Your OTP",
+        "not_suc" : "Reset is not Successfull"
     },
     "signup": {
         "get_started": "Let's get started!",
@@ -26,12 +34,28 @@
         "account": "Already have an account?",
         "login_now": "Login now",
         "or_text": "Or connect using",
-        "sign_up": "Sign up",
-        "create_password": "Create Password",
-        "email_address": "Email Address",
+        "sign_up": "Sign Up",
+        "password": "Enter Password",
+        "email_address": "Enter Email Address",
         "confirm_password": "Confirm Password",
         "name": "Name",
-        "mobile_number": "Mobile Number"
+        "mobile_number": "Enter Mobile Number",
+        "Gender": "Select Gender :",
+        "F": "Female",
+        "M": "Male",
+        "firstname": "Enter First Name",
+        "lastname": "Enter Last Name",
+        "NID": "Enter National ID",
+        "CN" : "Enter a Correct Name",
+        "CID" : "Enter a Correct ID",
+        "CE" : "Enter a Correct Email",
+        "CM" : "Enter a Correct Mobile Number",
+        "CP" : "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and Special Character",
+        "register_suc" : "Register Successful",
+        "register_fai" : "Register Failed",
+        "email_registered" : "Email Already Registered",
+        "something_wrong" : "Something Went Wrong"
+
     },
     "bottom_navi": {
         "reset": "Reset",
@@ -61,7 +85,7 @@
         "home": "Home"
     },
     "catergory": {
-        "catergory": "Catergory"
+        "catergory": "Category"
     },
     "detail": {
         "student_feedback": "Student Feedback",
@@ -101,11 +125,11 @@
         "download": "Download"
     },
     "home": {
-        "hello_shriya": "Hello Shriya",
+        "hello": "Welcome",
         "good_morning": "Good morning",
         "feature_course": "Feature course",
         "review": "review",
-        "popular_course": "Popular course",
+        "popular_course": "Popular courses",
         "see_all": "See all",
         "recommended": "Recommended",
         "catergory": "Catergory",
@@ -167,16 +191,23 @@
     },
     "editProfile": {
         "change_photo": "Change profile photo",
+        "change" :"Edit Your Information",
         "camera": "Camera",
         "gallery": "Gallery",
         "remove_image": "Remove image",
-        "edit_profile": "Edit profile",
+        "edit_profile": "Edit Profile",
         "update": "Update",
         "name": "Name",
         "email_address": "Email Address",
         "mobile_number": "Mobile Number",
         "date_birth": "Date of birth",
-        "user_name": "Samantha Smith"
+        "user_name": "Samantha Smith",
+        "FN" : "First Name",
+        "LN" : "Last Name",
+        "mobile" : "Mobile Number",
+        "password" : "Password",
+        "update_suc" : "Update is Successfull",
+        "updtate_not" : "Update is not Successfull"
     },
     "help": {
         "help_support": "Help and support",
@@ -194,13 +225,14 @@
     },
     "profile": {
         "profile": "Profile",
-        "edit_profile": "Edit profile",
+        "edit_profile": "Edit Profile",
         "notification": "Notification",
         "settings": "Settings",
         "downloads": "Downloads",
         "languages": "Languages",
-        "logout": "Logout",
-        "logout_que": "Are you sure you want to logout?",
+        "certificates" :"Certificates",
+        "logout": "Sign Out",
+        "logout_que": "Are you sure you want to Sign Out?",
         "cancel": "Cancel",
         "user_name": "Samantha Smith"
     },

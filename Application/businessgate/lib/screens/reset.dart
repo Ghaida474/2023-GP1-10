@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:businessgate/models/model_user.dart';
 import 'package:flutter/material.dart';
 
+import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../utils/colors.dart';
 
@@ -37,7 +38,7 @@ class _ResetState extends State<Reset> {
       appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: const Text("Reset Password", 
+      title:  Text(getTranslate(context, 'otp.reset'), 
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
     ),
       body: Container(
@@ -61,7 +62,7 @@ class _ResetState extends State<Reset> {
                   const SizedBox(
                     height: 40,
                   ),
-                  textField("Enter Your OTP", Icons.person, false, _otpTextController),
+                  textField(getTranslate(context, 'otp.otp_num'), Icons.person, false, _otpTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -69,7 +70,7 @@ class _ResetState extends State<Reset> {
                   const SizedBox(
                     height: 20,
                   ),
-                  PasswordField("Enter Your New Password", Icons.person, _passwordTextController),
+                  PasswordField(getTranslate(context, 'login.password'), Icons.person, _passwordTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -145,7 +146,7 @@ class _ResetState extends State<Reset> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
-          return "Enter a Correct Email";
+          return getTranslate(context, 'signup.CE');
         } else
         return null ;
       },
@@ -190,7 +191,7 @@ class _ResetState extends State<Reset> {
                 size: 16,
               ),
             ),*/
-            hintText: 'Must be 8 character long',
+            hintText: '8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -203,7 +204,7 @@ class _ResetState extends State<Reset> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
-          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+          return getTranslate(context, 'signup.CP');
         } else
         return null ;
       },
@@ -231,7 +232,7 @@ class _ResetState extends State<Reset> {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))
         )
         ),
-        child: Text ('Reset Password', 
+        child: Text (getTranslate(context, 'otp.reset_pass'), 
       style: const TextStyle(
         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
@@ -263,7 +264,7 @@ class _ResetState extends State<Reset> {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Reset is not Successfull",
+                  getTranslate(context, 'otp.not_suc'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,

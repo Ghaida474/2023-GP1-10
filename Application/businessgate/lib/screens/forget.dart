@@ -1,6 +1,7 @@
 import 'package:businessgate/screens/reset.dart';
 import 'package:flutter/material.dart';
 
+import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../utils/colors.dart';
 
@@ -26,7 +27,7 @@ class _ForgetState extends State<Forget> {
       appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: const Text("Forgot Password", 
+      title:  Text(getTranslate(context, 'otp.forgot'),
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
     ),
       body: Container(
@@ -48,13 +49,13 @@ class _ForgetState extends State<Forget> {
                   const SizedBox(
                     height: 40,
                   ),
-                  Text("Enter your Email to get OTP",
+                  Text(getTranslate(context, 'otp.enter_email'),
                   style: TextStyle(color: Color.fromARGB(217, 0, 29, 103),
                   fontWeight: FontWeight.bold),),
                   const SizedBox(
                     height: 20,
                   ),
-                  textField("Enter Your Email", Icons.person, false, _emailTextController),
+                  textField(getTranslate(context, 'login.email_address'), Icons.person, false, _emailTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -75,7 +76,7 @@ class _ForgetState extends State<Forget> {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) => Reset(),
                   settings: RouteSettings(arguments: myauth ))); },
-                  child: Text("Send OTP",
+                  child: Text(getTranslate(context, 'otp.send_otp'),
                   style: TextStyle(color: Colors.white),),
                   color: hexStringColor("#095590"),
                   minWidth: 200,

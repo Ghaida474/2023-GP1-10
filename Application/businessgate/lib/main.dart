@@ -1,9 +1,10 @@
-import 'package:businessgate/bottomnavigation/bottom_navigation.dart'; // Import your BottomNaviScreen
+import 'package:businessgate/bottomnavigation/bottom_navigation.dart';
+import 'package:businessgate/languages.dart'; 
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/forget.dart';
 import 'package:businessgate/screens/home.dart';
-import 'package:businessgate/profile/editProfile.dart';
-import 'package:businessgate/profile/profile.dart';
+import 'package:businessgate/editProfile.dart';
+import 'package:businessgate/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/signin.dart';
 import 'package:businessgate/screens/signup.dart';
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         '/profile': (context) => Profile(),
         '/editprofile': (context) => EditProfile(),
         '/bottomNavi': (context) => BottomNaviScreen(), 
+        '/languages': (context) => Languages()
       },
       home: BottomNaviScreen(), 
      

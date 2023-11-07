@@ -1,6 +1,7 @@
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 
+import '../localization/localization_const.dart';
 import '../models/model_user.dart';
 import '../myservice.dart';
 import '../utils/colors.dart';
@@ -43,23 +44,6 @@ class _HomeScreenState extends State<Home> {
       "image": "assets/home/nimbus_marketing.png",
     },
   ];
-
-  final recommeded = [
-    {
-      "name": "Web Development Course",
-      "price": "300 SR",
-      "review": 125,
-      "image": "assets/home/web.jpg",
-    },
-    {
-      "name": "The Web devlopment bootcamp",
-      "price": "450 SR",
-      "review": 125,
-      "image": "assets/home/web.jpg",
-    }
-  ];
-
-  
 
   final popular = [
     {
@@ -114,7 +98,7 @@ class _HomeScreenState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                   "Hello ",
+                   getTranslate(context, 'home.hello'),
                   style: black16Style,
                 ),
                 heightbox(2),
@@ -379,132 +363,16 @@ class _HomeScreenState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Popular Courses",
+            getTranslate(context, 'home.popular_course'),
             style: black18Style,
           ),
           GestureDetector(
             onTap: () {
               Navigator.pushNamed(context, '/home');
             },
-            child: Text("See all",
+            child: Text(getTranslate(context, 'home.see_all'),
                 style: primary14Style),
           )
-        ],
-      ),
-    );
-  }
-
-  recommededList(Size size) {
-    return Column(
-      children: recommeded
-          .map(
-            (e) => GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/home');
-              },
-              child: Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: fixPadding * 2,
-                  vertical: fixPadding,
-                ),
-                padding: const EdgeInsets.all(fixPadding / 1.5),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: grey94Color.withOpacity(0.5),
-                      blurRadius: 5,
-                    ),
-                  ],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        e['image'].toString(),
-                        fit: BoxFit.cover,
-                        width: size.width * 0.24,
-                      ),
-                    ),
-                    widthSpace,
-                    width5Space,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            e["name"].toString(),
-                            style: black16Stylew600,
-                          ),
-                          height5Space,
-                          Row(
-                            children: [
-                              for (int i = 0; i < 5; i++)
-                                ShaderMask(
-                                  shaderCallback: (Rect bounds) {
-                                    return const LinearGradient(
-                                      colors: gradient,
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ).createShader(bounds);
-                                  },
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.only(right: fixPadding / 5),
-                                    child: Icon(
-                                      Icons.star,
-                                      size: 17,
-                                      color: whiteColor,
-                                    ),
-                                  ),
-                                ),
-                              Text(
-                                "(${e['review']} ${ 'Review'})",
-                                style: grey14Style,
-                              )
-                            ],
-                          ),
-                          height5Space,
-                          Text(
-                            e['price'].toString(),
-                            style: black16Stylew600,
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  recommededText() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: fixPadding,
-        horizontal: fixPadding * 2,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Recommended",
-            style: black18Style,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/home');
-            },
-            child: Text("See all",
-                style: primary14Style),
-          ),
         ],
       ),
     );
@@ -572,14 +440,14 @@ class _HomeScreenState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Category",
+            getTranslate(context, 'catergory.catergory'),
             style: black18Style,
           ),
           GestureDetector(
             onTap: () {
               Navigator.pushNamed(context, "/home");
             },
-            child: Text("See all",
+            child: Text(getTranslate(context, 'home.see_all'),
                 style: primary14Style),
           )
         ],
@@ -607,10 +475,6 @@ class _HomeScreenState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              //  Text(
-                //  getTranslate(context, ''),
-               //   style: white16Style,
-                //),
                 const Text(
                   "Unlock the world of data analysis this summer!",
                   style: white18Style,
@@ -636,7 +500,7 @@ class _HomeScreenState extends State<Home> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      "Know more",
+                      getTranslate(context, 'home.know_more'),
                       style: white16Style,
                     ),
                   ),

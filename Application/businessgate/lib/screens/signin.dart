@@ -5,6 +5,7 @@ import 'package:businessgate/screens/signup.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
 
+import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../models/model_user.dart';
 
@@ -49,11 +50,11 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(
                     height: 50,
                   ),
-                  emailField("Enter Your Email", Icons.person, false, _emailTextController),
+                  emailField(getTranslate(context, 'login.email_address'), Icons.person, false, _emailTextController),
                   const SizedBox(
                     height: 30,
                   ),
-                  PasswordField("Enter Password", Icons.lock, _passwordTextController),
+                  PasswordField(getTranslate(context, 'login.password'), Icons.lock, _passwordTextController),
                   const SizedBox(
                     height: 6,
                   ),
@@ -109,7 +110,7 @@ class _SignInState extends State<SignIn> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
-          return "Enter a Correct Email";
+          return getTranslate(context, 'signup.CE');
         } else
         return null ;
       },
@@ -154,7 +155,7 @@ class _SignInState extends State<SignIn> {
                 size: 16,
               ),
             ),*/
-            hintText: 'Must be 8 character long',
+            hintText: '8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -167,7 +168,7 @@ class _SignInState extends State<SignIn> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
-          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+          return getTranslate(context, 'signup.CP');
         } else
         return null ;
       },
@@ -186,7 +187,7 @@ class _SignInState extends State<SignIn> {
         children: [
           GestureDetector(
             child: Text(
-            "Forgot Password ?",
+            getTranslate(context, 'login.forget'),
             style: TextStyle(color: Color.fromARGB(217, 0, 29, 103),
             fontWeight: FontWeight.bold),
           ),
@@ -202,13 +203,13 @@ class _SignInState extends State<SignIn> {
 Row SignUpOption () {
   return Row(mainAxisAlignment: MainAxisAlignment.center, 
   children: [
-    const Text("Don't have an account?", 
+     Text(getTranslate(context, "login.account"), 
     style: TextStyle(color: Color.fromARGB(217, 0, 29, 103)),),
     GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
       },
-      child: const Text(" Sign Up", 
+      child:  Text(getTranslate(context, 'login.up'), 
         style: TextStyle(color: Color.fromARGB(217, 0, 29, 103), fontWeight: FontWeight.bold),)
     )
   ],);
@@ -233,7 +234,7 @@ Container signInButton (BuildContext context, Function onTap) {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))
         )
         ),
-        child: Text ('SIGN IN', 
+        child: Text (getTranslate(context, 'login.login'), 
       style: const TextStyle(
         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
@@ -259,7 +260,7 @@ Future<void> processLoginData(BuildContext context) async {
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Email is not Registered",
+                  getTranslate(context, 'login.email_not'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,

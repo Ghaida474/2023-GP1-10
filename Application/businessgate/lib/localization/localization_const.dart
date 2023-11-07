@@ -8,12 +8,6 @@ String getTranslate(BuildContext context, String key) {
 
 const String english = 'en';
 
-const String hindi = 'hi';
-
-const String indonesian = 'id';
-
-const String chainese = 'zh';
-
 const String arabic = 'ar';
 
 const String languageKey = "languageCode";
@@ -28,15 +22,6 @@ Locale _locale(String languageCode) {
   Locale temp;
   switch (languageCode) {
     case english:
-      temp = Locale(languageCode);
-      break;
-    case hindi:
-      temp = Locale(languageCode);
-      break;
-    case indonesian:
-      temp = Locale(languageCode);
-      break;
-    case chainese:
       temp = Locale(languageCode);
       break;
     case arabic:

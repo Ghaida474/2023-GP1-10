@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:businessgate/screens/home.dart';
 import 'package:flutter/material.dart';
 
+import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../models/model_user.dart';
 import '../utils/colors.dart';
@@ -76,7 +77,7 @@ class _SignUpState extends State<SignUp> {
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: const Text("SIGN UP", 
+      title:  Text(getTranslate(context, 'signup.sign_up'), 
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
     ),
     body: Container(
@@ -96,27 +97,27 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 25,
                   ),
-                    nameField("Enter First Name", Icons.person, false, _FnameTextController),
+                    nameField(getTranslate(context, 'signup.firstname'), Icons.person, false, _FnameTextController),
                     const SizedBox(
                     height: 20,
                   ),
-                  nameField("Enter Last Name", Icons.person, false, _LnameTextController),
+                  nameField(getTranslate(context, 'signup.lastname'), Icons.person, false, _LnameTextController),
                     const SizedBox(
                     height: 20,
                   ),
-                    IDField("Enter National ID", Icons.person, false, _IDTextController),
+                    IDField(getTranslate(context, 'signup.NID'), Icons.person, false, _IDTextController),
                     const SizedBox(
                     height: 20,
                   ),
                      // Gender selection buttons
-                  Text('Select Gender :',
+                  Text(getTranslate(context, 'signup.Gender'),
                   style: TextStyle(fontSize: 20,
                   color: Color.fromARGB(217, 0, 29, 103),
                   fontWeight: FontWeight.bold)),
                   Column(
                      children: <Widget>[
                      RadioListTile(
-                     title: const Text('Male'),
+                     title:  Text(getTranslate(context, 'signup.M')),
                      value: Genders.male,
                      groupValue: selectedGender,
                      onChanged: (value) {
@@ -126,7 +127,7 @@ class _SignUpState extends State<SignUp> {
                      },
                     ),
                     RadioListTile(
-                     title: const Text('Female'),
+                     title:  Text(getTranslate(context, 'signup.F')),
                      value: Genders.female,
                      groupValue: selectedGender,
                      onChanged: (value) {
@@ -140,7 +141,7 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                     height: 20,
                   ),
-                  mobileField("Enter Mobile Number", Icons.phone, false, _phoneNumberTextController),
+                  mobileField(getTranslate(context, 'signup.mobile_number'), Icons.phone, false, _phoneNumberTextController),
                     const SizedBox(
                     height: 20,
                   ),
@@ -166,11 +167,11 @@ class _SignUpState extends State<SignUp> {
 /*const SizedBox(
                     height: 10,
                   ),*/
-                  emailField("Enter Email", Icons.email, false, _emailTextController),
+                  emailField(getTranslate(context, 'signup.email_address'), Icons.email, false, _emailTextController),
                   const SizedBox(
                     height: 20,
                   ),
-                  PasswordField("Enter Password", Icons.lock, _passwordTextController),
+                  PasswordField(getTranslate(context, 'signup.password'), Icons.lock, _passwordTextController),
                   const SizedBox(
                     height: 20,
                   ),
@@ -218,7 +219,7 @@ class _SignUpState extends State<SignUp> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)){
-          return "Enter a Correct Name";
+          return getTranslate(context, 'signup.CN');
         } else
         return null ;
       },
@@ -252,7 +253,7 @@ class _SignUpState extends State<SignUp> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^\d{10}$').hasMatch(value!)){
-          return "Enter a Correct ID";
+          return getTranslate(context, 'signup.CID');
         } else
         return null ;
       },
@@ -286,7 +287,7 @@ class _SignUpState extends State<SignUp> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$').hasMatch(value!)){
-          return "Enter a Correct Email";
+          return getTranslate(context, 'signup.CE');
         } else
         return null ;
       },
@@ -320,7 +321,7 @@ class _SignUpState extends State<SignUp> {
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value!)){
-          return "Enter a Correct Mobile Number";
+          return getTranslate(context, 'signup.CM');
         } else
         return null ;
       },
@@ -365,7 +366,7 @@ TextFormField PasswordField (String text, IconData icon,
                 size: 16,
               ),
             ),*/
-            hintText: 'Must be 8 character long',
+            hintText: '8 character long',
             hintStyle: TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)) ,
       labelText: text,
       labelStyle: TextStyle( color: Colors.white.withOpacity(0.9)),
@@ -378,7 +379,7 @@ TextFormField PasswordField (String text, IconData icon,
       ),
       validator: (value) {
         if(value!.isEmpty || !RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',).hasMatch(value!)){
-          return "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and special character";
+          return getTranslate(context, 'signup.CP');
         } else
         return null ;
       },
@@ -398,7 +399,7 @@ TextFormField PasswordField (String text, IconData icon,
       if(formkey.currentState!.validate()) {
        onTap();  
       }}, 
-      child: Text ('SIGN UP', 
+      child: Text (getTranslate(context, 'signup.sign_up'), 
       style: const TextStyle(
         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
         ),
@@ -443,7 +444,7 @@ TextFormField PasswordField (String text, IconData icon,
               shape: Border.all(
                   color: Colors.green, width: 0.5, style: BorderStyle.solid),
               content: Text(
-                "Register Successful",
+                getTranslate(context, 'signup.register_suc'),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18.0,
@@ -467,6 +468,7 @@ TextFormField PasswordField (String text, IconData icon,
   
             Timer(Duration(seconds: 2), () {
               Navigator.pushNamed(context, '/home');
+              Navigator.of(context).pushReplacementNamed('/bottomNavi');
             });
           });
         } else 
@@ -479,7 +481,7 @@ TextFormField PasswordField (String text, IconData icon,
                 shape: Border.all(
                     color: Colors.red, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Register Failed",
+                  getTranslate(context, 'signup.register_fai'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.0,
@@ -514,7 +516,7 @@ TextFormField PasswordField (String text, IconData icon,
                 shape: Border.all(
                     color: Colors.yellow, width: 0.5, style: BorderStyle.solid),
                 content: Text(
-                  "Email Already Registered",
+                  getTranslate(context, 'signup.email_registered'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.0,
@@ -551,7 +553,7 @@ TextFormField PasswordField (String text, IconData icon,
                   style: BorderStyle.solid,
                 ),
                 content: Text(
-                  "Something Went Wrong",
+                  getTranslate(context, 'signup.something_wrong'),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 18.0,
@@ -586,7 +588,7 @@ TextFormField PasswordField (String text, IconData icon,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
               content: Text(
-                "Something Went Wrong",
+                getTranslate(context, 'signup.something_wrong'),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18.0,
