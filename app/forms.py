@@ -309,3 +309,4 @@ class updateKai(forms.ModelForm):
     endtime = forms.TimeField(label="وقت الانتهاء", input_formats=['%H:%M'])
     subject = forms.CharField(label="وصف المتطلبات", widget=forms.Textarea)
     attachment = forms.FileField(label="ارفاق ملف", required=False)'''
+

@@ -14,6 +14,7 @@ urlpatterns = [
     path('business-unit-home/profile/view-file/<int:user_id>/', views.view_file, name='view_file'),
     path('business-unit-home/edit-profile/delete_previouswork/<str:value_to_delete>/', views.delete_previouswork, name='delete_previouswork'),
     path('business-unit-home/edit-profile/delete_researchinterest/<str:value_to_delete>/', views.delete_researchinterest, name='delete_researchinterest'),
-    path('business-unit-home/edit-profile/delete_course/<int:value_to_delete>/', views.delete_course, name='delete_course'),
+    path('business-unit-home/delete_course/<int:value_to_delete>/', views.delete_course, name='delete_course'),
+    path('business-unit-home/edit_course/<int:value_to_edit>/', views.edit_course, name='edit_course'),
    
 ]

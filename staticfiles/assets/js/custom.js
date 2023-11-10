@@ -439,7 +439,7 @@ if(!(document.querySelector('body').firstElementChild.classList.contains('respon
 
 /******* RTL VERSION *******/
 
-// $('body').addClass('rtl');
+$('body').addClass('rtl');
 
 /*Boxed Layout Start*/
 // $('body').addClass('boxed');
@@ -600,6 +600,7 @@ $(document).ready(function () {
 		(document.getElementById("style")?.setAttribute("href", "static/assets/plugins/bootstrap/css/bootstrap.rtl.css"));
 
 	}
+	
 	/***************** RTL HAs Class *********************/
 
 /******* Transparent Bg-Image Style *******/

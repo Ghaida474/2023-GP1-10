@@ -42,7 +42,7 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end" role="menu">
                                             <li><a  href=""><i class="feather feather-eye me-2"></i>الإطلاع</a></li>
-                                            <li><a  href=""><i class="feather feather-edit-2 me-2"></i>تعديل</a></li>
+                                            <li><a  href="{% url 'business_unit_account:edit_course' value_to_edit=program.programid %}"  data-program-id="{{ program.programid }}" data-bs-toggle="modal" data-bs-target="#editcoursemodal"><i class="feather feather-edit-2 me-2"></i>تعديل</a></li>
                                             <li><a  href="{% url 'business_unit_account:delete_course' value_to_delete=program.programid %}"><i class="feather feather-trash-2 me-2"></i>حذف</a></li>
                                         </ul>
                                     </div>
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-
+<!-- مودل طلب الانشاء -->
     <div class="modal fade"  id="newprojectmodal">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" id="smartwizard-3">
@@ -236,11 +236,143 @@
             </div>
         </div>
     </div>
+    <!-- **********************************************مودل تعديل الطلب **********************************************-->
+    <div class="modal fade" id="editcoursemodal" tabindex="-1" role="dialog" aria-labelledby="editcoursemodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تعديل طلب</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <!-- <input type="hidden" id="edit-program-id" name="program_id" value=""> -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">نوع الطلب<span style="color: red;">*</span></label>
+                                    <select  class="form-control custom-select select2"  data-placeholder= "إختار النوع" name="reqType" value="{{editprogram.programtype}}" required> 
+                                        <option label="إختار النوع" disabled selected></option>
+                                        <option value="دورة تدريبية">دورة تدريبية</option>
+                                        <option value="ورشة عمل">ورشة عمل</option>
+                                    </select>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">الموضوع <span style="color: red;">*</span></label>
+                                    <input class="form-control" placeholder="الموضوع" name="topic" value="{{editprogram.topic}}" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">المجال</label>
+                                    <select class="form-control custom-select select2" data-placeholder="اختار المجال" name="domain" value="{{editprogram.program_domain}}" required>
+                                        <option label="اختار المجال" disabled selected></option>
+                                        {% for i in domain %}
+                                        <option value="{{i}}">{{i}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">السعر<span style="color: red;">*</span></label>
+                                    <input class="form-control" placeholder="السعر" type="number" name="price" value="{{editprogram.totalcost}}" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">عدد المتدربين <span style="color: red;">*</span></label>
+                                    <input class="form-control" placeholder="عدد المتدربين" type="number" name="numoftrainee" value="{{editprogram.capacity}}" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">المدرب <span style="color: red;">*</span></label>
+                                    <select class="form-control custom-select select2" data-placeholder="اختار المدرب" name="instructor" value="{{editprogram.instructorid}}" required>
+                                        <option label="اختار المدرب" disabled selected></option>
+                                        {% for faculty_member in faculty %}
+                                        <option value="{{faculty_member.id}}">{{faculty_member.first_name}} {{faculty_member.last_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">تاريخ البداية <span style="color: red;">*</span></label>
+                                    <input class="form-control flatpickr" placeholder="DD-MM-YYYY" type="date" data-input name="startdate" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">تاريخ الانتهاء <span style="color: red;">*</span></label>
+                                    <input class="form-control flatpickr" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">وقت البداية <span style="color: red;">*</span></label>                    
+                                    <input class="form-control flatpickr" placeholder="HH:MM" type="time" data-input name="starttime" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">وقت الانتهاء <span style="color: red;">*</span></label>
+                                    <input class="form-control flatpickr" placeholder="HH:MM"  type="time" data-input name="endtime" required>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label class="form-label">وصف المتطلبات</label>    
+                            <textarea class="form-control" rows="4" cols="105" placeholder="" name="subject"></textarea>
+                            <span class="error-message" style="color: red;"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">ارفاق ملف</label>
+                            <div class="form-group">
+                                <label class="form-label"></label>
+                                <input class="form-control" type="file" name="attachment">
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>    
+                    </div>
+                   
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
-{% block modal %}
-<!-- Add modal content here if needed -->
-{% endblock %}
+
 
 {% block scripts %}
 <script src="{% static 'assets/js/themeColors.js'%}"></script>

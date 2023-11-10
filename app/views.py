@@ -17,19 +17,20 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from .forms import emailcheckform
 import certifi
-from django.contrib.auth.hashers import make_password
 from django.utils import timezone
 from django.contrib.auth.backends import ModelBackend
-
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
+
 def clear_messages(request):
     storage = messages.get_messages(request)
     for _ in storage:
         pass
 
+
 def index(request):
     return render(request, 'auth/index.html')
-
 
 
 def login_view(request):
@@ -62,7 +63,6 @@ def login_view(request):
                 clear_messages(request)
                 messages.error(request, 'البريد الإلكتروني غير صحيح.')
                 return render(request, 'auth/login.html', {'form': form})
-
 
 
             if user is not None:
@@ -100,6 +100,8 @@ def login_view(request):
     else:
         form = Loginform()
         return render(request, 'auth/login.html', {'form': form })
+    
+
 # def forgot_password(request):
 #     #form = ForgetPasswordForm()
 #     form = Loginform()
@@ -290,7 +292,9 @@ def reset_password_action(request, email, role):
             # Show a message for incorrect OTP
 
 
+@login_required
 def logout_view(request):
+    # user = request.user
     logout(request)
     clear_messages(request)
     messages.error(request, 'لقد تم تسجيل خروجك بنجاح.')

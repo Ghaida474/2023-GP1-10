@@ -237,7 +237,6 @@ def traningprogram_view(request):
 
 @login_required
 def delete_course(request, value_to_delete):
-    # user = request.user
     program = Trainingprogram.objects.get(programid=value_to_delete)
 
     if program:
@@ -246,3 +245,48 @@ def delete_course(request, value_to_delete):
         messages.error(request, 'No researchinterest values to delete.')
 
     return redirect('business_unit_account:traning-program')
+
+
+@login_required
+def edit_course(request, value_to_edit):
+    editprogram = Trainingprogram.objects.get(programid=value_to_edit)
+    user = request.user
+    collage_id = user.collageid.collageid
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+
+    if request.method == 'POST':
+        programtype = request.POST.get('reqType')
+        topic = request.POST.get('topic')
+        Domain = request.POST.get('domain')
+        price = request.POST.get('price')
+        capacity = request.POST.get('numoftrainee')
+        instructor_id = request.POST.get('instructor')
+        start_date = request.POST.get('startdate')
+        end_date = request.POST.get('enddate')
+        start_time = request.POST.get('starttime')
+        end_time = request.POST.get('endtime')
+        subject = request.POST.get('subject')
+        attachment = request.FILES.get('attachment')
+        
+    
+        new_program = Trainingprogram(
+            programtype=programtype,
+            instructorid=instructor_id,
+            capacity=capacity,
+            subject=subject,
+            topic=topic,
+            program_domain=Domain,
+            totalcost=price,
+            startdate=start_date,
+            enddate=end_date,
+            starttime=start_time,
+            endtime=end_time,
+            attachment=attachment,
+            collageid=collage_id,
+            dataoffacultyproposal = timezone.now().date()
+        )
+        new_program.save()
+
+    return render(request, 'bu/TraningPrograms.html', {'editprogram':editprogram ,'faculty':faculty , 'domain':domain })
