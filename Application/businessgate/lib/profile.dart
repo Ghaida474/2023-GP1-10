@@ -5,61 +5,59 @@ import 'package:flutter/material.dart';
 import '../../myservice.dart';
 
 class Profile extends StatelessWidget {
-   Profile({Key? key}) : super(key: key);
-  
- @override
-Widget build(BuildContext context) {
+  Profile({Key? key}) : super(key: key);
 
-  final size = MediaQuery.of(context).size;
-  return Scaffold(
-    extendBodyBehindAppBar: true,
-    appBar: AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      title: Text(
-        getTranslate(context, 'profile.profile'),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      automaticallyImplyLeading: false,
-    ),
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            hexStringColor("#6FBCF6"),
-            hexStringColor("#E3E0D2"),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          getTranslate(context, 'profile.profile'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+        automaticallyImplyLeading: false,
       ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            20, MediaQuery.of(context).size.height * 0.2, 20, 400),
-          child: Column(
-            children: <Widget>[
-              ProfileWidget("assets/images/Profile.png"),
-               SizedBox(height: 30),
-              profileinfo(size, context),
-              heightbox(size.height * 0.03),
-              profileList(size, context),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringColor("#6FBCF6"),
+              hexStringColor("#E3E0D2"),
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+                20, MediaQuery.of(context).size.height * 0.2, 20, 400),
+            child: Column(
+              children: <Widget>[
+                ProfileWidget("assets/images/Profile.png"),
+                SizedBox(height: 30),
+                profileinfo(size, context),
+                heightbox(size.height * 0.03),
+                profileList(size, context),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   heightbox(double height) {
-  return SizedBox(height: height * 3);
-}
+    return SizedBox(height: height * 3);
+  }
 
-widthbox(double width) {
-  return SizedBox(width: width);
-}
+  widthbox(double width) {
+    return SizedBox(width: width);
+  }
 
   profileList(Size size, BuildContext context) {
     return Container(
@@ -98,7 +96,9 @@ widthbox(double width) {
           ),
           devider(),
           profilelistTile(
-            () {},
+            () {
+              Navigator.pushNamed(context, '/certificates');
+            },
             Icons.document_scanner,
             Colors.white,
             getTranslate(context, 'profile.certificates'),
@@ -138,7 +138,7 @@ widthbox(double width) {
     return ListTile(
       onTap: onTap,
       leading: Image.asset(
-        color: Colors.white ,
+        color: Colors.white,
         image,
         height: 22,
         width: 22,
@@ -146,7 +146,9 @@ widthbox(double width) {
       minLeadingWidth: 0,
       title: Text(
         title,
-        style:  TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600).copyWith(fontWeight: FontWeight.w500),
+        style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)
+            .copyWith(fontWeight: FontWeight.w500),
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,
@@ -167,7 +169,8 @@ widthbox(double width) {
         children: [
           Text(
             getTranslate(context, 'profile.logout_que'),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           SizedBox(height: 10),
           SizedBox(height: 10),
@@ -181,8 +184,8 @@ widthbox(double width) {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    height: 30,
-                    width: 30,
+                    height: 40,
+                    width: 40,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -196,7 +199,10 @@ widthbox(double width) {
                     alignment: Alignment.center,
                     child: Text(
                       getTranslate(context, 'profile.cancel'),
-                      style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 107, 105, 105), fontWeight: FontWeight.w400),
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 107, 105, 105),
+                          fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
@@ -209,14 +215,15 @@ widthbox(double width) {
                     Navigator.pushReplacementNamed(context, '/signin');
                   },
                   child: Container(
-                    height: 30,
-                    width: 30,
+                    height: 40,
+                    width: 40,
                     decoration: BoxDecoration(
                       color: hexStringColor("#095590"),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromARGB(255, 250, 0, 0).withOpacity(0.5),
+                          color:
+                              Color.fromARGB(255, 250, 0, 0).withOpacity(0.5),
                           blurRadius: 5,
                         )
                       ],
@@ -224,7 +231,10 @@ widthbox(double width) {
                     alignment: Alignment.center,
                     child: Text(
                       getTranslate(context, 'profile.logout'),
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -248,8 +258,9 @@ widthbox(double width) {
       minLeadingWidth: 0,
       title: Text(
         title,
-        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600).copyWith(
-            color: color, fontWeight: FontWeight.w500),
+        style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)
+            .copyWith(color: color, fontWeight: FontWeight.w500),
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,
@@ -274,7 +285,8 @@ widthbox(double width) {
       children: [
         Text(
           _myEmail.myVariable,
-          style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
         ),
         heightbox(10 / 3),
       ],

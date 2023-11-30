@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const Color primaryColor = Color.fromARGB(255, 91, 171, 220);
+const Color primaryColor = Color.fromARGB(255, 6, 135, 214);
 
 const Color whiteColor = Colors.white;
 
@@ -36,6 +36,7 @@ heightbox(double height) {
 widthbox(double width) {
   return SizedBox(width: width);
 }
+
 //black14Style2b
 const black22Style2b =
     TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: black2BColor);

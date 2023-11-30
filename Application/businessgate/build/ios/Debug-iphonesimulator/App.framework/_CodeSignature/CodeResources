@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		nGxxsKQdGTFZdbfVj2ecc5xU4fU=
+		Ipg8b/GXWBQSm/mTdZb9b3bZMGQ=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		9fqBGSB4F1lJKsC5+B0kC1cemrk=
+		JjeQUy1c/7qiyP3zWx8rHzvdSTg=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		1H6cu6N9f337mCcLJMkLU3orDiM=
+		7YqE/dCSypSzfNMvePvw1Hwd9P0=
 		</data>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
 		<data>
@@ -144,17 +144,21 @@
 		<data>
 		hJRVle60+VoLAmDQaGQ/F//mmoM=
 		</data>
+		<key>flutter_assets/assets/images/Logo2.png</key>
+		<data>
+		/6TVUEtJKL1Ae6dqI7zLZ4ZzyXk=
+		</data>
 		<key>flutter_assets/assets/images/Profile.png</key>
 		<data>
 		4pzJNgtoiRuEsrPxL2EglDqOZ8s=
 		</data>
 		<key>flutter_assets/assets/languages/ar.json</key>
 		<data>
-		GdyqA6ZnuB+EhvcUvZWS8wL+ovg=
+		dAqtq4Qgu3lXAiwuxYdB8K55URg=
 		</data>
 		<key>flutter_assets/assets/languages/en.json</key>
 		<data>
-		iHmY6jkz6v5ItsW0qbI6+w7027s=
+		SKfEyT0B0GTtIURYsCFsGTMAKIw=
 		</data>
 		<key>flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
 		<data>
@@ -362,7 +366,7 @@
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		WoTx44LYHLluwEqlZl9C0YvDhrk=
+		fxHSkor3mLSMcowFxAbpE666YJs=
 		</data>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>
 		<data>
@@ -379,14 +383,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			45TUKr4LcXA7UMWI6/XLWUV6Tu9NGSLvxKbSNElOV90=
+			IsV38biavoYCFK874Snp9XdTV4lgWKdV8KK3uYunHnc=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DXiDrT6VQDbbtguatp7swMrr7KbJKRGgK0yPvBOyjkA=
+			yhLaLtg6aGuAWpHsCjLJzL+da6ErK77dDgRGKFNyet8=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -400,7 +404,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			OANY87WeYSiSnZOwq9q6QvSgj4w9EF95ZP4XsUpElfI=
+			wDAdGBSYTQE3Q33Snd1YCKEPibaoMZnl8BoLOtoNVFk=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
@@ -606,6 +610,13 @@
 			y65y2vLILlg/bWIVqAcdv5PEP0isdB+C+twHmDrgqnI=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/Logo2.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			9ujAnw5hYvMOE10eGRRBynfLW1gvdOm3mNhY8tlIWQo=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/Profile.png</key>
 		<dict>
 			<key>hash2</key>
@@ -617,14 +628,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/UIDemjLGfWp3YwHSFwZG+f8emNjqOvOPboNPSqHEQQ=
+			lgNRr/KVCq2iv3cPcGJMntig5k9pw7zLyLhSlvYwXHQ=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/languages/en.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			AgAiDcerGggyORKawGx0xqAsyPbqAmLFaFviqbGDPXE=
+			MgBZXRXqQUP12oM9gawTMIRkTitdXvcBfCE9oT36NJU=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
@@ -981,7 +992,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			uUrJyXDA5DotJQv4nHthIjsHxgvpUi1xC50nUZ7ETWQ=
+			sLHsSAbH/PT/xwgYLXZ5cxiOBNBqMdcRoDrVXCOYU74=
 			</data>
 		</dict>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>

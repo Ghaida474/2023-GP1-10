@@ -1,3 +1,4 @@
+import 'package:businessgate/database/app_database.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -14,61 +15,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<Home> {
-
-  /*Future<String> Name() async {
-    print(await ModelsUsers().FetchFirstName(_myEmail.myVariable));
-    return await ModelsUsers().FetchFirstName(_myEmail.myVariable);
-  }*/
-
-  MyService _myEmail = MyService();
-  
   final category = [
     {
+      "image": "assets/category/bussiness.png",
       "name": "Business",
       "icon": Icons.add_business_outlined,
+      "isimage": false,
       "color": Color.fromARGB(255, 21, 82, 213),
-      "isimage": false,
     },
     {
-      "name": "Design",
+      "image": "assets/category/design.png",
+      "name": "Architecture",
       "icon": Icons.design_services_outlined,
-      "color": const Color(0xff15A812),
       "isimage": false,
+      "color": const Color(0xff15A812),
     },
-    
     {
-      "name": "Marketing",
+      "image": "assets/category/helth.png",
+      "name": "Medicine",
       "icon": Icons.medical_services_rounded,
-      "color": const Color(0xffAD5C5C),
-      "isimage": true,
-      "image": "assets/home/nimbus_marketing.png",
+      "isimage": false,
+      "color": Color.fromARGB(255, 173, 159, 92),
     },
   ];
-
-  final popular = [
-    {
-      "image": "assets/home/Rectangle 14.png",
-      "course": "Google ux design",
-      "name": "Ahmed",
-      "review": 125,
-      "Price": " 350 SR",
-    },
-    {
-      "image": "assets/home/Rectangle 14.png",
-      "course": "Google ux design",
-      "name": "Saad",
-      "review": 125,
-      "Price": "200 SR",
-    },
-    {
-      "image": "assets/home/Rectangle 14.png",
-      "course": "Data science",
-      "name": "Noura",
-      "review": 125,
-      "Price": "450 SR",
-    }
-  ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,29 +46,19 @@ class _HomeScreenState extends State<Home> {
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: Color.fromARGB(255, 209, 231, 248),
+        backgroundColor: Color.fromARGB(255, 149, 202, 242),
         toolbarHeight: size.height * 0.085,
         elevation: 3,
         shadowColor: Colors.grey.withOpacity(0.3),
         title: Row(
           children: [
-            Container(
-              height: size.height * 0.07,
-              width: size.height * 0.07,
-              padding: const EdgeInsets.all(1.5),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-              ),
-              child: const CircleAvatar(
-                  backgroundImage: AssetImage("assets/profile/Logo.jpg")),
-            ),
             widthSpace,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                   getTranslate(context, 'home.hello'),
-                  style: black16Style,
+                  getTranslate(context, 'home.hello'),
+                  style: black18Style,
                 ),
                 heightbox(2),
               ],
@@ -114,10 +73,16 @@ class _HomeScreenState extends State<Home> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/notification');
+                    showDialog(
+                      barrierColor: Colors.black.withOpacity(0.3),
+                      context: context,
+                      builder: (context) {
+                        return signoutDialog(context, size);
+                      },
+                    );
                   },
                   icon: const Icon(
-                    Icons.notifications,
+                    Icons.logout,
                     color: Colors.black,
                   ),
                 ),
@@ -127,10 +92,6 @@ class _HomeScreenState extends State<Home> {
                   child: Container(
                     height: 6,
                     width: 6,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 222, 228, 235),
-                      shape: BoxShape.circle,
-                    ),
                   ),
                 ),
               ],
@@ -139,26 +100,45 @@ class _HomeScreenState extends State<Home> {
         ],
       ),
       body: Container(
-        color: hexStringColor("#E3E0D2"),
-      child : ListView(
-        children: [
-          topContainer(size),
-          categorytext(),
-          categoryList(size),
-          height5Space,
-          popularText(),
-          poularlist(size),
-        ],
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [hexStringColor("#6FBCF6"), hexStringColor("#E3E0D2")],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+        child: ListView(
+          children: [
+            topContainer(size),
+            categorytext(),
+            categoryList(size),
+            height5Space,
+            popularText(),
+            FutureBuilder<List<Widget>>(
+              future: GetRecentCourses(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // Placeholder for loading state
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  // Display the list of widgets
+                  List<Widget> courseWidgets = snapshot.data ?? [];
+                  return Column(children: courseWidgets);
+                }
+              },
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
-  poularlist(Size size) {
+  poularlist(Size size, String name, double? price, String coach, int? id) {
     return Column(
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/home');
+            Navigator.pushNamed(context, '/course', arguments: id);
           },
           child: Container(
             margin: const EdgeInsets.only(
@@ -166,7 +146,7 @@ class _HomeScreenState extends State<Home> {
                 right: fixPadding * 2,
                 bottom: fixPadding * 2,
                 top: fixPadding),
-            height: size.height * 0.29,
+            height: size.height * 0.15,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: whiteColor,
@@ -182,12 +162,6 @@ class _HomeScreenState extends State<Home> {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(10),
                   ),
-                  child: Image.asset(
-                    "assets/home/Rectangle 14.png",
-                    height: size.height * 0.16,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -199,46 +173,27 @@ class _HomeScreenState extends State<Home> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Google ux design",
+                            Text(
+                              name,
                               style: black16Stylew600,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Row(
                               children: [
-                                for (int i = 0; i < 5; i++)
-                                  ShaderMask(
-                                    shaderCallback: (Rect bounds) {
-                                      return const LinearGradient(
-                                        colors: gradient,
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                      ).createShader(bounds);
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(
-                                          right: fixPadding / 5),
-                                      child: Icon(
-                                        Icons.star,
-                                        size: 15,
-                                        color: whiteColor,
-                                      ),
-                                    ),
-                                  ),
-                                const Text(
-                                  "(125)",
-                                  style: grey14Style,
-                                )
+                                const Padding(
+                                  padding:
+                                      EdgeInsets.only(right: fixPadding / 5),
+                                ),
                               ],
                             ),
                           ],
                         ),
-                        const Text(
-                          "Ahmed",
+                        Text(
+                          coach,
                           style: grey14Style,
                         ),
-                        const Text(
-                          "350 SR",
+                        Text(
+                          price.toString(),
                           style: primary16Style,
                         )
                       ],
@@ -247,17 +202,6 @@ class _HomeScreenState extends State<Home> {
                 )
               ],
             ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: fixPadding),
-          child: Row(
-            children: [
-              poularIcon2(
-                  size, "assets/home/Rectangle 14 (1).png", "Google ux design"),
-              poularIcon2(
-                  size, "assets/home/Rectangle 14 (2).png", "Data science"),
-            ],
           ),
         ),
       ],
@@ -363,14 +307,14 @@ class _HomeScreenState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            getTranslate(context, 'home.popular_course'),
+            getTranslate(context, 'home.recent'),
             style: black18Style,
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, '/home');
+              Navigator.pushNamed(context, '/allCourses');
             },
-            child: Text(getTranslate(context, 'home.see_all'),
+            child: Text(getTranslate(context, 'home.see_all_P'),
                 style: primary14Style),
           )
         ],
@@ -412,7 +356,7 @@ class _HomeScreenState extends State<Home> {
                         color: whiteColor,
                       )
                     : Image.asset(
-                        category[index]['image'].toString(),
+                        category[index]['iconimage'].toString(),
                         height: 20,
                         width: 20,
                         color: whiteColor,
@@ -445,9 +389,9 @@ class _HomeScreenState extends State<Home> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, "/home");
+              Navigator.pushNamed(context, "/category");
             },
-            child: Text(getTranslate(context, 'home.see_all'),
+            child: Text(getTranslate(context, 'home.see_all_C'),
                 style: primary14Style),
           )
         ],
@@ -462,54 +406,161 @@ class _HomeScreenState extends State<Home> {
           height: size.height * 0.22,
           width: double.infinity,
           child: Image.asset(
-            "assets/home/Rectangle2.jpg",
+            "assets/images/Logo2.png",
             fit: BoxFit.cover,
           ),
         ),
         Positioned(
-          bottom: 15,
+          bottom: 7,
           left: 0,
           right: 0,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: fixPadding * 2),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Unlock the world of data analysis this summer!",
-                  style: white18Style,
-                ),
-                height5Space,
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/home');
-                  },
-                  child: Container(
-                    height: size.height * 0.05,
-                    width: size.width * 0.3,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: gradient,
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      getTranslate(context, 'home.know_more'),
-                      style: white16Style,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         )
       ],
+    );
+  }
+
+  /*Future<List<Widget>> GetRecentCourses(BuildContext context) async {
+    final size = MediaQuery.of(context).size;
+    List<Widget> courseWidgets = [];
+    List<Courses> courses = await ModelsUsers().TrainingPrograms();
+
+    try {
+      for (Courses course in courses) {
+        Widget courseWidget = poularlist(
+          size,
+          course.name as String,
+          course.price,
+          course.instructer as String,
+          course.id,
+        );
+        courseWidgets.add(courseWidget);
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return courseWidgets;
+  }*/
+
+  Future<List<Widget>> GetRecentCourses(BuildContext context) async {
+    final size = MediaQuery.of(context).size;
+    List<Widget> courseWidgets = [];
+    List<Courses> courses = await ModelsUsers().TrainingPrograms();
+
+    try {
+      // Take only the last 3 courses from the list
+      List<Courses> recentCourses =
+          courses.length > 3 ? courses.sublist(courses.length - 3) : courses;
+
+      for (Courses course in recentCourses) {
+        Widget courseWidget = poularlist(
+          size,
+          course.name as String,
+          course.price,
+          course.instructer as String,
+          course.id,
+        );
+        courseWidgets.add(courseWidget);
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+
+    return courseWidgets;
+  }
+
+  signoutDialog(BuildContext context, Size size) {
+    return AlertDialog(
+      backgroundColor: Color.fromARGB(255, 162, 211, 246),
+      titlePadding: const EdgeInsets.all(10 * 3),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      title: Column(
+        children: [
+          Text(
+            getTranslate(context, 'profile.logout_que'),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          SizedBox(height: 10),
+          SizedBox(height: 10),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              SizedBox(width: 0),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 5,
+                        )
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      getTranslate(context, 'profile.cancel'),
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 107, 105, 105),
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              SizedBox(width: 10),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, '/signin');
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: hexStringColor("#095590"),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              Color.fromARGB(255, 250, 0, 0).withOpacity(0.5),
+                          blurRadius: 5,
+                        )
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      getTranslate(context, 'profile.logout'),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

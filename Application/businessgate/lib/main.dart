@@ -1,18 +1,29 @@
+import 'package:businessgate/CertificatesPage.dart';
+import 'package:businessgate/afterSurvey.dart';
+import 'package:businessgate/allCourses.dart';
+import 'package:businessgate/beforeSurvey.dart';
 import 'package:businessgate/bottomnavigation/bottom_navigation.dart';
-import 'package:businessgate/languages.dart'; 
+import 'package:businessgate/category.dart';
+import 'package:businessgate/course.dart';
+import 'package:businessgate/filterPrograms.dart';
+import 'package:businessgate/languages.dart';
+import 'package:businessgate/myCourses.dart';
+import 'package:businessgate/regConfirm.dart';
+import 'package:businessgate/subConfirm.dart';
+import 'package:businessgate/view_profile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/forget.dart';
 import 'package:businessgate/screens/home.dart';
 import 'package:businessgate/editProfile.dart';
 import 'package:businessgate/profile.dart';
-import 'package:flutter/material.dart';
 import 'package:businessgate/screens/signin.dart';
 import 'package:businessgate/screens/signup.dart';
 import 'package:businessgate/localization/localization.dart';
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:businessgate/bottomnavigation/bottom_navigation.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -29,9 +40,8 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-
 class _MyAppState extends State<MyApp> {
-   Locale? _locale;
+  Locale? _locale;
 
   void setLocale(Locale locale) {
     setState(() {
@@ -54,12 +64,11 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 30, 67, 180)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 30, 67, 180)),
         useMaterial3: true,
       ),
       initialRoute: '/signin',
-      
-
       routes: {
         '/signin': (context) => SignIn(),
         '/signup': (context) => SignUp(),
@@ -67,17 +76,26 @@ class _MyAppState extends State<MyApp> {
         '/forget': (context) => Forget(),
         '/profile': (context) => Profile(),
         '/editprofile': (context) => EditProfile(),
-        '/bottomNavi': (context) => BottomNaviScreen(), 
-        '/languages': (context) => Languages()
+        '/bottomNavi': (context) => BottomNaviScreen(),
+        '/languages': (context) => Languages(),
+        '/allCourses': (context) => allCourses(),
+        '/course': (context) => Course(),
+        //'/courseC': (context) => Course(),
+        //'/courseRw' :(context) => Course(),
+        '/viewprofile': (context) => ViewProfile(),
+        '/category': (context) => CategoryScreen(),
+        '/bfSurvey': (context) => bSurvey(),
+        '/afSurvey': (context) => aSurvey(),
+        '/regConfirm': (context) => RegConformation(),
+        '/subConfirm': (context) => SubConformation(),
+        '/filteredPrograms': (context) => filteredPrograms(),
+        '/certificates': (context) => CertificateViewPage(),
+        '/myCourses': (context) => myCourses(),
       },
-      home: BottomNaviScreen(), 
-     
+      home: BottomNaviScreen(),
       locale: _locale,
       supportedLocales: const [
         Locale('en'),
-        Locale('hi'),
-        Locale('id'),
-        Locale('zh'),
         Locale('ar'),
       ],
       localizationsDelegates: const [

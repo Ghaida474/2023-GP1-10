@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:businessgate/localization/localization_const.dart';
+import 'package:businessgate/myCourses.dart';
 import 'package:businessgate/profile.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/home.dart';
-//import 'package:businessgate/profile/editProfile.dart';
+
 class BottomNaviScreen extends StatefulWidget {
   const BottomNaviScreen({Key? key}) : super(key: key);
 
@@ -21,8 +22,8 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
 
   List bodyItems = [
     const Home(),
-    //Courses(),
-     Profile()
+    myCourses(),
+    Profile()
   ];
 
   final Shader linearGradient = const LinearGradient(
@@ -61,12 +62,14 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
         bottomNavigationBar: Container(
           height: size.height * 0.085,
           width: double.infinity,
-          decoration: BoxDecoration(color: Color.fromARGB(255, 209, 231, 248), boxShadow: [
-            BoxShadow(
-              color: grey94Color.withOpacity(0.4),
-              blurRadius: 4,
-            )
-          ]),
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 209, 231, 248),
+              boxShadow: [
+                BoxShadow(
+                  color: grey94Color.withOpacity(0.4),
+                  blurRadius: 4,
+                )
+              ]),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -350,76 +353,6 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedIndex = 1;
-        });
-      },
-      child: SizedBox(
-        height: size.height * 0.085,
-        width: size.width / 5,
-        child: Column(
-          children: [
-            Container(
-              height: 2,
-              width: double.maxFinite,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: selectedIndex == 1
-                      ? gradient
-                      : [Colors.transparent, Colors.transparent],
-                  begin: Alignment.topLeft,
-                  end: Alignment.topRight,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ShaderMask(
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomRight,
-                                colors: selectedIndex == 1
-                                    ? gradient
-                                    : <Color>[
-                                        Color.fromARGB(255, 60, 59, 59),
-                                        Color.fromARGB(255, 60, 59, 59),
-                                      ])
-                            .createShader(bounds);
-                      },
-                      child: Container(
-                        height: 26,
-                        width: 26,
-                        padding: const EdgeInsets.all(fixPadding / 5),
-                        child: Image.asset(
-                          "assets/profile/Shopicons_Filled_Account.png",
-                          color: whiteColor,
-                          fit: BoxFit.cover,
-                        ),
-                      )),
-                  Text(
-                    getTranslate(context, 'bottom_navi.profile'),
-                    style: TextStyle(
-                      foreground: Paint()
-                        ..shader = selectedIndex == 1
-                            ? linearGradient
-                            : linearGradient2,
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  thirdItem(Size size) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
           selectedIndex = 2;
         });
       },
@@ -446,11 +379,81 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomRight,
+                                colors: selectedIndex == 2
+                                    ? gradient
+                                    : <Color>[
+                                        Color.fromARGB(255, 60, 59, 59),
+                                        Color.fromARGB(255, 60, 59, 59),
+                                      ])
+                            .createShader(bounds);
+                      },
+                      child: Container(
+                        height: 26,
+                        width: 26,
+                        padding: const EdgeInsets.all(fixPadding / 5),
+                        child: Image.asset(
+                          "assets/profile/Shopicons_Filled_Account.png",
+                          color: whiteColor,
+                          fit: BoxFit.cover,
+                        ),
+                      )),
+                  Text(
+                    getTranslate(context, 'bottom_navi.profile'),
+                    style: TextStyle(
+                      foreground: Paint()
+                        ..shader = selectedIndex == 2
+                            ? linearGradient
+                            : linearGradient2,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  thirdItem(Size size) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = 1;
+        });
+      },
+      child: SizedBox(
+        height: size.height * 0.085,
+        width: size.width / 5,
+        child: Column(
+          children: [
+            Container(
+              height: 2,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: selectedIndex == 1
+                      ? gradient
+                      : [Colors.transparent, Colors.transparent],
+                  begin: Alignment.topLeft,
+                  end: Alignment.topRight,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ShaderMask(
                     shaderCallback: (Rect bounds) {
                       return LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomRight,
-                              colors: selectedIndex == 2
+                              colors: selectedIndex == 1
                                   ? gradient
                                   : <Color>[
                                       greyb7Color,
@@ -468,7 +471,7 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                     getTranslate(context, 'bottom_navi.courses'),
                     style: TextStyle(
                       foreground: Paint()
-                        ..shader = selectedIndex == 2
+                        ..shader = selectedIndex == 1
                             ? const LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.topRight,
