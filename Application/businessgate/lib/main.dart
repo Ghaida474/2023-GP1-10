@@ -10,7 +10,7 @@ import 'package:businessgate/languages.dart';
 import 'package:businessgate/myCourses.dart';
 import 'package:businessgate/regConfirm.dart';
 import 'package:businessgate/subConfirm.dart';
-import 'package:businessgate/view_profile.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/forget.dart';
@@ -23,7 +23,9 @@ import 'package:businessgate/localization/localization.dart';
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+ 
 void main() {
   runApp(const MyApp());
 }
@@ -58,10 +60,11 @@ class _MyAppState extends State<MyApp> {
     });
     super.didChangeDependencies();
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme:
@@ -82,15 +85,15 @@ class _MyAppState extends State<MyApp> {
         '/course': (context) => Course(),
         //'/courseC': (context) => Course(),
         //'/courseRw' :(context) => Course(),
-        '/viewprofile': (context) => ViewProfile(),
+        
         '/category': (context) => CategoryScreen(),
         '/bfSurvey': (context) => bSurvey(),
         '/afSurvey': (context) => aSurvey(),
         '/regConfirm': (context) => RegConformation(),
         '/subConfirm': (context) => SubConformation(),
         '/filteredPrograms': (context) => filteredPrograms(),
-        '/certificates': (context) => CertificateViewPage(),
-        '/myCourses': (context) => myCourses(),
+        '/certificates': (context) => CertificateNavigationMenu(),
+        '/myCourses': (context) => myCoursesNavigationMenu(),
       },
       home: BottomNaviScreen(),
       locale: _locale,
@@ -112,6 +115,9 @@ class _MyAppState extends State<MyApp> {
         }
         return supportedLocales.first;
       },
+  
+
+
     );
   }
 }

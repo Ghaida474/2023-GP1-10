@@ -9,6 +9,8 @@ import 'dart:convert';
 
 import 'dart:typed_data';
 
+
+
 import 'package:businessgate/localization/localization_const.dart';
 import '../../myservice.dart';
 import '../../utils/colors.dart';
@@ -26,29 +28,74 @@ import 'package:businessgate/theme.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 
-//import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+class CertificateNavigationMenu extends StatelessWidget {
+  const CertificateNavigationMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Certificates'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                navigateToCertificates(context, 1);
+              },
+              child: Text('Upcoming'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                navigateToCertificates(context, 2);
+              },
+              child: Text('Running'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                navigateToCertificates(context, 3);
+              },
+              child: Text('Completed'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void navigateToCertificates(BuildContext context, int choice) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CertificateViewPage(sectionIndex: choice),
+      ),
+    );
+  }
+}
 
 
 
+class CertificateViewPage extends StatefulWidget {
+  final int sectionIndex;
 
-
-////import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-
-      class CertificateViewPage extends StatefulWidget {
-  const CertificateViewPage({Key? key}) : super(key: key);
+  const CertificateViewPage({Key? key, required this.sectionIndex}) : super(key: key);
 
   @override
   _CertificateViewPageState createState() => _CertificateViewPageState();
 }
 
 class _CertificateViewPageState extends State<CertificateViewPage> {
-  String? topic;
-   int i = 0;
-   int selectedIndex = 0;
- List<CertificateData>? fetchedCertificate;
+  List<CertificateData>? fetchedCertificate;
   MyService _myID = MyService();
-  @override
+  int selectedIndex = 0;
 
+  @override
   void initState() {
     super.initState();
     fetchCertificateAndTopic();
@@ -56,20 +103,9 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
 
   Future<void> fetchCertificateAndTopic() async {
     try {
-      fetchedCertificate = await ModelsUsers().fetchCertificationsM(36);
-      print('Fetched Certificates: $fetchedCertificate');
-      //final String? fetchedTopic = await ModelsUsers().fetchTopicM(1);
+     
+        fetchedCertificate = await ModelsUsers().fetchCertificationsM(_myID.myVariable2);
       
-   //print(fetchedCertificate![i].programName);
-   //print(fetchedCertificate![i++].certificate);
-  // print("2");
-  /*
-   print(fetchedCertificate![i].programName);
-   print(fetchedCertificate![i++].certificate);
-   print(fetchedCertificate!.length);*/
-    //  setState(() {
-    //    topic = fetchedTopic;
-     // });
     } catch (error) {
       print('Error fetching certificate and topic: $error');
     }
@@ -79,21 +115,9 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text(
-            getTranslate(context, 'الشهادات'),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-      body:Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                hexStringColor("#6FBCF6"),
-                hexStringColor("##E3E0D2")
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-            ),
-            child: FutureBuilder(
+        title: Text('Certificates'),
+      ),
+      body: FutureBuilder(
         future: fetchCertificateAndTopic(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -111,129 +135,15 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
           }
         },
       ),
-    ));
-  }
-
-devider() {
-    return Container(
-      height: 2,
-      width: double.infinity,
-      color: const Color(0xfff0f0f0),
-    );
-  }
-
-/*
-  Widget _buildCertificateView() {
-
-    return Column(
-      
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-       height: 300,
-      width: 400,
-      margin: const EdgeInsets.symmetric(horizontal: 10 * 2),
-      decoration: BoxDecoration(
-        color: hexStringColor("#095590"),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 5,
-          )
-        ],
-      ),
-        SizedBox(height: 20),
-        if (fetchedCertificate != null)
-          Expanded( 
-            child:ListView.builder(
-              itemCount: fetchedCertificate!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(fetchedCertificate![index].programName),
-
-                  onTap: () {
-                      setState(() {
-                   selectedIndex = index; // Update the selected index
-                  });
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CertificateDetailPage(
-                          certificateData: fetchedCertificate![index].certificate,
-                        
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-      ],
     );
   }
 
 
-Widget _buildCertificateView() {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Container(
-       
-        width: 400,
-        margin: const EdgeInsets.symmetric(horizontal: 10 * 2),
-        decoration: BoxDecoration(
-          color: hexStringColor("#095590"),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(height: 20),
-            if (fetchedCertificate != null)
-              Expanded(
-                child: ListView.builder(
-                  itemCount: fetchedCertificate!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(fetchedCertificate![index].programName),
-                      onTap: () {
-                        setState(() {
-                          selectedIndex = index; // Update the selected index
-                        });
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CertificateDetailPage(
-                              certificateData: fetchedCertificate![index].certificate,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-*/
 Widget _buildCertificateView() {
   return Container(
     padding: EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.transparent,
+      color: hexStringColor("#F5F5F5"),
       borderRadius: BorderRadius.circular(10),
       boxShadow: [
         BoxShadow(
@@ -310,7 +220,9 @@ Widget _buildCertificateView() {
 
 
 
-}class CertificateDetailPage extends StatelessWidget {
+}
+
+class CertificateDetailPage extends StatelessWidget {
   final String certificateData;
 
   CertificateDetailPage({required this.certificateData});

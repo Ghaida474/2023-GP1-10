@@ -22,7 +22,7 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
 
   List bodyItems = [
     const Home(),
-    myCourses(),
+    myCoursesNavigationMenu(),
     Profile()
   ];
 

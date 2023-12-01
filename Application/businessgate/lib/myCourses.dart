@@ -10,14 +10,73 @@ import 'package:flutter/material.dart';
 import '../../myservice.dart';
 import 'models/model_user.dart';
 
+
+
+
+class myCoursesNavigationMenu extends StatelessWidget {
+  const myCoursesNavigationMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('myCourses'),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                navigateTomyCourses(context, 1);
+              },
+              child: Text('Upcoming'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                navigateTomyCourses(context, 2);
+              },
+              child: Text('Running'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                navigateTomyCourses(context, 3);
+              },
+              child: Text('Completed'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void navigateTomyCourses(BuildContext context, int choice) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => myCourses(sectionIndex: choice),
+      ),
+    );
+  }
+}
+
+
+
+
 class myCourses extends StatefulWidget {
-  const myCourses({super.key});
+   final int sectionIndex;
+  const myCourses({Key? key, required this.sectionIndex}) : super(key: key);
 
   @override
   State<myCourses> createState() => _myCoursesState();
 }
 
 class _myCoursesState extends State<myCourses> {
+  MyService _myID = MyService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +114,7 @@ class _myCoursesState extends State<myCourses> {
             child : ListView(
         children: [
           FutureBuilder<List<Widget>>(
-              future: GetRecentCourses1(context),
+              future: getRegisteredCourses(context),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator(); // Placeholder for loading state
@@ -150,10 +209,16 @@ class _myCoursesState extends State<myCourses> {
   }
 
 
-  Future<List<Widget>> GetRecentCourses1(BuildContext context) async {
+  Future<List<Widget>> getRegisteredCourses(BuildContext context) async {
     final size = MediaQuery.of(context).size;
     List<Widget> courseWidgets1 = [];
-    List<Courses> courses1 = await ModelsUsers().getRegisteredCoursesM();
+   List<Courses> courses1=[];
+   if (widget.sectionIndex == 1)
+     courses1 = await ModelsUsers().getRegisteredCoursesM(_myID.myVariable2);
+  if (widget.sectionIndex == 2)
+     courses1 = await ModelsUsers().getRunningCoursesM(_myID.myVariable2);
+  if (widget.sectionIndex == 3)
+     courses1 = await ModelsUsers().getCompletedCoursesM(_myID.myVariable2);
 
     try {
 

@@ -1,7 +1,7 @@
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/models/model_user.dart';
 import 'package:businessgate/database/app_database.dart';
-import 'package:businessgate/rating.dart';
+//import 'package:businessgate/rating.dart';
 import 'package:businessgate/theme.dart';
 import 'package:businessgate/column_builder.dart';
 import 'package:businessgate/utils/colors.dart';
@@ -657,7 +657,7 @@ Expanded(
                     Icons.access_time_filled,
                     getTranslate(context, 'detail.end_time'),
                     getTranslate(context, 'detail.hours'),
-                    "14:00"), //courseInfo.endTime.toString()
+                    courseInfo.endTime), //courseInfo.endTime.toString()
               )
             ],
           ),

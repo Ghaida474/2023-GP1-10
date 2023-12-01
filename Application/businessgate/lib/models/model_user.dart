@@ -122,11 +122,22 @@ class ModelsUsers {
   }
 
   List<Courses>Rcourses = [];
-  Future<List<Courses>> getRegisteredCoursesM() async {
-    Rcourses = await AppDatabase().getRegisteredCourses();
+  Future<List<Courses>> getRegisteredCoursesM(int? id) async {
+    Rcourses = await AppDatabase().getRegisteredCourses(id);
     return Rcourses;
   }
 
+ List<Courses>Runcourses = [];
+  Future<List<Courses>> getRunningCoursesM(int? id) async {
+    Rcourses = await AppDatabase(). getRunningCourses(id);
+    return Rcourses;
+  }
+
+List<Courses>Comcourses = [];
+  Future<List<Courses>> getCompletedCoursesM(int? id) async {
+    Rcourses = await AppDatabase(). getCompletedCourses(id);
+    return Rcourses;
+  }
   Future<List<CertificateData>>fetchCertificationsM(int id) async {
     return await AppDatabase().fetchCertifications(id);
   }

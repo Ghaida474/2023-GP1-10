@@ -1,37 +1,39 @@
 class MyService {
+
   static final MyService _instance = MyService._internal();
 
   // passes the instantiation to the _instance object
   factory MyService() => _instance;
 
-  String _myVariable = '';
-  String _filter = '';
-  int _myVariable2 = 0;
-
-  //initialize variable
+    String _myVariable = '';
+    int _myVariable2 = 0;
+     int _myVariable3 = 0;
+  //initialize variables in here
   MyService._internal() {
     _myVariable = 'no value';
   }
 
-  //getter for my variable
+  //short getter for my variable
   String get myVariable => _myVariable;
 
-  //setter for my variable
+  //short setter for my variable
   set myVariable(String value) {
-    _myVariable = value;
+     _myVariable = value;
   }
-
-  //getter for _filter
-  String get Filter => _filter;
-
-  //setter for _filter
-  set Filter(String value) {
-    _filter = value;
-  }
-
+  
+//short getter for my variable
   int get myVariable2 => _myVariable2;
 
+  //short setter for my variable
   set myVariable2(int value) {
-    _myVariable2 = value;
+     _myVariable2 = value;
+  }
+
+  //short getter for my variable
+  int get myVariable3 => _myVariable3;
+
+  //short setter for my variable
+  set myVariable3(int value) {
+     _myVariable3 = value;
   }
 }

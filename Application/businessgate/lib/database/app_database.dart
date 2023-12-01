@@ -34,22 +34,24 @@ class AppDatabase {
   final key = "value";
 
   PostgreSQLConnection? connection;
-  PostgreSQLResult? newRegisterResult;
+  PostgreSQLResult? newRegisterResult,loginResult;
   PostgreSQLResult? alreadyRegistered;
 
-  PostgreSQLResult? loginResult, userRegisteredResult;
+  PostgreSQLResult?  userRegisteredResult;
 
   PostgreSQLResult? updateTraineeResult;
+  MyService _myID = MyService();
 
+  //MyService capacity = MyService();
   static String? emailAddress;
 
   AppDatabase() {
     connection = PostgreSQLConnection(
       'localhost',
       5432,
-      'bg',
-      username: 'admina',
-      password: 'data12345',
+      'btest',
+      username: 'postgres',
+      password: 'Lina1234',
     );
   }
 
@@ -74,7 +76,7 @@ class AppDatabase {
       await connection!.transaction((newTraineesConnection) async {
         //Stage 1 : Make sure email or mobile not registered.
         alreadyRegistered = await newTraineesConnection.query(
-          'select * from public."Trainees" where email = @emailValue',
+          'select * from public."Trainees" where email = @emailValue ',
           substitutionValues: {
             'emailValue': email,
           },
@@ -88,7 +90,7 @@ class AppDatabase {
           //Stage 2 : If user not already registered then we start the registration
           newRegisterResult = await newTraineesConnection.query(
             'INSERT INTO public."Trainees"("password","firstName","lastName","email","phoneNumber","Gender","AdminEmail","NationalID") '
-            'VALUES (@passwordValue,@fNameValue,@lNameValue,@emailValue,@phoneNumberValue,@genderValue, @adminEmailValue, @idValue )',
+            'VALUES (@passwordValue,@fNameValue,@lNameValue,@emailValue,@phoneNumberValue,@genderValue, @adminEmailValue, @idValue )RETURNING id',
             substitutionValues: {
               'emailValue': email,
               'passwordValue': password,
@@ -102,6 +104,10 @@ class AppDatabase {
             allowReuse: true,
             timeoutInSeconds: 10,
           );
+          if (newRegisterResult!.isNotEmpty) {
+       _myID.myVariable2  = newRegisterResult![0][0] as int;
+      
+            }
           newTrainees =
               // reg means registration is succesfull , nop means registration failed
               (newRegisterResult!.affectedRowCount > 0 ? 'reg' : 'nop');
@@ -134,8 +140,10 @@ class AppDatabase {
           timeoutInSeconds: 10,
         );
         if (loginResult!.affectedRowCount > 0) {
-          userLoginFuture = 'ok';
-        } else {
+         _myID.myVariable2 = loginResult![0][0] as int;
+      
+              userLoginFuture = 'ok';
+        }  else {
           userLoginFuture = 'not';
         }
       });
@@ -445,6 +453,7 @@ class AppDatabase {
 
   Future<List<Courses>> getAcceptedTrainingPrograms() async {
     _read();
+    
     List<Courses> courses = [];
     try {
       await connection!.open();
@@ -456,6 +465,9 @@ class AppDatabase {
         "Topic",
         "TotalCost",
         "programID",
+      
+
+
         array_to_string(
           ARRAY(
             SELECT first_name || ' ' || last_name
@@ -464,12 +476,16 @@ class AppDatabase {
           ),
           ', '
         ) AS instructors,
-        "programDescription"
-      FROM public."TrainingProgram"
-      WHERE "isreleased" = @released
+         TO_CHAR(tp."time", 'HH24:MI:SS'),
+        tp."programDescription"
+      FROM public."TrainingProgram" tp
+      JOIN public."Register" r ON r."ProgramID" = tp."programID"
+      WHERE @currentCapacity < tp."capacity" AND tp."isreleased" = @released AND CURRENT_DATE < tp."startDate" AND r."hasRegistered" = @register ;
       ''',
           substitutionValues: {
+            'register':false,
             'released': true,
+            'currentCapacity': _myID.myVariable3,
           }, // Replace with actual values
           allowReuse: true,
         );
@@ -480,8 +496,8 @@ class AppDatabase {
             (row[1] as num?)?.toDouble(),
             (row[2] as num?)?.toInt(),
             row[3] as String?,
-            row[4] as String?,
-            "","","","");
+            row[5] as String?,
+             "","","","");
           // Add the created course to the list
           courses.add(course);
         }
@@ -495,7 +511,7 @@ class AppDatabase {
     return courses;
   }
 
-  Future<List<Courses>> getRegisteredCourses() async {
+  Future<List<Courses>> getRegisteredCourses(int? id) async {
     List<Courses> courses = [];
     try {
       await connection!.open();
@@ -513,14 +529,136 @@ class AppDatabase {
         ) AS instructors, tp."programDescription",tp."startDate",tp."endDate"
 FROM public."TrainingProgram" tp
 JOIN public."Register" r ON r."ProgramID" = tp."programID"
-WHERE tp."isreleased" = @release AND r."hasRegistered" = @register;
+WHERE r."id" = @id AND tp."isreleased" = @release AND r."hasRegistered" = @register AND CURRENT_DATE < tp."startDate";
 
 ''',
 
           substitutionValues: {
             'release': true,
            'register':true,
-         
+         'id': id,
+          },
+          allowReuse: true,
+          timeoutInSeconds: 2,
+        );
+
+        
+        // Process the result and create Course instances
+        for (final row in result) {
+           String formattedDate1 = DateFormat('dd-MM-yyyy').format(row[5]);
+           String formattedDate2 = DateFormat('dd-MM-yyyy').format(row[6]);
+/*
+          Courses course = Courses(
+            row[0] as String?,
+            (row[1] as num?)?.toDouble(),
+            (row[2] as num?)?.toInt(),
+            row[3] as String?,
+            row[4] as String?,
+            formattedDate1,
+           formattedDate2,
+          "",
+          "",);*/
+          // Add the created course to the list
+          courses.add(course);
+        }
+      });
+    } catch (exc) {
+      // Handle exceptions (exc)
+      print(exc.toString());
+    }finally {
+      await connection!.close();
+    }
+    return courses;
+  }
+
+Future<List<Courses>> getRunningCourses(int? id) async {
+    List<Courses> courses = [];
+    try {
+      await connection!.open();
+      await connection!.transaction((queryConnection) async {
+        // Query the "TrainingProgram" table for accepted programs
+        final result = await queryConnection.query(
+           '''
+ SELECT tp."Topic", tp."TotalCost", tp."programID",         array_to_string(
+          ARRAY(
+            SELECT first_name || ' ' || last_name
+            FROM public."Faculty_Staff"
+            WHERE id = ANY("InstructorID")
+          ),
+          ', '
+        ) AS instructors, tp."programDescription",tp."startDate",tp."endDate"
+FROM public."TrainingProgram" tp
+JOIN public."Register" r ON r."ProgramID" = tp."programID"
+WHERE  r."id" = @id AND tp."isreleased" = @release AND r."hasRegistered" = @register AND r."haspaid" = @paid AND CURRENT_DATE <= tp."endDate" AND tp."startDate" <= CURRENT_DATE;
+
+''',
+
+          substitutionValues: {
+            'release': true,
+           'register':true,
+         'paid':true,
+         'id': id,
+          },
+          allowReuse: true,
+          timeoutInSeconds: 2,
+        );
+
+        
+        // Process the result and create Course instances
+        for (final row in result) {
+           String formattedDate1 = DateFormat('dd-MM-yyyy').format(row[5]);
+           String formattedDate2 = DateFormat('dd-MM-yyyy').format(row[6]);
+/*
+          Courses course = Courses(
+            row[0] as String?,
+            (row[1] as num?)?.toDouble(),
+            (row[2] as num?)?.toInt(),
+            row[3] as String?,
+            row[4] as String?,
+            formattedDate1,
+           formattedDate2,
+          "",
+          "",);*/
+          // Add the created course to the list
+          courses.add(course);
+        }
+      });
+    } catch (exc) {
+      // Handle exceptions (exc)
+      print(exc.toString());
+    }finally {
+      await connection!.close();
+    }
+    return courses;
+  }
+
+Future<List<Courses>> getCompletedCourses(int? id) async {
+    List<Courses> courses = [];
+    try {
+      await connection!.open();
+      await connection!.transaction((queryConnection) async {
+        // Query the "TrainingProgram" table for accepted programs
+        final result = await queryConnection.query(
+           '''
+ SELECT tp."Topic", tp."TotalCost", tp."programID",         array_to_string(
+          ARRAY(
+            SELECT first_name || ' ' || last_name
+            FROM public."Faculty_Staff"
+            WHERE id = ANY("InstructorID")
+          ),
+          ', '
+        ) AS instructors, tp."programDescription",tp."startDate",tp."endDate", TO_CHAR(tp."time", 'HH24:MI:SS')
+FROM public."TrainingProgram" tp
+JOIN public."Register" r ON r."ProgramID" = tp."programID"
+WHERE  r."id" = @id  AND r."hasRegistered" = @register AND r."haspaid" = @paid AND r."hasAttended" = @attend AND CURRENT_DATE > tp."endDate" ;
+
+''',
+
+          substitutionValues: {
+            'attend': true,
+           'register':true,
+         'paid':true,
+         'id': id,
           },
           allowReuse: true,
           timeoutInSeconds: 2,
@@ -541,7 +679,9 @@ WHERE tp."isreleased" = @release AND r."hasRegistered" = @register;
             formattedDate1,
            formattedDate2,
           "",
-          "",);
+          row[7] as String,);
+          print( row[7] as String);
+        //  print( row[8] as String);
           // Add the created course to the list
           courses.add(course);
         }
@@ -563,7 +703,7 @@ WHERE tp."isreleased" = @release AND r."hasRegistered" = @register;
       try {
     await connection!.open();
     loginResult = await connection!.query(
-      'UPDATE public."Register" SET "hasRegistered" = @register WHERE "ProgramID" = @proid',
+      'UPDATE public."Register" SET "hasRegistered" = @register WHERE "ProgramID" = @proid RETURNING "haspaid"',
       substitutionValues: {
         'proid': proid,
         'register': false,
@@ -571,24 +711,23 @@ WHERE tp."isreleased" = @release AND r."hasRegistered" = @register;
       allowReuse: true,
       timeoutInSeconds: 30,
     );
-  final payStatus = await connection!.query(
-  'SELECT "hasPaid" FROM public."Register" WHERE "ProgramID" = @proid',
-  substitutionValues: {'proid': proid},
-  allowReuse: true,
-  timeoutInSeconds: 30,
-);
+ 
 
 bool hasPaid = false; 
 
-if (payStatus.isNotEmpty) {
- 
-  hasPaid = payStatus[0] as bool;
+if (loginResult!.isNotEmpty) {
+hasPaid = loginResult![0][0]as bool; 
+
+
+ // hasPaid = payStatus['haspaid'] as bool;
 }
-
-
+/*
+  if (newRegisterResult!.isNotEmpty) {
+       _myID.myVariable2  = newRegisterResult![0][0] as int;
+            }*/
 if (hasPaid) {
   await connection!.query(
-    'UPDATE public."Register" SET "refundRequested" = @refund WHERE "ProgramID" = @proid',
+    'UPDATE public."Register" SET "refundRequsted" = @refund WHERE "ProgramID" = @proid',
     substitutionValues: {
       'proid': proid,
       'refund': true,
@@ -622,7 +761,7 @@ if (hasPaid) {
         SELECT r."certifications", tp."subject"
         FROM public."Register" r
         JOIN public."TrainingProgram" tp ON r."ProgramID" = tp."programID"
-        WHERE r.id = @id1 AND r."hasAttended" = @attend
+       WHERE  r."id" = @id1  AND r."hasRegistered" = @register AND r."haspaid" = @paid AND r."hasAttended" = @attend AND CURRENT_DATE > tp."endDate" ;
         ''',
         substitutionValues: {
           'id1': id1,
@@ -770,6 +909,7 @@ Future<Courses> Program(int? id) async {
         );
 
         newRegiter = (newRegisterResult!.affectedRowCount > 0 ? 'reg' : 'nop');
+         _myID.myVariable3++;
       });
     } catch (exc) {
       newRegiter = 'exc';
@@ -908,7 +1048,7 @@ class Courses {
   String? startDate ;
   String? endDate ;
   String? startTime ;
-  String? endTime ;
+String endTime ="" ;
   String? instructer;
   String? description;
 
@@ -946,8 +1086,8 @@ class Courses {
   set _startTime(String? value) => startTime = value;
 
   // Getter and setter for the 'endTime' property
-  String? get _endTime => endTime;
-  set _endTime(String? value) => endTime = value;
+  String get _endTime => endTime;
+  set _endTime(String value) => endTime = value;
 
   // Getter and setter for the 'instructer' property
   String? get _instructer => instructer;
