@@ -1,16 +1,10 @@
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
-
 import 'database/app_database.dart';
 import 'localization/localization_const.dart';
-import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/utils/colors.dart';
-import 'package:flutter/material.dart';
-
 import '../../myservice.dart';
 import 'models/model_user.dart';
-
-
 
 
 class myCoursesNavigationMenu extends StatelessWidget {
@@ -20,7 +14,7 @@ class myCoursesNavigationMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('myCourses'),
+        title: Text(getTranslate(context, 'myCourses.my_courses')),
       ),
       body: Container(
         padding: EdgeInsets.all(20),
@@ -32,21 +26,21 @@ class myCoursesNavigationMenu extends StatelessWidget {
               onPressed: () {
                 navigateTomyCourses(context, 1);
               },
-              child: Text('Upcoming'),
+              child: Text(getTranslate(context, 'Course.coming')),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 navigateTomyCourses(context, 2);
               },
-              child: Text('Running'),
+              child: Text(getTranslate(context, 'Course.running')),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 navigateTomyCourses(context, 3);
               },
-              child: Text('Completed'),
+              child: Text(getTranslate(context, 'Course.complete')),
             ),
           ],
         ),
@@ -63,9 +57,6 @@ class myCoursesNavigationMenu extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class myCourses extends StatefulWidget {
    final int sectionIndex;
@@ -133,7 +124,7 @@ class _myCoursesState extends State<myCourses> {
     );
   }
 
-    poularlist(Size size, String name, double? price, String coach, int? id) {
+    poularlist(Size size, String name, double? price, String date, int? id) {
     return Column(
       children: [
         GestureDetector(
@@ -146,7 +137,7 @@ class _myCoursesState extends State<myCourses> {
                 right: fixPadding * 2,
                 bottom: fixPadding * 2,
                 top: fixPadding),
-            height: size.height * 0.15,
+            height: size.height * 0.13,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: whiteColor,
@@ -189,10 +180,14 @@ class _myCoursesState extends State<myCourses> {
                           ],
                         ),
                          Text(
-                          coach,
+                          getTranslate(context, 'detail.start_date') +
+                              ' : ' +
+                          date,
                           style: grey14Style,
                         ),
                          Text(
+                          getTranslate(context, 'detail.price') +
+                              ' : ' +
                           price.toString(),
                           style: primary16Style,
                         )
@@ -219,25 +214,21 @@ class _myCoursesState extends State<myCourses> {
      courses1 = await ModelsUsers().getRunningCoursesM(_myID.myVariable2);
   if (widget.sectionIndex == 3)
      courses1 = await ModelsUsers().getCompletedCoursesM(_myID.myVariable2);
-
     try {
-
       for (Courses course in courses1) {
 
         Widget courseWidget = poularlist(
           size,
           course.name as String,
           course.price,
-          course.instructer as String,
+          course.startDate as String,
           course.id,
         );
-
         courseWidgets1.add(courseWidget);
       }
     } catch (error) {
       print("Error: $error");
     }
-
     return courseWidgets1;
   }
 }

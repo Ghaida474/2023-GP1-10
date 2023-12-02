@@ -2,7 +2,6 @@ import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/theme.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
 import 'database/app_database.dart';
 import 'models/model_user.dart';
 import 'myservice.dart';
@@ -22,9 +21,6 @@ class _filteredProgramsState extends State<filteredPrograms> {
   @override
   Widget build(BuildContext context) {
     categorytName = ModalRoute.of(context)?.settings.arguments.toString();
-    print("in filtered program page");
-    print(categorytName);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -79,7 +75,7 @@ class _filteredProgramsState extends State<filteredPrograms> {
     );
   }
 
-  poularlist(Size size, String name, double? price, String coach, int? id) {
+  poularlist(Size size, String name, double? price, String date, int? id) {
     return Column(
       children: [
         GestureDetector(
@@ -92,7 +88,7 @@ class _filteredProgramsState extends State<filteredPrograms> {
                 right: fixPadding * 2,
                 bottom: fixPadding * 2,
                 top: fixPadding),
-            height: size.height * 0.15,
+            height: size.height * 0.13,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: whiteColor,
@@ -135,10 +131,14 @@ class _filteredProgramsState extends State<filteredPrograms> {
                           ],
                         ),
                         Text(
-                          coach,
+                          getTranslate(context, 'detail.start_date') +
+                              ' : ' +
+                          date,
                           style: grey14Style,
                         ),
                         Text(
+                          getTranslate(context, 'detail.price') +
+                              ' : ' +
                           price.toString(),
                           style: primary16Style,
                         )
@@ -166,18 +166,10 @@ class _filteredProgramsState extends State<filteredPrograms> {
           size,
           course.name as String,
           course.price,
-          course.instructer as String,
+          course.startDate as String,
           course.id,
         );
-
         courseWidgets.add(courseWidget);
-
-        print("in filtered page");
-
-        print(course.name as String);
-        print(course.price);
-        print(course.instructer as String);
-        print(course.id);
       }
     } catch (error) {
       print("Error: $error");

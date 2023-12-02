@@ -1,7 +1,6 @@
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/models/model_user.dart';
 import 'package:businessgate/database/app_database.dart';
-//import 'package:businessgate/rating.dart';
 import 'package:businessgate/theme.dart';
 import 'package:businessgate/column_builder.dart';
 import 'package:businessgate/utils/colors.dart';
@@ -21,14 +20,11 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
   // Tab controller for managing tabs
   TabController? tabController;
   // Course information
-  Courses courseInfo = Courses("", 0.0,0,"","","","","","");
+  Courses courseInfo = Courses("", 0.0,0,"","","","","","","",false,"");
   // Value received from the route
   int? receivedValue;
   // Index of the selected tab
   int selectedindex = 0;
-  // Rating for the course
-  double _rating = 0;
-  List<int> otherUsersRatings = [0, 0, 0];
   String? status ;
   MyService _myEmail = MyService();
 
@@ -250,9 +246,6 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
   
   // Define a container with bottom navigation buttons
   bottonContainer(Size size) {
-      DateTime now = DateTime.now();
-      String formattedDate = DateFormat('dd-MM-yyyy').format(now);
-
     return Container(
       height: size.height * 0.08,
       width: double.infinity,
@@ -319,7 +312,7 @@ Expanded(
                 alignment: Alignment.center,
                 color: primaryColor,
                 child: Text(
-                  getTranslate(context, 'إلغاء التسجيل'),
+                  getTranslate(context, 'detail.cancelReg'),
                   style: white18Style,
                 ),
               ),
@@ -354,7 +347,6 @@ Expanded(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-        //  title: Text('Confirmation'),
           content: Text(getTranslate(context, 'detail.canc_que')),
           actions: <Widget>[
             TextButton(
@@ -366,18 +358,9 @@ Expanded(
             TextButton(
               onPressed: () {
                cancelCourse(context, receivedValue);
-                // Update the variables based on user confirmation
-               /* setState(() {
-                  hasRegistered = false;
-                  if (hasPaid) {
-                    refundRequested = true;
-                  }
-                });*/
-
-                // You can add additional logic here based on your requirements
-                // cancel = await ModelsUsers().FetchFirstName2(_myEmail.myVariable);
                 Navigator.of(context).pop(); // Close the dialog
                  Navigator.pushNamed(context, '/myCourses');
+                 Navigator.of(context).pushReplacementNamed('/bottomNavi');
               },
               child: Text(getTranslate(context, 'detail.yes')),
             ),
@@ -461,61 +444,6 @@ Expanded(
             style: black22Style,
           ),
           height5Space,
-          // Display the rating section
-          /*Text(getTranslate(context, 'detail.rate'),
-              style: TextStyle(color: Colors.black87)),*/
-          /*Row(
-            children: [
-              // Display the star rating
-              Rating((rating) {
-                setState(() {
-                  _rating = rating;
-                });
-              },otherUsersRatings,),
-              // Optional: Display the selected rating
-              SizedBox(
-                height: 44,
-                child: _rating != null && _rating > 0
-                    ? Text("You Selected $_rating",
-                        style: TextStyle(fontSize: 18))
-                    : SizedBox.shrink(),
-                /*child: _rating != null && _rating > 0
-                ? Text("You Selected $_rating",
-                style: TextStyle(fontSize: 18),)
-                : SizedBox.shrink()*/
-              )
-            ],
-          ),*/
-          /*Row(
-            children: [
-              // Display the star rating for the current user
-              /*Rating((rating) {
-                setState(() {
-                  _rating = rating;
-                });
-              }),*/
-              // Display the average rating from other users
-              Rating(
-                (rating) {
-                  // Handle the selected rating (for the current user)
-                  setState(() {
-                  _rating = rating;
-                });
-                },
-                otherUsersRatings,
-              ),
-              // Optional: Display the selected rating for the current user
-              /*SizedBox(
-                height: 44,
-                child: _rating != null && _rating > 0
-                    ? Text("You Selected $_rating",
-                        style: TextStyle(fontSize: 18))
-                    : SizedBox.shrink(),
-              ),*/
-            ],
-          ),*/
-          //RatingWidget(),
-          //here
         ],
       ),
     );
@@ -648,16 +576,16 @@ Expanded(
                 child: breifdetail(
                     Icons.access_time_filled,
                     getTranslate(context, 'detail.start_time'),
-                    getTranslate(context, 'detail.hours'),
-                    "9:00"), //  courseInfo.startTime.toString() start
+                    "",
+                    courseInfo.startTime.toString()), //  courseInfo.startTime.toString() start
               ),
               Expanded(
                 // Display end time
                 child: breifdetail(
                     Icons.access_time_filled,
                     getTranslate(context, 'detail.end_time'),
-                    getTranslate(context, 'detail.hours'),
-                    courseInfo.endTime), //courseInfo.endTime.toString()
+                    "",
+                    courseInfo.endTime.toString()), //courseInfo.endTime.toString()
               )
             ],
           ),
@@ -689,22 +617,46 @@ Expanded(
           // Row for start and end date
           Row(
             children: [
-              Expanded(
+              Visibility(
+                visible: (courseInfo.kind),
+                child: Expanded(
                 // Display start date
                 child: breifdetail2(
                   Icons.location_city_outlined,
-                  "",
-                  "online",
+                  getTranslate(context, 'detail.kind'),
+                  "online", // ret
                 ),
-              ),
-              Expanded(
+              ),),
+                Visibility(
+                visible: (courseInfo.kind == false),
+                child: Expanded(
+                // Display start date
+                child: breifdetail2(
+                  Icons.location_city_outlined,
+                  getTranslate(context, 'detail.kind'),
+                  "On Site", // ret
+                ),
+              ),),
+              Visibility(
+                visible: (status == "register" && courseInfo.kind),
+                child: Expanded(
                 // Display end date
                 child: breifdetail2(
                   Icons.location_city_outlined,
-                  "",
-                  "",
+                  getTranslate(context, 'detail.location'),
+                  courseInfo.location.toString(),
                 ),
-              )
+              )),
+              Visibility(
+                visible: (courseInfo.kind == false),
+                child: Expanded(
+                // Display end date
+                child: breifdetail2(
+                  Icons.location_city_outlined,
+                  getTranslate(context, 'detail.location'),
+                  courseInfo.location.toString(),
+                ),
+              )),
             ],
           )
         ],

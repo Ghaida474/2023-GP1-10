@@ -1,13 +1,7 @@
 import 'dart:async';
 import 'dart:core';
-
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import 'package:businessgate/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-
 import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../models/model_user.dart';
@@ -29,23 +23,19 @@ class _SignUpState extends State<SignUp> {
 
   Genders selectedGender = Genders.male;
 
-  List<String> nationalityOptions = [];
-
   String selectedNationality = '';
 
   TextEditingController _FnameTextController = TextEditingController();
   TextEditingController _LnameTextController = TextEditingController();
+  TextEditingController _fullnameTextController = TextEditingController();
   TextEditingController _phoneNumberTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _confirmPasswordTextController = TextEditingController();
   TextEditingController _IDTextController = TextEditingController();
   TextEditingController _genderTextController = TextEditingController();
-  TextEditingController _nationTextController = TextEditingController();
 
   bool success = false;
-
-  String searchedNationName = '';
 
   bool passToggle = true;
 
@@ -90,6 +80,11 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                       height: 20,
                     ),
+                    nameField(getTranslate(context, 'signup.name'),
+                        Icons.person, false, _fullnameTextController),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     IDField(getTranslate(context, 'signup.NID'), Icons.person,
                         false, _IDTextController),
                     const SizedBox(
@@ -106,7 +101,7 @@ class _SignUpState extends State<SignUp> {
                         RadioListTile(
                           title: Text(getTranslate(context, 'signup.M')),
                           value: Genders.male,
-                          groupValue: null,
+                          groupValue: selectedGender,
                           onChanged: (value) {
                             setState(() {
                               selectedGender = value!;
@@ -116,7 +111,7 @@ class _SignUpState extends State<SignUp> {
                         RadioListTile(
                           title: Text(getTranslate(context, 'signup.F')),
                           value: Genders.female,
-                          groupValue: null,
+                          groupValue: selectedGender,
                           onChanged: (value) {
                             setState(() {
                               selectedGender = value!;
@@ -141,17 +136,17 @@ class _SignUpState extends State<SignUp> {
                     PasswordField(getTranslate(context, 'signup.password'),
                         Icons.lock, _passwordTextController),
                     const SizedBox(
-                      height: 12,
+                      height: 8,
                     ),
                     FlutterPwValidator(
                       defaultColor: Colors.grey.shade300,
                       controller: _passwordTextController,
                       successColor: Colors.green.shade700,
                       minLength: 8,
-                      uppercaseCharCount: 2,
-                      numericCharCount: 3,
+                      uppercaseCharCount: 1,
+                      numericCharCount: 1,
                       specialCharCount: 1,
-                      normalCharCount: 3,
+                      normalCharCount: 1,
                       width: 400,
                       height: 190,
                       onSuccess: () {
@@ -173,7 +168,7 @@ class _SignUpState extends State<SignUp> {
                         Icons.lock,
                         _confirmPasswordTextController),
                     const SizedBox(
-                      height: 12,
+                      height: 8,
                     ),
                     FlutterPwValidator(
                       defaultColor: Colors.grey.shade300,
@@ -222,6 +217,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return  TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -243,7 +239,8 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+        formkey.currentState?.validate();
+        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
           return getTranslate(context, 'signup.CN');
         } else
           return null;
@@ -251,10 +248,39 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+   TextFormField fullNameField(String text, IconData icon, bool isPasswordType,
+      TextEditingController controller) {
+    return  TextFormField(
+      controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      cursorColor: Colors.white,
+      style: TextStyle(color: Colors.white.withOpacity(0.9)),
+      decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(
+                color: Color.fromARGB(255, 2, 14, 52),
+              )),
+          prefixIcon: Icon(
+            icon,
+            color: const Color.fromARGB(179, 255, 255, 255),
+          ),
+          labelText: text,
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+          filled: true,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          fillColor: hexStringColor("#095590").withOpacity(0.45),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
+    );
+  }
+
   TextFormField IDField(String text, IconData icon, bool isPasswordType,
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -288,6 +314,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -301,6 +328,7 @@ class _SignUpState extends State<SignUp> {
             color: const Color.fromARGB(179, 255, 255, 255),
           ),
           labelText: text,
+          hintText: "example@example.com",
           labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -323,6 +351,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -377,7 +406,6 @@ class _SignUpState extends State<SignUp> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -388,15 +416,6 @@ class _SignUpState extends State<SignUp> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
-          return getTranslate(context, 'signup.CP');
-        } else
-          return null;
-      },
     );
   }
 
@@ -425,7 +444,6 @@ class _SignUpState extends State<SignUp> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -439,13 +457,7 @@ class _SignUpState extends State<SignUp> {
       validator: (value) {
         if (_confirmPasswordTextController != _passwordTextController) {
           return getTranslate(context, 'signup.CconfirmP');
-        }
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
-          return getTranslate(context, 'signup.CP');
-        } else
+        }else
           return null;
       },
     );
@@ -489,6 +501,7 @@ class _SignUpState extends State<SignUp> {
     String Email = _emailTextController.text;
     String Password = _passwordTextController.text;
     String Gender = selectedGender.toString();
+    String fullN = _fullnameTextController.text ;
 
     List<String> parts = Gender.split('.');
     String genderString = parts.last;
@@ -503,7 +516,7 @@ class _SignUpState extends State<SignUp> {
             Password,
             ID,
             genderString,
-            selectedNationality)
+            fullN)
         .then((Trainee) {
       if (Trainee.toString().contains('reg')) {
         setState(() {
@@ -533,9 +546,9 @@ class _SignUpState extends State<SignUp> {
           _passwordTextController.clear();
           _IDTextController.clear();
           _genderTextController.clear();
-          _nationTextController.clear;
+          _fullnameTextController.clear();
 
-          Timer(Duration(seconds: 2), () {
+          Timer(Duration(seconds: 1), () {
             Navigator.pushNamed(context, '/home');
             Navigator.of(context).pushReplacementNamed('/bottomNavi');
           });
@@ -568,9 +581,9 @@ class _SignUpState extends State<SignUp> {
           _passwordTextController.clear();
           _IDTextController.clear();
           _genderTextController.clear();
-          _nationTextController.clear;
+          _fullnameTextController.clear();
 
-          Timer(Duration(seconds: 2), () {
+          Timer(Duration(seconds: 1), () {
             Navigator.pushNamed(context, '/signup');
           });
         });
@@ -602,11 +615,7 @@ class _SignUpState extends State<SignUp> {
           _passwordTextController.clear();
           _IDTextController.clear();
           _genderTextController.clear();
-          _nationTextController.clear;
-
-          Timer(Duration(seconds: 2), () {
-            Navigator.pushNamed(context, '/signin');
-          });
+          _fullnameTextController.clear();
         });
       } else {
         setState(() {
@@ -639,11 +648,8 @@ class _SignUpState extends State<SignUp> {
           _passwordTextController.clear();
           _IDTextController.clear();
           _genderTextController.clear();
-          _nationTextController.clear;
+          _fullnameTextController.clear();
 
-          Timer(Duration(seconds: 2), () {
-            Navigator.pushNamed(context, '/signup');
-          });
         });
       }
     }).catchError((err) {
@@ -674,11 +680,8 @@ class _SignUpState extends State<SignUp> {
         _passwordTextController.clear();
         _IDTextController.clear();
         _genderTextController.clear();
-        _nationTextController.clear;
+        _fullnameTextController.clear();
 
-        Timer(Duration(seconds: 2), () {
-          Navigator.pushNamed(context, '/signup');
-        });
       });
     }).whenComplete(() => null);
   }

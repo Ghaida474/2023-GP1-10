@@ -10,11 +10,11 @@
 		</data>
 		<key>flutter_assets/AssetManifest.bin</key>
 		<data>
-		rasVZ11dGI6JSwjOzLI2Cx1ngBE=
+		iUR+evLUmZhbP38uc9VJLNXmThk=
 		</data>
 		<key>flutter_assets/AssetManifest.json</key>
 		<data>
-		umMbRvHTSKJOjsdiXqN0/yDYuNc=
+		LT0y7xef6nRy9WacG5E6qd4C4Xg=
 		</data>
 		<key>flutter_assets/FontManifest.json</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>flutter_assets/NOTICES.Z</key>
 		<data>
-		YwQYZhT3MHYAyJJmurzzwWBt6X8=
+		rn0Q2ccyeGJGetuKzT5XGXy/WYQ=
 		</data>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
 		<data>
@@ -102,15 +102,15 @@
 		</data>
 		<key>flutter_assets/assets/home/.DS_Store</key>
 		<data>
-		90n+E49H3dg8oDfWsMl9VtwMs0c=
-		</data>
-		<key>flutter_assets/assets/home/Rectangle%2014%20(1).png</key>
-		<data>
-		kQedCXTfo3TwsAFba/C9adGHhOo=
+		IBNYu/9KVuL7d3Hb0ksMM8DdEf0=
 		</data>
 		<key>flutter_assets/assets/home/Rectangle%2014%20(2).png</key>
 		<data>
 		bpY+nKpq72pMDiBamkvpcSSCZD4=
+		</data>
+		<key>flutter_assets/assets/home/Rectangle%2014%20(5).png</key>
+		<data>
+		KKaN9jnKBMaUwBk94hFro/e/+u0=
 		</data>
 		<key>flutter_assets/assets/home/Rectangle%2014.png</key>
 		<data>
@@ -120,17 +120,9 @@
 		<data>
 		xQi3klQg6brZ5HFBHD9l770e+lk=
 		</data>
-		<key>flutter_assets/assets/home/Rectangle%2026%20(1).png</key>
-		<data>
-		AC09XUpSCY55gZvlmX0rla4ib1g=
-		</data>
 		<key>flutter_assets/assets/home/Rectangle%2026.png</key>
 		<data>
 		KkFcnbcJWUfM5JXsqzleFD7mWjY=
-		</data>
-		<key>flutter_assets/assets/home/Rectangle2.jpg</key>
-		<data>
-		uC9YStyF+A1dQnbCQj9QEj8+7UA=
 		</data>
 		<key>flutter_assets/assets/home/nimbus_marketing.png</key>
 		<data>
@@ -148,17 +140,25 @@
 		<data>
 		/6TVUEtJKL1Ae6dqI7zLZ4ZzyXk=
 		</data>
+		<key>flutter_assets/assets/images/Logo3.jpg</key>
+		<data>
+		SKzu7t2tqDkIhw0K8t+xEbKXGCc=
+		</data>
 		<key>flutter_assets/assets/images/Profile.png</key>
 		<data>
 		4pzJNgtoiRuEsrPxL2EglDqOZ8s=
 		</data>
+		<key>flutter_assets/assets/images/window%201.png</key>
+		<data>
+		Zwejys/tVr88KQ4da5RoTOgP0J0=
+		</data>
 		<key>flutter_assets/assets/languages/ar.json</key>
 		<data>
-		Ofl+tEnqLzY8+Z0DGsiJd1DU6mY=
+		7rsX8dVsKLF0U4K+OQIJj+YMsyM=
 		</data>
 		<key>flutter_assets/assets/languages/en.json</key>
 		<data>
-		SKfEyT0B0GTtIURYsCFsGTMAKIw=
+		pDO6bYvUKpRNIHcQK/cU9LQJJWA=
 		</data>
 		<key>flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
 		<data>
@@ -238,7 +238,7 @@
 		</data>
 		<key>flutter_assets/assets/profile/.DS_Store</key>
 		<data>
-		m7PZHxF7Xs/g33ves3ASSiaspSE=
+		n410uXi60Xq90flqvJUQwZTUIYA=
 		</data>
 		<key>flutter_assets/assets/profile/Facebook.png</key>
 		<data>
@@ -362,11 +362,11 @@
 		</data>
 		<key>flutter_assets/isolate_snapshot_data</key>
 		<data>
-		gLUZUNbndCKs00+ddk9hgePiKHQ=
+		x9pyAtuREkv+cPApPiIkL+YcXF8=
 		</data>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<data>
-		t8fUYET0JqiuhVJ9TrXwiF9M120=
+		dIqCiejSzUkqAEU7p5p9etk3+tQ=
 		</data>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>
 		<data>
@@ -374,7 +374,7 @@
 		</data>
 		<key>flutter_assets/vm_snapshot_data</key>
 		<data>
-		+HsWKuOINTMijVvKruokFpzcml8=
+		wVCDsOQlJhUyvrMuhaM3MeqUNWk=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -383,14 +383,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/5Cslmzqs3P3O99pCy+VEf/bN9bMQaHLIB752SQeC2U=
+			qLtI1Y5TNr0XrAq8BFkcFJ6DRNAqylwyg0ZpeRTuTDY=
 			</data>
 		</dict>
 		<key>flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			MBwWhgVSt/D4dLqdQt35cn73N3SPHH2pwjoClC64vrA=
+			35JpryZ/IWsOMubPPVBZV1qED98kQBislM8CLN/GsCE=
 			</data>
 		</dict>
 		<key>flutter_assets/FontManifest.json</key>
@@ -404,7 +404,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XlzciktyT/FOvtLrtdpniuoVMBpxJgbBtPS6/G4BIpE=
+			AxnKfDOzGqsxgcHzaNY1w+UErqHiXUE6G5UBz0zYTns=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/auth/Mobile%20login-rafiki%201.png</key>
@@ -540,18 +540,18 @@
 			nt4vyyM6+mCJcHBeTvF66ecO4ssRWlgleVtdykuum7A=
 			</data>
 		</dict>
-		<key>flutter_assets/assets/home/Rectangle%2014%20(1).png</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			+LIiZggrw423NwP4rSg25U/r+Xd04//BX8fCWr2GEa8=
-			</data>
-		</dict>
 		<key>flutter_assets/assets/home/Rectangle%2014%20(2).png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			8eEzW3dOpGkjbBu3KOjhWJVJ6cjMrWicqudCt9XbjRc=
+			</data>
+		</dict>
+		<key>flutter_assets/assets/home/Rectangle%2014%20(5).png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			sKTfnGy2A/QqWAkB5DHL4slwsLeU5sG0KpmN0k4y1LI=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/home/Rectangle%2014.png</key>
@@ -568,25 +568,11 @@
 			OWGjho6xLPFDrCi6KpN3XsAiDhGJIFx1xZG/dKWQCe0=
 			</data>
 		</dict>
-		<key>flutter_assets/assets/home/Rectangle%2026%20(1).png</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			6pViSrBMOHW/gtbB2BaapHkTkjcP6VT1dPCR4fOJImI=
-			</data>
-		</dict>
 		<key>flutter_assets/assets/home/Rectangle%2026.png</key>
 		<dict>
 			<key>hash2</key>
 			<data>
 			3spqjf8YSrrFaERo/MdWY02lYY3OVmHKyIr8BnSlND8=
-			</data>
-		</dict>
-		<key>flutter_assets/assets/home/Rectangle2.jpg</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			qjpLBPTnEiaw+as6YqP/DuXmfWmGwbz3oEJJI4bfTMs=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/home/nimbus_marketing.png</key>
@@ -617,6 +603,13 @@
 			9ujAnw5hYvMOE10eGRRBynfLW1gvdOm3mNhY8tlIWQo=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/Logo3.jpg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			i6fCwNHb7ueIh1KnjDLULNJQ+SMUjKZXHFbIfd5uLew=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/images/Profile.png</key>
 		<dict>
 			<key>hash2</key>
@@ -624,18 +617,25 @@
 			enb6/KWP9lLGNjX+5NLE95pcmf5TBpgOlg/ztlUt+N8=
 			</data>
 		</dict>
+		<key>flutter_assets/assets/images/window%201.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			T4BrJ8kYRXywC6u7N4JR1nC61tXYGZEBFin4DxDwMKE=
+			</data>
+		</dict>
 		<key>flutter_assets/assets/languages/ar.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			cKPuvyvEI3ab9nBBKa+rL9wTGQkrfkR//yZFA8A1FwE=
+			bEgsIUJi8DDtllIa7TuaY7S5gs815W4XaLs45Mud6QI=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/languages/en.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			MgBZXRXqQUP12oM9gawTMIRkTitdXvcBfCE9oT36NJU=
+			EY1HewMw2sBk2l5bH+PNXjTFiDyl+3sKJ7RvveEcMMI=
 			</data>
 		</dict>
 		<key>flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
@@ -985,14 +985,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			rnNRNqkjfwz6o+ECah8gei8ooCiw3YLryTTvYxQ0uLg=
+			Vq+7MGZJ/a2P4axu7S0w0OOKFZrEYApLXiQogFqm0YU=
 			</data>
 		</dict>
 		<key>flutter_assets/kernel_blob.bin</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1DrkVTwm223Fsn39QNpBLGrUPBWSNPCOmk0DJ/bWM7U=
+			P3pXk1Mkn5F67wtpFniUenou3KsUdWPCr5QjlUNMoZ0=
 			</data>
 		</dict>
 		<key>flutter_assets/shaders/ink_sparkle.frag</key>
@@ -1006,7 +1006,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			XRpcsR0vWGkDzG+35GjjzaJtqN3CuV3azmWWPti/o3M=
+			pKvVVo/CPIJFzUPS2fhLuWOuiKFXCBKbw9g8gmDjVXE=
 			</data>
 		</dict>
 	</dict>

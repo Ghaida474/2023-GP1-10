@@ -1,13 +1,8 @@
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
-
 import 'database/app_database.dart';
 import 'localization/localization_const.dart';
-import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/utils/colors.dart';
-import 'package:flutter/material.dart';
-
-import '../../myservice.dart';
 import 'models/model_user.dart';
 
 class allCourses extends StatefulWidget {
@@ -74,7 +69,7 @@ class _allCoursesState extends State<allCourses> {
     );
   }
 
-  poularlist(Size size, String name, double? price, String coach, int? id) {
+  poularlist(Size size, String name, double? price, String date, int? id) {
     return Column(
       children: [
         GestureDetector(
@@ -87,7 +82,7 @@ class _allCoursesState extends State<allCourses> {
                 right: fixPadding * 2,
                 bottom: fixPadding * 2,
                 top: fixPadding),
-            height: size.height * 0.15,
+            height: size.height * 0.13,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: whiteColor,
@@ -130,10 +125,14 @@ class _allCoursesState extends State<allCourses> {
                           ],
                         ),
                         Text(
-                          coach,
+                                                    getTranslate(context, 'detail.start_date') +
+                              ' : ' +
+                          date,
                           style: grey14Style,
                         ),
                         Text(
+                          getTranslate(context, 'detail.price') +
+                              ' : ' +
                           price.toString(),
                           style: primary16Style,
                         )
@@ -160,7 +159,7 @@ class _allCoursesState extends State<allCourses> {
           size,
           course.name as String,
           course.price,
-          course.instructer as String,
+          course.startDate as String,
           course.id,
         );
         courseWidgets.add(courseWidget);

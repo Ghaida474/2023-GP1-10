@@ -1,6 +1,5 @@
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
 import 'localization/localization_const.dart';
 
 class SubConformation extends StatefulWidget {

@@ -1,9 +1,8 @@
-import 'package:businessgate/models/model_user.dart';
-import 'package:businessgate/myservice.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
 import 'localization/localization_const.dart';
+import 'models/model_user.dart';
+import 'myservice.dart';
 
 class aSurvey extends StatefulWidget {
   const aSurvey({super.key});
@@ -88,7 +87,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.yes')),
                                   value: Choice.yes,
-                                  groupValue: null,
+                                  groupValue: selectedChoice1,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice1 = value as Choice;
@@ -99,7 +98,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.no')),
                                   value: Choice.no,
-                                  groupValue: null,
+                                  groupValue: selectedChoice1,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice1 = value as Choice;
@@ -141,7 +140,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.yes')),
                                   value: Choice.yes,
-                                  groupValue: null,
+                                  groupValue: selectedChoice2,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice2 = value!;
@@ -152,7 +151,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.no')),
                                   value: Choice.no,
-                                  groupValue: null,
+                                  groupValue: selectedChoice2,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice2 = value!;
@@ -191,7 +190,7 @@ class _aSurveyState extends State<aSurvey> {
                             RadioListTile(
                               title: Text(getTranslate(context, 'survey.yes')),
                               value: Choice.yes,
-                              groupValue: null,
+                              groupValue: selectedChoice3,
                               onChanged: (value) {
                                 setState(() {
                                   selectedChoice3 = value!;
@@ -201,7 +200,7 @@ class _aSurveyState extends State<aSurvey> {
                             RadioListTile(
                               title: Text(getTranslate(context, 'survey.no')),
                               value: Choice.no,
-                              groupValue: null,
+                              groupValue: selectedChoice3,
                               onChanged: (value) {
                                 setState(() {
                                   selectedChoice3 = value!;
@@ -241,7 +240,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.yes')),
                                   value: Choice.yes,
-                                  groupValue: null,
+                                  groupValue: selectedChoice4,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice4 = value!;
@@ -252,7 +251,7 @@ class _aSurveyState extends State<aSurvey> {
                                   title:
                                       Text(getTranslate(context, 'survey.no')),
                                   value: Choice.no,
-                                  groupValue: null,
+                                  groupValue: selectedChoice4,
                                   onChanged: (value) {
                                     setState(() {
                                       selectedChoice4 = value!;
@@ -300,7 +299,7 @@ class _aSurveyState extends State<aSurvey> {
                         height: 20,
                       ),
                       Register(context, () {
-                        //processAnswers(context);
+                        processAnswers(context);
                         Navigator.pushReplacementNamed(context, '/subConfirm');
                       })
                     ],
@@ -368,7 +367,7 @@ class _aSurveyState extends State<aSurvey> {
         ));
   }
 
-  /* Future<void> processAnswers(BuildContext context) async {
+  Future<void> processAnswers(BuildContext context) async {
 
     List<String> parts1 = selectedChoice1.toString().split('.');
     String choice1String = parts1.last;
@@ -420,5 +419,6 @@ class _aSurveyState extends State<aSurvey> {
           });
         }
   });
-}*/
+}
+  
 }

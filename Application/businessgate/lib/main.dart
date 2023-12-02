@@ -10,8 +10,6 @@ import 'package:businessgate/languages.dart';
 import 'package:businessgate/myCourses.dart';
 import 'package:businessgate/regConfirm.dart';
 import 'package:businessgate/subConfirm.dart';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/screens/forget.dart';
 import 'package:businessgate/screens/home.dart';
@@ -21,11 +19,10 @@ import 'package:businessgate/screens/signin.dart';
 import 'package:businessgate/screens/signup.dart';
 import 'package:businessgate/localization/localization.dart';
 import 'package:businessgate/localization/localization_const.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
- final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
- 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -83,16 +80,13 @@ class _MyAppState extends State<MyApp> {
         '/languages': (context) => Languages(),
         '/allCourses': (context) => allCourses(),
         '/course': (context) => Course(),
-        //'/courseC': (context) => Course(),
-        //'/courseRw' :(context) => Course(),
-        
         '/category': (context) => CategoryScreen(),
         '/bfSurvey': (context) => bSurvey(),
         '/afSurvey': (context) => aSurvey(),
         '/regConfirm': (context) => RegConformation(),
         '/subConfirm': (context) => SubConformation(),
         '/filteredPrograms': (context) => filteredPrograms(),
-        '/certificates': (context) => CertificateNavigationMenu(),
+        '/certificates': (context) => CertificateViewPage(),
         '/myCourses': (context) => myCoursesNavigationMenu(),
       },
       home: BottomNaviScreen(),
@@ -115,9 +109,6 @@ class _MyAppState extends State<MyApp> {
         }
         return supportedLocales.first;
       },
-  
-
-
     );
   }
 }

@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:businessgate/database/app_database.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
-
+import 'package:carousel_slider/carousel_slider.dart';
 import '../localization/localization_const.dart';
 import '../models/model_user.dart';
 import '../myservice.dart';
@@ -39,6 +40,34 @@ class _HomeScreenState extends State<Home> {
     },
   ];
 
+  List<String> imageAssets = [
+    "assets/home/Rectangle 14 (9).png",
+    "assets/home/web.jpg",
+    "assets/home/Rectangle 14.png",
+  ];
+
+  List<String> imageTexts = [
+    "Marketing using social media course",
+    "How to build a website",
+    "Full UI and UX designs",
+  ];
+
+  MyService _myEmail = MyService();
+
+  String Name = "";
+
+  String dropdownValue = "Languages";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    Name = await ModelsUsers().FetchFirstName(_myEmail.myVariable);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -46,58 +75,69 @@ class _HomeScreenState extends State<Home> {
       appBar: AppBar(
         centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: Color.fromARGB(255, 149, 202, 242),
+        backgroundColor: Color.fromARGB(255, 177, 211, 237),
         toolbarHeight: size.height * 0.085,
         elevation: 3,
         shadowColor: Colors.grey.withOpacity(0.3),
         title: Row(
-          children: [
-            widthSpace,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  getTranslate(context, 'home.hello'),
-                  style: black18Style,
-                ),
-                heightbox(2),
-              ],
-            )
-          ],
+  children: [
+    widthSpace,
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FutureBuilder<void>(
+          future: fetchData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // If the Future is still running, show a loading indicator or placeholder
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              // If an error occurs, handle it here
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // If the Future is complete, display the fetched data
+              return Text(
+                getTranslate(context, 'home.hello') + ' ' + Name,
+                style: black18Style,
+              );
+            }
+          },
         ),
+        heightbox(2),
+      ],
+    )
+  ],
+),
         actions: [
           SizedBox(
             height: 50,
-            width: 50,
-            child: Stack(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      barrierColor: Colors.black.withOpacity(0.3),
-                      context: context,
-                      builder: (context) {
-                        return signoutDialog(context, size);
-                      },
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.logout,
-                    color: Colors.black,
-                  ),
-                ),
-                Positioned(
-                  right: 18,
-                  top: 15,
-                  child: Container(
-                    height: 6,
-                    width: 6,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+            width: 160,
+            child: 
+                DropdownButton(
+            dropdownColor: hexStringColor("#E3E0D2"),
+            icon: Icon(Icons.menu,
+            color: Colors.black),
+            style: TextStyle(color: Colors.black),
+            onChanged: (String? newValue) {
+              if (newValue == 'Languages') {
+          Navigator.pushNamed(context, '/languages');
+        } else if (newValue == 'Sign Out') {
+          showSignOutDialog(context, size);
+        }
+            },
+            items: [
+        DropdownMenuItem(
+          value: 'Languages',
+          child: buildDropdownItem('Languages', Icons.language_outlined),
+        ),
+        DropdownMenuItem(
+          value: 'Sign Out',
+          child: buildDropdownItem('Sign Out', Icons.exit_to_app),
+        ),
+      ],
+    ),
+  ),
+],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -108,11 +148,12 @@ class _HomeScreenState extends State<Home> {
         ),
         child: ListView(
           children: [
+            soonText(),
             topContainer(size),
             categorytext(),
             categoryList(size),
             height5Space,
-            popularText(),
+            recentText(),
             FutureBuilder<List<Widget>>(
               future: GetRecentCourses(context),
               builder: (context, snapshot) {
@@ -133,7 +174,26 @@ class _HomeScreenState extends State<Home> {
     );
   }
 
-  poularlist(Size size, String name, double? price, String coach, int? id) {
+  Widget buildDropdownItem(String text, IconData icon) {
+  return Row(
+    children: [
+      Icon(icon), // Add your desired icon here
+      SizedBox(width: 8), // Adjust the spacing between the icon and text
+      Text(text),
+    ],
+  );
+}
+
+void showSignOutDialog(BuildContext context, Size size) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return signoutDialog(context, size);
+    },
+  );
+}
+
+  poularlist(Size size, String name, double? price, String date, int? id) {
     return Column(
       children: [
         GestureDetector(
@@ -146,7 +206,7 @@ class _HomeScreenState extends State<Home> {
                 right: fixPadding * 2,
                 bottom: fixPadding * 2,
                 top: fixPadding),
-            height: size.height * 0.15,
+            height: size.height * 0.13,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: whiteColor,
@@ -175,7 +235,7 @@ class _HomeScreenState extends State<Home> {
                           children: [
                             Text(
                               name,
-                              style: black16Stylew600,
+                              style: black18Stylew600,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Row(
@@ -189,11 +249,15 @@ class _HomeScreenState extends State<Home> {
                           ],
                         ),
                         Text(
-                          coach,
+                          getTranslate(context, 'detail.start_date') +
+                              ' : ' +
+                              date,
                           style: grey14Style,
                         ),
                         Text(
-                          price.toString(),
+                          getTranslate(context, 'detail.price') +
+                              ' : ' +
+                              price.toString(),
                           style: primary16Style,
                         )
                       ],
@@ -208,96 +272,7 @@ class _HomeScreenState extends State<Home> {
     );
   }
 
-  poularIcon2(Size size, String image, String name) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, '/home');
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: fixPadding),
-          height: size.height * 0.32,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: whiteColor,
-              boxShadow: [
-                BoxShadow(
-                  color: grey94Color.withOpacity(0.5),
-                  blurRadius: 5,
-                )
-              ]),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(10),
-                ),
-                child: Image.asset(
-                  image,
-                  height: size.height * 0.16,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(fixPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: black16Stylew600,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const Text(
-                        "Saad",
-                        style: grey14Style,
-                      ),
-                      Row(
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            ShaderMask(
-                              shaderCallback: (Rect bounds) {
-                                return const LinearGradient(
-                                  colors: gradient,
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ).createShader(bounds);
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.only(right: fixPadding / 5),
-                                child: Icon(
-                                  Icons.star,
-                                  size: 15,
-                                  color: whiteColor,
-                                ),
-                              ),
-                            ),
-                          const Text(
-                            "(125)",
-                            style: grey14Style,
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        "200 SR",
-                        style: primary16Style,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  popularText() {
+  recentText() {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: fixPadding,
@@ -317,6 +292,24 @@ class _HomeScreenState extends State<Home> {
             child: Text(getTranslate(context, 'home.see_all_P'),
                 style: primary14Style),
           )
+        ],
+      ),
+    );
+  }
+
+  soonText() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: fixPadding,
+        horizontal: fixPadding * 2,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            getTranslate(context, 'home.soon'),
+            style: black18Style,
+          ),
         ],
       ),
     );
@@ -400,53 +393,48 @@ class _HomeScreenState extends State<Home> {
   }
 
   topContainer(Size size) {
-    return Stack(
-      children: [
-        SizedBox(
-          height: size.height * 0.22,
-          width: double.infinity,
-          child: Image.asset(
-            "assets/images/Logo2.png",
-            fit: BoxFit.cover,
-          ),
-        ),
-        Positioned(
-          bottom: 7,
-          left: 0,
-          right: 0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: fixPadding * 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return CarouselSlider(
+      items: imageAssets.asMap().entries.map((entry) {
+        int index = entry.key;
+        String image = entry.value;
+        String text = imageTexts[index];
+
+        return Container(
+          width: size.width * 0.9,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            image: DecorationImage(
+              image: AssetImage(image),
+              fit: BoxFit.cover,
             ),
           ),
-        )
-      ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                height5Space,
+                Text(
+                  text,
+                  style: white18Style,
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: size.height * 0.22,
+        viewportFraction: 1,
+        enlargeCenterPage: true,
+        autoPlay: true,
+        autoPlayInterval: const Duration(seconds: 4),
+        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+        autoPlayCurve: Curves.fastOutSlowIn,
+      ),
     );
   }
-
-  /*Future<List<Widget>> GetRecentCourses(BuildContext context) async {
-    final size = MediaQuery.of(context).size;
-    List<Widget> courseWidgets = [];
-    List<Courses> courses = await ModelsUsers().TrainingPrograms();
-
-    try {
-      for (Courses course in courses) {
-        Widget courseWidget = poularlist(
-          size,
-          course.name as String,
-          course.price,
-          course.instructer as String,
-          course.id,
-        );
-        courseWidgets.add(courseWidget);
-      }
-    } catch (error) {
-      print("Error: $error");
-    }
-
-    return courseWidgets;
-  }*/
 
   Future<List<Widget>> GetRecentCourses(BuildContext context) async {
     final size = MediaQuery.of(context).size;
@@ -463,7 +451,7 @@ class _HomeScreenState extends State<Home> {
           size,
           course.name as String,
           course.price,
-          course.instructer as String,
+          course.startDate as String,
           course.id,
         );
         courseWidgets.add(courseWidget);

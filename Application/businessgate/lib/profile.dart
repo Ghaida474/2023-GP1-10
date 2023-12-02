@@ -1,11 +1,48 @@
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../myservice.dart';
+import 'models/model_user.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   Profile({Key? key}) : super(key: key);
+
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+
+    MyService _myEmail = MyService();
+
+  String Name = "";
+
+  SharedPreferences? prefs;
+  String? languageValue ;
+  final key = "value";
+
+      @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  _read() async {
+    prefs = await SharedPreferences.getInstance();
+      languageValue = prefs!.getString(key) ?? "English";
+      print(languageValue);
+  }
+  
+
+    Future<void> fetchData() async {
+      _read();
+      if (languageValue == "عربي"){
+    Name = await ModelsUsers().FetchFullName(_myEmail.myVariable);
+      } else {
+        Name = await ModelsUsers().FetchFirstName(_myEmail.myVariable) + ' ' +  await ModelsUsers().FetchLastName(_myEmail.myVariable);
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +120,6 @@ class Profile extends StatelessWidget {
             getTranslate(context, 'profile.edit_profile'),
             () {
               Navigator.pushNamed(context, '/editprofile');
-            },
-          ),
-          devider(),
-          imageIconListTile(
-            context,
-            "assets/profile/Shopicons_Filled_World.png",
-            getTranslate(context, 'profile.languages'),
-            () {
-              Navigator.pushNamed(context, '/languages');
             },
           ),
           devider(),
@@ -278,18 +306,31 @@ class Profile extends StatelessWidget {
     );
   }
 
-  MyService _myEmail = MyService();
-
   profileinfo(Size size, context) {
     return Column(
       children: [
-        Text(
-          _myEmail.myVariable,
-          style: TextStyle(
+FutureBuilder<void>(
+          future: fetchData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // If the Future is still running, show a loading indicator or placeholder
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              // If an error occurs, handle it here
+              return Text('Error: ${snapshot.error}');
+            } else {
+              // If the Future is complete, display the fetched data
+              return Text(
+                 Name,
+                style: TextStyle(
               color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+              );
+            }
+          },
         ),
         heightbox(10 / 3),
       ],
     );
   }
+
 }

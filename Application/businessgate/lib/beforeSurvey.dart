@@ -2,7 +2,6 @@ import 'package:businessgate/models/model_user.dart';
 import 'package:businessgate/myservice.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
 import 'localization/localization_const.dart';
 
 class bSurvey extends StatefulWidget {

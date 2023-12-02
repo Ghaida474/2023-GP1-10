@@ -3,7 +3,6 @@ import 'package:businessgate/theme.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../main.dart';
 
 // Declare a variable to hold the selected language

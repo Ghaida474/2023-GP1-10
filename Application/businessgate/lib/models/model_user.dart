@@ -1,6 +1,4 @@
 import '../database/app_database.dart';
-import '../database/app_database.dart';
-import 'dart:typed_data';
 
 class ModelsUsers {
   String Trainee = '';
@@ -12,9 +10,9 @@ class ModelsUsers {
       String password,
       String id,
       String gender,
-      String nationality) async {
+      String full) async {
     Trainee = await AppDatabase().registerTrainees(
-        fName, lName, phoneNumber, email, gender, nationality, password, id);
+        fName, lName, phoneNumber, email, gender, password, id, full);
     return Trainee;
   }
 
@@ -43,12 +41,24 @@ class ModelsUsers {
     return UpdateFN;
   }
 
+    String fullName = '';
+  Future<String> FetchFullName(String email) async {
+    fullName = await AppDatabase().FetchFullName(email);
+    return fullName;
+  }
+
+  String UpdateFullN = '';
+  Future<String> updatefullname(String email, String fname) async {
+    UpdateFullN = await AppDatabase().UpdateFullName(email, fname);
+    return UpdateFullN;
+  }
+
   String lastName = '';
   Future<String> FetchLastName(String email) async {
     lastName = await AppDatabase().FetchLName(email);
     return lastName;
   }
-
+  
   String UpdateLN = '';
   Future<String> updatelname(String email, String lname) async {
     UpdateLN = await AppDatabase().UpdateLName(email, lname);
@@ -79,19 +89,13 @@ class ModelsUsers {
     return UpdatePass;
   }
 
-  /*int courseCount = 0;
-  Future<int> CourseCount() async {
-    courseCount = await AppDatabase().TrainingProgramCount();
-    return courseCount;
-  }*/
-
   List<Courses> courses = [];
   Future<List<Courses>> TrainingPrograms() async {
     courses = await AppDatabase().getAcceptedTrainingPrograms();
     return courses;
   }
 
-  Courses thecourse = Courses("", 0.0, 0,"","","","","","");
+  Courses thecourse = Courses("", 0.0, 0,"","","","","","","",false,"");
   Future<Courses> TrainingProgram(int? id) async {
     thecourse = await AppDatabase().Program(id);
     return thecourse;

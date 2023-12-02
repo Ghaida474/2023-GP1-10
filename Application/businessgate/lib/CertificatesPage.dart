@@ -1,90 +1,15 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
-//mport 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-
 import 'package:businessgate/models/model_user.dart';
 import 'dart:convert';
-
-import 'dart:typed_data';
-
-
-
-import 'package:businessgate/localization/localization_const.dart';
 import '../../myservice.dart';
 import '../../utils/colors.dart';
-
 import '../database/app_database.dart';
-import 'dart:ffi';
-import 'package:postgres/postgres.dart';
-
-import 'dart:io';
-
-
-import 'package:businessgate/theme.dart';
-
-
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:path_provider/path_provider.dart';
-
-class CertificateNavigationMenu extends StatelessWidget {
-  const CertificateNavigationMenu({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Certificates'),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                navigateToCertificates(context, 1);
-              },
-              child: Text('Upcoming'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                navigateToCertificates(context, 2);
-              },
-              child: Text('Running'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                navigateToCertificates(context, 3);
-              },
-              child: Text('Completed'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void navigateToCertificates(BuildContext context, int choice) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CertificateViewPage(sectionIndex: choice),
-      ),
-    );
-  }
-}
-
-
+import 'localization/localization_const.dart';
 
 class CertificateViewPage extends StatefulWidget {
-  final int sectionIndex;
 
-  const CertificateViewPage({Key? key, required this.sectionIndex}) : super(key: key);
+  const CertificateViewPage({Key? key}) : super(key: key);
 
   @override
   _CertificateViewPageState createState() => _CertificateViewPageState();
@@ -103,9 +28,7 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
 
   Future<void> fetchCertificateAndTopic() async {
     try {
-     
         fetchedCertificate = await ModelsUsers().fetchCertificationsM(_myID.myVariable2);
-      
     } catch (error) {
       print('Error fetching certificate and topic: $error');
     }
@@ -115,7 +38,7 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Certificates'),
+        title: Text(getTranslate(context, 'profile.certificates')),
       ),
       body: FutureBuilder(
         future: fetchCertificateAndTopic(),
@@ -155,16 +78,6 @@ Widget _buildCertificateView() {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        /*
-        Text(
-          // maybe add trainee name
-          'Certificates',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: hexStringColor("#095590"),
-          ),
-        ),*/
         SizedBox(height: 20),
         if (fetchedCertificate != null)
           Expanded(
@@ -231,7 +144,7 @@ class CertificateDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('تفاصيل الشهادة'),
+        title: Text(getTranslate(context, 'Course.cerDetail')),
       ),
       body: PDFView(
         pdfData: base64Decode(certificateData),

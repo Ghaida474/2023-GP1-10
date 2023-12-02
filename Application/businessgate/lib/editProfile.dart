@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:businessgate/localization/localization_const.dart';
 import '../../myservice.dart';
 import '../../utils/colors.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -18,8 +19,11 @@ class _EditProfileState extends State<EditProfile> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+  TextEditingController fullnameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  bool success = false;
 
   @override
   void initState() {
@@ -30,16 +34,19 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> fetchData() async {
     nameController.text =
         await ModelsUsers().FetchFirstName(_myEmail.myVariable);
-    print(await ModelsUsers().FetchFirstName(_myEmail.myVariable));
+
     lastNameController.text =
         await ModelsUsers().FetchLastName(_myEmail.myVariable);
-    print(await ModelsUsers().FetchLastName(_myEmail.myVariable));
+
+    fullnameController.text =
+        await ModelsUsers().FetchFullName(_myEmail.myVariable);    
+
     phoneController.text =
         await ModelsUsers().FetchPhoneNum(_myEmail.myVariable);
-    print(await ModelsUsers().FetchPhoneNum(_myEmail.myVariable));
+
     passwordController.text =
         await ModelsUsers().FetchPassword(_myEmail.myVariable);
-    print(await ModelsUsers().FetchPassword(_myEmail.myVariable));
+
   }
 
   final formkey = GlobalKey<FormState>();
@@ -119,7 +126,34 @@ class _EditProfileState extends State<EditProfile> {
                           )),
                     ),
                     passField("Enter Password", Icons.lock, passwordController),
-                    SizedBox(height: 8),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    FlutterPwValidator(
+                      defaultColor: Colors.grey.shade300,
+                      controller: passwordController,
+                      successColor: Colors.green.shade700,
+                      minLength: 8,
+                      uppercaseCharCount: 1,
+                      numericCharCount: 1,
+                      specialCharCount: 1,
+                      normalCharCount: 1,
+                      width: 400,
+                      height: 190,
+                      onSuccess: () {
+                        setState(() {
+                          success = true;
+                        });
+                      },
+                      onFail: () {
+                        setState(() {
+                          success = false;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
                     updateButton(context, () {
                       processUpdate(
                           context,
@@ -496,7 +530,6 @@ class _EditProfileState extends State<EditProfile> {
     return TextFormField(
       controller: controller,
       obscureText: passToggle,
-      //enableSuggestions: !isPasswordType,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -517,18 +550,6 @@ class _EditProfileState extends State<EditProfile> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          /*suffixIcon: GestureDetector(
-              onTap: () {
-                 setState(() {
-                  isPasswordType = !isPasswordType;
-                });
-              },
-              child: Icon(
-                isPasswordType ? Icons.visibility_off : Icons.visibility,
-                size: 16,
-              ),
-            ),*/
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -548,9 +569,6 @@ class _EditProfileState extends State<EditProfile> {
         } else
           return null;
       },
-      /*keyboardType: isPasswordType
-      ? TextInputType.visiblePassword
-      : TextInputType.none()*/
     );
   }
 

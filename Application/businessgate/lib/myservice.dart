@@ -7,7 +7,9 @@ class MyService {
 
     String _myVariable = '';
     int _myVariable2 = 0;
-     int _myVariable3 = 0;
+    int _myVariable3 = 0;
+    String _filter = '';
+
   //initialize variables in here
   MyService._internal() {
     _myVariable = 'no value';
@@ -35,5 +37,13 @@ class MyService {
   //short setter for my variable
   set myVariable3(int value) {
      _myVariable3 = value;
+  }
+
+    //getter for _filter
+  String get Filter => _filter;
+
+  //setter for _filter
+  set Filter(String value) {
+    _filter = value;
   }
 }
