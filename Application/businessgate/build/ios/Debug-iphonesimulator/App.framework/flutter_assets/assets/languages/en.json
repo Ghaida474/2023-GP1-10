@@ -59,6 +59,7 @@
         "price": "Price",
         "subscribe": "Register",
         "about": "About",
+        "creat_by": "Presented by",
         "review_text": "Review",
         "courses": "Programs",
         "description": "Description",
@@ -79,7 +80,8 @@
         "see_all_C": "See all Categories to filter",
         "see_all_P": "See all Programs",
         "catergory": "Catergory",
-        "recent" : "Recently Added Programs"
+        "recent" : "Recently Added Programs",
+        "soon": "Soon will be Added"
     },
     "myCourses": {
         "my_courses": "My Courses"

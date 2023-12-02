@@ -513,7 +513,7 @@ SELECT
 FROM public."TrainingProgram" tp
 JOIN public."Register" r ON r."ProgramID" = tp."programID"
 WHERE
-  tp."isreleased" = @released
+  tp."isreleased " = @released
   AND @currentCapacity < tp."capacity"
   AND CURRENT_DATE < tp."startDate"
   AND r."hasRegistered" = @register
@@ -899,11 +899,14 @@ if (hasPaid) {
         SELECT r."certifications", tp."Topic"
         FROM public."Register" r
         JOIN public."TrainingProgram" tp ON r."ProgramID" = tp."programID"
-       WHERE  r."id" = @id1  AND r."hasRegistered" = @register AND r."haspaid" = @paid AND r."hasAttended" = @attend AND CURRENT_DATE > tp."endDate" ;
+       WHERE r."id" = @id1  AND r."hasRegistered" = @register AND r."haspaid" = @paid AND r."hasAttended" = @attend AND CURRENT_DATE > tp."endDate" ;
         ''',
         substitutionValues: {
           'id1': id1,
           'attend':true,
+          'register': true,
+          'paid': true
+
         },
         allowReuse: true,
         timeoutInSeconds: 30,
@@ -919,6 +922,8 @@ if (hasPaid) {
         substitutionValues: {
           'id1': id1,
           'attend':true,
+          'register': true,
+          'paid': true
         },
         allowReuse: true,
         timeoutInSeconds: 30,

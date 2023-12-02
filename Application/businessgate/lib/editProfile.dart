@@ -109,6 +109,16 @@ class _EditProfileState extends State<EditProfile> {
                     SizedBox(height: 8),
                     Container(
                       alignment: Alignment.centerLeft,
+                      child: Text(getTranslate(context, 'editProfile.FullN'),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                    fullnameField(size, context),
+                    SizedBox(height: 8),
+                    Container(
+                      alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.mobile'),
                           style: TextStyle(
                             fontSize: 16,
@@ -228,6 +238,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
         });
       } else if (UpdateFN.toString().contains('ok')) {
         setState(() {
@@ -254,6 +265,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
 
           Navigator.pushNamed(context, '/profile');
         });
@@ -285,6 +297,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
         });
       } else if (UpdateLN.toString().contains('ok')) {
         setState(() {
@@ -311,6 +324,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
 
           Navigator.pushNamed(context, '/profile');
         });
@@ -342,6 +356,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
         });
       } else if (UpdatePN.toString().contains('ok')) {
         setState(() {
@@ -368,6 +383,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
 
           Navigator.pushNamed(context, '/profile');
         });
@@ -399,6 +415,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
         });
       } else if (UpdatePass.toString().contains('ok')) {
         setState(() {
@@ -425,6 +442,7 @@ class _EditProfileState extends State<EditProfile> {
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
+          fullnameController.clear();
 
           Navigator.pushNamed(context, '/profile');
         });
@@ -459,6 +477,34 @@ class _EditProfileState extends State<EditProfile> {
           return getTranslate(context, 'signup.CN');
         } else
           return null;
+      },
+    );
+  }
+
+  fullnameField(Size size, BuildContext context) {
+    return TextFormField(
+      controller: fullnameController,
+      cursorColor: Colors.white,
+      style: TextStyle(color: Colors.white.withOpacity(0.9)),
+      decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(
+                color: Color.fromARGB(255, 2, 14, 52),
+              )),
+          prefixIcon: Icon(
+            Icons.person,
+            color: const Color.fromARGB(179, 255, 255, 255),
+          ),
+          labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+          filled: true,
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          fillColor: hexStringColor("#095590").withOpacity(0.45),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
+      validator: (value) {
+          return getTranslate(context, 'signup.CN');
       },
     );
   }
