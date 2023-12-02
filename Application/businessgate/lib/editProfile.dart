@@ -432,9 +432,12 @@ class _EditProfileState extends State<EditProfile> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-              /*validator: (value) {
-          return getTranslate(context, 'signup.CFull');
-      },*/
+              validator: (value) {
+              if (value!.isEmpty) 
+               return getTranslate(context, 'signup.CFull');
+
+               return null ;
+      },
     );
   }
 

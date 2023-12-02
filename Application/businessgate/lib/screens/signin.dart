@@ -144,7 +144,6 @@ class _SignInState extends State<SignIn> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -155,9 +154,12 @@ class _SignInState extends State<SignIn> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      /*validator: (value) {
+      validator: (value) {
+          if (value!.isEmpty )
           return getTranslate(context, 'signup.CP');
-      },*/
+
+          return null;
+      },
     );
   }
 

@@ -64,7 +64,6 @@ class _SignUpState extends State<SignUp> {
                   20, MediaQuery.of(context).size.height * 0.2, 20, 400),
               child: Form(
                 key: formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: <Widget>[
                     logoWidgetSignUP("assets/images/Logo.jpg"),
@@ -81,7 +80,7 @@ class _SignUpState extends State<SignUp> {
                     const SizedBox(
                       height: 20,
                     ),
-                    nameField(getTranslate(context, 'signup.name'),
+                    fullNameField(getTranslate(context, 'signup.name'),
                         Icons.person, false, _fullnameTextController),
                     const SizedBox(
                       height: 20,
@@ -169,32 +168,10 @@ class _SignUpState extends State<SignUp> {
                         Icons.lock,
                         _confirmPasswordTextController),
                     const SizedBox(
-                      height: 8,
-                    ),
-                    FlutterPwValidator(
-                      defaultColor: Colors.grey.shade300,
-                      controller: _confirmPasswordTextController,
-                      successColor: Colors.green.shade700,
-                      minLength: 8,
-                      uppercaseCharCount: 1,
-                      numericCharCount: 1,
-                      specialCharCount: 1,
-                      normalCharCount: 1,
-                      width: 400,
-                      height: 190,
-                      onSuccess: () {
-                        setState(() {
-                          success = true;
-                        });
-                      },
-                      onFail: () {
-                        setState(() {
-                          success = false;
-                        });
-                      },
+                      height: 10,
                     ),
                     const SizedBox(
-                      height: 40,
+                      height: 20,
                     ),
                     SignUpButton(context, () {
                       registerMethod(context);
@@ -218,7 +195,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return  TextFormField(
       controller: controller,
-      //autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -252,7 +229,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return  TextFormField(
       controller: controller,
-      //autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -274,7 +251,10 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
               validator: (value) {
-          return getTranslate(context, 'signup.CFull');
+                if (value!.isEmpty ) {
+          return  getTranslate(context, 'signup.CFull');
+        } else
+          return null;
       },
     );
   }
@@ -283,7 +263,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
-      //autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -342,7 +322,7 @@ class _SignUpState extends State<SignUp> {
       validator: (value) {
         if (value!.isEmpty ||
             !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
-                .hasMatch(value!)) {
+                .hasMatch(value)) {
           return getTranslate(context, 'signup.CE');
         } else
           return null;
@@ -376,7 +356,7 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value!)) {
+        if (value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value)) {
           return getTranslate(context, 'signup.CM');
         } else
           return null;
@@ -458,7 +438,7 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (_confirmPasswordTextController != _passwordTextController) {
+        if (_confirmPasswordTextController.text != _passwordTextController.text) {
           return getTranslate(context, 'signup.CconfirmP');
         }else
           return null;

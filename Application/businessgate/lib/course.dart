@@ -2,12 +2,9 @@ import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/models/model_user.dart';
 import 'package:businessgate/database/app_database.dart';
 import 'package:businessgate/theme.dart';
-import 'package:businessgate/column_builder.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_progress_indicators/simple_progress_indicators.dart';
 import '../../myservice.dart';
-import 'package:intl/intl.dart';
 
 class Course extends StatefulWidget {
   const Course({Key? key}) : super(key: key);
@@ -27,34 +24,6 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
   int selectedindex = 0;
   String? status ;
   MyService _myEmail = MyService();
-
-  final ratingList = <Map<String, dynamic>>[
-    {
-      "star": "5 star",
-      "progress": 0.75,
-      "person": "101",
-    },
-    {
-      "star": "4 star",
-      "progress": 0.65,
-      "person": "12",
-    },
-    {
-      "star": "3 star",
-      "progress": 0.55,
-      "person": "07",
-    },
-    {
-      "star": "2 star",
-      "progress": 0.45,
-      "person": "04",
-    },
-    {
-      "star": "1 star",
-      "progress": 0.35,
-      "person": "02",
-    },
-  ];
 
   @override
   void initState() {
@@ -126,7 +95,6 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
                   detailname(),
                   tabs(size),
                   if (selectedindex == 0) firstTabview(),
-                  if (selectedindex == 1) secondTabView(size),
                 ],
               ),
             )
@@ -149,101 +117,6 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
     return Info;
   }
 
-  // Function for the second tab view
-  secondTabView(Size size) {
-    return Column(
-      children: [
-        overallRating(size),
-      ],
-    );
-  }
-
-  // Function for displaying overall rating
-  overallRating(Size size) {
-    return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.all(fixPadding * 2),
-      padding: const EdgeInsets.all(fixPadding * 2),
-      decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(color: grey94Color.withOpacity(0.4), blurRadius: 5),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            getTranslate(context, 'detail.overall_rating'),
-            style: black16Stylew600,
-          ),
-          height5Space,
-          Row(
-            children: [
-              Column(
-                children: [
-                  const Text(
-                    "4.5",
-                    style: black16Style,
-                  ),
-                  height5Space,
-                  Row(
-                    children: [
-                      for (int i = 0; i < 5; i++)
-                        const Icon(
-                          Icons.star,
-                          color: primaryColor,
-                          size: 14,
-                        )
-                    ],
-                  ),
-                  height5Space,
-                  Text("(125 ${getTranslate(context, 'detail.review')})",
-                      style: grey14Style)
-                ],
-              ),
-              widthSpace,
-              Expanded(
-                child: ColumnBuilder(
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: fixPadding / 2),
-                        child: Row(
-                          children: [
-                            Text(
-                              ratingList[index]['star'].toString(),
-                              style: grey14Style,
-                            ),
-                            width5Space,
-                            Expanded(
-                              child: ProgressBar(
-                                value: ratingList[index]['progress'],
-                                backgroundColor: const Color(0xfff0f0f0),
-                                height: 4,
-                                gradient: const LinearGradient(
-                                  colors: gradient,
-                                ),
-                              ),
-                            ),
-                            width5Space,
-                            Text(
-                              ratingList[index]['person'].toString(),
-                              style: grey14Style,
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    itemCount: ratingList.length),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-  
   // Define a container with bottom navigation buttons
   bottonContainer(Size size) {
     return Container(
