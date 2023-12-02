@@ -74,14 +74,14 @@ Replace `'my_database'`, `'my_database_user'`, and `'my_database_password'` with
    - python manage.py makemigrations
    - python manage.py migrate
 9. run redis server
-   - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(2) run command: brew services start redis
+    - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(2) run command: brew services start redis
 10. Run the Celery Worker
-   - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(3) run command:
+    - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(3) run command:
       celery -A BusinessGate worker --loglevel=info
 11. Run the Celery Beat
-   - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(4) run command:
+    - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(4) run command:
   celery -A BusinessGate beat -l info
 12. Run the Django Development Server
-   - from the original Terminal window run this command: python manage.py runserver
+    - from the original Terminal window run this command: python manage.py runserver
 
 
