@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:businessgate/screens/forget.dart';
 import 'package:businessgate/screens/signup.dart';
 import 'package:businessgate/utils/colors.dart';
 import 'package:flutter/material.dart';
-
 import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../models/model_user.dart';
@@ -42,9 +40,9 @@ class _SignInState extends State<SignIn> {
                 20, MediaQuery.of(context).size.height * 0.18, 20, 280),
             child: Form(
               key: formkey,
+              //autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
-                  //<Widget>
                   logoWidgetSignIN("assets/images/Logo.jpg"),
                   const SizedBox(
                     height: 50,
@@ -157,18 +155,9 @@ class _SignInState extends State<SignIn> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
+      /*validator: (value) {
           return getTranslate(context, 'signup.CP');
-        } else
-          return null;
-      },
-      /*keyboardType: isPasswordType
-      ? TextInputType.visiblePassword
-      : TextInputType.none()*/
+      },*/
     );
   }
 

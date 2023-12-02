@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		TnGukM6SuI7GjSj2iENqQATx6RM=
+		qYu26irpQ2vObovI9jqQqdMTEyY=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		xZi8ia0n1zg8Hu/DWjzmPywCBJU=
+		Da8A9EGrf7fpPbRcjQXAiINbmEM=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
 		<data>
@@ -202,11 +202,11 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/languages/ar.json</key>
 		<data>
-		Li9suYaulrXF3+2J5CwE1eW/cu0=
+		GQ347GVhgcbMIFmsiPspl7jNOqY=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/languages/en.json</key>
 		<data>
-		m5B0cLZaN1P3O0wnk/iYO49SS3U=
+		T4mqbZ2aLVHkLb2q/gzArwBAgs0=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
 		<data>
@@ -410,7 +410,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		v6PjDQ1NWmPG2yQLxYGPlfcBG9A=
+		Ip4VfRUg2SeCYLfvcpZgosc3DOo=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/shaders/ink_sparkle.frag</key>
 		<data>
@@ -661,7 +661,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5fRwfIRav1sSO0PdB2Qw+vpYjQdxzRH7QqzVxmJHIpY=
+			XfwEeiK92kGMboCviGKQ6ZeWSrBdzOIbq7xR6lghukM=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -675,7 +675,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			JDqDJtp4Jjq5arftKZaaVqVKQbYXzqggCkdFa7iADIk=
+			CzeP8DL/eDrP/zmC3U5N1t7YPiSe7765071M/co+STU=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.bin</key>
@@ -934,14 +934,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			kSfd21AD6qWHsgrQrLh5/J0a+Oz6fhAqnKgkkYWyd2A=
+			jZmvHCZdsgTlVBfzrYG1QT52Yhs3I9+ierJcPFtWhWo=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/assets/languages/en.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			jRuGYCiI7INUBN0NcxEsoKCES+ORFp6Gh5jGD60ihWU=
+			hSXkXv+Ys33epPsn5s7mbPoG1vtY6hfsqHlqijONtic=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/assets/notification/Ellipse%2017%20(1).png</key>
@@ -1298,7 +1298,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			kMiSui19vOUn6CYbKs56M2Ea6IozPfefqnzUFt40J3g=
+			u3imfkV54yLV7zANvcZjXIntsJh2y1lxFH3mhGtXrs4=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/shaders/ink_sparkle.frag</key>

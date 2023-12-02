@@ -9,48 +9,55 @@ class CategoryScreen extends StatelessWidget {
 
   MyService filterName = MyService();
 
-  final categorylist = [
+  @override
+  Widget build(BuildContext context) {
+
+    final categorylist = [
     {
       "image": "assets/category/bussiness.png",
-      "name": "Business",
+      "name": getTranslate(context, 'catergory.buss'),
       "icon": Icons.add_business_outlined,
       "isimage": false,
+      "prefix": "Business"
     },
     {
       "image": "assets/category/design.png",
-      "name": "Architecture",
+      "name": getTranslate(context, 'catergory.arch'),
       "icon": Icons.design_services_outlined,
       "isimage": false,
+      "prefix": "Architecture"
     },
     {
       "image": "assets/category/helth.png",
-      "name": "Health",
+      "name": getTranslate(context, 'catergory.helth'),
       "icon": Icons.medical_services_rounded,
       "isimage": false,
+      "prefix": "Health"
     },
     {
       "image": "assets/category/Rectangle 22.png",
-      "name": "Computer",
+      "name": getTranslate(context, 'catergory.comp'),
       "icon": Icons.add_business_outlined,
       "isimage": true,
-      "iconimage": "assets/category/window 1.png"
+      "iconimage": "assets/category/window 1.png",
+      "prefix": "Computer"
     },
     {
       "image": "assets/category/design.png",
-      "name": "Language",
+      "name": getTranslate(context, 'catergory.lang'),
       "icon": Icons.language_outlined,
       "isimage": false,
+      "prefix": "Language"
     },
     {
       "image": "assets/category/design.png",
-      "name": "Art",
+      "name": getTranslate(context, 'catergory.art'),
       "icon": Icons.brush_rounded,
       "isimage": false,
+      "prefix": "Art"
     },
   ];
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -84,7 +91,7 @@ class CategoryScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/filteredPrograms', arguments: categorylist[index]['name'].toString());
+                  Navigator.pushNamed(context, '/filteredPrograms', arguments: categorylist[index]['prefix'].toString());
                 },
                 child: Container(
                   decoration: BoxDecoration(

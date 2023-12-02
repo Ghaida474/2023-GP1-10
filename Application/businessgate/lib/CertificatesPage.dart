@@ -37,10 +37,28 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(getTranslate(context, 'profile.certificates')),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          getTranslate(context, 'profile.certificates'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
       ),
-      body: FutureBuilder(
+            body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringColor("#6FBCF6"),
+              hexStringColor("#E3E0D2"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: FutureBuilder(
         future: fetchCertificateAndTopic(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,6 +76,7 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
           }
         },
       ),
+      )
     );
   }
 
@@ -66,7 +85,7 @@ Widget _buildCertificateView() {
   return Container(
     padding: EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: hexStringColor("#F5F5F5"),
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(10),
       boxShadow: [
         BoxShadow(
@@ -76,7 +95,7 @@ Widget _buildCertificateView() {
       ],
     ),
     child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         SizedBox(height: 20),
         if (fetchedCertificate != null)
@@ -88,7 +107,7 @@ Widget _buildCertificateView() {
                   margin: EdgeInsets.symmetric(vertical: 8),
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: hexStringColor("#095590"),
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -104,7 +123,7 @@ Widget _buildCertificateView() {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: hexStringColor("#095590"),
+                        color: Colors.white,
                       ),
                     ),
                     onTap: () {

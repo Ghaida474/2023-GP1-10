@@ -80,6 +80,7 @@ class _EditProfileState extends State<EditProfile> {
               padding: EdgeInsets.fromLTRB(20, size.height * 0.2, 20, 400),
               child: Form(
                 key: formkey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: <Widget>[
                     profileContainer(size),
@@ -170,7 +171,8 @@ class _EditProfileState extends State<EditProfile> {
                           nameController.text,
                           lastNameController.text,
                           phoneController.text,
-                          passwordController.text);
+                          passwordController.text,
+                          fullnameController.text);
                     }),
                   ],
                 ),
@@ -211,7 +213,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> processUpdate(BuildContext context, String fname, String lname,
-      String phone, String pass) async {
+      String phone, String pass, String full) async {
     ModelsUsers().updatefname(_myEmail.myVariable, fname).then((UpdateFN) {
       if (UpdateFN.toString().contains('not')) {
         setState(() {
@@ -242,36 +244,7 @@ class _EditProfileState extends State<EditProfile> {
         });
       } else if (UpdateFN.toString().contains('ok')) {
         setState(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.white,
-              elevation: 10.0,
-              shape: Border.all(
-                  color: Colors.red, width: 0.5, style: BorderStyle.solid),
-              content: Text(
-                getTranslate(context, 'editProfile.update_suc'),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  letterSpacing: 1.0,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-          nameController.clear();
-          lastNameController.clear();
-          phoneController.clear();
-          passwordController.clear();
-          fullnameController.clear();
-
-          Navigator.pushNamed(context, '/profile');
-        });
-      }
-    });
-    ModelsUsers().updatelname(_myEmail.myVariable, lname).then((UpdateLN) {
+           ModelsUsers().updatelname(_myEmail.myVariable, lname).then((UpdateLN) {
       if (UpdateLN.toString().contains('not')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -301,36 +274,7 @@ class _EditProfileState extends State<EditProfile> {
         });
       } else if (UpdateLN.toString().contains('ok')) {
         setState(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.white,
-              elevation: 10.0,
-              shape: Border.all(
-                  color: Colors.red, width: 0.5, style: BorderStyle.solid),
-              content: Text(
-                getTranslate(context, 'editProfile.update_suc'),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  letterSpacing: 1.0,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-          nameController.clear();
-          lastNameController.clear();
-          phoneController.clear();
-          passwordController.clear();
-          fullnameController.clear();
-
-          Navigator.pushNamed(context, '/profile');
-        });
-      }
-    });
-    ModelsUsers().updatephonenum(_myEmail.myVariable, phone).then((UpdatePN) {
+          ModelsUsers().updatephonenum(_myEmail.myVariable, phone).then((UpdatePN) {
       if (UpdatePN.toString().contains('not')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -360,36 +304,7 @@ class _EditProfileState extends State<EditProfile> {
         });
       } else if (UpdatePN.toString().contains('ok')) {
         setState(() {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.white,
-              elevation: 10.0,
-              shape: Border.all(
-                  color: Colors.red, width: 0.5, style: BorderStyle.solid),
-              content: Text(
-                getTranslate(context, 'editProfile.update_suc'),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  letterSpacing: 1.0,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          );
-          nameController.clear();
-          lastNameController.clear();
-          phoneController.clear();
-          passwordController.clear();
-          fullnameController.clear();
-
-          Navigator.pushNamed(context, '/profile');
-        });
-      }
-    });
-    ModelsUsers().updatepass(_myEmail.myVariable, pass).then((UpdatePass) {
+          ModelsUsers().updatepass(_myEmail.myVariable, pass).then((UpdatePass) {
       if (UpdatePass.toString().contains('not')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -418,6 +333,8 @@ class _EditProfileState extends State<EditProfile> {
           fullnameController.clear();
         });
       } else if (UpdatePass.toString().contains('ok')) {
+        ModelsUsers().updatefullname(_myEmail.myVariable, full).then((UpdateFullN) {
+      if (UpdateLN.toString().contains('not')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -426,7 +343,7 @@ class _EditProfileState extends State<EditProfile> {
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
               content: Text(
-                getTranslate(context, 'editProfile.update_suc'),
+                getTranslate(context, 'editProfile.update_not'),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 16.0,
@@ -443,7 +360,19 @@ class _EditProfileState extends State<EditProfile> {
           phoneController.clear();
           passwordController.clear();
           fullnameController.clear();
+        });
+      }
+    });
+      }
+    });
 
+        });
+      }
+    });
+
+        });
+      }
+    });
           Navigator.pushNamed(context, '/profile');
         });
       }
@@ -503,9 +432,9 @@ class _EditProfileState extends State<EditProfile> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-          return getTranslate(context, 'signup.CN');
-      },
+              /*validator: (value) {
+          return getTranslate(context, 'signup.CFull');
+      },*/
     );
   }
 

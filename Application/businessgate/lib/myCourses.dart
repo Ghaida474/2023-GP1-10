@@ -12,37 +12,40 @@ class myCoursesNavigationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(getTranslate(context, 'myCourses.my_courses')),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          getTranslate(context, 'myCourses.my_courses'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                navigateTomyCourses(context, 1);
-              },
-              child: Text(getTranslate(context, 'Course.coming')),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringColor("#6FBCF6"),
+              hexStringColor("#E3E0D2"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+                20, MediaQuery.of(context).size.height * 0.2, 20, 400),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 30),
+                List(size, context),
+              ],
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                navigateTomyCourses(context, 2);
-              },
-              child: Text(getTranslate(context, 'Course.running')),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                navigateTomyCourses(context, 3);
-              },
-              child: Text(getTranslate(context, 'Course.complete')),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -54,6 +57,76 @@ class myCoursesNavigationMenu extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => myCourses(sectionIndex: choice),
       ),
+    );
+  }
+
+  List(Size size, BuildContext context) {
+    return Container(
+      height: 300,
+      width: 400,
+      margin: const EdgeInsets.symmetric(horizontal: 10 * 2),
+      decoration: BoxDecoration(
+        color: hexStringColor("#095590"),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 5,
+          )
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          listTile(
+            () {
+             navigateTomyCourses(context, 1);
+            },
+            getTranslate(context, 'Course.coming'),
+          ),
+          devider(),
+          listTile(
+            () {
+              navigateTomyCourses(context, 2);
+            },
+            getTranslate(context, 'Course.running'),
+          ),
+          devider(),
+          listTile(
+            () {
+              navigateTomyCourses(context, 3);
+            },
+            getTranslate(context, 'Course.complete'),
+          ),
+  
+        ],
+      ),
+    );
+  }
+
+    listTile(Function() onTap, String title) {
+    return ListTile(
+      onTap: onTap,
+      minLeadingWidth: 0,
+      title: Text(
+        title,
+        style: TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)
+            .copyWith(color: Colors.white, fontWeight: FontWeight.w500),
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 18,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  devider() {
+    return Container(
+      height: 2,
+      width: double.infinity,
+      color: const Color(0xfff0f0f0),
     );
   }
 }

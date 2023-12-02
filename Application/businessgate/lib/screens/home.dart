@@ -16,30 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<Home> {
-  final category = [
-    {
-      "image": "assets/category/bussiness.png",
-      "name": "Business",
-      "icon": Icons.add_business_outlined,
-      "isimage": false,
-      "color": Color.fromARGB(255, 21, 82, 213),
-    },
-    {
-      "image": "assets/category/design.png",
-      "name": "Architecture",
-      "icon": Icons.design_services_outlined,
-      "isimage": false,
-      "color": const Color(0xff15A812),
-    },
-    {
-      "image": "assets/category/helth.png",
-      "name": "Medicine",
-      "icon": Icons.medical_services_rounded,
-      "isimage": false,
-      "color": Color.fromARGB(255, 173, 159, 92),
-    },
-  ];
-
+ 
   List<String> imageAssets = [
     "assets/home/Rectangle 14 (9).png",
     "assets/home/web.jpg",
@@ -316,16 +293,47 @@ void showSignOutDialog(BuildContext context, Size size) {
   }
 
   categoryList(Size size) {
+         final category = [
+    {
+      "image": "assets/category/bussiness.png",
+      "name": getTranslate(context, 'catergory.buss'),
+      "icon": Icons.add_business_outlined,
+      "isimage": false,
+      "color": Color.fromARGB(255, 43, 74, 143),
+      "prefix": "Business"
+    },
+    {
+      "image": "assets/category/design.png",
+      "name": getTranslate(context, 'catergory.arch'),
+      "icon": Icons.design_services_outlined,
+      "isimage": false,
+      "color": Color.fromARGB(255, 47, 81, 157),
+      "prefix": "Architecture"
+    },
+    {
+      "image": "assets/category/helth.png",
+      "name": getTranslate(context, 'catergory.helth'),
+      "icon": Icons.medical_services_rounded,
+      "isimage": false,
+      "color": Color.fromARGB(255, 58, 99, 189),
+      "prefix": "Health"
+    },
+  ];
     return SizedBox(
       height: size.height * 0.055,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: fixPadding * 1.5),
         scrollDirection: Axis.horizontal,
         itemCount: category.length,
+        
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
-          return Container(
+            return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/filteredPrograms', arguments: category[index]['prefix'].toString());
+                },
+          child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(
                 horizontal: fixPadding * 1.5, vertical: fixPadding),
@@ -361,7 +369,7 @@ void showSignOutDialog(BuildContext context, Size size) {
                 )
               ],
             ),
-          );
+             ) );
         },
       ),
     );

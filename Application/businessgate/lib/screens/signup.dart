@@ -17,7 +17,7 @@ class SignUp extends StatefulWidget {
 enum Genders { male, female }
 
 class _SignUpState extends State<SignUp> {
-  final formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   MyService _myEmail = MyService();
 
@@ -63,7 +63,8 @@ class _SignUpState extends State<SignUp> {
               padding: EdgeInsets.fromLTRB(
                   20, MediaQuery.of(context).size.height * 0.2, 20, 400),
               child: Form(
-                key: formkey,
+                key: formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: <Widget>[
                     logoWidgetSignUP("assets/images/Logo.jpg"),
@@ -217,7 +218,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return  TextFormField(
       controller: controller,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      //autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -239,7 +240,6 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        formkey.currentState?.validate();
         if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
           return getTranslate(context, 'signup.CN');
         } else
@@ -252,7 +252,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return  TextFormField(
       controller: controller,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      //autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -273,6 +273,9 @@ class _SignUpState extends State<SignUp> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
+              validator: (value) {
+          return getTranslate(context, 'signup.CFull');
+      },
     );
   }
 
@@ -280,7 +283,7 @@ class _SignUpState extends State<SignUp> {
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      //autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -302,7 +305,7 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^\d{10}$').hasMatch(value!)) {
+        if (value!.isEmpty || !RegExp(r'^\d{10}$').hasMatch(value)) {
           return getTranslate(context, 'signup.CID');
         } else
           return null;
@@ -471,7 +474,7 @@ class _SignUpState extends State<SignUp> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
         child: ElevatedButton(
           onPressed: () {
-            if (formkey.currentState!.validate()) {
+            if (formKey.currentState!.validate()) {
               onTap();
             }
           },

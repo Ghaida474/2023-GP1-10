@@ -495,29 +495,30 @@ class AppDatabase {
 final result;
         if (languageValue == "عربي") {
           result = await queryConnection.query(
-          '''
-SELECT
+'''
+     SELECT
   "Topic",
   "TotalCost",
-  "programID",
-  array_to_string(
-    ARRAY(
-      SELECT "first_nameEng" || ' ' || "last_nameEng"
-      FROM public."Faculty_Staff"
-      WHERE id = ANY("InstructorID")
-    ),
-    ', '
-  ) AS instructors,
-  tp."programDescription",
-  TO_CHAR(tp."startTime", 'HH24:MI:SS') As formatted_time
+  "programID",  array_to_string(
+          ARRAY(
+            SELECT first_name || ' ' || last_name
+            FROM public."Faculty_Staff"
+            WHERE id = ANY("InstructorID")
+          ),
+          ', '
+        ) AS instructors,
+        tp."programDescription",
+        tp."startDate"
 FROM public."TrainingProgram" tp
-JOIN public."Register" r ON r."ProgramID" = tp."programID"
-WHERE
-  tp."isreleased " = @released
-  AND @currentCapacity < tp."capacity"
+WHERE @currentCapacity < tp."capacity"
+  AND tp."isreleased " = @released
   AND CURRENT_DATE < tp."startDate"
-  AND r."hasRegistered" = @register
-  AND r."id" = @id;
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public."Register" r
+    WHERE r."ProgramID" = tp."programID"
+      AND r."hasRegistered" = @register
+  );
       ''',
           substitutionValues: {
             'register':false,
@@ -529,29 +530,31 @@ WHERE
         );} else {
 result = await queryConnection.query(
   '''
-  SELECT
-    "topic_english",
-    "TotalCost",
-    "programID",
-    array_to_string(
-      ARRAY(
-        SELECT "first_nameEng" || ' ' || "last_nameEng"
-        FROM public."Faculty_Staff"
-        WHERE id = ANY(tp."InstructorID")
-      ),
-      ', '
-    ) AS instructors,
-    tp."programDescription_english",
-    tp."startDate",
-    TO_CHAR(tp."startTime", 'HH24:MI:SS') AS formatted_time
-  FROM public."TrainingProgram" tp
-  JOIN public."Register" r ON r."ProgramID" = tp."programID"
-  WHERE
-  tp."isreleased " = @released
-  AND @currentCapacity < tp."capacity"
+SELECT
+  "topic_english",
+  "TotalCost",
+  "programID",
+  array_to_string(
+    ARRAY(
+      SELECT "first_nameEng" || ' ' || "last_nameEng"
+      FROM public."Faculty_Staff"
+      WHERE id = ANY(tp."InstructorID")
+    ),
+    ', '
+  ) AS instructors,
+  tp."programDescription_english",
+  tp."startDate"
+FROM public."TrainingProgram" tp
+WHERE
+  @currentCapacity < tp."capacity"
+  AND tp."isreleased " = @released
   AND CURRENT_DATE < tp."startDate"
-  AND r."hasRegistered" = @register
-  AND r."id" = @id;
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public."Register" r
+    WHERE r."ProgramID" = tp."programID"
+      AND r."hasRegistered" = @register
+  );
   ''',
   substitutionValues: {
     'register': false,
@@ -1012,7 +1015,7 @@ Future<Courses> Program(int? id) async {
             ),
             ', '
           ) AS instructors,
-          "programDescription",
+          "programDescription_english",
           "startDate",
           "endDate",
           TO_CHAR(tp."startTime", 'HH24:MI:SS'),
@@ -1039,7 +1042,7 @@ Future<Courses> Program(int? id) async {
         String type ;
         if ( languageValue == "English" && row[8].toString() == "دورة تدريبية") {
           type = "Training Program" ;
-        } else if (languageValue == "English" && row[8].toString() == "ورش عمل") {
+        } else if (languageValue == "English" && row[8].toString() == "ورشة عمل") {
           type = "Workshop" ;
         } else {
           type = row[8].toString() ;
@@ -1057,7 +1060,7 @@ Future<Courses> Program(int? id) async {
           row[7] as String,
           type,
           row[9] as bool,
-          row[10] as String);
+          row[10]);
 
         // Check if the current course has the desired ID
         if (currentCourse.id == id) {
@@ -1192,7 +1195,7 @@ Future<Courses> Program(int? id) async {
       collegeID = 7;
     } else if (category == "Language" || category == "اللغات") {
       collegeID = 12;
-    } else if (category == "Art" || category == "الفن") {
+    } else if (category == "Art" || category == "الفنون") {
       collegeID = 13;
     }
 
@@ -1204,11 +1207,10 @@ Future<Courses> Program(int? id) async {
         if (languageValue == "عربي") {
          result = await queryConnection.query(
           '''
-      SELECT
-        "Topic",
-        "TotalCost",
-        "programID",
-        array_to_string(
+     SELECT
+  "Topic",
+  "TotalCost",
+  "programID",  array_to_string(
           ARRAY(
             SELECT first_name || ' ' || last_name
             FROM public."Faculty_Staff"
@@ -1216,14 +1218,27 @@ Future<Courses> Program(int? id) async {
           ),
           ', '
         ) AS instructors,
-        "programDescription",
-        "startDate"
-      FROM public."TrainingProgram"
-      WHERE "isreleased " = @released AND "CollageID" = @collegeID
+        tp."programDescription",
+        tp."startDate"
+FROM public."TrainingProgram" tp
+WHERE 
+  "CollageID" = @collegeID
+  AND @currentCapacity < tp."capacity"
+  AND tp."isreleased " = @released
+  AND CURRENT_DATE < tp."startDate"
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public."Register" r
+    WHERE r."ProgramID" = tp."programID"
+      AND r."hasRegistered" = @register
+  );
       ''',
           substitutionValues: {
             'released': true,
-            'collegeID': collegeID
+            'collegeID': collegeID,
+            'register':false,
+            'currentCapacity': _myID.myVariable3,
+            'id': _myID.myVariable2
           }, // Replace with actual values
           allowReuse: true,
         );
@@ -1231,26 +1246,39 @@ Future<Courses> Program(int? id) async {
 } else {
          result = await queryConnection.query(
           '''
-      SELECT
-        "topic_english",
-        "TotalCost",
-        "programID",
-        array_to_string(
-          ARRAY(
-            SELECT "first_nameEng" || ' ' || "last_nameEng"
-            FROM public."Faculty_Staff"
-            WHERE id = ANY("InstructorID")
-          ),
-          ', '
-        ) AS instructors,
-        "programDescription",
-        "startDate"
-      FROM public."TrainingProgram"
-      WHERE "isreleased " = @released AND "CollageID" = @collegeID
+SELECT
+  "topic_english",
+  "TotalCost",
+  "programID",
+  array_to_string(
+    ARRAY(
+      SELECT "first_nameEng" || ' ' || "last_nameEng"
+      FROM public."Faculty_Staff"
+      WHERE id = ANY(tp."InstructorID")
+    ),
+    ', '
+  ) AS instructors,
+  tp."programDescription_english",
+  tp."startDate"
+FROM public."TrainingProgram" tp
+WHERE
+  "CollageID" = @collegeID
+  AND @currentCapacity < tp."capacity"
+  AND tp."isreleased " = @released
+  AND CURRENT_DATE < tp."startDate"
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public."Register" r
+    WHERE r."ProgramID" = tp."programID"
+      AND r."hasRegistered" = @register
+  );
       ''',
           substitutionValues: {
             'released': true,
-            'collegeID': collegeID
+            'collegeID': collegeID,
+            'register':false,
+            'currentCapacity': _myID.myVariable3,
+            'id': _myID.myVariable2
           }, // Replace with actual values
           allowReuse: true,
         );

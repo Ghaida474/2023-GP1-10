@@ -638,12 +638,12 @@ Expanded(
                 ),
               ),),
               Visibility(
-                visible: (status == "register" && courseInfo.kind),
+                visible: (status == "cancel" && courseInfo.kind && courseInfo.location != null),
                 child: Expanded(
                 // Display end date
                 child: breifdetail2(
                   Icons.location_city_outlined,
-                  getTranslate(context, 'detail.location'),
+                  getTranslate(context, 'detail.link'),
                   courseInfo.location.toString(),
                 ),
               )),
@@ -653,7 +653,7 @@ Expanded(
                 // Display end date
                 child: breifdetail2(
                   Icons.location_city_outlined,
-                  getTranslate(context, 'detail.location'),
+                  getTranslate(context, 'detail.place'),
                   courseInfo.location.toString(),
                 ),
               )),

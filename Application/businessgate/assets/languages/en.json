@@ -37,9 +37,11 @@
         "lastname": "Enter Last Name",
         "NID": "Enter National ID",
         "CN" : "Enter a Correct Name",
+        "CFull" : "Enter Full Name in Arabic\nIt will be on the Certificate",
         "CID" : "Enter a Correct ID",
         "CE" : "Enter a Correct Email",
         "CM" : "Enter a Correct Mobile Number",
+        "CP" :"Enter correct Password",
         "CconfirmP" : "The password doesn't match",
         "register_suc" : "Register Successful",
         "register_fai" : "Register Failed",
@@ -52,7 +54,13 @@
         "home": "Home"
     },
     "catergory": {
-        "catergory": "Category"
+        "catergory": "Category",
+        "buss": "Business",
+        "arch": "Architecture",
+        "helth": "Health",
+        "comp" : "Computer",
+        "lang": "Language",
+        "art": "Art"
     },
     "detail": {
         "review": "Review",
@@ -71,8 +79,9 @@
         "rate": "Rate this Program",
         "cancel": "Cancel",
         "kind":"Kind",
-        "Place": "Location",
-        "cancelReg": "Cancel Registeration"
+        "place": "Location",
+        "cancelReg": "Cancel Registeration",
+        "link": "Link"
     },
     "home": {
         "hello": "Welcome",
@@ -104,6 +113,7 @@
         "user_name": "Samantha Smith",
         "FN" : "First Name",
         "LN" : "Last Name",
+        "FullN": "Full Name in Arabic",
         "mobile" : "Mobile Number",
         "password" : "Password",
         "update_suc" : "The Change is Saved",
