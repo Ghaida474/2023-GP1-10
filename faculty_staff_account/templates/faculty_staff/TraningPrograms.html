@@ -1,4 +1,4 @@
-{% extends 'bu/components/base.html' %}
+{% extends 'faculty_staff/components/base.html' %}
 {% load static %}
 
 {% block styles %}
@@ -34,152 +34,149 @@
         </div>
     </div>
    
- 
     
         <div class="tab-menu-heading hremp-tabs p-0 ">
             <div class="tabs-menu1" >
                 <!-- Tabs -->
                 <ul class="nav panel-tabs" style=" margin-right: 400px;" >
                     <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">البرامج التدريبية</a></li>
-                    <li><a href="#tab2" data-bs-toggle="tab">طلبات هيئة التدريس</a></li>
+                    <li><a href="#tab2" data-bs-toggle="tab">طلباتي </a></li>
                 </ul>
             </div>
         </div>
 
-                 
-                    <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
-                        <div class="tab-content">
-                            
+        <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
+            <div class="tab-content">
                 
-                            <div class="tab-pane active" id="tab1">
-                                <div class="card-body">
-                                    <div class="col-xl-12 col-md-12 col-lg-12">	
-										<div class="table-vcenter">
-                                            <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">	
-												<thead>
-                                                    <div class="row mt-2">
-                                                        <div style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                    <option value="انتظار قبول الطلب من قبل المدرب-انتظار قبول الطلب من قبل جميع المدربين"> انتظار قبول الطلب من قبل المدرب/ين</option>
-                                                                    <option value="تم قبول الطلب من قبل المدرب-تم قبول الطلب من قبل جميع المدربين">تم قبول الطلب من قبل المدرب/ين</option>
-                                                                    <option value="تم قبول الطلب من قبل المعهد">تم قبول الطلب من قبل المعهد</option>
-                                                                    <option value="تم رفض الطلب من قبل المعهد">تم رفض الطلب من قبل المعهد</option>
-                                                                    <option value="فتح الفرصة للجميع " >فتح الفرصة للجميع</option>
-                                                                    <option value="تم فرز الطلبات واختيار فريق البرنامج">تم فرز الطلبات واختيار فريق البرنامج</option>
-                                                                    <option value="تم نشر البرنامج">تم نشر البرنامج</option>
-                                                                    <option value="بدأ البرنامج">بدأ البرنامج</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-													<tr>
-														<th class="border-bottom-0">إسم البرنامج</th>
-														<th class="border-bottom-0">نوع البرنامج</th>
-														<th class="border-bottom-0">موضوع البرنامج</th>
-														<th class="border-bottom-0">تاريخ الإنشاء </th>
-														<th class="border-bottom-0">حالة الطلب</th>
-														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
-													</tr>
-												</thead>
-
-												<tbody>
-													{% for program in bu_programs %}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                                        <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{{program.programtype}}</td>
-                                                                <td >{{program.program_domain}}</td>
-                                                                <td>{{program.dataoffacultyproposal | date:"M. d, Y"}}</td>
-                                                                <td>
-                                                                    {{ program.status }}
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" name="update_status" value="accept">
-                                                                    <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                                </td> 
-                                                            </tr>
-													{% empty %}
-													<tr >
-                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
-                                                    </tr>      
-												  {% endfor %}
-												</tbody>
-                                            </table>
-										</div>
-                                    </div>
-                                </div> 
-                            </div>
-                
-                            <div class="tab-pane" id="tab2">
-                                <div class="card-body">
-                                    <div class="col-xl-12 col-md-12 col-lg-12">  
-										<div class="table-vcenter">
-                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
-												<thead>
-                                                    <div class="row mt-2">
-                                                        <div  style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                    <option value='انتظار قبول الطلب من قبل وحدة الاعمال'>انتظار قبول الطلب من قبل وحدة الاعمال</option>
-                                                                    <option value="تم رفض الطلب من قبل وحدة الأعمال">رفض الطلب من قبل وحدة الأعمال</option>     
-                                                            </select>
-                                                        </div>
-                                                    </div>
-													<tr>
-														<th class="border-bottom-0">مقدم الطلب</th> 
-														<th class="border-bottom-0">إسم البرنامج</th>
-														<th class="border-bottom-0">نوع البرنامج</th>
-														<th class="border-bottom-0">موضوع البرنامج</th>
-														<th class="border-bottom-0">تاريخ الإنشاء </th>
-														<th class="border-bottom-0">حالة الطلب</th>
-                                                        <th class="border-bottom-0">الإطلاع على التفاصيل</th>
-													</tr>
-												</thead>
-                                                
-												<tbody>
-													{% for program in faculty_or_staff_programs %}
-													<tr>
-                                                        
-														<td>{{ program.Requestername }}</td>
-														<td>
-															<div class="me-3 mt-0 mt-sm-2 d-block">
-																<h6 class="mb-1 fs-14">{{ program.topic }}</h6>
-															</div>
-														</td>
-														<td>{{program.programtype}}</td>
-														<td >{{program.program_domain}}</td>
-														<td>{{program.dataoffacultyproposal}}</td>
-														<td>
-                                                           {{ program.status }}
-                                                        </td>
-                                                        <td>
-															<input type="hidden" name="update_status" value="accept">
-															<a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 40px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                        </td> 
-													</tr>
-													{% empty %}
-													<tr>
-                                                        <td colspan="7">لا يوجد طلبات حالية</td>
-                                                    </tr>      
-												  {% endfor %}
-												</tbody>
-											</table>
-										</div> 
-									</div>  
-							    </div> 
-						    </div>
-                              
-                        
+                <div class="tab-pane active" id="tab1">
+                    <div class="card-body">
+                        <div class="col-xl-12 col-md-12 col-lg-12">	
+							<div class="table-vcenter">
+								<table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
+                                    <thead>
+                                        <div class="row mt-2">
+                                            <div style="margin-right: 755px; height: 40px;">
+                                                <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                    <option value="all">جميع الحالات</option>           
+                                                        <option value="انتظار قبول الطلب من قبل المدرب-انتظار قبول الطلب من قبل جميع المدربين"> انتظار قبول الطلب من قبل المدرب/ين</option>
+                                                        <option value="تم قبول الطلب من قبل المدرب-تم قبول الطلب من قبل جميع المدربين">تم قبول الطلب من قبل المدرب/ين</option>
+                                                        <option value="تم قبول الطلب من قبل المعهد">تم قبول الطلب من قبل المعهد</option>
+                                                        <option value="تم رفض الطلب من قبل المعهد">تم رفض الطلب من قبل المعهد</option>
+                                                        <option value="فتح الفرصة للجميع " >فتح الفرصة للجميع</option>
+                                                        <option value="تم فرز الطلبات واختيار فريق البرنامج">تم فرز الطلبات واختيار فريق البرنامج</option>
+                                                        <option value="تم نشر البرنامج">تم نشر البرنامج</option>
+                                                        <option value="بدأ البرنامج">بدأ البرنامج</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <tr>
+                                            <th class="border-bottom-0">إسم البرنامج</th>
+                                            <th class="border-bottom-0">نوع البرنامج</th>
+                                            <th class="border-bottom-0">موضوع البرنامج</th>
+                                            <th class="border-bottom-0">تاريخ الإنشاء </th>
+                                            <th class="border-bottom-0">حالة الطلب</th>
+                                            <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for program in combined_programs %}
+                                        <tr>
+                                            <td>
+                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                    <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                </div>
+                                            </td>
+                                            <td>{{program.programtype}}</td>
+                                            <td >{{program.program_domain}}</td>
+                                            <td>{{program.dataoffacultyproposal}}</td>
+                                            <td>{{ program.status }}</td>
+                                            <td>
+                                                <input type="hidden" name="update_status" value="accept">
+                                                <a href="{% url 'faculty_staff_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                            </td>	
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7">لا يوجد طلبات حالية</td>
+                                        </tr>      
+                                      {% endfor %}
+                                    </tbody>
+                                </table>
+							</div>
                         </div>
                     </div>
+                </div>
                 
-						
-				
+                
+                <div class="tab-pane" id="tab2" >
+                    <div class="card-body">
+                        <div class="col-xl-12 col-md-12 col-lg-12">
+							<div class="table-vcenter">
+                                <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
+                                    <thead>
+                                        <div class="row mt-2">
+                                            <div  style="margin-right: 755px; height: 40px;">
+                                                <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                        <option value="all">جميع الحالات</option>         
+                                                        <option value='في انتظار قبول وحدة الأعمال'>في انتظار قبول وحدة الأعمال</option>
+                                                        <option value='تم قبول الطلب من قبل وحدة الاعمال'>تم قبول الطلب من قبل وحدة الاعمال</option>  
+                                                        <option value="تم رفض الطلب من قبل وحدة الأعمال">رفض الطلب من قبل وحدة الأعمال</option>  
+                                                        <option value="انتظار قبول الطلب من قبل المدرب-انتظار قبول الطلب من قبل جميع المدربين"> انتظار قبول الطلب من قبل المدرب/ين</option>
+                                                        <option value="تم قبول الطلب من قبل المدرب-تم قبول الطلب من قبل جميع المدربين">تم قبول الطلب من قبل المدرب/ين</option>
+                                                        <option value="تم قبول الطلب من قبل المعهد">تم قبول الطلب من قبل المعهد</option>
+                                                        <option value="تم رفض الطلب من قبل المعهد">تم رفض الطلب من قبل المعهد</option>
+                                                        <option value="فتح الفرصة للجميع " >فتح الفرصة للجميع</option>
+                                                        <option value="تم فرز الطلبات واختيار فريق البرنامج">تم فرز الطلبات واختيار فريق البرنامج</option>
+                                                        <option value="تم نشر البرنامج">تم نشر البرنامج</option>
+                                                        <option value="بدأ البرنامج">بدأ البرنامج</option>   
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <tr>
+                                            <th class="border-bottom-0">مقدم الطلب</th>
+                                            <th class="border-bottom-0">إسم البرنامج</th>
+                                            <th class="border-bottom-0">نوع البرنامج</th>
+                                            <th class="border-bottom-0">موضوع البرنامج</th>
+                                            <th class="border-bottom-0">تاريخ الإنشاء </th>
+                                            <th class="border-bottom-0">حالة الطلب </th>
+                                            <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for program in faculty_or_staff_programs %}
+                                        <tr>
+                                            <td>{{ user.first_name}} {{ user.last_name}}</td>
+                                            <td>
+                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                    <h6 class="mb-1 fs-14">{{program.topic}}</h6>
+                                                </div>
+                                            </td>
+                                            <td>{{program.programtype}}</td>
+                                            <td >{{program.program_domain}}</td>
+                                            <td>{{program.dataoffacultyproposal}}</td>
+                                            <td>{{ program.status }}</td>
+                                            <td>
+                                                <input type="hidden" name="update_status" value="accept">
+                                                <a href="{% url 'faculty_staff_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                            </td>	
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7">لا يوجد طلبات حالية</td>
+                                        </tr>      
+                                      {% endfor %}
+                                    </tbody>		
+								</table>
+						    </div>
+						</div>
+					</div>
+				</div>
+            
+            </div>
+        </div>
+
 <!--********************************************مودل طلب الانشاء  *************************************************-->
     <div class="modal fade"  id="newprojectmodal">
         <div class="modal-dialog modal-lg" role="document">
@@ -217,8 +214,8 @@
                       
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">اسم البرنامج التدريبي <span style="color: red;">*</span></label>
-                                <input class="form-control" placeholder="اسم البرنامج التدريبي" name="topic" required>
+                                <label class="form-label">الموضوع <span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="الموضوع" name="topic" required>
                                 <span class="error-message-topic" style="color: red;"></span>
                             </div>
                         </div>  
@@ -246,13 +243,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">عدد المدربين <span style="color: red;">*</span></label>
-                                <input class="form-control" placeholder="عدد المدربين" type="number" name="num_ofinstructors" id="num_ofinstructors" required>
+                                <label class="form-label">عدد المدربين <span style="color: red;">*</span> <small>إذا كنت تنوي تقديم البرنامج بمفردك، يرجى إدخال الرقم واحد. 
+                                    ولكن إذا كان هناك مدربون آخرون، يرجى حساب العدد الكلي للمدربين بما في ذلك أنت.</small></label>
+                                <input class="form-control" placeholder="عدد المدربين" type="number" name="num_ofinstructors" required>
                                 <span class="error-message-num_ofinstructors" style="color: red;"></span>
                             </div>
                         </div>
                     </div>    
-                   
+                    
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -292,32 +290,30 @@
                         </div>
                     </div>         
 
-                            
+
                             <div class="form-group">
                                 <label class="form-label">المدربين <span style="color: red;">*</span></label>
-                                <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار المدرب" multiple required>
-                                    {% for faculty_member in faculty %}   
-                                     <option value= "{{faculty_member.id}}" >
-                                         {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
-                                    </option> 
-                                    {% endfor %}
-                                </select> 
-                                <span class="error-message-instructor" style="color: red;"></span><br>
-
-                                <input type="checkbox" id="openToAllCheckbox" name="openToAllCheckbox" value ='open_to_all_memebers'>
-                                <label for="openToAllCheckbox">ارسال لجميع اعضاء هيئة التدريس </label>
+                                {% for faculty_member in faculty %}   
+                                    {% if faculty_member.id == user.id %}
+                                        <input type="hidden" id="mySelect" name="instructor" value="{{faculty_member.id}}">
+                                        <div class="form-control" readonly>{{faculty_member.first_name}} {{faculty_member.last_name}} </small></div>
+                                    {% endif %}
+                                 {% endfor %}
+                             
+                                <span class="error-message-instructor" style="color: red;"></span>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">الموقع</label>
                                 <select class="form-control custom-select select2" data-placeholder="الموقع" name="isonline" required>
                                     <option label="الموقع" disabled selected></option>
-                                    <option  value="oncampus">حضوري</option>
-                                    <option  value="online">عن بعد</option>
+                                    <option value="oncampus">حضوري</option>
+                                    <option value="online">عن بعد</option>
                                 </select>
                                 <span class="error-message" style="color: red;"></span>
                             </div>
-                    
+                            
+                   
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -338,20 +334,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">وقت البداية <span style="color: red;">*</span></label>
-                                <input class="form-control flatpickr" placeholder="HH:MM" type="time" name="starttime" id="starttime" required>
+                                <label class="form-label">وقت البداية <span style="color: red;">*</span></label>                    
+                                <input class="form-control flatpickr" placeholder="HH:MM" type="time" data-input name="starttime" required>
                                 <span class="error-message-starttime" style="color: red;"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">وقت الانتهاء <span style="color: red;">*</span></label>
-                                <input class="form-control flatpickr" placeholder="HH:MM" type="time"  name="endtime" id="endtime" required>
+                                <input class="form-control flatpickr" placeholder="HH:MM"  type="time" data-input name="endtime" required>
                                 <span class="error-message-endtime" style="color: red;"></span>
                             </div>
                         </div>
                     </div>
-                    
                    
                     <div class="form-group">
                         <label class="form-label">وصف المتطلبات<span style="color: red;">*</span></label>    
@@ -373,6 +368,7 @@
                     <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
                     <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
                 </div>
+           
             </form>
             </div>
         </div>
@@ -383,187 +379,171 @@
 
 
 {% block scripts %}
-		<!-- INTERNAL TIMEPICKER JS -->
-        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
-		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
 
-		<!-- INTERNAL DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
-		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
-		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+	<!-- INTERNAL TIMEPICKER JS -->
+    <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+    <script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
 
-		<!-- INTERNAL FILE-UPLOADS JS -->
-		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+    <!-- INTERNAL DATEPICKER JS -->
+    <script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+    <script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+    <script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
 
-		<!-- INTERNAL FILE-UPLOADS JS -->
-        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
-		<script src="{% static 'assets/js/filupload.js'%}"></script>
+    <!-- INTERNAL FILE-UPLOADS JS -->
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
 
-		<!-- INTERNAL SUMOSELECT JS -->
-		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
-        
-		<!-- INTERNAL INTLTELINPUT JS -->
-		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+    <!-- INTERNAL FILE-UPLOADS JS -->
+    <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+    <script src="{% static 'assets/js/filupload.js'%}"></script>
 
-		<!-- INTERNAL JQUERY TRANSFER JS -->
-		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+    <!-- INTERNAL SUMOSELECT JS -->
+    <script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
 
-		<!-- INTERNAL MULTI JS -->
-		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+    <!-- INTERNAL INTLTELINPUT JS -->
+    <script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+    <script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+    <script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
 
-		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+    <!-- INTERNAL JQUERY TRANSFER JS -->
+    <script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
 
-		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
-		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
-		<script src="{% static 'assets/js/form-elements.js'%}"></script>
-		<script src="{% static 'assets/js/select2.js'%}"></script>
+    <!-- INTERNAL MULTI JS -->
+    <script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
 
-		<!-- INTERNAL MULTIPLE SELECT JS -->
-		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+    <!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+    <script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
 
-        <!-- THEME COLOR JS -->
-		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+    <!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+    <script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+    <script src="{% static 'assets/js/form-elements.js'%}"></script>
+    <!-- <script src="{% static 'assets/js/select2.js'%}"></script> -->
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <!-- INTERNAL MULTIPLE SELECT JS -->
+    <!-- <script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+    <script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script> -->
 
-          <!-- INTERNAL DATA TABLES  -->
-          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/js/datatables.js'%}"></script>
-          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
-          
-          <script>
-          $(document).ready(function () {
-                // Set minimum and maximum time values (8:00 AM and 10:00 PM)
-                var minTime = '08:00';
-                var maxTime = '22:00';
+    <!-- THEME COLOR JS -->
+    <script src="{% static 'assets/js/themeColors.js'%}"></script>
 
-                // Set the min and max attributes for the time inputs
-                $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
-            });
-        </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
-        
-          <script>
-           $(document).ready(function() {
-                $('#status_filter').change(function() {
-                    var selectedDepartment = $(this).val();
 
-                    if (selectedDepartment.includes("-")) {
-                        var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
-                        var firstValue = values[0].trim(); // First value after splitting
-                        var secondValue = values[1].trim(); // Second value after splitting
-                        
-                        $('tbody tr').hide();
-                        // Show rows matching either the first or second value
-                        $('tbody tr').filter(function() {
-                            var status = $(this).find('td:nth-child(5)').text().trim();
-                            return status === firstValue || status === secondValue;
-                        }).show();
-                    } else if (selectedDepartment === 'all') {
-                        // Show all rows if 'all' is selected
-                        $('tbody tr').show();
-                    } else {
-                        // Hide all rows
-                        $('tbody tr').hide();
-                        // Show only rows with the selected status
-                        $('tbody tr').filter(function() {
-                            return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
-                        }).show();
-                    }
-                });
-            });
-        </script>
-        <script>
-            $(document).ready(function() {
-                 $('#status_filter2').change(function() {
-                     var selectedDepartment = $(this).val();
-                     if (selectedDepartment === 'all') {
-                         // Show all rows if 'all' is selected
-                         $('tbody tr').show();
-                     } else {
-                         // Hide all rows
-                         $('tbody tr').hide();
-                         // Show only rows with the selected status
-                         $('tbody tr').filter(function() {
-                             return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
-                         }).show();
-                     }
-                 });
+	
+
+    <script>
+        $(document).ready(function() {
+             $('#status_filter').change(function() {
+                 var selectedDepartment = $(this).val();
+
+                 if (selectedDepartment.includes("-")) {
+                     var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
+                     var firstValue = values[0].trim(); // First value after splitting
+                     var secondValue = values[1].trim(); // Second value after splitting
+                     
+                     $('tbody tr').hide();
+                     // Show rows matching either the first or second value
+                     $('tbody tr').filter(function() {
+                         var status = $(this).find('td:nth-child(5)').text().trim();
+                         return status === firstValue || status === secondValue;
+                     }).show();
+                 } else if (selectedDepartment === 'all') {
+                     // Show all rows if 'all' is selected
+                     $('tbody tr').show();
+                 } else {
+                     // Hide all rows
+                     $('tbody tr').hide();
+                     // Show only rows with the selected status
+                     $('tbody tr').filter(function() {
+                         return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
+                     }).show();
+                 }
              });
-         </script>
-        
+         });
+     </script>
+     <script>
+        $(document).ready(function() {
+             $('#status_filter2').change(function() {
+                 var selectedDepartment = $(this).val();
+
+                 if (selectedDepartment.includes("-")) {
+                     var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
+                     var firstValue = values[0].trim(); // First value after splitting
+                     var secondValue = values[1].trim(); // Second value after splitting
+                     
+                     $('tbody tr').hide();
+                     // Show rows matching either the first or second value
+                     $('tbody tr').filter(function() {
+                         var status = $(this).find('td:nth-child(5)').text().trim();
+                         return status === firstValue || status === secondValue;
+                     }).show();
+                 } else if (selectedDepartment === 'all') {
+                     // Show all rows if 'all' is selected
+                     $('tbody tr').show();
+                 } else {
+                     // Hide all rows
+                     $('tbody tr').hide();
+                     // Show only rows with the selected status
+                     $('tbody tr').filter(function() {
+                         return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
+                     }).show();
+                 }
+             });
+         });
+     </script>
+    
+    
+
 <script>
 $(document).ready(function () {
+    var mySelect = $('#mySelect');
 
-    var $select = $('#mySelect').selectize();
+    mySelect.on('change', function () {
+        var selectedValues = $(this).val();
 
-    $('#openToAllCheckbox').change(function() {
-        var selectize = $select[0].selectize;
-
-        if ($(this).prop('checked')) {
-            selectize.clear(); // Clear selected options if checkbox is checked
-            selectize.disable(); // Disable the selectize control
-            document.querySelector('.error-message-instructor').innerText = '';
-        } else {
-            selectize.enable(); // Enable the selectize control
+        // Check if '-1' is among the selected values
+        if (selectedValues && selectedValues.includes('-1')) {
+            // If '-1' is selected, clear all other selections
+            mySelect.val('-1');
         }
+
+        // Refresh Select2 to update the UI
+        mySelect.trigger('change.select2');
+    });
+
+    // Initialize Select2
+    mySelect.select2({
+        placeholder: 'اختار المدرب',
+        allowClear: true, // Allows clearing the selection
     });
 });
+</script>
 
-// ***************************************************
-$(document).ready(function() {
-    $('#num_ofinstructors').on('change', function() {
-        validateInstructors();
-    });
 
-    $('#mySelect').on('change', function() {
-        validateInstructors();
-    });
-});
+<script>
 
-function validateInstructors() {
-        var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
-        var selectedInstructors = document.getElementById('mySelect').options;
-        var selectedCount = selectedInstructors.length;
-        if (selectedCount !== num_ofinstructors) {
-            document.querySelector('.error-message-instructor').innerText = 'يرجى اختيار عدد المدربين المطلوب';
-            return;
-        } else {
-            document.querySelector('.error-message-instructor').innerText = '';
-        }
-    }
-
-// ***************************************************
     // Function to validate the form on submission
 function validateForm() {
     // Retrieve form elements
     var topicElement = document.querySelector('input[name="topic"]');
     var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
     var priceElement = document.querySelector('input[name="price"]');
-    var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
     var startDateElement = document.querySelector('input[name="startdate"]');
     var endDateElement = document.querySelector('input[name="enddate"]');
     var startTimeElement = document.querySelector('input[name="starttime"]');
     var endTimeElement = document.querySelector('input[name="endtime"]');
     var subjectElement = document.querySelector('textarea[name="subject"]');
     var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+    var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
+
     var selectElement = document.getElementById("options");
     var selectdomain = document.getElementById("domain");
+
     var otherdomainElement = document.querySelector('input[name="otherdomain"]');
     var otherTextElement = document.querySelector('input[name="otherText"]');
 
@@ -584,7 +564,7 @@ function validateForm() {
             return false;
         } 
     }   
-    
+
     // Check topic
     if (topicElement.value.length < 5) {
         return false;
@@ -627,6 +607,7 @@ function validateForm() {
     // Check start time and end time
     var startTimeParts = startTimeElement.value.split(':');
     var endTimeParts = endTimeElement.value.split(':');
+
     var startHour = parseInt(startTimeParts[0]);
     var startMinute = parseInt(startTimeParts[1]);
     var endHour = parseInt(endTimeParts[0]);
@@ -643,21 +624,17 @@ function validateForm() {
         return false;
     }
 
-    if (!validateInstructorsCount()) {
-        console.log("Instructors count validation failed");
-        return false;
-    }
     
+    var fileInput = document.querySelector('input[name="attachment"]');
+    var errorMessage = document.querySelector('.error-message-attachment');
+
     // Skip validation if the file input is empty
     if (!fileInput.files.length) {
         errorMessage.textContent = '';
         return true; // No validation needed for an empty file input
     }
 
-    var fileInput = document.querySelector('input[name="attachment"]');
-    var errorMessage = document.querySelector('.error-message-attachment');
-
-    var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
+    var allowedExtensions = ['.pdf', '.doc', '.pptx'];
     var filePath = fileInput.value.toLowerCase();
 
     var isValidExtension = allowedExtensions.some(function (extension) {
@@ -665,30 +642,15 @@ function validateForm() {
     });
 
     if (!isValidExtension) {
-        errorMessage.textContent = 'يجب أن يكون الملف بامتداد  .pdf , .pptx , .doc , .docx , .xlsx ';
+        errorMessage.textContent = 'يجب أن يكون الملف بامتداد .pdf أو .doc أو .pptx';
         fileInput.value = '';
         return false;
     } else {
         errorMessage.textContent = '';
     }
+    
 
-return true;
-
-}
-
-
-function validateInstructorsCount() {
-    var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-    var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-    var selectedInstructors = document.getElementById('mySelect').options;
-    var selectedCount = selectedInstructors.length;
-
-    var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
-    if(openToAllCheckboxElement.checked){
-        return true;
-    }
-
-    return selectedCount === num_ofinstructors;
+    return true;
 }
 
 // **************************** select other order
@@ -724,7 +686,6 @@ function toggleOtherdomain() {
 </script>
 <!-- **************************** AJAX -->
 <script>
-    
     $(document).ready(function() {
        
         $('input[name="topic"]').on('blur', function() {
@@ -741,7 +702,17 @@ function toggleOtherdomain() {
             }
         });
         
-
+        $('select').on('blur', function() {
+            var topic = $(this).val();
+            if (topic === '') {
+            $(this).addClass('is-invalid');
+            $(this).siblings('.error-message').text('يجب ملئ الحقل');
+            } else {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            }
+        });
+   
         $('input[name="price"]').on('blur', function() {
             var topic = $(this).val();
             if (topic < 0) {
@@ -752,7 +723,7 @@ function toggleOtherdomain() {
             $(this).siblings('.error-message-price').text('');
             }
         });
-
+       
         $('input[name="pricefortrainee"]').on('blur', function() {
             var topic = $(this).val();
             if (topic < 0) {
@@ -763,7 +734,7 @@ function toggleOtherdomain() {
             $(this).siblings('.error-message-pricefortrainee').text('');
             }
         });
-       
+        
         $('input[name="numoftrainee"]').on('blur', function() {
             var topic = $(this).val();
             if (topic < 1) {
@@ -922,6 +893,7 @@ function toggleOtherdomain() {
             }
         });
     });
+
 </script>
    
 <script>
@@ -959,30 +931,19 @@ function toggleOtherdomain() {
             var maxDate = (year +"-"+ month +"-"+ day);
             $('.date').attr('min',maxDate);
           });
-        });
-
+        });``
 </script>
 
-<script>
-    $(document).ready(function () {
-        flatpickr('.flatpickr', {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-            minTime: '08:00',
-            maxTime: '22:00',
-            onClose: function (selectedDates, dateStr, instance) {
-                if (dateStr < '08:00' || dateStr > '22:00') {
-                    instance.clear();
-                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
-                } else {
-                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
-                }
-            }
-        });
 
-});
+      <!-- INTERNAL DATA TABLES  -->
+      <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+      <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+      <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+      <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+      <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+      <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+      <script src="{% static 'assets/js/datatables.js'%}"></script>
 
-</script>
-
+      <!-- INTERNAL INDEX JS -->
+      <script src="{% static 'assets/js/client/client-list.js'%}"></script>
 {% endblock %}

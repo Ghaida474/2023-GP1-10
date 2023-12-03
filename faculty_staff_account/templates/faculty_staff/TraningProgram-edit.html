@@ -1,0 +1,708 @@
+{% extends 'faculty_staff/components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+	<style>
+		#otherInput {
+			display: none; 
+		}
+		#other-domain{
+			display: none;
+		}
+		body {
+			
+			overflow-x: hidden;
+		}
+		select[readonly] {
+			pointer-events: none; /* Disable mouse events */
+			touch-action: none; /* Disable touch events */
+			background-color: #f5f5f5; /* Change background color */
+			color: #333; /* Change text color */
+			border: 1px solid #ccc; /* Add a border */
+		}
+	</style>
+    {% endblock %}
+
+        {% block content %}
+					<!-- PAGE HEADER -->
+					<div class="page-header d-lg-flex d-block">
+						<div class="page-leftheader">
+							<div class="page-title">تعديل الطلب</div>
+						</div> 
+					</div>
+					<!-- END PAGE HEADER -->
+						
+                        <!-- ROW -->
+					<div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
+						<form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+
+						<div class="modal-footer">
+							<a href="{% url 'faculty_staff_account:program_view' program_id=program.programid %}" name="submit" class="btn btn-danger">إغلاق</a>
+							<button  class="btn btn-primary projectnotify">تعديل الطلب</button>
+						</div>
+							{% csrf_token %}
+						<div class="modal-body border-top">
+							<body onload="toggleOtherInput(); toggleOtherdomain();" >	
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+												<label class="form-label">نوع الطلب<span style="color: red;">*</span></label>
+												<select  class="form-control custom-select select2" id="options" onchange="toggleOtherInput()" data-placeholder= "اختار النوع" name="reqType" value="{{program.programtype}}" required> 
+													<option label="إختار النوع" disabled selected></option>
+													<option value= "دورة تدريبية" {% if program.programtype == "دورة تدريبية" %} selected {% endif %}>دورة تدريبية</option>
+													<option value="ورشة عمل" {% if program.programtype == "ورشة عمل" %} selected {% endif %}>ورشة عمل</option>
+													<option value="other" {% if program.programtype != "ورشة عمل" and program.programtype != "دورة تدريبية" %} selected {% endif %}>اخرى</option>
+												</select>
+												<span class="error-message" style="color: red;"></span>
+											</div>
+										 
+											<div class="form-group">
+												<div id="otherInput">
+													<label class="form-label" for="otherText">حدد الاخرى<span style="color: red;">*</span></label>
+													<input class="form-control" placeholder="حدد الاخرى" id="otherText" name="otherText" value="{{program.programtype}}">
+													<span class="error-message-other" style="color: red;"></span>
+												</div>
+											</div>
+									</div>
+								  
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-label">الموضوع <span style="color: red;">*</span></label>
+											<input class="form-control" placeholder="الموضوع" name="topic" value="{{program.topic}}" required>
+											<span class="error-message-topic" style="color: red;"></span>
+										</div>
+									</div>  
+								</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">المجال</label>
+										<select class="form-control custom-select select2" data-placeholder="اختار المجال" id="domain" name="domain" onchange="toggleOtherdomain()" required>
+											<option label="اختار المجال" disabled selected></option>
+											{% if program.program_domain not in domain %}
+												<option value="اخرى" selected >اخرى</option>
+											{% endif %}
+											{% for i in domain %}
+											<option value="{{i}}"{% if program.program_domain == i %} selected {% endif %}>{{i}}</option>
+											{% endfor %}
+										</select>
+										<span class="error-message" style="color: red;"></span>
+									</div>
+
+									<div class="form-group">
+										<div id="other-domain">
+											<label class="form-label" for="otherdomain">حدد الاخرى<span style="color: red;">*</span></label>
+											<input class="form-control" placeholder="حدد الاخرى" id="otherdomain" name="otherdomain" value="{{program.program_domain}}">
+											<span class="error-message-domain" style="color: red;"></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">عدد المدربين <span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="عدد المدربين" type="number" name="num_ofinstructors" value="{{program.num_ofinstructors}}" {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+										<span class="error-message-num_ofinstructors" style="color: red;"></span>
+									</div>
+								</div>
+							</div>    
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">سعر المدرب لكل<span style="color: red;">*</span></label>
+										<select  class="form-control custom-select select2"  data-placeholder= "السعر لكل" name="priceType" value="{{program.costtype}}" {% if program.initiatedby == 'bu' %}disabled{% endif %} required> 
+											<option label="السعر لكل" disabled selected></option>
+											<option value="ساعة" {% if program.costtype == 'ساعة' %} selected {% endif %}>ساعة</option>
+											<option value="متدرب" {% if program.costtype == 'متدرب' %} selected {% endif %}>متدرب</option>
+											<option value="يوم" {% if program.costtype == 'يوم' %} selected {% endif %}>يوم</option>
+										</select>
+										<span class="error-message" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">سعر المدرب<span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="السعر" type="number" name="price" value="{{program.cost}}" {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+										<span class="error-message-price" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+						   
+									
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label class="form-label">سعر تسجيل المتدرب<span style="color: red;">*</span></label>
+												<input class="form-control" placeholder="السعر" type="number" name="pricefortrainee" value="{{program.totalcost}}" {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+												<span class="error-message-pricefortrainee" style="color: red;"></span>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label class="form-label">عدد المتدربين <span style="color: red;">*</span></label>
+												<input class="form-control" placeholder="عدد المتدربين" type="number" name="numoftrainee" value="{{program.capacity}}" {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+												<span class="error-message-numoftrainee" style="color: red;"></span>
+											</div>
+										</div>
+									</div>        
+									
+									<div class="form-group">
+										<label class="form-label">الموقع</label>
+										<select class="form-control custom-select select2" data-placeholder="الموقع" name="isonline" {% if program.initiatedby == 'bu' %}disabled{% endif %} required>
+											<option label="الموقع" disabled selected></option>
+											<option value="oncampus" {% if program.isonline == False %} selected {% endif %}>حضوري</option>
+											<option value="online" {% if program.isonline == True %} selected {% endif %}>عن بعد</option>
+										</select>
+										<span class="error-message" style="color: red;"></span>
+									</div>
+									
+						   
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ البداية <span style="color: red;">*</span></label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="startdate" value="{{program.startdate|date:'Y-m-d'}}" {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+										<span class="error-message-startdate" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ الانتهاء <span style="color: red;">*</span></label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" value="{{program.enddate|date:'Y-m-d'}}"  {% if program.initiatedby == 'bu' %}readonly{% endif %} required>
+										<span class="error-message-enddate" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">وقت البداية <span style="color: red;">*</span></label>                    
+										<input class="form-control flatpickr" placeholder="HH:MM" type="time" data-input name="starttime" value="{{program.starttime|time:'H:i'}}" {% if program.initiatedby == 'bu' %}readonly{% endif %}  required>
+										<span class="error-message-starttime" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">وقت الانتهاء <span style="color: red;">*</span></label>
+										<input class="form-control flatpickr" placeholder="HH:MM"  type="time" data-input name="endtime" value="{{program.endtime|time:'H:i'}}" {% if program.initiatedby == 'bu' %}readonly{% endif %}  required>
+										<span class="error-message-endtime" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+						   
+							<div class="form-group">
+								<label class="form-label">وصف المتطلبات<span style="color: red;">*</span></label>    
+								<textarea class="form-control" rows="4" cols="105" placeholder="" name="subject"  {% if program.initiatedby == 'bu' %}readonly{% endif %}  required>{{program.Descriptionofrequirements}}</textarea>
+								<span class="error-message-subject" style="color: red;"></span>
+							</div>
+							
+							<div class="form-group">
+								<label class="form-label">ارفاق ملف</label>
+								<div class="form-group">
+									<label class="form-label"></label>
+									<input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc ,.png">
+									<span class="error-message-attachment" style="color: red;"></span>
+								</div>
+							</div>    
+							<div class="font-weight-semibold"  style="color:#0084BD;">
+								{% if program.attachment %}
+									<a href="{% url 'business_unit_account:view_programfile' program.programid %}"  type="button" class="btn btn-outline-info" target="_blank">الإطلاع على الحقيبة التعليمية</a> 
+								{% else %}
+									<P>لا يوجد حقيبة تعليمية مرفقة</P>
+								{% endif %}
+							</div>
+							</body>
+						</div>				
+					</form>
+					</div>
+				</div>
+			</div>
+                       
+        {% endblock %}
+
+
+		
+		{% block scripts %}
+
+			
+				<!-- INTERNAL TIMEPICKER JS -->
+				<script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+				<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+		
+				<!-- INTERNAL DATEPICKER JS -->
+				<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+				<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+				<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+		
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+		
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+				<script src="{% static 'assets/js/filupload.js'%}"></script>
+		
+				<!-- INTERNAL SUMOSELECT JS -->
+				<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+		
+				<!-- INTERNAL INTLTELINPUT JS -->
+				<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+		
+				<!-- INTERNAL JQUERY TRANSFER JS -->
+				<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+		
+				<!-- INTERNAL MULTI JS -->
+				<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+		
+				<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+				<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+		
+				<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+				<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+				<script src="{% static 'assets/js/form-elements.js'%}"></script>
+				<script src="{% static 'assets/js/select2.js'%}"></script>
+		
+				<!-- INTERNAL MULTIPLE SELECT JS -->
+				<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+				<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+		
+				<!-- THEME COLOR JS -->
+				<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+		
+			  
+
+		<script>
+				 $(document).ready(function () {
+					$('select').selectize({
+					});
+				});
+		// ***************************************************
+		$(document).ready(function () {
+			var mySelect = $('#mySelect');
+		
+			mySelect.on('change', function () {
+				var selectedValues = $(this).val();
+		
+				// Check if '-1' is among the selected values
+				if (selectedValues && selectedValues.includes('-1')) {
+					// If '-1' is selected, clear all other selections
+					mySelect.val('-1');
+				}
+		
+				// Refresh Select2 to update the UI
+				mySelect.trigger('change.select2');
+			});
+		
+			// Initialize Select2
+			mySelect.select2({
+				placeholder: 'اختار المدرب',
+				allowClear: true, // Allows clearing the selection
+			});
+		});
+		</script>
+		
+		
+		<script>
+		
+			// Function to validate the form on submission
+		function validateForm() {
+			// Retrieve form elements
+			var topicElement = document.querySelector('input[name="topic"]');
+			var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
+			var priceElement = document.querySelector('input[name="price"]');
+			var startDateElement = document.querySelector('input[name="startdate"]');
+			var endDateElement = document.querySelector('input[name="enddate"]');
+			var startTimeElement = document.querySelector('input[name="starttime"]');
+			var endTimeElement = document.querySelector('input[name="endtime"]');
+			var subjectElement = document.querySelector('textarea[name="subject"]');
+			var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+		
+			var selectElement = document.getElementById("options");
+			var selectdomain = document.getElementById("domain");
+		
+			var otherdomainElement = document.querySelector('input[name="otherdomain"]');
+			var otherTextElement = document.querySelector('input[name="otherText"]');
+		
+			 // select other reqtype
+			 if (selectElement.value === "other") {
+				if (otherTextElement.value.length < 5) {
+					return false;
+				} else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
+					return false;
+				} 
+			}   
+		
+			//select  other domain
+			if (selectdomain.value === "اخرى") {
+				if (otherdomainElement.value.length < 5) {
+					return false;
+				} else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
+					return false;
+				} 
+			}   
+		
+			// Check topic
+			if (topicElement.value.length < 5) {
+				return false;
+			} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+				return false;
+			} 
+		
+			// Check numoftrainee
+			var numoftrainee = parseInt(numoftraineeElement.value);
+			if (isNaN(numoftrainee) || numoftrainee < 1) {
+				return false;
+			} 
+		
+			// check num_ofinstructorsElement
+			var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+			if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+				return false;
+			} 
+		
+			// Check price
+			var price = parseFloat(priceElement.value);
+			if (isNaN(price) || price < 0) {
+				return false;
+			} 
+		
+			// Check start date and end date
+			var startDate = new Date(startDateElement.value);
+			var endDate = new Date(endDateElement.value);
+		
+			if (startDate > endDate) {
+				return false; 
+			} 
+		
+			// Check start time and end time
+			var startTimeParts = startTimeElement.value.split(':');
+			var endTimeParts = endTimeElement.value.split(':');
+		
+			var startHour = parseInt(startTimeParts[0]);
+			var startMinute = parseInt(startTimeParts[1]);
+			var endHour = parseInt(endTimeParts[0]);
+			var endMinute = parseInt(endTimeParts[1]);
+		
+			if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+				return false;
+			} 
+		
+			// Check subject
+			if (subjectElement.value.length < 5) {
+				return false;
+			} else if (/^\d+$/.test(subjectElement.value.trim())) {
+				return false;
+			}
+		
+			
+			var fileInput = document.querySelector('input[name="attachment"]');
+			var errorMessage = document.querySelector('.error-message-attachment');
+		
+			// Skip validation if the file input is empty
+			if (!fileInput.files.length) {
+				errorMessage.textContent = '';
+				return true; // No validation needed for an empty file input
+			}
+		
+			var allowedExtensions = ['.pdf', '.doc', '.pptx'];
+			var filePath = fileInput.value.toLowerCase();
+		
+			var isValidExtension = allowedExtensions.some(function (extension) {
+				return filePath.endsWith(extension);
+			});
+		
+			if (!isValidExtension) {
+				errorMessage.textContent = 'يجب أن يكون الملف بامتداد .pdf أو .doc أو .pptx';
+				fileInput.value = '';
+				return false;
+			} else {
+				errorMessage.textContent = '';
+			}
+			
+		
+			return true;
+		}
+		
+		// **************************** select other order
+		function toggleOtherInput() {
+			var selectElement = document.getElementById("options");
+			var otherInput = document.getElementById("otherInput");
+			var otherText = document.getElementById("otherText");
+		
+			if (selectElement.value === "other") {
+				otherInput.style.display = "block";
+				otherText.setAttribute("required", "required");
+			} else {
+				otherInput.style.display = "none"; 
+				otherText.removeAttribute("required");
+			}
+		}
+		
+		// **************************** select other domain
+		function toggleOtherdomain() {
+			var selectElement = document.getElementById("domain");
+			var otherInput = document.getElementById("other-domain");
+			var otherdomain = document.getElementById("otherdomain");
+		
+			if (selectElement.value === "اخرى") {
+				otherInput.style.display = "block";
+				otherdomain.setAttribute("required", "required"); 
+			} else {
+				otherInput.style.display = "none"; 
+				otherdomain.removeAttribute("required");
+			}
+		}
+		
+		</script>
+		<!-- **************************** AJAX -->
+		<script>
+			$(document).ready(function() {
+			   
+				$('input[name="topic"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					}else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-topic').text('');
+					}
+				});
+				
+				$('select').on('blur', function() {
+					var topic = $(this).val();
+					if (topic === '') {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message').text('يجب ملئ الحقل');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message').text('');
+					}
+				});
+		   
+				$('input[name="price"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 0) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-price').text('');
+					}
+				});
+			   
+				$('input[name="numoftrainee"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 1) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-numoftrainee').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-numoftrainee').text('');
+					}
+				});
+		
+				$('input[name="num_ofinstructors"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 1) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-num_ofinstructors').text('');
+					}
+				});
+		
+				$('input[name="startdate"]').on('blur', function() {
+					var startDate = $(this).val();
+					var endDate = $('input[name="enddate"]').val();
+		
+					if (startDate === '' || endDate === '') {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-startdate').text('');
+					} else {
+						startDate = new Date(startDate);
+						endDate = new Date(endDate);
+		
+						if (startDate > endDate) {
+							$(this).addClass('is-invalid');
+							$(this).siblings('.error-message-startdate').text('يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء');
+						} else {
+							$(this).removeClass('is-invalid');
+							$(this).siblings('.error-message-startdate').text('');
+						}
+					}
+				});
+			   
+				$('input[name="enddate"]').on('blur', function() {
+					var startDate = $('input[name="startdate"]').val();
+					var endDate = $(this).val();
+		
+					if (startDate === '' || endDate === '') {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-enddate').text('');
+					} else {
+						startDate = new Date(startDate);
+						endDate = new Date(endDate);
+		
+						if (startDate > endDate) {
+							$(this).addClass('is-invalid');
+							$(this).siblings('.error-message-enddate').text('يجب أن يأتي تاريخ الانتهاء بعد تاريخ البدء');
+						} else {
+							$(this).removeClass('is-invalid');
+							$(this).siblings('.error-message-enddate').text('');
+						}
+					}
+				});
+		
+				$('input[name="starttime"]').on('blur', function() {
+					var startTime = $(this).val();
+					var endTime = $('input[name="endtime"]').val();
+		
+					if (startTime === '' || endTime === '') {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-starttime').text('');
+					} else {
+						var startParts = startTime.split(':');
+						var endParts = endTime.split(':');
+		
+						var startHour = parseInt(startParts[0]);
+						var startMinute = parseInt(startParts[1]);
+						var endHour = parseInt(endParts[0]);
+						var endMinute = parseInt(endParts[1]);
+		
+						if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+							$(this).addClass('is-invalid');
+							$(this).siblings('.error-message-starttime').text('يجب أن يكون وقت البدء قبل وقت الانتهاء');
+						} else {
+							$(this).removeClass('is-invalid');
+							$(this).siblings('.error-message-starttime').text('');
+						}
+					}
+				});
+		
+				$('input[name="endtime"]').on('blur', function() {
+					var startTime = $('input[name="starttime"]').val();
+					var endTime = $(this).val();
+		
+					if (startTime === '' || endTime === '') {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-endtime').text('');
+					} else {
+						var startParts = startTime.split(':');
+						var endParts = endTime.split(':');
+		
+						var startHour = parseInt(startParts[0]);
+						var startMinute = parseInt(startParts[1]);
+						var endHour = parseInt(endParts[0]);
+						var endMinute = parseInt(endParts[1]);
+		
+						if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+							$(this).addClass('is-invalid');
+							$(this).siblings('.error-message-endtime').text('يجب أن يأتي وقت الانتهاء بعد وقت البدء');
+						} else {
+							$(this).removeClass('is-invalid');
+							$(this).siblings('.error-message-endtime').text('');
+						}
+					}
+				});
+		
+				$('textarea[name="subject"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+					}else if (/^\d+$/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+					} else {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('');
+					}
+				});
+				
+				$('input[name="otherText"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-other').text('');
+					}
+				});
+				
+				$('input[name="otherdomain"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-domain').text('');
+					}
+				});
+			});
+		
+		</script>
+		   
+		<script>
+			let dropdowns = document.querySelectorAll('.dropdown-button');
+			dropdowns.forEach(dropdown => {
+				dropdown.addEventListener('click', () => {
+					let content = dropdown.nextElementSibling;
+					content.style.display = content.style.display === 'none' ? 'block' : 'none';
+				});
+			});
+		</script>
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Initialize flatpickr for date inputs
+				flatpickr('.flatpickr[data-input][data-date]', {
+					dateFormat: "d-m-Y",
+					minDate: "today",
+				});
+		
+				// Initialize flatpickr for time inputs
+				flatpickr('.flatpickr[data-input][data-time]', {
+					enableTime: true,
+					noCalendar: true,
+					dateFormat: "H:i",
+				});
+			});
+			
+			$(function() {
+				  $(document).ready(function () {
+					var todaysDate = new Date();
+					var year = todaysDate.getFullYear();
+					var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+					var day = ("0" + todaysDate.getDate()).slice(-2);
+					var maxDate = (year +"-"+ month +"-"+ day);
+					$('.date').attr('min',maxDate);
+				  });
+				});``
+		</script>
+				
+		{% endblock %}

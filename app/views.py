@@ -19,8 +19,9 @@ from .forms import emailcheckform
 import certifi
 from django.utils import timezone
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 def clear_messages(request):
@@ -28,12 +29,12 @@ def clear_messages(request):
     for _ in storage:
         pass
 
-
-def index(request):
+def index(request): 
     return render(request, 'auth/index.html')
 
 
 def login_view(request):
+    user = None
     if request.method == 'POST':
         form = Loginform(request.POST)
         if form.is_valid():
@@ -42,7 +43,6 @@ def login_view(request):
             role = form.cleaned_data.get('role')
             next_url = request.POST.get('next')
 
-            # Check if the email exists in the correct model based on the role
             if role in ['facultyandstaff', 'dean', 'BU']:
                 if FacultyStaff.objects.filter(email=email).exists():
                     user = authenticate(request, email=email, password=password)
@@ -101,11 +101,6 @@ def login_view(request):
         form = Loginform()
         return render(request, 'auth/login.html', {'form': form })
     
-
-# def forgot_password(request):
-#     #form = ForgetPasswordForm()
-#     form = Loginform()
-#     return render(request, 'auth/forgot-password.html', {'form':form} )
 
 def check_user_to_role(request, email, role):
     role = role.lower()
@@ -194,10 +189,29 @@ def send_email_to_reset_password(request, email, role):
     print(otp)
 
     # Construct the email message
-    subject = 'Password Reset OTP'
-    message = 'Subject: {}\n\nYour OTP for password reset is: {}\n\nYour OTP is valid for 10 minutes. If the OTP expires before you reset your password, please navigate to the Sign In page to generate a new one.'.format(subject, otp)
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [email]
+
+    subject = 'كلمة المرور لمرة واحدة (OTP) لإعادة تعيين كلمة المرور'
+
+    body = '''\
+    السلام عليكم, 
+
+    .لقد طلبت إعادة تعيين كلمة المرور. كلمة المرور لمرة واحدة (OTP) الخاصة بك هي: {otp}
+
+    هذه الكلمة صالحة لمدة ١٠ دقائق فقط. إذا انتهت صلاحية الكلمة قبل إعادة تعيين كلمة المرور الخاصة بك، يرجى التوجه إلى صفحة تسجيل الدخول لإنشاء كلمة مرور جديدة لمرة واحدة (OTP).
+
+    شكرا لك,
+    فريق الدعم الخاص بوابة الأعمال
+    '''.format(otp=otp)
+
+    # Create MIMEText object with body and charset
+    body_mime = MIMEText(body, 'plain', 'utf-8')
+
+    # Construct email with headers and body
+    email_msg = MIMEMultipart()
+    email_msg['Subject'] = subject
+    email_msg['From'] = settings.EMAIL_HOST_USER
+    email_msg['To'] = email
+    email_msg.attach(body_mime)
 
     # Create the SSL context
     context = ssl.create_default_context(cafile=certifi.where())
@@ -210,7 +224,7 @@ def send_email_to_reset_password(request, email, role):
     connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
     # Send email
-    connection.sendmail(email_from, recipient_list, message)
+    connection.sendmail(settings.EMAIL_HOST_USER, [email], email_msg.as_string())
 
     # Close connection
     connection.quit()
@@ -298,4 +312,8 @@ def logout_view(request):
     logout(request)
     clear_messages(request)
     messages.error(request, 'لقد تم تسجيل خروجك بنجاح.')
+    response = HttpResponse()
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
     return redirect('app:login')

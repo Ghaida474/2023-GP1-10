@@ -62,6 +62,10 @@
     .alert {
       color: red;
     }
+    .alert_client_side{
+      color: red;
+    }
+    
     .element {
        width: 300px;
    }
@@ -107,6 +111,7 @@
                                         <p style="color: red; text-align: center;">{{ message }}</p>
                                     </div>
                                 {% endfor %}
+                                <div class="alert_client_side"></div>
                             </div>
                             <form class="card-body pt-3" id="login" name="login" method="post" action="{% url 'app:login' %}">
                                 {% csrf_token %}
@@ -172,110 +177,167 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<!-- {% if user.is_authenticated %}
-    <script>
-        alert("User is authenticated. Welcome!");
-    </script>
-{% endif %} -->
 
+      
 
-<script>
-  
-  $(document).ready(function() {
-  // Email validation
-  $('input[name="email"]').on('blur', function() {
-    var email = $(this).val();
-    if (email.length === 0) {
-      $(this).addClass('is-invalid');
-      $(this).siblings('.error-message').text('Email is required');
-    } else if (!isValidEmail(email)) {
-      $(this).addClass('is-invalid');
-      $(this).siblings('.error-message').text('Email should end with ksu.edu.sa');
-      alert('Email should end with ksu.edu.sa');
-    } else {
-      $(this).removeClass('is-invalid');
-      $(this).siblings('.error-message').text('');
-    }
-  });
+      <script>$(document).ready(function() {
+        var messageTimeout;
+        var currentMessage = ''; // Add variable to hold current message
+      
+        function showMessage(message) {
+          if (message === currentMessage) return; // Skip if the message is the same
+      
+          currentMessage = message; // Update the current message
+          clearTimeout(messageTimeout);
+          $('.alert').hide(); // Hide any message in .alert immediately
+          $('.alert_client_side').hide().html('<p style="color: red; text-align: center;">' + message + '</p>').fadeIn();
+          messageTimeout = setTimeout(function() {
+            $('.alert_client_side').fadeOut();
+            currentMessage = ''; // Clear the current message when hiding
+          }, 30000);
+        }
+      
+        function clearMessage() {
+          clearTimeout(messageTimeout);
+          $('.alert_client_side').empty().hide(); // Clear message content and hide immediately
+          currentMessage = ''; // Clear the current message
+        }
+      
+        // Validate email
+        $('input[name="email"]').on('blur', function() {
+          clearMessage(); // Clear message before each validation attempt
+          var email = $(this).val();
+          if (email.length === 0 || !isValidEmail(email)) {
+            $(this).addClass('is-invalid');
+            if(email.length === 0) {
+              $(this).siblings('.error-message').text('البريد الإلكتروني مطلوب');
+              showMessage('البريد الإلكتروني مطلوب');
+            } else {
+              $(this).siblings('.error-message').text('يجب أن ينتهي البريد الإلكتروني بـ ksu.edu.sa');
+              showMessage('يجب أن ينتهي البريد الإلكتروني بـ ksu.edu.sa');
+            }
+          } 
+        });
+      
+        $('input[name="email"]').on('input', function() {
+          var email = $(this).val();
+          if (email.length > 0 && isValidEmail(email)) {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            clearMessage();
+          }
+        });
+      
+        // Validate password
+        $('input[name="password"]').on('blur', function() {
+          clearMessage(); // Clear message before each validation attempt
+          var password = $(this).val();
+          if (password.length === 0 || password.length < 8) {
+            $(this).addClass('is-invalid');
+            if(password.length === 0) {
+              $(this).siblings('.error-message').text('كلمة المرور مطلوبة');
+              showMessage('كلمة المرور مطلوبة');
+            } else {
+              $(this).siblings('.error-message').text('يجب أن تكون كلمة المرور من 8 أحرف على الأقل');
+              showMessage('يجب أن تكون كلمة المرور من 8 أحرف على الأقل');
+            }
+          }
+        });
+      
+        $('input[name="password"]').on('input', function() {
+          var password = $(this).val();
+          if (password.length >= 8) {
+            $(this).removeClass('is-invalid');
+            $(this).siblings('.error-message').text('');
+            clearMessage();
+          }
+        });
+      
+        // Validate form submission
+        $('form#login').on('submit', function(e) {
+          clearMessage(); // Clear message before each validation attempt
+          var email = $('input[name="email"]').val();
+          var password = $('input[name="password"]').val();
+      
+          if (email.length === 0 || !isValidEmail(email)) {
+            e.preventDefault();
+            if(email.length === 0) {
+              showMessage('البريد الإلكتروني مطلوب');
+            } else {
+              showMessage('يجب أن ينتهي البريد الإلكتروني بـ ksu.edu.sa');
+            }
+          }
+      
+          if (password.length === 0 || password.length < 8) {
+            e.preventDefault();
+            if(password.length === 0){
+              showMessage('كلمة المرور مطلوبة');
+            } else {
+              showMessage('يجب أن تكون كلمة المرور من 8 أحرف على الأقل');
+            }
+          }
+        });
 
-  // Password validation
-  $('input[name="password"]').on('blur', function() {
-    var password = $(this).val();
-    if (password.length === 0) {
-      $(this).addClass('is-invalid');
-      $(this).siblings('.error-message').text('Password is required');
-    } else if (password.length < 8) {
-      $(this).addClass('is-invalid');
-      $(this).siblings('.error-message').text('Password should be at least 8 characters long');
-      alert('Password should be at least 8 characters long');
-    } else {
-      $(this).removeClass('is-invalid');
-      $(this).siblings('.error-message').text('');
-    }
-  });
-
-  // Form submission validation
-  $('form#login').on('submit', function(e) {
-    var email = $('input[name="email"]').val();
-    var password = $('input[name="password"]').val();
-
-    if (email.length === 0 || !isValidEmail(email)) {
-      e.preventDefault();
-      alert('Email should end with ksu.edu.sa');
-    }
-
-    if (password.length === 0 || password.length < 8) {
-      e.preventDefault();
-      alert('Password should be at least 8 characters long');
-    }
-  });
-
-  // Helper function to validate email format
-  function isValidEmail(email) {
+        
+            // Helper function to validate email format
+            function isValidEmail(email) {
     var emailRegex = /^[^\s@]+@([^\s@]+\.)?ksu\.edu\.sa$/i;
     return emailRegex.test(email);
   }
-});
-
-    </script>
-
-                
+      });
+        
+        </script>
 
 
+         
 
 
-<script>
-    $(document).ready(function () {
-        $('.input-group-text a').click(function (e) {
-            e.preventDefault(); // Prevent the anchor tag from reloading the page
+      
+  
+
     
-            var $this = $(this).parent(); // Get the parent .input-group-text of the anchor tag
-            var $input = $this.siblings('input');
-    
-            if ($input.attr('type') === 'password') {
-                $input.attr('type', 'text');
-                $this.children('i').removeClass('fe-eye-off').addClass('fe-eye');
-            } else {
-                $input.attr('type', 'password');
-                $this.children('i').removeClass('fe-eye').addClass('fe-eye-off');
-            }
-        });
-    });
-    </script>
 
-<script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            $('.alert').fadeOut('slow');
-        }, 30000); // <-- time in milliseconds, 30000 ms = 0.5 min
-    });
-    </script>
+   
     
     <script>
-    $(document).ready(function(){
-        $('#message').hide();
-    });
-    </script>
+      $(document).ready(function () {
+          $('.input-group-text a').click(function (e) {
+              e.preventDefault(); // منع العلامة المرجعية من إعادة تحميل الصفحة
+    
+              var $this = $(this).parent(); // الحصول على العنصر الأم .input-group-text للعلامة المرجعية
+              var $input = $this.siblings('input');
+    
+              if ($input.attr('type') === 'password') {
+                  $input.attr('type', 'text');
+                  $this.children('i').removeClass('fe-eye-off').addClass('fe-eye');
+              } else {
+                  $input.attr('type', 'password');
+                  $this.children('i').removeClass('fe-eye').addClass('fe-eye-off');
+              }
+          });
+      });
+      </script>
+    
+      <script>
+      $(document).ready(function() {
+          setTimeout(function() {
+              $('.alert').fadeOut('slow');
+          }, 30000); // <-- الوقت بالمللي ثانية ، 30000 مللي ثانية = 0.5 دقيقة
+      });
+      </script>
+      
+      <script>
+      $(document).ready(function(){
+          $('#message').hide();
+      });
+      </script>
+
+
+
+
+
+
 {% endblock %}

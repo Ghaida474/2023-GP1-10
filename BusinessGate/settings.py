@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'app',
     'admin_account',
     'faculty_staff_account',
@@ -90,12 +91,6 @@ MIME_TYPES = {
     # Add more file extensions and content types as needed
 }
 
-# AUTHENTICATION_BACKENDS = [
-#     'app.auth_backends.KaibuemployeeAuthBackend',
-#     'app.auth_backends.FacultyStaffAuthBackend',
-#     'django.contrib.auth.backends.ModelBackend',
-#     # Add any other authentication backends you need.
-# ]
 
 AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
@@ -178,3 +173,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+from datetime import timedelta
+
+CELERY_BEAT_SCHEDULE = {
+    'run-every-1-minute': {
+        'task': 'business_unit_account.tasks.update_program_status',  # the path to your task
+        'schedule': timedelta(minutes=1),
+    },
+}
+
+
+GRAPH_MODELS ={
+'all_applications':True,
+'group_models':True,
+}

@@ -38,18 +38,23 @@
 														</select>
 													</div>
 												</div>
-													<tr>
-														<th class="border-bottom-0">الإسم الكامل</th>
-														<th class="border-bottom-0">البريد الإلكتروني</th>
-														<th class="border-bottom-0">القسم</th>
-														<th class="border-bottom-0">التخصص الدارسي</th>
-														<th class="border-bottom-0">التخصص الدقيق</th>
-														<th class="border-bottom-0">مزيد من المعلومات</th>
-													</tr>
-												</thead>
-												<tbody>
-													{% for faculty_member in faculty %}
-													<tr>
+												<th class="border-bottom-0">الرتبة</th>
+												<th class="border-bottom-0">الإسم الكامل</th>
+												<th class="border-bottom-0">البريد الإلكتروني</th>
+												<th class="border-bottom-0">القسم</th>
+												<th class="border-bottom-0">التخصص الدارسي</th>
+												<th class="border-bottom-0">التخصص الدقيق</th>
+												<th class="border-bottom-0">تفاصيل</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for faculty_member in faculty %}
+											<tr>
+														<td>
+															<div class="me-3 mt-0 mt-sm-2 d-block">
+																<h6 class="mb-1 fs-14">{{ faculty_member.rank }} </h6>
+															</div>
+														</td>
 														<td>
 															<div class="me-3 mt-0 mt-sm-2 d-block">
 																<h6 class="mb-1 fs-14">{{ faculty_member.first_name }} {{ faculty_member.last_name }}</h6>
@@ -61,7 +66,7 @@
 														<td>{{faculty_member.specialization|title}}</td>		
 														<td >
 															<div class="d-flex" >
-																<a href="{% url 'business_unit_account:faculty-view' faculty_id=faculty_member.id %}" style="width:50px; margin-right: 35px;" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i style="width:20px;"class="feather feather-eye text-primary"></i></a>
+																<a href="{% url 'dean_account:faculty-view' faculty_id=faculty_member.id %}" style="width:50px; margin-right: 35px;" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i style="width:20px;"class="feather feather-eye text-primary"></i></a>
 															</div>
 														</td>
 													</tr>

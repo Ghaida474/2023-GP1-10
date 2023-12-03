@@ -86,15 +86,7 @@
 											<form method="post" enctype="multipart/form-data"  name="form1">
 												{% csrf_token %}
 
-												<label>{{ form.username.label_tag }} <span style="color: red;">*</span></label>
-												{{ form.username }}
-												{% if form.username.errors %}
-													{% for error in form.username.errors %} 
-													<span style="color: red;" class="error-message">{{error}}</span>
-													{% endfor %}
-												{% endif %} 
-												<br>
-
+												
 
 												<label>{{ form.phonenumber.label_tag }} <span style="color: red;">*</span></label>
 												{{ form.phonenumber }}
@@ -103,6 +95,7 @@
 													<p style="color: red;" class="error-message">{{ error }}</p>
 													{% endfor %}
 												{% endif %}
+											
 												<br>
 
 												{{ form.iban.label_tag }}
@@ -112,6 +105,7 @@
 													<p style="color: red;" class="error-message">{{ error }}</p>
 													{% endfor %}
 												{% endif %}
+												
 												<br>
 
 												{{ form.specialization.label_tag }}
@@ -121,6 +115,7 @@
 													<p style="color: red;" class="error-message">{{ error }}</p>
 													{% endfor %}
 												{% endif %}
+												
 												<br>
 
 												{{ form.officeno.label_tag }}
@@ -130,6 +125,7 @@
 													<p style="color: red;" class="error-message">{{ error }}</p>
 													{% endfor %}
 												{% endif %}
+												
 												<br>
 												<br>
 
@@ -140,6 +136,7 @@
 													<p style="color: red;" class="error-message">{{ error }}</p>
 													{% endfor %}
 												{% endif %}
+											
 												<br>
 												
 												
@@ -164,26 +161,14 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        {% if success %}
-          <script>
-          alert('تم تحديث المعلومات بنجاح.');
-          window.location.href = "{% url 'dean_account:profile' %}";  // Redirect after alert
-          </script>
-        {% endif %}
-
-		<!-- {% if form2updated %}
-			<script>
-			
-			</script>
-		{% endif %}  -->
-
+   
 
       <script>
         $(document).ready(function() {
         // Phone number validation
             $('input[name="phonenumber"]').on('blur', function() {
               var phoneNumber = $(this).val();
-              var phoneRegex = /^05\d{8}$/; // Adjusted the regex to make sure the phone number starts with '05' and is 10 digits long
+              var phoneRegex = /^05\d{8}$/; 
               if (!phoneRegex.test(phoneNumber)) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message').text('رقم الهاتف المحمول غير صحيح. يجب أن يبدأ بـ 05 وأن يتكون من 10 أرقام.');
@@ -244,33 +229,29 @@
             label.css('color', '');
           }
         });
+	
 
-
-        $('#form1').on('submit', function(e) {
-        // ... [your code to get form field values and set up validation rules]
+	
+        $('#form1').on('submit', function(e) {		
             var isPhoneNumberValid = phoneRegex.test(phoneNumber);
             var isIbanValid = (iban == "" || ibanRegex.test(iban));
             var isSpecializationValid = (specialization == '' || (specialization.length >= 5 && !specialCharRegex.test(specialization)));
             var isOfficeNoValid = officeNoRegex.test(officeno);
             var isCvFileTypeValid = ($.inArray(cvFileType, allowedFileTypes) != -1);
 
-            console.log('phoneNumber:', phoneNumber, 'Matches regex:', isPhoneNumberValid);
-            console.log('iban:', iban, 'Matches regex:', isIbanValid);
-            console.log('specialization:', specialization, 'Length >= 5:', specialization.length >= 5, 'لا يحتوي على أحرف خاصة:', !specialCharRegex.test(specialization));
-            console.log('officeno:', officeno, 'Matches regex:', isOfficeNoValid);
-            console.log('cvFileType:', cvFileType, 'Is allowed:', isCvFileTypeValid);
-
             if (!isPhoneNumberValid || !isIbanValid || !isSpecializationValid || !isOfficeNoValid || !isCvFileTypeValid) {
-              e.preventDefault();
-              alert('يرجى تعبئة جميع الحقول بشكل صحيح');
-
+				e.preventDefault();
+				
               // If CV file type is invalid, change color of label to red
               if (!isCvFileTypeValid) {
                 cvFileLabel.css('color', 'red');
               }
             }
-          });
+			
         });
+
+	});
+       
 	</script>
 		 
       <script>
@@ -281,9 +262,5 @@
           });
       </script>
 
-	
-	
-	
-	
 	
 	{% endblock %}

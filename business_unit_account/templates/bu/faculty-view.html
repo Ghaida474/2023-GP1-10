@@ -13,10 +13,12 @@
 							</div>
 							<div class="page-rightheader ms-md-auto">
 								<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+									<a  href="{% url 'business_unit_account:faculty-list' %}" class="btn btn-primary">رجوع</a>
 								</div>
 							</div>
 						</div>
 						<!-- END PAGE HEADER -->
+						
 						<!-- ROW -->
 						<div class="row">
 							<div class="col-xl-3 col-md-12 col-lg-12">
@@ -41,7 +43,7 @@
 																<td class="py-2 px-0">
 																	<span class="font-weight-semibold w-50">البريد الإلكتروني</span>
 																</td>
-																<td class="py-2 px-0 text-center">{{faculty_member.email}}</td>
+																<td class="py-2 px-0 text-center"><a href="mailto:{{faculty_member.email}}">{{faculty_member.email}}</a></td>
 															</tr>
 															
 															<tr class="border-top">
@@ -116,6 +118,7 @@
 								
 								<div class="panel-body tabs-menu-body hremp-tabs1 p-0" style="width: 630px; margin-right: 200px;">
 									<div class="tab-content">
+										
 										<div class="tab-pane active" id="tab5">
 											<div class="card-body">
 												<div class="row">
@@ -172,7 +175,7 @@
 																					<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
 																				</div>
 																				{% empty %}
-																					<a class="btn btn-sm btn-white mt-1">None</a>
+																					<a class="btn btn-sm btn-white mt-1">لا يوجد</a>
 																				{% endfor %}
 																			</p>
 																		</div>
@@ -195,7 +198,7 @@
 																					<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
 																				</div>
 																				{% empty %}
-																					<a class="btn btn-sm btn-white mt-1">None</a>
+																					<a class="btn btn-sm btn-white mt-1">لا يوجد</a>
 																				{% endfor %}
 																			</p>
 																		</div>
@@ -215,7 +218,7 @@
 																				<!-- <tr class="border-top"> -->
 																					
 																						{% if user.cv %}
-																						 <a href="{% url 'business_unit_account:view_file' user.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
+																						 <a href="{% url 'business_unit_account:view_file' faculty_member.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
 																						{% else %}
 																						لم يتم تحميل السيرة الذاتية
 																						{% endif %}
@@ -228,8 +231,6 @@
 															</div>
 														</div>
 													</div>
-
-
 												</div>
 											</div>
 										</div>

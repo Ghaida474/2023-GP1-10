@@ -1,0 +1,442 @@
+{% extends 'kai_staff/components/base.html' %}
+{% load static %}
+
+{% block styles %}
+<style>
+	.button-container {
+		width: 50%;
+	}
+	.button-container button {
+		width: 50%;
+	}
+	#customAlert .modal-content {
+	background-color: #F5FBFF;
+	}
+	#rejectionReasonModal .modal-content {
+	  background-color: #F5FBFF;
+	}
+	#customAlert .modal-content,
+	#rejectionReasonModal .modal-content {
+	 background-color: #F5FBFF;
+	}
+</style>
+{% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-lg-flex d-block">
+							<!-- <div class="page-leftheader">
+								<div class="page-title"></div>
+							</div> -->
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- alerts -->
+						<div id="rejectionReasonModal" class="modal" tabindex="-1">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-body">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p id="alertPlaceholder"></p>
+										<br><br><p>الرجاء كتابة سبب الرفض: <span style="color: red;">*</span></p>
+										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 5 أحرف ولا يحتوي فقط على أرقام.</p>
+										<input id="rejectionReasonInput" type="text" class="form-control">
+									</div>
+									<div class="modal-footer justify-content-end align-items-start">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+										<button id="rejectionReasonConfirm" type="button" class="btn btn-primary">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div id="acceptanceModal" class="modal" tabindex="-1">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-body">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p id="alertConfirm"></p>
+										<br><br><p>هل انت متأكد من قبول الطلب؟ في حال كانت اجابتك نعم الرجاء ادخال نسبة البرنامج </p>
+										<p>الرجاء إدخال القيمة العشرية مثل :0.23</p>
+										<input id="acceptancepercentage" type="text" class="form-control">
+									</div>
+									<div class="modal-footer justify-content-end align-items-start">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+										<button id="acceptanceConfirm" type="button" class="btn btn-primary">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- end of alerts -->
+
+                        <!-- ROW -->
+						<div class="main-proifle" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+							<div class="row">
+								
+								<div class="col-xl-7">
+									<div class="box-widget widget-user">
+										<div class="widget-user-image d-sm-flex">
+											<div class="ms-sm-4 mt-4">
+												<h1 class="pro-user-username mb-3 font-weight-semibold">{{program.topic}}</h1>
+												<div class="d-flex mb-2">
+													<div class="h5 mb-0 ms-3 mt-1">{{program.programtype}}</div>
+												</div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="col-xl-5 col-lg-7">
+									<div class="text-xl-end mt-4 mt-xl-0">
+										<a  href="{% url 'kai_staff:traning-program' %}" class="btn btn-primary">رجوع</a>
+									</div>
+									<div class="mt-5">
+										<div class="main-profile-contact-list row">
+											<div class="media col-sm-4 p-0" style="margin-right:43px;">
+												<div class="media-icon bg-primary  me-3 mt-1">
+													<i class="las la-edit fs-20 text-white"></i>
+												</div>
+												<div class="media-body">
+													<span class="text-muted">عدد المدربين المطلوب</span>
+													<div class="font-weight-semibold fs-25">
+														{{program.num_ofinstructors}}
+													</div>
+												</div>
+											</div>
+											<div class="media col-sm-4 p-0" style="margin-right:30px;">
+												<div class="media-icon bg-success me-3 mt-1">
+													<i class="las la-users fs-20 text-white"></i>
+												</div>
+												<div class="media-body">
+													<span class="text-muted"> عدد المتدربين المسموح</span>
+													<div class="font-weight-semibold fs-25">
+														{{program.capacity}}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="profile-cover">
+								<div class="wideget-user-tab">
+									<div class="tab-menu-heading p-0">
+										<div class="tabs-menu1 px-3">
+											<ul class="nav">
+												<li><a href="#tab-1" class="active" data-bs-toggle="tab">معلومات البرنامج التدريبي</a></li>
+												{% if program.isreleased_field %}
+												<li><a href="#tab-2" data-bs-toggle="tab" class="">المتدربين</a></li>
+												{% endif %}
+												<li><a href="#tab-3" data-bs-toggle="tab" class="">المدربين</a></li>
+												
+												{% if program.status == 'تم ارسال الطلب إلى المعهد' %} 
+												<div class="button-container" style="display: flex; margin-top: -70px; margin-right:700px;">
+													<form method="POST" action="{% url 'kai_staff:accept_program' id=program.programid %}" id="acceptanceForm" style="margin-top:13px;">
+														{% csrf_token %}
+														<div class="form-group">
+															<input id="kaipercentage" class="form-control" placeholder="النسبة" type="number" name="kaipercentage" style="display: none;">
+														</div>
+														<input type="hidden" name="update_status" value="accept">
+														<button type="submit" id="acceptButton" class="btn btn-outline-info" style="width: 180px;">قبول الطلب</button>
+													</form>
+													<form method="POST" action="{% url 'kai_staff:rejecte_program' id=program.programid %}" id="rejectionForm" style="margin-top:29px; margin-right:10px;">
+														{% csrf_token %}
+														<input type="hidden" name="update_status" value="reject">
+														<button type="submit" id="rejectButton" class="btn btn-outline-danger" style="width: 180px;">رفض الطلب</button>
+														<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
+															<label for="rejectionReason">الرجاء كتابة سبب الرفض</label>
+															<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3"></textarea>
+														</div>
+													</form>
+												</div>						
+												{% endif %}
+
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                        <!-- END ROW -->
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12 col-md-12">
+								<div class="border-0">
+									<div class="tab-content">
+
+										<!-- order info -->
+										<div class="tab-pane active" id="tab-1">
+											<div class="card">
+												 
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">التاريخ</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+															<small class="text-muted">من </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															{{program.startdate | date:"d-m-Y"}}
+															
+															<small class="text-muted">الى </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															 {{program.enddate | date:"d-m-Y"}}
+														</div>
+													</div>
+												</div>
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">الوقت</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														<small class="text-muted">من </small>
+														<i class="fa fa-clock-o pb-3" style="margin-right: 5px;"></i>
+														{{program.starttime | time:"g:i A"}}
+														
+														<small class="text-muted">الى </small>
+														<i class="fa fa-clock-o pb-3" style="margin-right: 5px;"></i>
+														 {{program.endtime | time:"g:i A"}}
+													</div>	
+												</div>
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">الموقع</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{% if program.isonline %}
+															<p> عن بعد </p>
+														{% else %}
+															<p> حضوري </p>
+														{% endif %}
+													</div>	
+												</div>
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">سعر المدرب</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{{program.cost}}ر.س
+														
+														<small class="text-muted" style="margin-right: 5px;"> لكل </small>
+														 {{program.costtype}}
+													</div>	
+												</div> 
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">سعر تسجيل المتدرب</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{{program.totalcost}}ر.س
+													</div>	
+												</div>
+
+																	
+											</div>
+										</div>
+										<!-- Trainees -->
+										<div class="tab-pane" id="tab-2">
+											<div class="card p-5">
+												<div class="row">	
+													<div class="card-body">
+														<div class="col-xl-12 col-md-12 col-lg-12">	
+															<div class="table-vcenter">
+															<table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">
+																
+																<thead>
+																	<tr>
+																		<th class="border-bottom-0">عدد المتدرب#</th>
+																		<th class="border-bottom-0">اسم المتدرب</th>
+																		<th class="border-bottom-0">حالة التسجيل</th>
+																		<th class="border-bottom-0">ارفاق الشهادة</th>
+																		<th class="border-bottom-0">الاطلاع على الشهادة</th>
+																	</tr>
+																</thead>
+				
+																<tbody>
+																	{% for traniees in program.traniees_names %} 
+																	<tr>
+																		<td >{{ forloop.counter }}</td>
+																		<td>{{traniees.0}}</td>
+																		<td>
+																			{% if  traniees.1%}
+																			تسجيل مؤكد
+																			{% endif %}
+																		</td>
+																		<td >
+																			<form id="certifications_form_{{ traniees.2 }}" method="post" enctype="multipart/form-data" onsubmit="submitForm(event, '{{ program.programid }}', '{{ traniees.2 }}' , '{{ traniees.4 }}');">
+																				{% csrf_token %}
+																				<div style="display: flex; align-items: center;">
+																					<input class="form-control fileInput" style="height: 40px; flex: 1; margin-right: 5px; width: 150px;" type="file" name="attachment" accept=".pdf, .pptx, .doc , .docx , .xlsx">
+																					<button type="submit" class="btn btn-outline-info" style="height: 40px; margin-right: 5px;">رفع</button>
+																				</div>		
+																			</form>
+																			<p style="color: green; margin-right: 80px;" id="certifications_result_{{ traniees.2 }}"></p>
+																		</td>
+
+																		<td id="certifications_td_{{ traniees.2 }}">
+																			{% if traniees.3 %}
+																			<div class="d-flex" style="margin-right: 25px;">
+																				<a href="{% url 'kai_staff:view_certifications' register_id=traniees.4 %}" type="button" target="_blank" class="btn btn-outline-info me-2">
+																					<i style="width:20px;" class="feather feather-eye text-nowrap"></i>
+																				</a> 
+																				<a  type="button" class="btn btn-outline-danger" onclick="handleDelete( event , '{{ traniees.2 }}', '{{ traniees.4 }}')">
+																					<i style="width:20px;" class="feather feather-trash text-nowrap"></i>
+																				</a> 
+																			</div>
+																			{% else %}
+																			<div class="d-flex" style="margin-right: 50px; height: 16px;">
+																			<p>لا توجد شهادة مرفقة</p>
+																			</div>
+																			{% endif %} 
+																		</td>						
+																	</tr>
+																	{% empty %}
+																	<tr>
+																		<td colspan="5">لا يوجد متدربين مسجلين</td>
+																	</tr>    
+																  {% endfor %}
+																</tbody>
+															</table>
+															</div>
+														</div>
+													</div>		
+												</div>
+											</div>
+										</div>
+
+										<!-- instructors --------------------------------------------------->
+									<div class="tab-pane" id="tab-3">
+										<div class="card p-5">
+											<div class="row">	
+												{% for instructor in program.instructor_names %} 
+													<div class="col-lg-6">
+														<div class="d-flex align-items-center border p-3 mb-3 br-7">
+															<div class="wrapper ms-3">
+																<p class="mb-0 mt-1 text-dark font-weight-semibold h4">{{instructor.0}} | {{instructor.2}}</p><br>
+																<h6><a href="mailto:{{instructor.3}}">{{instructor.3}}</a></h6>
+																<h6> الإيبان : <small>{{instructor.4}}</small></h6>
+															</div>	
+														</div>
+													</div>
+												{% empty %}
+													<p>لا يوجد مدربين</p>
+												{% endfor %} 
+											</div>
+										</div>
+									</div> 
+										
+										
+                        <!-- END ROW -->
+        {% endblock %}
+
+	
+		
+    {% block scripts %}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- THEME COLOR JS -->
+	<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+	<!-- INTERNAL DATA TABLES  -->
+	<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+	<script src="{% static 'assets/js/datatables.js'%}"></script>
+	<script>
+			
+			function submitForm(event, programId, traineeId, register_id) {
+				event.preventDefault();
+				var fileInput = document.querySelector('input[name="attachment"]');																
+				if (!fileInput.files.length) {
+					return false; 
+				}
+				var formData = new FormData($('#certifications_form_' + traineeId)[0]);
+
+				$.ajax({
+					url: '/kai-staff/kaistaff-home/traningprogram/TraningProgram-view/' + programId + '/save-certifications/' + traineeId + '/',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						// $('#certifications_result_' + traineeId).html(response.success_message + ' <i class="fa fa-check-square" data-bs-toggle="tooltip" title="fa fa-check-square"></i>');
+						refreshOtherElement(traineeId, register_id);
+					},
+					error: function(error) {
+						console.error('Error occurred:', error);
+					}
+				});
+			}
+
+			function handleDelete(event, traineeId, register_id) {
+				var element = $('#certifications_td_' + traineeId);
+				var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+				var deleteURL = "{% url 'kai_staff:delete_certifications' register_id=0 %}".replace('0', register_id);
+
+				$.ajax({
+					url: deleteURL,
+					type: 'POST',
+					headers: {
+						'X-CSRFToken': csrfToken
+					},
+					success: function(response) {
+						element.html('<div class="d-flex" style="margin-right: 50px; height: 16px;"><p>لا توجد شهادة مرفقة</p></div>');
+					},
+					error: function(error) {
+						console.error('Error occurred:', error);
+					}
+				});
+			}
+
+			function refreshOtherElement(traineeId, registerId) {
+				var element = $('#certifications_td_' + traineeId);
+				var viewUrl = '{% url "kai_staff:view_certifications" register_id=0 %}'.replace('0', registerId);
+    			var deleteUrl = '{% url "kai_staff:delete_certifications" register_id=0 %}'.replace('0', registerId);
+
+				element.html('<div class="d-flex" style="margin-right: 25px;">' +
+					'<a href="' + viewUrl + '" type="button" target="_blank" class="btn btn-outline-info me-2">' +
+					'<i style="width:20px;" class="feather feather-eye text-nowrap"></i></a>' +
+					'<a type="button" class="btn btn-outline-danger" onclick="handleDelete(event , ' + traineeId + ',' + registerId + ')">' +
+					'<i style="width:20px;" class="feather feather-trash text-nowrap"></i></a></div>');
+			}
+	
+</script>
+
+
+<script>
+
+document.querySelector('#acceptButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    var acceptanceModal = new bootstrap.Modal(document.getElementById('acceptanceModal'));
+    acceptanceModal.show();
+});
+
+document.querySelector('#acceptanceConfirm').addEventListener('click', function(e) {
+    var acceptancePercentage = document.querySelector('#acceptancepercentage').value;
+    if (!isNaN(acceptancePercentage) && acceptancePercentage > 0 && acceptancePercentage < 1) {
+        var acceptanceModal = new bootstrap.Modal(document.getElementById('acceptanceModal'));
+        acceptanceModal.hide();
+        document.querySelector('#kaipercentage').value = acceptancePercentage;
+        document.querySelector('#acceptanceForm').submit();
+    }
+});
+
+document.querySelector('#rejectButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+    rejectionReasonModal.show();
+});
+
+document.querySelector('#rejectionReasonConfirm').addEventListener('click', function(e) {
+    var rejectionReason = document.querySelector('#rejectionReasonInput').value;
+    if (rejectionReason.length > 5 && isNaN(rejectionReason)) {
+        var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+        rejectionReasonModal.hide();
+        document.querySelector('#rejectionReason').value = rejectionReason;
+        document.querySelector('#rejectionForm').submit();
+    }
+});
+
+</script>
+{% endblock %}

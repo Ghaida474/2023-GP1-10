@@ -1,0 +1,1433 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+	<style>
+		#customAlert .modal-content {
+		background-color: #F5FBFF;
+		}
+		#rejectionReasonModal .modal-content {
+		  background-color: #F5FBFF;
+		}
+		#customAlert .modal-content,
+		#rejectionReasonModal .modal-content {
+		 background-color: #F5FBFF;
+		}
+
+
+	</style>
+    {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-lg-flex d-block">
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- alerts -->
+
+						<div class="modal" tabindex="-1" id="customDeleteProgram">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p>تأكيد</p>
+									</div>
+									<div class="modal-body">
+										<p >هل أنت متأكد من حذف البرنامج التدريبي؟</p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+										<button type="button" class="btn btn-primary" id="alertConfirmDelete">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						  </div>
+
+						<div class="modal" tabindex="-1" id="customAlertsendtokai">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p>تأكيد</p>
+									</div>
+									<div class="modal-body">
+										<p >هل أنت متأكد من إرسال الطلب إلى المعهد؟</p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+										<button type="button" class="btn btn-primary" id="alertConfirmSendToKai">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						  </div>
+
+						  <div class="modal" tabindex="-1" id="customAlert">
+							<div class="modal-dialog">
+							  <div class="modal-content">
+								<div class="modal-header">
+									<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+									<p>تأكيد</p>
+								</div>
+								<div class="modal-body">
+								  <p id="alertMessage">Message goes here</p>
+								</div>
+								<div class="modal-footer">
+								  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+								  <button type="button" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+								</div>
+							  </div>
+							</div>
+						  </div>
+
+						  <div id="rejectionReasonModal" class="modal" tabindex="-1">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-body">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p id="alertPlaceholder"></p> 
+										<br><br><p>الرجاء كتابة سبب الرفض:</p>
+										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 5 أحرف ولا يحتوي فقط على أرقام.</p>
+										<input id="rejectionReasonInput" type="text" class="form-control">
+									</div>
+									<div class="modal-footer justify-content-end align-items-start">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+										<button id="rejectionReasonConfirm" type="button" class="btn btn-primary">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- end alerts -->
+
+
+                        <!-- ROW -->
+						<div class="main-proifle" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+							<div class="row">
+								
+								<div class="col-xl-7">
+									<div class="box-widget widget-user">
+										<div class="widget-user-image d-sm-flex">
+											<div class="ms-sm-4 mt-4">
+												<h1 class="pro-user-username mb-3 font-weight-semibold">{{program.topic}}</h1>
+												<div class="d-flex mb-2">
+													<div class="h5 mb-0 ms-3 mt-1">{{program.programtype}}</div>
+												</div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								{% for flow in programflow %} 		
+										{% if  flow.status == 'تم قبول الطلب من قبل وحدة الاعمال' and flow.indicator == 'W' %}
+										<style>
+											#editbtn , #deleteForm{
+												display: none;
+											}
+										</style>
+										{% endif %}
+									{% endfor %}
+
+								{% if program.traniees_names %}
+								<style>
+									#deleteForm{
+										display: none;
+									}
+								</style>
+								{% endif %}
+
+								<div class="col-xl-5 col-lg-7">
+									<div class="text-xl-end mt-4 mt-xl-0 d-flex justify-content-end">
+										<a href="{% url 'business_unit_account:edit_program' value_to_edit=program.programid %}" id="editbtn" class="btn btn-primary me-2">تعديل</a>
+										
+										<form id="deleteForm" method="POST" action="{% url 'business_unit_account:delete_course' value_to_delete=program.programid %}">
+											{% csrf_token %}
+											<input type="hidden" name="update_status" value="delete">
+											<button type="submit" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#customDeleteProgram" onclick="return confirmdelete(); ">حذف</button>
+										</form>
+										
+										<a href="{% url 'business_unit_account:traning-program' %}" class="btn btn-primary">رجوع</a>
+									</div>
+									
+									
+									<div class="mt-5">
+										<div class="main-profile-contact-list row">
+											<div class="media col-sm-4 p-0" style="margin-right:43px;">
+												<div class="media-icon bg-primary  me-3 mt-1">
+													<i class="las la-edit fs-20 text-white"></i>
+												</div>
+												<div class="media-body">
+													<span class="text-muted">عدد المدربين المطلوب</span>
+													<div class="font-weight-semibold fs-25">
+														{{program.num_ofinstructors}}
+													</div>
+												</div>
+											</div>
+											<div class="media col-sm-4 p-0" style="margin-right:30px;">
+												<div class="media-icon bg-success me-3 mt-1">
+													<i class="las la-users fs-20 text-white"></i>
+												</div>
+												<div class="media-body">
+													<span class="text-muted"> عدد المتدربين المسموح</span>
+													<div class="font-weight-semibold fs-25">
+														{{program.capacity}}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="profile-cover">
+								<div class="wideget-user-tab">
+									<div class="tab-menu-heading p-0">
+										<div class="tabs-menu1 px-3">
+											<ul class="nav" style="height: 45px;">
+												<li><a href="#tab-1" class="active" data-bs-toggle="tab">معلومات البرنامج التدريبي</a></li>
+												{% if program.status == 'تم نشر البرنامج '%}
+												<li><a href="#tab-2" data-bs-toggle="tab" class="">المتدربين</a></li>
+												<li><a href="#tab-3" data-bs-toggle="tab" class="">المدربين</a></li>
+												{% endif %}
+												<li><a href="#tab-4" data-bs-toggle="tab" class="">تفاصيل حالة الطلب</a></li>
+												{% if program.status == "في انتظار قبول وحدة الأعمال" %}
+												<div class="card-body h5">
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold" style="color:#0084BD;">
+															<div class="button-container" style="display: flex; margin-top: -50px; margin-right:700px;">
+																<form method="POST" action="{% url 'business_unit_account:accepte_facultyprogram' program.programid %}" id="acceptForm"  style="margin-top:-15px;">
+																	{% csrf_token %}
+																	<input type="hidden" name="update_status" value="accept">
+																	<button type="submit" class="btn btn-outline-info"  style="width: 180px;" onclick="return confirmAcceptance();">قبول الطلب</button>
+																</form>
+																<form method="POST" action="{% url 'business_unit_account:rejecte_facultyprogram' program.programid %}"  id="rejectionForm">
+																	{% csrf_token %}
+																	<input type="hidden" name="update_status" value="reject">
+																	<button type="button" class="btn btn-outline-danger" id="rejectButton" style="width: 180px; margin-right: 5px; margin-top: -16px;" onclick="confirmRejection();">رفض الطلب</button>
+																	<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
+																		<label for="rejectionReason"> الرجاء كتابة سبب الرفض </label>
+																		<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3" cols="5"></textarea>
+																	</div>
+																</form>
+															</div>
+														</div>
+													</div>
+												</div>
+												{% endif %}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>	
+						</div>
+                        <!-- END ROW -->
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12 col-md-12">
+								<div class="border-0">
+									<div class="tab-content">
+
+										<!-- order info -->
+										<div class="tab-pane active" id="tab-1">
+											<div class="card">
+												 
+												<div class="card-body h5">
+													<h4 class="font-weight-semibold">وصف المتطلبات</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+														<p>{{program.Descriptionofrequirements}}</p>
+														</div>
+													</div>
+												</div>
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">التاريخ</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+															<small class="text-muted">من </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															{{program.startdate | date:"d-m-Y"}}
+															
+															<small class="text-muted">الى </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															 {{program.enddate | date:"d-m-Y"}}
+														</div>
+													</div>
+												</div>
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">الوقت</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														<small class="text-muted">من </small>
+														<i class="fa fa-clock-o pb-3" style="margin-right: 5px;"></i>
+														{{program.starttime | time:"g:i A"}}
+														
+														<small class="text-muted">الى </small>
+														<i class="fa fa-clock-o pb-3" style="margin-right: 5px;"></i>
+														 {{program.endtime | time:"g:i A"}}
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">الموقع</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{% if program.isonline %}
+															<p> عن بعد </p>
+														{% else %}
+															<p> حضوري </p>
+														{% endif %}
+													</div>	
+												</div>
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">سعر المدرب</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{{program.cost}}ر.س
+														
+														<small class="text-muted" style="margin-right: 5px;"> لكل </small>
+														 {{program.costtype}}
+													</div>	
+												</div> 
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">سعر تسجيل المتدرب</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{{program.totalcost}}ر.س
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">الحقيبة التعليمية</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														{% if program.attachment %}
+															<a href="{% url 'business_unit_account:view_programfile' program.programid %}" type="button" class="btn btn-outline-info" target="_blank">الإطلاع على الحقيبة التعليمية</a> 
+														{% else %}
+															<P>لا يوجد حقيبة تعليمية مرفقة</P>
+														{% endif %}
+													</div>	
+												</div>
+											</div>
+										</div>
+										<!-- Trainees -->
+										<div class="tab-pane" id="tab-2">
+											<div class="card p-5">
+												<div class="row">	
+													{% if program.traniees_names %} 
+													<div class="card-body">
+														<div class="col-xl-12 col-md-12 col-lg-12">	
+														<div class="table-vcenter">
+															<table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">
+																
+																<thead>
+																	<tr>
+																		<th class="border-bottom-0">عدد المتدرب#</th>
+																		<th class="border-bottom-0">اسم المتدرب</th>
+																		<th class="border-bottom-0">معلومات المتدرب</th>
+																		<th class="border-bottom-0">حالة الدفع </th>
+																		<th class="border-bottom-0">الحضور</th>
+																		<th class="border-bottom-0">يوجد إلغاء</th>
+																		<th class="border-bottom-0">تسجيل حالة الدفع</th>
+																	</tr>
+																</thead>
+				
+																<tbody>
+																	{% for traniees in program.traniees_names %} 
+																	<tr>
+																		<td >{{ forloop.counter }}</td>
+																		<td>{{traniees.0}}</td>
+																		
+																		<td>
+																			<small><i class="feather feather-mail"></i> <a href="mailto:{{faculty_member.email}}">{{traniees.1}}</a><br>
+																				 <i class="feather feather-phone-call"></i> {{traniees.2}} <br> 
+																				 <i class="fa fa-address-card"></i> {{traniees.3}}</small>
+																		</td>
+																		<td id="haspaid_{{traniees.8}}">
+																			{% if traniees.5 %}
+																				<p>تم الدفع</p>
+																			{% else %}
+																				<p>لم يتم الدفع</p>
+																			{% endif %}
+																		</td>
+																		<td>
+																			{% if traniees.6 %}
+																				<p>حضر</p>
+																			{% else %}
+																				<p>لم يحضر</p>
+																			{% endif %}
+																		</td>
+																		<td>
+																			{% if traniees.7 %}
+																				<p>تم الالغاء</p>
+																			{% else %}
+																				<p>لا يوجد إلغاء</p>
+																			{% endif %}
+																		</td>
+																		<td id="haspaid_button{{traniees.8}}">
+																			{% if not traniees.5 %}
+																			<div style="margin-right: 10px;">
+																				<a type="button" class="btn btn-outline-info me-2"  onclick="haspaid('{{ traniees.8 }}')">
+																					دفع<i style="width:30px;" class="fa fa-check-square text-nowrap"></i>
+																				</a>  
+																			</div>
+																			{% else %}
+																			<div style="margin-right: 10px;">
+																				<a type="button" class="btn btn-danger me-2"  onclick="haspaid('{{ traniees.8 }}')">
+																					لم يدفع<i style="width:30px;" class="fa fa-window-close text-nowrap"></i>
+																				</a>  
+																			</div>
+																			{% endif %}
+																		</td>
+																	</tr>
+																	{% empty %}
+																	<tr></tr>
+																  {% endfor %}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>	
+														
+													{% else %}
+													<p>لا يوجد متدربين مسجلين</p>
+													{% endif %}
+												</div>
+											</div>
+										</div>
+										
+										<!-- instructors -->
+										<div class="tab-pane" id="tab-3">
+											<div class="card p-5">
+												<div class="row">	
+													{% for instructor in program.instructor_names %} 
+														<div class="col-lg-6">
+															<div class="d-flex align-items-center border p-3 mb-3 br-7">
+																<div class="wrapper ms-3">
+																	<p class="mb-0 mt-1 text-dark font-weight-semibold h4">{{instructor.0}} | {{instructor.2}}</p>
+																	<small><a href="mailto:{{instructor.3}}">{{instructor.3}}</a></small>
+																</div>	
+																<div style="margin-right:110px;">
+																	<a href="{% url 'business_unit_account:faculty-view' faculty_id=instructor.1 %}" type="button" class="btn btn-outline-info me-2">إطلاع</a>
+																</div>
+															</div>
+														</div>
+													{% empty %}
+														<p>لا يوجد مدربين</p>
+													{% endfor %} 
+												</div>
+											</div>
+										</div> 
+										<!-- order workflow ------------------------------------------------------------------>
+										<div class="tab-pane" id="tab-4" style="height: 2100px;">
+											<ul class="timelinestart pb-5" >
+													
+													<!-- 1 -->
+													{% for flow in programflow %} 		
+														{% if flow.status == 'إنشاء الطلب من قبل وحدة الأعمال' and flow.indicator == 'T' %}
+															<li class="timestart-label"><span class="bg-blue">{{flow.date}}</span></li>
+															<li>
+																<i class="fa fa-user bg-primary"></i> 
+																<div class="timelinestart-item">
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																</div>
+															</li>
+														{% endif %}
+													{% endfor %} 	
+													<!-- or by faculty left -->
+													{% if program.initiatedby == 'FacultyOrStaff' %}
+														<li class="timestart-label"><span class="bg-blue">{{program.dataoffacultyproposal}}</span></li>
+														<li>
+															<i class="fa fa-user bg-primary"></i> 
+															<div class="timelinestart-item">
+																<h3 class="timelinestart-header"><span> إنشاء الطلب من قبل {{program.Requestername}}</span></h3>
+															</div>
+														</li>
+													{% endif %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 2 -->
+													{% for flow in programflow %}
+														{% if  flow.status == "تم قبول الطلب من قبل وحدة الاعمال" and flow.indicator == 'T' %}
+																<li>
+																	<i class="fa fa-user bg-success"></i>
+																	<div class="timelinestart-item">
+																		<span class="time">{{flow.date}}</span>
+																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																	{% if program.num_ofinstructors != IdStatusDateAccept  and waitingforaccept == 0 %}
+																	{% for flow2 in programflow %}
+																		{% if flow2.status == "فتح التقديم لتقديم البرنامج لأعضاء هيئة التدريس " and flow2.indicator == 'W' %}
+																		<div class="timelinestart-body">	
+																			<form method="post" action="{% url 'business_unit_account:send_to_new_trainees2' program.programid %}" onsubmit=" return validateInstructorsCount()">
+																				{% csrf_token %}
+																				<div class="form-group">
+																					<input hidden name="num_ofinstructors2" name="num_ofinstructors2" value="{{program.num_ofinstructors}}">
+																					<label>الرجاء اختيار  مدرب/ ين و عددهم : {{ program.num_ofinstructors|add:"-1" }} <span style="color: red;">*</span></label>
+																					<select class="form-control select2"  id="mySelect2" name="instructor" data-placeholder= "اختار المدرب" multiple required>
+																						{% for faculty_member in faculty_members %}   
+																						 <option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
+																							 {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																						</option> 
+																						{% endfor %}
+																					</select> 
+																					<span class="error-message-instructor" style="color: red;"></span><br>
+																					<input type="checkbox" id="openToAllCheckbox" name="openToAllCheckbox" value ='open_to_all_memebers'>
+																					<label for="openToAllCheckbox">ارسال لجميع اعضاء هيئة التدريس </label>
+																				</div>
+													 						<div class="row">
+																					<div class="col-6">
+																						<input type="hidden" name="update_status" value="change_faculty">
+																						<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 140px; margin-right: 5px;">رسل الطلب إلى مدربين</button>
+																					</div>
+																				</div>
+																			</form>
+																		</div>
+																		{% endif %}
+																		{% endfor %}
+																	{% endif %}
+																	</div>
+																</li>
+														{% endif %} 
+													{% endfor %}
+													<!-- or -->
+													{% if program.status == 'تم رفض الطلب من قبل وحدة الأعمال' %}
+														<li>
+															<i class="fa fa-window-close bg-danger"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{program.dataofburejection}}</span>
+																<h3 class="timelinestart-header"><span>{{program.status}}</span></h3>
+																<div class="timelinestart-body">
+																	<h5>سبب الرفض:</h5>
+																	<p>{{program.rejectionresons}}</p>
+																</div>
+															</div>
+															</li>
+													{% endif %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 3 -->
+													{% for flow in programflow %}
+														{% if  flow.status == "تم قبول الطلب من قبل وحدة الاعمال" and flow.indicator == 'T' %}
+															{% if program.num_ofinstructors != IdStatusDateAccept  and waitingforaccept > 0 %}
+																<li>
+																	<i class="fa fa-ellipsis-h bg-warning"></i>
+																	<div class="timelinestart-item">
+																		<span class="time">{{flow.date}}</span>
+																		<h3 class="timelinestart-header"><span>تم ارسال الطلب إلى المدرب/ين</span></h3>
+																		<div class="timelinestart-body">
+																			{% for instructor in id_status_dates %} 
+																				{% if instructor.instructor_id != program.programleader %}
+																				<div class="wrapper ms-3">
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
+																				</div>
+																				{% endif %} 
+																			{% endfor %} 
+																		</div>
+																	</div>
+																</li>
+															{% endif %}
+														{% endif %} 
+													{% endfor %}
+													<!-- or -->
+													{% for flow in programflow %} 	
+														{% if flow.status ==  'تم ارسال الطلب إلى المدربين'  or flow.status == "تم ارسال الطلب إلى المدرب" %}
+															{% if flow.indicator == 'T' %}
+															<li>
+																<i class="fa fa-ellipsis-h bg-warning"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																	<div class="timelinestart-body">
+																		{% for instructor in id_status_dates %} 
+																			<div class="wrapper ms-3">
+																				<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
+																			</div>
+																		{% endfor %} 
+																	</div>
+																</div>
+															</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													<!-- or -->
+													{% for flow in programflow %} 	
+														{% if flow.status ==  'فتح التقديم لتقديم البرنامج لأعضاء هيئة التدريس ' %}
+															{% if flow.indicator == 'T' %}
+															<li>
+																<i class="fa fa-ellipsis-h bg-warning"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																{% if program.status == 'فتح الفرصة للجميع' %}
+																	{% if applicationidcount > 0 %}
+																		<div class="timelinestart-body">
+																			<form method="post" action="{% url 'business_unit_account:select_program_team' program.programid %}" id="selectTrainersForm" >
+																				{% csrf_token %}
+																				<input type="hidden" value="{{program.num_ofinstructors}}" id="num_ofinstructors">
+																				<input type="hidden" value="{{program.programleader}}" id="programleader">
+																				<div class="col-xl-12 col-md-12 col-lg-12">  
+																					<div class="table-vcenter">
+																						<table class="table table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
+																							<thead>
+																								<tr>
+																									<th class="border-bottom-0">المدربون المتقدمين</th>
+																									<th class="border-bottom-0">تاريخ التقديم</th>
+																									<th class="border-bottom-0">تعين مدرب</th>
+																								</tr>
+																							</thead>
+																							<tbody>
+																								{% for application in id_status_dates %}
+																									{% if application.status == 'participationRequest' %}
+																									<tr>
+																										<td>{{ application.instructor.first_name }} {{ application.instructor.last_name }}</td>
+																										<td>{{ application.date }}</td>
+																										<td>
+																											<input type="checkbox" name="trainer_selection" value="{{ application.instructor.id }}">
+																										</td>
+																									</tr>
+																									{% endif %}
+																								{% endfor %}
+																							</tbody>
+																						</table>
+																					</div>
+																				</div>		
+																				<span class="error-message-trainer_selection" style="color: red;"></span>
+																				<div class="row">
+																					<div class="col-6">
+																						<input type="hidden" name="update_status" value="">
+																						<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 140px; margin-right:410px;">اختيار مدربين البرنامج</button>
+																					</div>
+																				</div>
+																			</form>
+																		</div>
+																	{% endif %}
+																{% endif %}
+																</div>
+															</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 4  -->
+															{% for flow in programflow  %} 
+																{% if flow.status == 'تم فرز الطلبات واختيار فريق البرنامج' and flow.indicator == 'T'   %}
+																<li>
+																	<i class="fa fa-check-square bg-primary"></i>
+																	<div class="timelinestart-item">
+																		<span class="time">{{flow.date}}</span>
+																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																		<div class="timelinestart-body">
+																			{% for instructor in program.instructor_names %} 
+																				<div class="wrapper ms-3">
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.0}} | <small><a href="mailto:{{instructor.3}}">{{instructor.3}}</a></small></p>
+																				</div>
+																			{% endfor %} 
+																		</div>
+																	</div>
+																</li>
+																{% endif %} 
+															{% endfor %} 
+														<!-- or  -->
+															{% if not forall %}
+																{% for status in id_status_dates %} 
+																	{% if status.status == 'تم قبول الطلب من قبل المدرب' %}
+																		{% if status.instructor_id != program.programleader %}
+																		<li>
+																			<i class="fa fa-user bg-success"></i>
+																			<div class="timelinestart-item">
+																				<span class="time">{{status.date}}</span>
+																				<h3 class="timelinestart-header"><span>{{status.status}}</span></h3>
+																				<div class="timelinestart-body">
+																					<div class="wrapper ms-3">
+																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{status.instructor.first_name}} {{status.instructor.last_name}} | <small><a href="mailto:{{instructors.3}}">{{status.instructor.email}}</a></small></p>
+																					</div>
+																				</div>
+																			</div>
+																		</li>
+																		{% endif %} 
+																	{% endif %} 
+																{% endfor %} 	
+															{% endif %} 
+													<!-- or -->
+													{% for flow in programflow  %} 
+													{% if   flow.status ==  'تم ارسال الطلب إلى المدربين' or flow.status ==  'تم ارسال الطلب إلى المدرب' and flow.indicator == 'T'  %}
+														{% if  program.num_ofinstructors > numofreq  and IdStatusDateRejection == 0 %}
+															{% for _ in "x"|ljust:newinstructors %}
+															<li>
+																<i class="fa fa-user bg-primary"></i>
+																<div class="timelinestart-item">
+																	<span class="time"></span>
+																	<h3 class="timelinestart-header"><span>اختار مدرب تريد طلب ان يدرب</span></h3>
+																	<div class="timelinestart-body">
+																		<form method="post"  action="{% url 'business_unit_account:send_to_new_trainee3' program.programid %}">
+																			{% csrf_token %}
+																			<div class="row">
+																				<div class="col-md-6">
+																					<div class="form-group" >
+																						<label class="form-label"> الرجاء اختيار  مدرب آخر  <span style="color: red;">*</span></label>
+																						<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
+																							<option value="" disabled selected>مدرب آخر</option>
+																							{% for faculty_member in faculty_members %}
+																							<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.instructorid %} disabled {% endif %}>
+																								{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
+																							</option>
+																							{% endfor %}
+																						</select>
+																					</div>
+																					<div class="col-6">
+																						<input type="hidden" name="update_status" value="change_faculty">
+																						<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 160px; margin-right: 5px;">رسل طلب إلى مدرب اخر</button>
+																					</div>
+																				</div>
+																			</div>        
+																		</form>	
+																	</div>
+																</div>
+															</li>	
+															{% endfor %}			
+														{% endif %} 
+														{% endif %} 
+													{% endfor %}	
+													<!-- or -->
+													{% if IdStatusDateRejection > 0 and program.num_ofinstructors != IdStatusDateAccept %}
+														{% for IdStatusDateRejectionValues in IdStatusDateRejectionValues %}
+														<li id="deleteflow_{{IdStatusDateRejectionValues.instructor.id}}">
+															<i class="fa fa-user bg-danger"></i>
+															<div class="timelinestart-item">
+																<span class="time">{{IdStatusDateRejectionValues.date}}</span>
+																<h3 class="timelinestart-header"><span>تم الرفض من قبل {{IdStatusDateRejectionValues.instructor.first_name}} {{IdStatusDateRejectionValues.instructor.last_name}} | <small><a href="mailto:{{IdStatusDateRejectionValues.instructor.email}}">{{IdStatusDateRejectionValues.instructor.email}}</a></small></span></h3>
+																<div class="timelinestart-body" >
+																	<div class="wrapper ms-3">
+																		<p class="mb-0 mt-1 text-dark font-weight-semibold"></p>
+																	</div>
+																	<form method="post" id="form_{{ IdStatusDateRejectionValues.id }}" action="{% url 'business_unit_account:send_to_new_trainee' program.programid IdStatusDateRejectionValues.instructor.id %}">
+																		{% csrf_token %}
+																		<input type="hidden" name="programId" value="{{ program.programid }}">
+    																	<input type="hidden" name="instructorId" value="{{ IdStatusDateRejectionValues.instructor.id }}">
+																		<div class="row">
+																			<div class="col-md-6">
+																				<div class="form-group">
+																					<h5 style="display: inline-block; margin-right: 10px;">سبب الرفض:</h5>
+																					<p id="rejection-reasons" style="display: inline-block; margin-right: 10px;">{{ IdStatusDateRejectionValues.rejectionresons }}</p>
+																				</div>
+																			</div>
+																			<div class="col-md-6">
+																				<div class="form-group" >
+																					<label class="form-label">الرجاء اختيار  مدرب آخر  <span style="color: red;">*</span></label>
+																					<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
+																						<option value="" disabled selected>مدرب آخر</option>
+																						{% for faculty_member in faculty_members %}
+																						<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.instructorid %} disabled {% endif %}>
+																							{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
+																						</option>
+																						{% endfor %}
+																					</select>
+																				</div>
+																				<div class="col-6">
+																					<input type="hidden" name="update_status" value="change_faculty">
+																					<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 160px; margin-right: 5px;">رسل طلب إلى مدرب اخر</button>
+																				</div>
+																			</div>
+																		</div>        
+																	</form>																	
+																</div>
+															</div>
+														</li>
+														{% endfor %}	
+													{% endif %} 
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 5  might delete this -->
+													<!-- {% for flow in programflow %}
+														{% if  flow.status == "تم قبول الطلب من قبل وحدة الاعمال" and flow.indicator == 'T' %}
+															{% if program.num_ofinstructors == IdStatusDateAccept %}
+																<li>
+																	<i class="fa fa-users bg-success"></i>
+																	<div class="timelinestart-item">
+																		<span class="time">{{flow.date}}</span>
+																		<h3 class="timelinestart-header"><span>تم القبول من جميع المدربين</span></h3>
+																		<div class="timelinestart-body">
+																			{% for instructor in id_status_dates %} 
+																				<div class="wrapper ms-3">
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
+																				</div>
+																			{% endfor %} 
+																		</div>
+																	</div>
+																</li>
+															{% endif %}
+														{% endif %} 
+													{% endfor %} -->
+													<!-- or -->
+													{% for flow in programflow %} 
+														{% if flow.status == 'تم ارسال الطلب إلى المعهد' and flow.indicator == 'C' %}
+															<li>
+																<i class="fa fa-check-square bg-primary"></i> 
+																<div class="timelinestart-item">
+																	<span class="time"></span>
+																	<h3 class="timelinestart-header"><span>تم قبول الطلب من قبل المدرب/ين</span></h3>
+																	<div class="d-flex justify-content-between align-items-center timelinestart-body">
+																		<div>
+																			{% for instructor in program.instructor_names %} 
+																				<div class="wrapper ms-3">
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
+																				</div>
+																			{% endfor %}
+																		</div>
+																		<div>
+																			<form id="myForm" method="POST" action="{% url 'business_unit_account:sendtokai' program.programid %}">
+																				{% csrf_token %}
+																				<input type="hidden" name="update_status" value="alertConfirmSendToKai">
+																				<button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#customAlertsendtokai" style="width: 140px; margin-right: 5px;">إرسال الطلب إلى معهد</button>
+																			</form>
+																		</div>
+																	</div>
+																</div>
+															</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 6 -->
+														{% for flow in programflow %} 	
+															{% if flow.status == 'تم ارسال الطلب إلى المعهد'  and flow.indicator == 'T' %}
+																<li id="kai-send">
+																	<i class="fa fa-ellipsis-h bg-warning"></i> 
+																	<div class="timelinestart-item">
+																		<span class="time">{{flow.date}}</span>
+																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																	</div> 
+																</li>	
+															{% endif %}
+														{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 7 -->
+														{% if program.status == 'تم رفض الطلب من قبل المعهد' %}
+														<li>
+															<i class="fa fa-window-close bg-danger"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{program.dataofkairejection}}</span>
+																<h3 class="timelinestart-header"><span>{{program.status}}</span></h3>
+																<div class="timelinestart-body">
+																	<h5>سبب الرفض:</h5>
+																	<p>{{program.rejectionresons}}</p>
+																</div>
+															</div>
+															</li>
+														{% endif %}					
+													<!-- or -->
+													{% for flow in programflow %} 	
+														{% if flow.status == 'تم قبول الطلب من قبل المعهد'  and flow.indicator == 'T' %}
+															<li>
+																<i class="fa fa-check-square bg-success"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																	<div class="timelinestart-body">
+																		<h5>النسبة المطلوبة :  {{program.kaipercentage}}</h5>
+																	</div>
+																	{% for flow in programflow %} 
+																		{% if  flow.status == 'تم نشر البرنامج '  and flow.indicator == 'W' %}	
+																		<div class="border-top"></div>	
+																		<div class="timelinestart-body">
+																			<form action="{% url 'business_unit_account:publish1' program.programid %}" method="POST" onsubmit="return validateForm();" enctype="multipart/form-data">
+																				{% csrf_token %}
+																				<input type="hidden" id="startdate" value="{{ program.startdate }}">
+																				<p style="color: #0084BD;">قبل نشر البرنامج بالتطبيق الرجاء التأكد من جميع معلومات البرنامج التدريبي و تكملة المعلومات المتبقيه قبل نشرها في التطبيق.</p>
+																				<div class="row">
+																					<div class="col-6">
+																						<label class="form-label">ادخال اخر تاريخ ممكن للمتدرب التقديم على البرنامج <span style="color: red;">*</span></label>
+																						<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="lastenrollmentdate" value="lastenrollmentdate" required>
+																						<span class="error-message-lastenrollmentdate" style="color: red;"></span>
+																					</div>
+																					<div class="col-md-6">
+																						<div class="form-group">
+																							<label class="form-label"> اسم البرنامج التدريبي باللغة الانجليزية <span style="color: red;">*</span></label>
+																							<input class="form-control" placeholder="اسم البرنامج التدريبي باللغة الانجليزية" name="topic_english" required>
+																							<span class="error-message-topic_english" style="color: red;"></span>
+																						</div>
+																					</div>  
+																					
+																					<div class="col-6">
+																						<label class="form-label"> وصف البرنامج التدريبي <span style="color: red;">*</span></label>
+																						<textarea class="form-control" placeholder="وصف البرنامج التدريبي"  data-input name="description" required></textarea>
+																						<span class="error-message-description" style="color: red;"></span>
+																					</div>
+																					<div class="col-6">
+																						<label class="form-label">  وصف البرنامج التدريبي  باللغة الإنجليزيه<span style="color: red;">*</span></label>
+																						<textarea class="form-control" placeholder=" وصف البرنامج التدريبي  باللغة الإنجليزيه "  data-input name="description_english" required></textarea>
+																						<span class="error-message-description_english" style="color: red;"></span><br>
+																					</div>
+																						<div class="form-group">
+																							<div class="form-group">
+																								<label class="form-label"> رابط البرنامج / عنوان الموقع <span style="color: red;">*</span></label>
+																								<input class="form-control" placeholder="رابط البرنامج / عنوان الموقع " name="location" required>
+																								<span class="error-message-location" style="color: red;"></span>
+																							</div>
+																						</div>    
+																					{% if not program.attachment %}
+																						<div class="form-group">
+																							<label class="form-label">ارفق الحقيبة التعليمية  <small style="color: red;">*  .pdf , .pptx , .doc , .docx , .xlsx </small></label>
+																							<div class="form-group">
+																								<label class="form-label"></label>
+																								<input class="form-control" type="file" name="attachment" required accept=".pdf, .pptx, .doc , .docx , .xlsx">
+																							</div>
+																						</div>    
+																					{% endif %}
+																					<div class="col-6">
+																						<input type="hidden" name="update_status" value="sendtokai">
+																						<button type="submit" class="btn btn-outline-info confirm-submit" style=" margin-right:400px; margin-top: 10px; width:150px;">نشر البرنامج</button>
+																					</div>
+																				</div>
+																			</form>
+																		</div>
+																		{% endif %}
+																	{% endfor %}	
+																</div>
+															</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 8 -->
+													{% for flow in programflow %} 	
+														{% if flow.status == 'تم نشر البرنامج ' and flow.indicator == 'T' %}
+														<li>
+															<i class="fa fa-chevron-circle-up bg-primary"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{flow.date}}</span>
+																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+															</div>
+														</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 9 -->
+													{% for flow in programflow %} 	
+														{% if flow.status == 'انتهى تسجيل المتدربين' and flow.indicator == 'T' %}
+														<li>
+															<i class="fa fa-chevron-circle-down bg-primary"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{flow.date}}</span>
+																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+															</div>
+														</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 10 -->
+													{% for flow in programflow %} 	
+														{% if flow.status == 'بدأ البرنامج' and flow.indicator == 'T' %}
+														<li>
+															<i class="fa fa-check-square bg-primary"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{flow.date}}</span>
+																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+															</div>
+														</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<!-- 11 -->
+													{% for flow in programflow %} 	
+														{% if flow.status == 'إنتهاء البرنامج' and flow.indicator == 'T' %}
+														<li>
+															<i class="fa fa-check-square bg-success"></i> 
+															<div class="timelinestart-item">
+																<span class="time">{{flow.date}}</span>
+																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+															</div>
+														</li>
+														{% endif %}
+													{% endfor %} 
+													<!-- ------------------------------------------------------------------------------------------------------------>
+													<li>
+														<i class="fa fa-clock-o bg-primary pb-3"></i>
+													</li>
+											</ul>
+										</div>
+										
+										
+									</div>
+								</div>
+							</div>
+						</div>
+                        <!-- END ROW -->
+        {% endblock %}
+
+		
+{% block scripts %}
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+        
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+		<!-- Include jQuery -->
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+		<!-- Include Bootstrap CSS -->
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Include Bootstrap Bundle with Popper (required for modals) -->
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
+		
+		
+<script>
+	$(document).ready(function () {
+    var $select1 = $('#mySelect').selectize(); // Ensure this corresponds to the correct ID
+    var $select = $('#mySelect2').selectize();
+
+    $('#openToAllCheckbox').change(function() {
+        var selectize = $select[0].selectize;
+
+        if ($(this).prop('checked')) {
+            selectize.clear(); // Clear selected options if checkbox is checked
+            selectize.disable(); // Disable the selectize control
+            document.querySelector('.error-message-instructor').innerText = '';
+        } else {
+            selectize.enable(); // Enable the selectize control
+        }
+    });
+
+	$('#mySelect2').on('change', function() {
+			validateInstructors();
+	});
+
+});
+
+</script>
+<script>
+// ***************************************************
+
+function validateInstructors() {
+        var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
+        var selectedCount = $('#mySelect2 option:selected').length;
+		num_ofinstructors = num_ofinstructors -1
+
+        if (selectedCount !== num_ofinstructors) {
+            $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+        } else {
+            $('.error-message-instructor').text('');
+        }
+    }
+</script>
+<script>
+ function validateInstructorsCount() {
+        var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
+        var selectedCount = $('#mySelect2 option:selected').length;
+        var openToAllCheckboxChecked = $('#openToAllCheckbox').is(':checked');
+		num_ofinstructors = num_ofinstructors -1
+
+        if (openToAllCheckboxChecked || selectedCount === num_ofinstructors) {
+            return true;
+        } else {
+            $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+            return false;
+        }
+    }
+</script>
+<script>
+	document.getElementById('selectTrainersForm').addEventListener('submit', function(e) {
+		var checkboxes = document.querySelectorAll('input[name="trainer_selection"]:checked');
+		var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
+		var programleader = document.getElementById('programleader').value;
+		var errorMessage = document.querySelector('.error-message-trainer_selection');
+		
+
+		if (programleader){
+			num_ofinstructors = num_ofinstructors -1;
+		}
+
+		if(num_ofinstructors === 0){
+			num_ofinstructors = 1;
+		}	
+
+		if (checkboxes.length !== num_ofinstructors) {
+			e.preventDefault();
+			errorMessage.textContent = 'الرجاء تحديد المدربين ' + num_ofinstructors + ' بالضبط للبرنامج.';
+		} else {
+			errorMessage.textContent = '';
+		}
+	});
+</script>
+
+<script>
+	function validateForm() {
+		// Retrieve form elements
+		var lastenrollmentdateElement = document.querySelector('input[name="lastenrollmentdate"]');
+		var startdateElement = document.getElementById('startdate'); 
+		var descriptionElement = document.querySelector('input[name="description"]');
+		var description_englishElement = document.querySelector('input[name="description_english"]');
+		var locationElement = document.querySelector('input[name="location"]');
+		var topicElement = document.querySelector('input[name="topic_english"]');
+		var lastenrollmentdate = new Date(lastenrollmentdateElement.value);
+		var startDate = new Date(startdateElement.value); 
+
+		// Check if last enrollment date is before start date
+		if (lastenrollmentdate >= startDate) {
+			return false;
+		}
+
+		// Check topic
+		if (locationElement.value.length < 5) {
+			return false;
+		} else if (/^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
+			return false;
+		} 
+		
+		// Check topic
+		if (topicElement.value.length < 5) {
+			return false;
+		} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+			return false;
+		} 
+		
+		// Check descriptionElement
+		if (descriptionElement.value.length < 5 || description_english.value.length < 5) {
+			return false;
+		} else if (/^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_english.value.trim())) {
+			return false;
+		}
+
+		return true;			
+	}
+</script>
+
+<script>
+	$(document).ready(function() {
+
+		$('input[name="lastenrollmentdate"]').on('blur', function() {
+			var startDate = $('#startdate').val(); 
+			var lastenrollmentdate = $(this).val();
+
+			if (lastenrollmentdate === '') {
+				$(this).removeClass('is-invalid');
+				$(this).siblings('.error-message-lastenrollmentdate').text('');
+			} else {
+				startDate = new Date(startDate);
+				lastenrollmentdate = new Date(lastenrollmentdate);
+
+				if (lastenrollmentdate >= startDate) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-lastenrollmentdate').text('يجب ان يكون اخر يوم تسجيل قبل تاريخ البدء');
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-lastenrollmentdate').text('');
+				}
+			}	
+		});
+
+
+		$('input[name="topic_english"]').on('blur', function() {
+			var topic = $(this).val();
+			if (topic.length < 5) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-topic_english').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-topic_english').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+			}else {
+			$(this).removeClass('is-invalid');
+			$(this).siblings('.error-message-topic_english').text('');
+			}
+			});
+
+		
+		$('input[name="location"]').on('blur', function() {
+			var topic = $(this).val();
+			if (topic.length < 5) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-location').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-location').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+			}else {
+			$(this).removeClass('is-invalid');
+			$(this).siblings('.error-message-location').text('');
+			}
+			});
+
+		
+		$('textarea[name="description"]').on('blur', function() {
+				var topic = $(this).val();
+				if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description').text('يجب أن يكون على الأقل خمسة أحرف');
+				}else if (/^\d+$/.test(topic.trim())) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-description').text('');
+				}
+			});
+
+		
+		$('textarea[name="description_english"]').on('blur', function() {
+				var topic = $(this).val();
+				if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('يجب أن يكون على الأقل خمسة أحرف');
+				}else if (/^\d+$/.test(topic.trim())) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('');
+				}
+			});
+	});
+</script>
+
+<script>
+	function haspaid(register_id) {
+    var element = $('#haspaid_' + register_id);
+    var button = $('#haspaid_button' + register_id);
+    var attendURL =  "{% url 'business_unit_account:haspaid' register_id=0 %}".replace('0', register_id);
+
+		$.ajax({
+			url: attendURL,
+			type: 'GET',
+			success: function(response) { 
+				if (response.success_message !== undefined) {
+					if (response.success_message === true) {
+						element.html('<p>تم الدفع</p>');
+						button.html('<div style="margin-right: 10px;"><a type="button" class="btn btn-danger me-2" onclick="haspaid(' + register_id + ')">'+
+							'لم يدفع <i style="width:30px;" class="fa fa-window-close text-nowrap"></i>'+
+							'</a> </div>');   
+					} else {
+						element.html('<p>لم يتم الدفع</p>');
+						button.html('<div style="margin-right: 10px;"><a type="button" class="btn btn-outline-info me-2" onclick="haspaid(' + register_id + ')">'+
+							'دفع <i style="width:30px;" class="fa fa-check-square text-nowrap"></i>'+
+							'</a> </div>');   
+					}
+				} else {
+					console.log('Response message not received');
+				}
+			},
+			error: function(error) {
+				console.error('Error occurred:', error);
+			}
+		});
+	}
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize flatpickr for date inputs
+        flatpickr('.flatpickr[data-input][data-date]', {
+            dateFormat: "d-m-Y",
+            minDate: "today",
+        });
+
+        // Initialize flatpickr for time inputs
+        flatpickr('.flatpickr[data-input][data-time]', {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+        });
+    });
+</script>
+
+
+<script> 
+    $(function() {
+          $(document).ready(function () {
+            var todaysDate = new Date();
+            var year = todaysDate.getFullYear();
+            var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+            var day = ("0" + todaysDate.getDate()).slice(-2);
+            var maxDate = (year +"-"+ month +"-"+ day);
+            $('.date').attr('min',maxDate);
+          });
+        });``
+</script>
+
+<!-- delete program -->
+<script>
+var deleteConfirmed = false;
+    
+    $('#customDeleteProgram').on('show.bs.modal', function() {
+     
+    })
+    
+    $('#alertConfirmDelete').click(function() {
+		deleteConfirmed = true;  // Set formSubmitted to true when confirmed
+      $('#deleteForm').submit();
+    });
+    
+    $('#deleteForm').on('submit', function(e) {
+      if(!deleteConfirmed) {
+        e.preventDefault();
+        $('#customDeleteProgram').modal('show');
+      }
+    });
+
+</script>
+
+
+<!-- confirmAcceptance from bu -->
+<script>
+	function customAlert(message) {
+    console.log('customAlert called');
+    $('#alertMessage').text(message);
+    $('#customAlert').modal('show');
+}
+
+let formShouldSubmit = false;
+
+function confirmAcceptance(event) {
+    console.log('confirmAcceptance called');
+    
+    if(!formShouldSubmit) {
+        event.preventDefault();
+        customAlert('هل أنت متأكد من قبول الطلب؟');
+    }
+}
+
+$(document).ready(function() {
+    $('#alertConfirm').on('click', function() {
+        console.log('confirm button clicked');
+        $('#customAlert').modal('hide');
+        formShouldSubmit = true;
+        document.getElementById('acceptForm').submit();
+    });
+
+    $('#acceptForm').on('submit', confirmAcceptance);
+});
+</script>
+
+<!-- confirmRejection from bu -->
+<script>
+	// Define the customAlert function
+	function customAlert(message) {
+		// Update the alert message
+		document.getElementById('alertMessage').innerText = message;
+		// Show the custom alert modal
+		var customAlertModal = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlertModal.show();
+	}
+	
+	function confirmRejection() {
+		// Show the rejection reason modal
+		var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+		rejectionReasonModal.show();
+	}
+	
+	// Event listener for the confirm button in the custom alert modal
+	document.getElementById('alertConfirm').addEventListener('click', function() {
+		var customAlertModal = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlertModal.hide();
+	});
+	
+	// Event listener for the confirm button of the rejection reason modal
+	document.getElementById('rejectionReasonConfirm').addEventListener('click', function() {
+		var rejectionReason = document.getElementById('rejectionReasonInput').value;
+		if (rejectionReason.length > 5 && /\D/.test(rejectionReason)) {
+			var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+			rejectionReasonModal.hide();
+			document.getElementById('rejectionReason').value = rejectionReason;
+			document.getElementById('rejectionForm').submit();
+		}
+	});
+	</script>
+
+<!-- 3 -->
+<script>
+	function showCustomConfirmModal(message, callback) {
+		// Insert the message into the modal
+		$('#alertPlaceholder').text(message);
+	
+		// Show the modal
+		$('#rejectionReasonModal').modal('show');
+	
+		// Bind a one-time event listener to the confirm button
+		$('#rejectionReasonConfirm').one('click', function() {
+			// Hide the modal
+			$('#rejectionReasonModal').modal('hide');
+	
+			// Call the callback function
+			callback(true);
+		});
+	}
+</script>
+
+
+<!-- send to kai -->
+<script>
+    var formSubmitted = false;
+    
+    $('#customAlertsendtokai').on('show.bs.modal', function() {
+     
+    })
+    
+    $('#alertConfirmSendToKai').click(function() {
+      formSubmitted = true;  // Set formSubmitted to true when confirmed
+      $('#myForm').submit();
+    });
+    
+    $('#myForm').on('submit', function(e) {
+      if(!formSubmitted) {
+        e.preventDefault();
+        $('#customAlertsendtokai').modal('show');
+      }
+    });
+</script>
+
+
+
+
+{% endblock %}

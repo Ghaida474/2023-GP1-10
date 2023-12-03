@@ -86,15 +86,7 @@
 											<form method="post" enctype="multipart/form-data"  name="form1">
 												{% csrf_token %}
 
-												<label>{{ form.username.label_tag }} <span style="color: red;">*</span></label>
-												{{ form.username }}
-												{% if form.username.errors %}
-													{% for error in form.username.errors %} 
-													<span style="color: red;" class="error-message">{{error}}</span>
-													{% endfor %}
-												{% endif %} 
-												<br>
-
+												
 
 												<label>{{ form.phonenumber.label_tag }} <span style="color: red;">*</span></label>
 												{{ form.phonenumber }}
@@ -164,20 +156,7 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        {% if success %}
-          <script>
-          alert('تم تحديث المعلومات بنجاح.');
-          window.location.href = "{% url 'faculty_staff_account:profile' %}";  // Redirect after alert
-          </script>
-        {% endif %}
-
-		<!-- {% if form2updated %}
-			<script>
-			
-			</script>
-		{% endif %}  -->
-
-
+    
       <script>
         $(document).ready(function() {
         // Phone number validation

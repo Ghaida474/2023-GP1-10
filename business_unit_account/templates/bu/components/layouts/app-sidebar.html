@@ -1,8 +1,13 @@
   {% load static %}   
   <style>
-.slide .side-menu__item a:hover {
-    color: #095590 !important
+.slide:hover{
+	background-color: #0084BD !important;
 }
+
+.slide:hover .sidemenu_icon{
+	color: #fff !important;
+}
+
   </style>        
 				<div class="sticky">
 					<aside class="app-sidebar">
@@ -29,8 +34,8 @@
 									<!-- ********************** -->
 									<li class="slide" >
 										<a href="{% url 'business_unit_account:business_unit_home'%}" class="side-menu__item" style="color:#0084BD;">
-											<i class="feather feather-home  sidemenu_icon" style="color:#0084BD;"></i>
-											<span class="side-menu__label">لوحة القيادة</span>
+											<i class="feather feather-home  sidemenu_icon"  style="color:#0084BD;"></i>
+											<span class="side-menu__label">لوحة التحكم</span>
 										</a>
 									</li>
 									<!-- ********************** -->
@@ -52,44 +57,9 @@
 									<li class="slide">
 										<a href="{% url 'business_unit_account:traning-program' %}" class="side-menu__item" style="color:#0084BD;">
 											<i class="feather fa fa-ravelry  sidemenu_icon" style="color:#0084BD;"></i>
-											<span class="side-menu__label"> دورات التدربية و ورش العمل</span>
+											<span class="side-menu__label">البرامج التدريبية</span>
 										</a>
 									</li>
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a href="empty-page" class="side-menu__item">
-											<i class="feather ion-university sidemenu_icon"></i>
-											<span class="side-menu__label">Master</span>
-										</a>
-									</li> -->
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a href="hr-award" class="side-menu__item">
-											<i class="feather ion-ribbon-b sidemenu_icon"></i>
-											<span class="side-menu__label">Awards</span>
-										</a>
-									</li> -->
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a href="empty-page" class="side-menu__item">
-											<i class="feather ion-cash sidemenu_icon"></i>
-											<span class="side-menu__label">Revenues</span>
-										</a>
-									</li> -->
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a class="side-menu__item"  href="chat">
-											<i class="feather feather-message-square sidemenu_icon"></i>
-											<span class="side-menu__label">Chat</span>
-										</a>
-									</li> -->
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a href="settings" class="side-menu__item" >
-											<i class="feather fa fa-cog sidemenu_icon"></i>
-											<span class="side-menu__label">Settings</span>
-										</a>
-									</li> -->
 									<!-- ********************** -->
 								</ul>
 							</div>

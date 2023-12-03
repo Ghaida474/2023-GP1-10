@@ -86,15 +86,7 @@
 											<form method="post" enctype="multipart/form-data"  name="form1">
 												{% csrf_token %}
 
-												<label>{{ form.username.label_tag }} <span style="color: red;">*</span></label>
-												{{ form.username }}
-												{% if form.username.errors %}
-													{% for error in form.username.errors %} 
-													<span style="color: red;" class="error-message">{{error}}</span>
-													{% endfor %}
-												{% endif %} 
-												<br>
-
+												
 
 												<label>{{ form.phonenumber.label_tag }} <span style="color: red;">*</span></label>
 												{{ form.phonenumber }}
@@ -164,14 +156,6 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        {% if success %}
-          <script>
-          alert('تم تحديث المعلومات بنجاح.');
-          window.location.href = "{% url 'business_unit_account:profile' %}";  // Redirect after alert
-          </script>
-        {% endif %}
-
-		
 
 
       <script>
@@ -250,12 +234,7 @@
             var isOfficeNoValid = officeNoRegex.test(officeno);
             var isCvFileTypeValid = ($.inArray(cvFileType, allowedFileTypes) != -1);
 
-            console.log('phoneNumber:', phoneNumber, 'Matches regex:', isPhoneNumberValid);
-            console.log('iban:', iban, 'Matches regex:', isIbanValid);
-            console.log('specialization:', specialization, 'Length >= 5:', specialization.length >= 5, 'لا يحتوي على أحرف خاصة:', !specialCharRegex.test(specialization));
-            console.log('officeno:', officeno, 'Matches regex:', isOfficeNoValid);
-            console.log('cvFileType:', cvFileType, 'Is allowed:', isCvFileTypeValid);
-
+          
             if (!isPhoneNumberValid || !isIbanValid || !isSpecializationValid || !isOfficeNoValid || !isCvFileTypeValid) {
               e.preventDefault();
               alert('يرجى تعبئة جميع الحقول بشكل صحيح');

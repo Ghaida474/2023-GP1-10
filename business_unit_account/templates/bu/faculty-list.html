@@ -28,7 +28,7 @@
 												
 												<thead>
 												<div class="row mt-2">
-													<div class="" style="margin-right: 805px; height: 40px;">
+													<div class="" style="margin-right: 802px; height: 40px;">
 														<label for="department_filter" class="d-inline-block">تصفية حسب القسم </label>
 														<select name="department_filter" id="department_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
 															<option value="all">جميع الأقسام</option>
@@ -39,17 +39,23 @@
 													</div>
 												</div>
 													<tr>
+														<th class="border-bottom-0">الرتبة</th>
 														<th class="border-bottom-0">الإسم الكامل</th>
 														<th class="border-bottom-0">البريد الإلكتروني</th>
 														<th class="border-bottom-0">القسم</th>
 														<th class="border-bottom-0">التخصص الدارسي</th>
 														<th class="border-bottom-0">التخصص الدقيق</th>
-														<th class="border-bottom-0">مزيد من المعلومات</th>
+														<th class="border-bottom-0">تفاصيل</th>
 													</tr>
 												</thead>
 												<tbody>
 													{% for faculty_member in faculty %}
 													<tr>
+														<td>
+															<div class="me-3 mt-0 mt-sm-2 d-block">
+																<h6 class="mb-1 fs-14">{{ faculty_member.rank }} </h6>
+															</div>
+														</td>
 														<td>
 															<div class="me-3 mt-0 mt-sm-2 d-block">
 																<h6 class="mb-1 fs-14">{{ faculty_member.first_name }} {{ faculty_member.last_name }}</h6>
@@ -61,7 +67,7 @@
 														<td>{{faculty_member.specialization|title}}</td>		
 														<td >
 															<div class="d-flex" >
-																<a href="{% url 'business_unit_account:faculty-view' faculty_id=faculty_member.id %}" style="width:50px; margin-right: 35px;" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i style="width:20px;"class="feather feather-eye text-primary"></i></a>
+																<a href="{% url 'business_unit_account:faculty-view' faculty_id=faculty_member.id %}"  type="button" class="btn btn-outline-info" data-bs-toggle="tooltip" ><i style="width:20px;"class="feather feather-eye  text-nowrap"></i></a>
 															</div>
 														</td>
 													</tr>
@@ -102,6 +108,8 @@
 
 		<!-- THEME COLOR JS -->
 		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+		
 		<script>
 			$(document).ready(function() {
 				$('#department_filter').change(function() {
@@ -114,7 +122,7 @@
 						$('tbody tr').hide();
 						// Show only rows with the selected department
 						$('tbody tr').filter(function() {
-							return $(this).find('td:nth-child(3)').text() == selectedDepartment;
+							return $(this).find('td:nth-child(4)').text() == selectedDepartment;
 						}).show();
 					}
 				});

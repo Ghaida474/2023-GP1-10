@@ -1,0 +1,253 @@
+{% extends 'kai_staff/components/base.html' %}
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header d-lg-flex d-block">
+        <div class="page-leftheader">
+            <div class="page-title"> البرامج التدربية</div>
+        </div>
+        <div class="page-rightheader ms-md-auto">
+            <div class="page-rightheader ms-md-auto">
+                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+                </div>
+            </div>
+        </div>
+    </div>
+   
+ 
+    
+        <div class="tab-menu-heading hremp-tabs p-0 ">
+            <div class="tabs-menu1" >
+                <!-- Tabs -->
+                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
+                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">طلبات وحدة الأعمال</a></li>
+                    <li><a href="#tab2" data-bs-toggle="tab">البرامج التدريبية الحالية</a></li>
+                </ul>
+            </div>
+        </div>
+
+                 
+                    <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
+                        <div class="tab-content">
+                            
+                
+                            <div class="tab-pane active" id="tab1">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div  style="margin-right: 755px; height: 40px;">
+                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                                    <option value="all">جميع الحالات</option>     
+                                                                    <option value="تم قبول الطلب من قبل المعهد">قبول الطلب من قبل المعهد</option>    
+                                                                    <option value='تم ارسال الطلب إلى المعهد'> طلب بانتظار المعهد</option>
+                                                                    <option value="تم رفض الطلب من قبل المعهد">رفض الطلب من قبل المعهد</option>
+                                                                    <option value="تم نشر البرنامج">نشر البرنامج</option>
+                                                                    <option value="بدأ البرنامج">بدء البرنامج</option>   
+                                                            </select>
+                                                        </div>
+                                                    </div>
+													<tr>
+														<th class="border-bottom-0">إسم البرنامج</th>
+														<th class="border-bottom-0">نوع البرنامج</th>
+                                                        <th class="border-bottom-0">الكلية</th>
+														<th class="border-bottom-0">تاريخ بداية البرنامج </th>
+                                                        <th class="border-bottom-0">تاريخ انتهاء البرنامج</th>
+														<th class="border-bottom-0">حالة الطلب</th> 
+                                                        <th class="border-bottom-0">التفاصيل</th>
+
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for program in programs %}
+                                                        {% if program.status == 'تم قبول الطلب من قبل المعهد' %}
+                                                            {% if program.indicator == 'C' or program.indicator == 'T' %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.training_program.topic }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.training_program.programtype}}</td>
+                                                                    <td >{{program.collagename}}</td>
+                                                                    <td>{{program.training_program.startdate}}</td>
+                                                                    <td>{{program.training_program.enddate}}</td>
+                                                                    <td>{{ program.training_program.status }}</td> 
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'kai_staff:program_view' program_id=program.training_program.programid %}" type="button" class="btn btn-outline-info"  style="margin-right:10px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endif %}
+													{% empty %}
+                                                        <tr>
+                                                            <td colspan="7">لا يوجد طلبات حالية</td>
+                                                        </tr>      
+												  {% endfor %}
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+                
+                           
+
+                            <div class="tab-pane" id="tab2">
+                                <div class="card-body">
+                                    <!-- <div class="col-xl-12 col-md-12 col-lg-12">  -->
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable" >
+												<thead>
+													<tr>
+														<th class="border-bottom-0">إسم البرنامج</th>
+														<th class="border-bottom-0">نوع البرنامج</th>
+														<th class="border-bottom-0">موضوع البرنامج</th>
+                                                        <th class="border-bottom-0">الكلية</th>
+														<th class="border-bottom-0">تاريخ بداية البرنامج </th>
+                                                        <th class="border-bottom-0">تاريخ انتهاء البرنامج</th>
+														<th class="border-bottom-0">ارفاق الشهادات</th>	
+
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for program in programs %}
+                                                        {% if program.status == 'بدأ البرنامج' and program.indicator == 'T' %}
+                                                        <tr>
+                                                            <td>
+                                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                    <h6 class="mb-1 fs-14">{{ program.training_program.topic }}</h6>
+                                                                </div>
+                                                            </td>
+                                                            <td>{{program.training_program.programtype}}</td>
+                                                            <td >{{program.training_program.program_domain}}</td>
+                                                            <td >{{program.collagename}}</td>
+                                                            <td>{{program.training_program.startdate}}</td>
+                                                            <td>{{program.training_program.enddate}}</td>
+                                                            <!-- <td>{{ program.status }}</td> -->
+                                                            <td>
+                                                                <input type="hidden" name="update_status" value="accept">
+                                                                <a href="{% url 'kai_staff:program_view' program_id=program.training_program.programid %}" type="button" class="btn btn-outline-info"  style="margin-right: 27px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                            </td> 
+                                                        </tr>
+                                                        {% endif %}
+													{% empty %}
+													<tr>
+                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}
+												</tbody>
+											</table>
+										</div> 
+									<!-- </div>  -->
+							    </div> 
+						    </div>
+                        
+                        </div>
+                    </div>
+                 </div>
+						
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function() {
+         $('#status_filter2').change(function() {
+             var selectedDepartment = $(this).val();
+              if (selectedDepartment === 'all') {
+                 // Show all rows if 'all' is selected
+                 $('tbody tr').show();
+             } else {
+                 // Hide all rows
+                 $('tbody tr').hide();
+                 // Show only rows with the selected status
+                 $('tbody tr').filter(function() {
+                     return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
+                 }).show();
+             }
+         });
+     });
+ </script>
+
+</script>
+
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+  
+          <!-- INTERNAL INDEX JS -->
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+
+{% endblock %}

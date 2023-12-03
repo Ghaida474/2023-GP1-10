@@ -13,6 +13,7 @@
 		</div>
 		<div class="page-rightheader ms-md-auto">
 			<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+				<a  href="{% url 'dean_account:faculty-list' %}" class="btn btn-primary">رجوع</a>
 			</div>
 		</div>
 	</div>
@@ -172,7 +173,7 @@
 																<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
 															</div>
 															{% empty %}
-																<a class="btn btn-sm btn-white mt-1">None</a>
+																<a class="btn btn-sm btn-white mt-1">لا يوجد</a>
 															{% endfor %}
 														</p>
 													</div>
@@ -195,7 +196,7 @@
 																<a class="btn btn-sm btn-white mt-1" >{{ ri|title }}</a>
 															</div>
 															{% empty %}
-																<a class="btn btn-sm btn-white mt-1">None</a>
+																<a class="btn btn-sm btn-white mt-1">لا يوجد</a>
 															{% endfor %}
 														</p>
 													</div>
@@ -215,7 +216,7 @@
 															<!-- <tr class="border-top"> -->
 																
 																	{% if user.cv %}
-																	 <a href="{% url 'dean_account:view_file' user.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
+																	 <a href="{% url 'dean_account:view_file' faculty_member.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
 																	{% else %}
 																	لم يتم تحميل السيرة الذاتية
 																	{% endif %}

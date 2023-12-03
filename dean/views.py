@@ -32,10 +32,6 @@ def profile_view(request):
     context = {'user': user , 'collagename':collagename }
     return render(request, 'dean/profile.html' ,context) 
 
-@login_required
-def emptypage_view(request):
-    user = request.user
-    return render(request, 'dean/empty-page.html' ,{'user': user}) 
 
 @login_required
 def facultylist_view (request):
@@ -69,7 +65,7 @@ def editprofile_view(request):
     user = request.user
     form = updateFASform(instance=user)
     form2 = previousworkform()
-    success = False
+
     form2updated = False
     if request.method == 'POST':
         form_type = request.POST.get("form_type")
@@ -82,8 +78,7 @@ def editprofile_view(request):
                     user.cv = cv_file.file.read()              
                 
                 form.save()
-                success = True
-                # return redirect('dean_account:profile')
+                return redirect('dean_account:profile')
             
         elif form_type == 'form2':  
             form2 = previousworkform(request.POST)  
@@ -106,7 +101,7 @@ def editprofile_view(request):
                         user.previouswork = previous_work
                         user.save()
                         form2updated = True
-                        # return redirect('dean_account:edit-profile')
+                        return redirect('dean_account:edit-profile')
                    
                 if researchinterest:
                     research_interest = user.researchinterest or []
@@ -124,7 +119,7 @@ def editprofile_view(request):
                         user.save()
                         return redirect('dean_account:edit-profile')
 
-    return render(request, 'dean/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'success':success , 'form2updated':form2updated })
+    return render(request, 'dean/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'form2updated':form2updated })
 
 
 
