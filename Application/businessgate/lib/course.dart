@@ -29,7 +29,7 @@ class _Course extends State<Course> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     // Initialize the tab controller
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 1, vsync: this);
   }
 
   @override
@@ -177,9 +177,7 @@ Expanded(
           child: Expanded(
             child: GestureDetector(
               onTap: () {
-                setState(() {
-                  showCancellationConfirmationDialog();
-                });
+                  CancelDialog(context,size);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -212,34 +210,6 @@ Expanded(
           )),
         ],
       ),
-    );
-  }
-
-    void showCancellationConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(getTranslate(context, 'detail.canc_que')),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text(getTranslate(context, 'detail.no')),
-            ),
-            TextButton(
-              onPressed: () {
-               cancelCourse(context, receivedValue);
-                Navigator.of(context).pop(); // Close the dialog
-                 Navigator.pushNamed(context, '/myCourses');
-                 Navigator.of(context).pushReplacementNamed('/bottomNavi');
-              },
-              child: Text(getTranslate(context, 'detail.yes')),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -289,12 +259,6 @@ Expanded(
                 alignment: Alignment.center,
                 color: Colors.white,
                 child: Text(getTranslate(context, 'detail.about')),
-              ),
-              Container(
-                height: size.height * 0.07,
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: Text(getTranslate(context, 'detail.review_text')),
               ),
             ],
           ),
@@ -412,7 +376,7 @@ Expanded(
           heightSpace,
            Text(
             courseInfo.description.toString(),
-            style: grey14Style,
+            style: black14Style2,
           ),
         ],
       ),
@@ -493,29 +457,26 @@ Expanded(
               Visibility(
                 visible: (courseInfo.kind),
                 child: Expanded(
-                // Display start date
                 child: breifdetail2(
-                  Icons.location_city_outlined,
+                  Icons.screenshot_monitor,
                   getTranslate(context, 'detail.kind'),
-                  "online", // ret
+                  getTranslate(context, 'detail.kind1'), // ret
                 ),
               ),),
                 Visibility(
-                visible: (courseInfo.kind == false),
+                visible: (courseInfo.kind == false ),
                 child: Expanded(
-                // Display start date
                 child: breifdetail2(
-                  Icons.location_city_outlined,
+                  Icons.screenshot_monitor,
                   getTranslate(context, 'detail.kind'),
-                  "On Site", // ret
+                  getTranslate(context, 'detail.kind2'), // ret
                 ),
               ),),
               Visibility(
                 visible: (status == "cancel" && courseInfo.kind && courseInfo.location != null),
                 child: Expanded(
-                // Display end date
                 child: breifdetail2(
-                  Icons.location_city_outlined,
+                  Icons.location_pin,
                   getTranslate(context, 'detail.link'),
                   courseInfo.location.toString(),
                 ),
@@ -523,9 +484,8 @@ Expanded(
               Visibility(
                 visible: (courseInfo.kind == false),
                 child: Expanded(
-                // Display end date
                 child: breifdetail2(
-                  Icons.location_city_outlined,
+                  Icons.location_pin,
                   getTranslate(context, 'detail.place'),
                   courseInfo.location.toString(),
                 ),
@@ -600,4 +560,212 @@ Expanded(
       ],
     );
   }
+
+  CancelDialog(BuildContext context, Size size) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Color.fromARGB(255, 162, 211, 246),
+        titlePadding: const EdgeInsets.all(10 * 3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Column(
+          children: [
+            Text(
+              getTranslate(context, 'survey.canc_que'),
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            SizedBox(height: 10),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                SizedBox(width: 0),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 5,
+                          )
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        getTranslate(context, 'survey.no'),
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 107, 105, 105),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                SizedBox(width: 10),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      cancelCourse(context, receivedValue);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: hexStringColor("##E3E0D2"),
+            elevation: 10.0,
+            shape: Border.all(
+                color: const Color.fromARGB(255, 0, 0, 0), width: 0.5, style: BorderStyle.solid),
+            content: Text(
+              getTranslate(context, 'survey.canc_suc'),
+              style: TextStyle(
+                color: const Color.fromARGB(255, 58, 58, 58),
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ));
+                      Navigator.pushNamed(context, '/myCourses');
+                      Navigator.of(context).pushReplacementNamed('/bottomNavi');
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: hexStringColor("#095590"),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromARGB(255, 250, 0, 0).withOpacity(0.5),
+                            blurRadius: 5,
+                          )
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        getTranslate(context, 'survey.yes'),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+              ],
+            )
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
+    /*CancelDialog(BuildContext context, Size size) {
+    return AlertDialog(
+      backgroundColor: Color.fromARGB(255, 162, 211, 246),
+      titlePadding: const EdgeInsets.all(10 * 3),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      title: Column(
+        children: [
+          Text(
+            getTranslate(context, 'survey.canc_que'),
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          SizedBox(height: 10),
+          SizedBox(height: 10),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              SizedBox(width: 0),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 5,
+                        )
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      getTranslate(context, 'survey.yes'),
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 107, 105, 105),
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              SizedBox(width: 10),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/myCourses');
+            Navigator.of(context).pushReplacementNamed('/bottomNavi');
+                  },
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: hexStringColor("#095590"),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color:
+                              Color.fromARGB(255, 250, 0, 0).withOpacity(0.5),
+                          blurRadius: 5,
+                        )
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      getTranslate(context, 'survey.no'),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+            ],
+          )
+        ],
+      ),
+    );
+  }*/
 }

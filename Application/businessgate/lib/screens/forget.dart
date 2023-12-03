@@ -1,10 +1,8 @@
 import 'package:businessgate/screens/reset.dart';
 import 'package:flutter/material.dart';
-
 import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../utils/colors.dart';
-
 import 'package:email_otp/email_otp.dart';
 
 class Forget extends StatefulWidget {

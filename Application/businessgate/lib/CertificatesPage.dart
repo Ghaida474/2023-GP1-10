@@ -45,7 +45,6 @@ class _CertificateViewPageState extends State<CertificateViewPage> {
           getTranslate(context, 'profile.certificates'),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        automaticallyImplyLeading: false,
       ),
             body: Container(
         decoration: BoxDecoration(
@@ -126,6 +125,11 @@ Widget _buildCertificateView() {
                         color: Colors.white,
                       ),
                     ),
+                    trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 18,
+        color: Colors.white,
+      ),
                     onTap: () {
                       setState(() {
                         selectedIndex = index; // Update the selected index
@@ -162,10 +166,27 @@ class CertificateDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(getTranslate(context, 'Course.cerDetail')),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          getTranslate(context, 'Course.cerDetail'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      body: PDFView(
+            body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              hexStringColor("#6FBCF6"),
+              hexStringColor("#E3E0D2"),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ), 
+        child : PDFView(
         pdfData: base64Decode(certificateData),
         enableSwipe: true,
         swipeHorizontal: false,
@@ -181,6 +202,6 @@ class CertificateDetailPage extends StatelessWidget {
           print('Error: $error');
         },
       ),
-    );
+    ));
   }
 }

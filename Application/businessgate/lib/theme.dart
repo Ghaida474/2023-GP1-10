@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 const Color primaryColor = Color.fromARGB(255, 5, 114, 182);
 
+const Color primaryColor2 = Color.fromARGB(255, 2, 51, 81);
+
 const Color whiteColor = Colors.white;
 
 const Color blackColor = Colors.black;
@@ -10,9 +12,7 @@ const Color black2BColor = Color(0xff2B2B2B);
 
 const Color grey94Color = Color(0xff949494);
 
-const Color greyb7Color = Color(0xffB7B7B7);
-
-const Color rede7Color = Color.fromARGB(255, 182, 75, 170);
+const Color greyb7Color = Color.fromARGB(255, 58, 58, 58);
 
 const List<Color> gradient = [
   Color.fromARGB(255, 95, 126, 206),
@@ -86,10 +86,7 @@ const black14Style2 =
 const white14Style =
     TextStyle(color: whiteColor, fontSize: 14, fontWeight: FontWeight.bold);
 
-const red12Style =
-    TextStyle(color: rede7Color, fontSize: 12, fontWeight: FontWeight.bold);
-
-const grey14Style = TextStyle(fontSize: 14, color: grey94Color);
+const grey14Style = TextStyle(fontSize: 14, color: Color.fromARGB(255, 71, 71, 71));
 
 const grey14Stylew600 =
     TextStyle(fontSize: 14, color: grey94Color, fontWeight: FontWeight.w600);
@@ -129,6 +126,9 @@ const primary14Style =
 
 const primary16Style =
     TextStyle(fontSize: 16, color: primaryColor, fontWeight: FontWeight.w700);
+
+const primary16Style2 =
+    TextStyle(fontSize: 16, color: primaryColor2, fontWeight: FontWeight.w700);
 
 const white18Style =
     TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold);

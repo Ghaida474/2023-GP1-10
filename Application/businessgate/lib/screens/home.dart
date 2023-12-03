@@ -3,6 +3,7 @@ import 'package:businessgate/database/app_database.dart';
 import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../localization/localization_const.dart';
 import '../models/model_user.dart';
 import '../myservice.dart';
@@ -33,16 +34,20 @@ class _HomeScreenState extends State<Home> {
 
   String Name = "";
 
+    SharedPreferences? prefs;
+  String? languageValue ;
+  final key = "value";
+
   String dropdownValue = "Languages";
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchDataN();
   }
 
-  Future<void> fetchData() async {
-    Name = await ModelsUsers().FetchFirstName(_myEmail.myVariable);
+  Future<void> fetchDataN() async {
+    Name = await ModelsUsers().FetchFirstName(_myEmail.myVariable) + ' ' +  await ModelsUsers().FetchLastName(_myEmail.myVariable);
   }
 
   @override
@@ -63,7 +68,7 @@ class _HomeScreenState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         FutureBuilder<void>(
-          future: fetchData(),
+          future: fetchDataN(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // If the Future is still running, show a loading indicator or placeholder
@@ -75,7 +80,7 @@ class _HomeScreenState extends State<Home> {
               // If the Future is complete, display the fetched data
               return Text(
                 getTranslate(context, 'home.hello') + ' ' + Name,
-                style: black18Style,
+                style: black16Stylew600,
               );
             }
           },
@@ -87,14 +92,14 @@ class _HomeScreenState extends State<Home> {
 ),
         actions: [
           SizedBox(
-            height: 50,
+            height: 55,
             width: 160,
             child: 
                 DropdownButton(
             dropdownColor: hexStringColor("#E3E0D2"),
             icon: Icon(Icons.menu,
             color: Colors.black),
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
             onChanged: (String? newValue) {
               if (newValue == 'Languages') {
           Navigator.pushNamed(context, '/languages');
@@ -105,11 +110,11 @@ class _HomeScreenState extends State<Home> {
             items: [
         DropdownMenuItem(
           value: 'Languages',
-          child: buildDropdownItem('Languages', Icons.language_outlined),
+          child: buildDropdownItem(getTranslate(context, 'profile.languages'), Icons.language_outlined),
         ),
         DropdownMenuItem(
           value: 'Sign Out',
-          child: buildDropdownItem('Sign Out', Icons.exit_to_app),
+          child: buildDropdownItem(getTranslate(context, 'profile.logout'), Icons.exit_to_app),
         ),
       ],
     ),
@@ -221,6 +226,15 @@ void showSignOutDialog(BuildContext context, Size size) {
                                   padding:
                                       EdgeInsets.only(right: fixPadding / 5),
                                 ),
+                                Container(
+                              height: size.height * 0.04,
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 18,
+                                color: Colors.black,
+                              ),
+                            ),
                               ],
                             ),
                           ],
@@ -315,7 +329,7 @@ void showSignOutDialog(BuildContext context, Size size) {
       "name": getTranslate(context, 'catergory.helth'),
       "icon": Icons.medical_services_rounded,
       "isimage": false,
-      "color": Color.fromARGB(255, 58, 99, 189),
+      "color": Color.fromARGB(255, 43, 77, 151),
       "prefix": "Health"
     },
   ];
@@ -325,7 +339,6 @@ void showSignOutDialog(BuildContext context, Size size) {
         padding: const EdgeInsets.symmetric(horizontal: fixPadding * 1.5),
         scrollDirection: Axis.horizontal,
         itemCount: category.length,
-        
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
@@ -336,7 +349,8 @@ void showSignOutDialog(BuildContext context, Size size) {
           child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(
-                horizontal: fixPadding * 1.5, vertical: fixPadding),
+            horizontal: fixPadding * 3, 
+            vertical: fixPadding),
             margin: const EdgeInsets.symmetric(horizontal: fixPadding / 2),
             decoration: BoxDecoration(
               color: category[index]['color'] as Color,

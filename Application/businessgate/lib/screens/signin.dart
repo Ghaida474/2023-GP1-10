@@ -40,7 +40,6 @@ class _SignInState extends State<SignIn> {
                 20, MediaQuery.of(context).size.height * 0.18, 20, 280),
             child: Form(
               key: formkey,
-              //autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 children: [
                   logoWidgetSignIN("assets/images/Logo.jpg"),
@@ -88,6 +87,7 @@ class _SignInState extends State<SignIn> {
       TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
       decoration: InputDecoration(
@@ -111,8 +111,8 @@ class _SignInState extends State<SignIn> {
       validator: (value) {
         if (value!.isEmpty ||
             !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
-                .hasMatch(value!)) {
-          return getTranslate(context, 'signup.CE');
+                .hasMatch(value)) {
+          return getTranslate(context, 'login.CE');
         } else
           return null;
       },
@@ -123,6 +123,7 @@ class _SignInState extends State<SignIn> {
       String text, IconData icon, TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       obscureText: passToggle,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -156,7 +157,7 @@ class _SignInState extends State<SignIn> {
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
           if (value!.isEmpty )
-          return getTranslate(context, 'signup.CP');
+          return getTranslate(context, 'login.CP');
 
           return null;
       },
@@ -241,14 +242,14 @@ class _SignInState extends State<SignIn> {
 
   Future<void> processLoginData(BuildContext context) async {
     ModelsUsers()
-        .userLoginModel(_emailTextController.text, _passwordTextController.text)
+        .userLoginModel(_emailTextController.text.toLowerCase(), _passwordTextController.text)
         .then((login) {
       _myEmail.myVariable = _emailTextController.text;
       if (login.toString().contains('not')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor:  hexStringColor("##E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -267,9 +268,6 @@ class _SignInState extends State<SignIn> {
           );
           _emailTextController.clear();
           _passwordTextController.clear();
-          Timer(Duration(seconds: 3), () {
-            Navigator.pushNamed(context, '/signin');
-          });
         });
       } else if (login.toString().contains('ok')) {
         Timer(Duration(seconds: 3), () {

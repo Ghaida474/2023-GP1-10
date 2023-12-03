@@ -10,11 +10,9 @@ class AppDatabase {
   String phoneNumberValue = '';
   String fNameValue = '';
   String lNameValue = '';
-  String nationalityValue = '';
   String idValue = '';
   String genderValue = '';
   String adminEmailValue = '';
-  String nationValue = '';
 
   SharedPreferences? prefs;
   String? languageValue ;
@@ -36,7 +34,7 @@ class AppDatabase {
     connection = PostgreSQLConnection(
       'localhost',
       5432,
-      'BusinessGate',
+      'BusinessGateDB',
       username: 'admina',
       password: 'data12345',
     );
@@ -449,7 +447,7 @@ class AppDatabase {
         int traineeId = traineeIdResult[0][0] as int;
 
         final statResult = await statConnection.query(
-          'SELECT "hasRegistered","haspaid","hasAttended","postAnswers" FROM public."Register" WHERE "ProgramID" = @pid AND "id" = "id"',
+          'SELECT "hasRegistered","haspaid","hasAttended","postAnswers" FROM public."Register" WHERE "ProgramID" = @pid AND "id" = @id',
           substitutionValues: {'pid': pID, 'id': traineeId},
           allowReuse: true,
         );
@@ -457,23 +455,26 @@ class AppDatabase {
           bool? hasP ;
           bool? hasAT ;
           String? post ;
+          
         if (statResult.affectedRowCount > 0) {
         for (final row in statResult) {
           hasReg = row[0] as bool? ;
           hasP = row[1] as bool? ;
           hasAT = row[2] as bool? ;
-          post = row[3] as String? ;
+          post = row[3].toString();
         }
         } 
+
         if (hasReg == false || hasReg == null) {
           stat = "register";
-        }
-        if (hasReg == true && (hasP == false || hasP == null)) {
+        } else 
+        if (hasReg == true && hasP == false) {
           stat = "cancel";
-        }
-        if (hasReg == true && hasP == true && post == null) {
+        }else
+        if (hasReg == true && hasP == true && hasAT == true ) {
           stat = "review";
-        }
+        }//&& post != null
+
       });
     } catch (exc) {
       exc.toString();
@@ -1084,6 +1085,7 @@ Future<Courses> Program(int? id) async {
       String q5, String email, int? PID) async {
     List<String> preAnswers = [q1, q2, q3, q4, q5];
     String preAnswersAsString = "{'${preAnswers.join("','")}'";
+
     preAnswersAsString += "}";
 
     try {
@@ -1105,12 +1107,14 @@ Future<Courses> Program(int? id) async {
 
         // Step 2: Insert into "Register" table
         newRegisterResult = await regiterConnection.query(
-          'INSERT INTO public."Register"("ProgramID","id","hasRegistered","preAnswers") '
-          'VALUES (@programId, @traineeId, @hasR, @preAns)',
+          'INSERT INTO public."Register"("ProgramID","id","hasRegistered","haspaid","hasAttended","preAnswers") '
+          'VALUES (@programId, @traineeId, @hasR, @hasP, @hasAt,@preAns)',
           substitutionValues: {
             'programId': PID,
             'traineeId': traineeId,
             'hasR': true,
+            'hasP': false,
+            'hasAt': false,
             'preAns': preAnswersAsString,
           },
           allowReuse: true,
@@ -1134,7 +1138,7 @@ Future<Courses> Program(int? id) async {
   Future<String> enterAFAnswers(String q1, String q2, String q3, String q4,
       String q5, String email, int? PID) async {
     List<String> postAnswers = [q1, q2, q3, q4, q5];
-    String postAnswersAsString = "{'${postAnswers.join("','")}'";
+    String postAnswersAsString = "{'${postAnswers.join("','")}'}";
 
     try {
       await connection!.open();

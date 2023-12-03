@@ -40,10 +40,10 @@ class _RegConformationState extends State<RegConformation> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: 370,
+                  height: 345,
                 ),
                 Container(
-                    width: 500,
+                    width: 480,
                     height: 70,
                     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                     decoration:

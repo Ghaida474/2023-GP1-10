@@ -1,4 +1,5 @@
 import 'package:businessgate/models/model_user.dart';
+import 'package:businessgate/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:businessgate/localization/localization_const.dart';
 import '../../myservice.dart';
@@ -91,54 +92,39 @@ class _EditProfileState extends State<EditProfile> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.FN'),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                          style: black16Stylew600),
                     ),
                     nameField(size, context),
                     SizedBox(height: 8),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.LN'),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                          style: black16Stylew600),
                     ),
-                    emailField(size, context),
+                    lastField(size, context),
                     SizedBox(height: 8),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.FullN'),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                          style: black16Stylew600),
                     ),
                     fullnameField(size, context),
                     SizedBox(height: 8),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.mobile'),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                          style: black16Stylew600),
                     ),
                     phoneField(size, context),
                     SizedBox(height: 8),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(getTranslate(context, 'editProfile.password'),
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          )),
+                          style: black16Stylew600),
                     ),
                     passField("Enter Password", Icons.lock, passwordController),
                     const SizedBox(
-                      height: 12,
+                      height: 5,
                     ),
                     FlutterPwValidator(
                       defaultColor: Colors.grey.shade300,
@@ -219,7 +205,7 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("#E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -249,7 +235,7 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("#E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -279,7 +265,7 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("#E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -309,7 +295,7 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("#E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -338,7 +324,7 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("#E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -373,7 +359,24 @@ class _EditProfileState extends State<EditProfile> {
         });
       }
     });
-          Navigator.pushNamed(context, '/profile');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: hexStringColor("##E3E0D2"),
+            elevation: 10.0,
+            shape: Border.all(
+                color: const Color.fromARGB(255, 0, 0, 0), width: 0.5, style: BorderStyle.solid),
+            content: Text(
+              getTranslate(context, 'editProfile.update_suc'),
+              style: TextStyle(
+                color: const Color.fromARGB(255, 58, 58, 58),
+                fontSize: 18.0,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ));
+          //Navigator.pushNamed(context, '/profile');
         });
       }
     });
@@ -402,7 +405,7 @@ class _EditProfileState extends State<EditProfile> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
           return getTranslate(context, 'signup.CN');
         } else
           return null;
@@ -433,15 +436,15 @@ class _EditProfileState extends State<EditProfile> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
               validator: (value) {
-              if (value!.isEmpty) 
-               return getTranslate(context, 'signup.CFull');
-
-               return null ;
+                if (value!.isEmpty || !RegExp(r'^[\u0600-\u06FF ]+$').hasMatch(value)) {
+          return getTranslate(context, 'signup.CFull');
+        } else
+          return null;
       },
     );
   }
 
-  emailField(Size size, BuildContext context) {
+  lastField(Size size, BuildContext context) {
     return TextFormField(
       controller: lastNameController,
       cursorColor: Colors.white,
@@ -464,7 +467,7 @@ class _EditProfileState extends State<EditProfile> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+        if (value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
           return getTranslate(context, 'signup.CN');
         } else
           return null;
@@ -495,7 +498,7 @@ class _EditProfileState extends State<EditProfile> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if (value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value!)) {
+        if (value!.isEmpty || !RegExp(r'^05\d{8}$').hasMatch(value)) {
           return getTranslate(context, 'signup.CM');
         } else
           return null;
@@ -507,6 +510,7 @@ class _EditProfileState extends State<EditProfile> {
       String text, IconData icon, TextEditingController controller) {
     return TextFormField(
       controller: controller,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       obscureText: passToggle,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -538,15 +542,6 @@ class _EditProfileState extends State<EditProfile> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
-          return getTranslate(context, 'signup.CP');
-        } else
-          return null;
-      },
     );
   }
 

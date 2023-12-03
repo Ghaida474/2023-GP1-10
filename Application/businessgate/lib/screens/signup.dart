@@ -136,7 +136,7 @@ class _SignUpState extends State<SignUp> {
                     PasswordField(getTranslate(context, 'signup.password'),
                         Icons.lock, _passwordTextController),
                     const SizedBox(
-                      height: 8,
+                      height: 5,
                     ),
                     FlutterPwValidator(
                       defaultColor: Colors.grey.shade300,
@@ -251,8 +251,8 @@ class _SignUpState extends State<SignUp> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
               validator: (value) {
-                if (value!.isEmpty ) {
-          return  getTranslate(context, 'signup.CFull');
+                if (value!.isEmpty || !RegExp(r'^[\u0600-\u06FF ]+$').hasMatch(value)) {
+          return getTranslate(context, 'signup.CFull');
         } else
           return null;
       },
@@ -494,8 +494,7 @@ class _SignUpState extends State<SignUp> {
             Fname,
             Lname,
             PhoneNumber,
-            Email,
-            // hash the password !!!
+            Email.toLowerCase(),
             Password,
             ID,
             genderString,
@@ -504,14 +503,14 @@ class _SignUpState extends State<SignUp> {
       if (Trainee.toString().contains('reg')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.blue[100],
+            backgroundColor: hexStringColor("##E3E0D2"),
             elevation: 10.0,
             shape: Border.all(
-                color: Colors.green, width: 0.5, style: BorderStyle.solid),
+                color: const Color.fromARGB(255, 0, 0, 0), width: 0.5, style: BorderStyle.solid),
             content: Text(
               getTranslate(context, 'signup.register_suc'),
               style: TextStyle(
-                color: Colors.black,
+                color: const Color.fromARGB(255, 58, 58, 58),
                 fontSize: 18.0,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.bold,
@@ -531,16 +530,13 @@ class _SignUpState extends State<SignUp> {
           _genderTextController.clear();
           _fullnameTextController.clear();
 
-          Timer(Duration(seconds: 1), () {
-            Navigator.pushNamed(context, '/home');
-            Navigator.of(context).pushReplacementNamed('/bottomNavi');
-          });
+             Navigator.of(context).pushReplacementNamed('/bottomNavi');
         });
       } else if (Trainee.toString().contains('nop')) {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.blue[100],
+              backgroundColor: hexStringColor("##E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -574,10 +570,10 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.blue[100],
+              backgroundColor: hexStringColor("##E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
-                  color: Colors.yellow, width: 0.5, style: BorderStyle.solid),
+                  color: const Color.fromARGB(255, 58, 58, 58), width: 0.5, style: BorderStyle.solid),
               content: Text(
                 getTranslate(context, 'signup.email_registered'),
                 style: TextStyle(
@@ -604,7 +600,7 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("##E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                 color: Colors.red,
@@ -639,7 +635,7 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: Colors.blue[100],
+            backgroundColor:  hexStringColor("##E3E0D2"),
             elevation: 10.0,
             shape: Border.all(
                 color: Colors.red, width: 0.5, style: BorderStyle.solid),

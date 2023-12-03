@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:businessgate/localization/localization_const.dart';
 import 'package:businessgate/myCourses.dart';
 import 'package:businessgate/profile.dart';
@@ -117,8 +116,8 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                                 colors: selectedIndex == 2
                                     ? gradient
                                     : <Color>[
-                                        Color.fromARGB(255, 60, 59, 59),
-                                        Color.fromARGB(255, 60, 59, 59),
+                                        Color.fromARGB(255, 189, 29, 29),
+                                        Color.fromARGB(255, 72, 196, 124),
                                       ])
                             .createShader(bounds);
                       },
@@ -128,7 +127,7 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                         padding: const EdgeInsets.all(fixPadding / 5),
                         child: Image.asset(
                           "assets/profile/Shopicons_Filled_Account.png",
-                          color: whiteColor,
+                          color: Color.fromARGB(255, 31, 30, 30),
                           fit: BoxFit.cover,
                         ),
                       )),
@@ -187,15 +186,15 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                               colors: selectedIndex == 1
                                   ? gradient
                                   : <Color>[
-                                      greyb7Color,
-                                      greyb7Color,
+                                      Color.fromARGB(255, 31, 30, 30),
+                                      Color.fromARGB(255, 31, 30, 30),
                                     ])
                           .createShader(bounds);
                     },
                     child: const Icon(
                       Icons.play_arrow_sharp,
                       size: 26,
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 31, 30, 30),
                     ),
                   ),
                   Text(
@@ -258,15 +257,15 @@ class _BottomNaviScreenState extends State<BottomNaviScreen> {
                               colors: selectedIndex == 0
                                   ? gradient
                                   : <Color>[
-                                      Color.fromARGB(255, 60, 59, 59),
-                                      Color.fromARGB(255, 60, 59, 59),
+                                      Color.fromARGB(255, 31, 30, 30),
+                                      Color.fromARGB(255, 31, 30, 30),
                                     ])
                           .createShader(bounds);
                     },
                     child: const Icon(
                       Icons.home_rounded,
                       size: 26,
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 31, 30, 30), 
                     ),
                   ),
                   Text(

@@ -1,16 +1,12 @@
 import 'dart:async';
-
 import 'package:businessgate/models/model_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-
 import '../localization/localization_const.dart';
 import '../myservice.dart';
 import '../utils/colors.dart';
-
 import 'package:email_otp/email_otp.dart';
 
-import 'package:businessgate/screens/forget.dart';
 
 class Reset extends StatefulWidget {
   const Reset({super.key});
@@ -23,7 +19,6 @@ class _ResetState extends State<Reset> {
   final formkey = GlobalKey<FormState>();
 
   TextEditingController _otpTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _confirmPasswordTextController = TextEditingController();
 
@@ -70,50 +65,14 @@ class _ResetState extends State<Reset> {
                       const SizedBox(
                         height: 20,
                       ),
-                      //emailField("Enter Your Email", Icons.person, false, _emailTextController),
-                      const SizedBox(
-                        height: 20,
-                      ),
                       PasswordField(getTranslate(context, 'signup.password'),
                         Icons.lock, _passwordTextController),
                     const SizedBox(
-                      height: 12,
+                      height: 5,
                     ),
                     FlutterPwValidator(
                       defaultColor: Colors.grey.shade300,
                       controller: _passwordTextController,
-                      successColor: Colors.green.shade700,
-                      minLength: 8,
-                      uppercaseCharCount: 2,
-                      numericCharCount: 3,
-                      specialCharCount: 1,
-                      normalCharCount: 3,
-                      width: 400,
-                      height: 150,
-                      onSuccess: () {
-                        setState(() {
-                          success = true;
-                        });
-                      },
-                      onFail: () {
-                        setState(() {
-                          success = false;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    ConfirmField(
-                        getTranslate(context, 'signup.confirmPassword'),
-                        Icons.lock,
-                        _confirmPasswordTextController),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    FlutterPwValidator(
-                      defaultColor: Colors.grey.shade300,
-                      controller: _confirmPasswordTextController,
                       successColor: Colors.green.shade700,
                       minLength: 8,
                       uppercaseCharCount: 1,
@@ -121,7 +80,7 @@ class _ResetState extends State<Reset> {
                       specialCharCount: 1,
                       normalCharCount: 1,
                       width: 400,
-                      height: 150,
+                      height: 190,
                       onSuccess: () {
                         setState(() {
                           success = true;
@@ -134,7 +93,14 @@ class _ResetState extends State<Reset> {
                       },
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 40,
+                    ),
+                    ConfirmField(
+                        getTranslate(context, 'signup.confirmPassword'),
+                        Icons.lock,
+                        _confirmPasswordTextController),
+                    const SizedBox(
+                      height: 20,
                     ),
                       ResetButton(context, () {
                         PasswordReset(auth);
@@ -182,41 +148,6 @@ class _ResetState extends State<Reset> {
     );
   }
 
-  TextFormField emailField(String text, IconData icon, bool isPasswordType,
-      TextEditingController controller) {
-    return TextFormField(
-      controller: controller,
-      cursorColor: Colors.white,
-      style: TextStyle(color: Colors.white.withOpacity(0.9)),
-      decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(
-                color: Color.fromARGB(255, 2, 14, 52),
-              )),
-          prefixIcon: Icon(
-            icon,
-            color: const Color.fromARGB(179, 255, 255, 255),
-          ),
-          labelText: text,
-          labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
-          filled: true,
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          fillColor: hexStringColor("#095590").withOpacity(0.45),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-        if (value!.isEmpty ||
-            !RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
-                .hasMatch(value!)) {
-          return getTranslate(context, 'signup.CE');
-        } else
-          return null;
-      },
-    );
-  }
-
   TextFormField PasswordField(
       String text, IconData icon, TextEditingController controller) {
     return TextFormField(
@@ -242,7 +173,6 @@ class _ResetState extends State<Reset> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -253,15 +183,6 @@ class _ResetState extends State<Reset> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
-      validator: (value) {
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
-          return getTranslate(context, 'signup.CP');
-        } else
-          return null;
-      },
     );
   }
 
@@ -290,7 +211,6 @@ class _ResetState extends State<Reset> {
             },
             child: Icon(passToggle ? Icons.visibility_off : Icons.visibility),
           ),
-          hintText: '8 character long',
           hintStyle:
               TextStyle(color: Color.fromARGB(156, 0, 0, 0).withOpacity(0.9)),
           labelText: text,
@@ -302,15 +222,9 @@ class _ResetState extends State<Reset> {
               borderRadius: BorderRadius.circular(30.0),
               borderSide: const BorderSide(width: 0, style: BorderStyle.none))),
       validator: (value) {
-        if(_confirmPasswordTextController != _passwordTextController) {
+        if (_confirmPasswordTextController.text != _passwordTextController.text) {
           return getTranslate(context, 'signup.CconfirmP');
-        }
-        if (value!.isEmpty ||
-            !RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-            ).hasMatch(value!)) {
-          return getTranslate(context, 'signup.CP');
-        } else
+        }else
           return null;
       },
     );
@@ -357,7 +271,7 @@ class _ResetState extends State<Reset> {
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              backgroundColor: Colors.white,
+              backgroundColor: hexStringColor("##E3E0D2"),
               elevation: 10.0,
               shape: Border.all(
                   color: Colors.red, width: 0.5, style: BorderStyle.solid),
@@ -376,14 +290,12 @@ class _ResetState extends State<Reset> {
           );
           _otpTextController.clear();
           _passwordTextController.clear();
-          Timer(Duration(seconds: 2), () {
+
             Navigator.pushNamed(context, '/signin');
-          });
         });
       } else if (Update.toString().contains('ok')) {
-        Timer(Duration(seconds: 2), () {
+
           Navigator.pushNamed(context, '/signin');
-        });
       }
     });
   }

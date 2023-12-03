@@ -120,12 +120,21 @@ class _allCoursesState extends State<allCourses> {
                                   padding:
                                       EdgeInsets.only(right: fixPadding / 5),
                                 ),
+                                Container(
+                              height: size.height * 0.04,
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 18,
+                                color: Colors.black,
+                              ),
+                            ),
                               ],
                             ),
                           ],
                         ),
                         Text(
-                                                    getTranslate(context, 'detail.start_date') +
+                              getTranslate(context, 'detail.start_date') +
                               ' : ' +
                           date,
                           style: grey14Style,

@@ -25,23 +25,12 @@ class _ProfileState extends State<Profile> {
       @override
   void initState() {
     super.initState();
+
     fetchData();
   }
 
-  _read() async {
-    prefs = await SharedPreferences.getInstance();
-      languageValue = prefs!.getString(key) ?? "English";
-      print(languageValue);
-  }
-  
-
     Future<void> fetchData() async {
-      _read();
-      if (languageValue == "عربي"){
-    Name = await ModelsUsers().FetchFullName(_myEmail.myVariable);
-      } else {
         Name = await ModelsUsers().FetchFirstName(_myEmail.myVariable) + ' ' +  await ModelsUsers().FetchLastName(_myEmail.myVariable);
-      }
   }
 
   @override

@@ -40,10 +40,10 @@ class _SubConformationState extends State<SubConformation> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: 370,
+                  height: 390,
                 ),
                 Container(
-                    width: 500,
+                    width: 460,
                     height: 70,
                     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                     decoration:
