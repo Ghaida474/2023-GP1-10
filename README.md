@@ -68,6 +68,8 @@ Replace `'my_database'`, `'my_database_user'`, and `'my_database_password'` with
 7. Install Dependencies
    - pip install -r requirements.txt
    - pip install django
+   - pip install django-extensions
+   - pip install psycopg2
    - pip install celery
    - pip install certifi
 8. Apply migrations
