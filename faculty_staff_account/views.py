@@ -375,7 +375,7 @@ def program_view(request , program_id):
 
     id_status_dates = IdStatusDate.objects.filter(training_program=program )
     programflow = StatusDateCheck.objects.filter(training_program=program)
-    applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id).count()
+    applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id , training_program=program).count()
     
     if applicationidcount:
         isfacultyinarray = False

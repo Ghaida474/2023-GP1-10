@@ -473,6 +473,17 @@
 																</li>
 														{% endif %} 
 													{% endfor %} 
+													{% for status in id_status_dates %} 
+														{% if not isfacultyinarray and status.status == 'participationRequest' and status.instructor_id == userid %}
+																	<li>
+																		<i class="fa fa-user bg-success"></i>
+																		<div class="timelinestart-item">
+																			<span class="time">{{status.date}}</span>
+																			<h3 class="timelinestart-header"><span>تم تقديمك على طلب التدريب</span></h3>
+																		</div>
+																	</li>
+															{% endif %} 
+														{% endfor %} 
 													<!-- ---------------------------------------------------------------------------- -->
 													{% if program.status == 'تم رفض الطلب من قبل وحدة الأعمال' %}
 														<li>

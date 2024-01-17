@@ -607,6 +607,7 @@ def edit_program(request, value_to_edit):
             status_check.filter(status="انتظار قبول الطلب من قبل جميع المدربين").update(indicator='T')
             status_check.filter(status="تم قبول الطلب من قبل المدرب").update(indicator='T')
             status_check.filter(status="تم قبول الطلب من قبل جميع المدربين").update(indicator='T')
+            # status_check.filter(status='تم ارسال الطلب إلى المعهد').update(indicator='T')
             checkKAI = status_check.filter(status='تم ارسال الطلب إلى المعهد').get()
             if checkKAI.indicator == 'W':
                 status_check.filter(status='تم ارسال الطلب إلى المعهد').update(indicator='C')

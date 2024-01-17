@@ -97,6 +97,42 @@
 								</div>
 							</div>
 						</div>
+
+						<div class="modal" tabindex="-1" id="customAlertReleaseProgram">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p>تأكيد</p>
+									</div>
+									<div class="modal-body">
+										<p >هل أنت متأكد من نشر البرنامج؟</p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="doNotRelease">إلغاء</button>
+										<button type="button" class="btn btn-primary" id="alertReleaseProgram">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						  </div>
+
+						  <div class="modal" tabindex="-1" id="customAlertSelectTeam">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p>تأكيد</p>
+									</div>
+									<div class="modal-body">
+										<p >هل انت متـأكد من إختيارك لفريق البرنامج؟ </p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="doNotSelectTeam">إلغاء</button>
+										<button type="button" class="btn btn-primary" id="alertSelectTeam">تأكيد</button>
+									</div>
+								</div>
+							</div>
+						  </div>
 						<!-- end alerts -->
 
 
@@ -734,27 +770,7 @@
 														{% endfor %}	
 													{% endif %} 
 													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 5  might delete this -->
-													<!-- {% for flow in programflow %}
-														{% if  flow.status == "تم قبول الطلب من قبل وحدة الاعمال" and flow.indicator == 'T' %}
-															{% if program.num_ofinstructors == IdStatusDateAccept %}
-																<li>
-																	<i class="fa fa-users bg-success"></i>
-																	<div class="timelinestart-item">
-																		<span class="time">{{flow.date}}</span>
-																		<h3 class="timelinestart-header"><span>تم القبول من جميع المدربين</span></h3>
-																		<div class="timelinestart-body">
-																			{% for instructor in id_status_dates %} 
-																				<div class="wrapper ms-3">
-																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
-																				</div>
-																			{% endfor %} 
-																		</div>
-																	</div>
-																</li>
-															{% endif %}
-														{% endif %} 
-													{% endfor %} -->
+													
 													<!-- or -->
 													{% for flow in programflow %} 
 														{% if flow.status == 'تم ارسال الطلب إلى المعهد' and flow.indicator == 'C' %}
@@ -826,7 +842,7 @@
 																		{% if  flow.status == 'تم نشر البرنامج '  and flow.indicator == 'W' %}	
 																		<div class="border-top"></div>	
 																		<div class="timelinestart-body">
-																			<form action="{% url 'business_unit_account:publish1' program.programid %}" method="POST" onsubmit="return validateForm();" enctype="multipart/form-data">
+																			<form action="{% url 'business_unit_account:publish1' program.programid %}" method="POST" enctype="multipart/form-data" id="fromrelses">
 																				{% csrf_token %}
 																				<input type="hidden" id="startdate" value="{{ program.startdate }}">
 																				<p style="color: #0084BD;">قبل نشر البرنامج بالتطبيق الرجاء التأكد من جميع معلومات البرنامج التدريبي و تكملة المعلومات المتبقيه قبل نشرها في التطبيق.</p>
@@ -871,7 +887,7 @@
 																						</div>    
 																					{% endif %}
 																					<div class="col-6">
-																						<input type="hidden" name="update_status" value="sendtokai">
+																						<input type="hidden" name="update_status" value="relasepro">
 																						<button type="submit" class="btn btn-outline-info confirm-submit" style=" margin-right:400px; margin-top: 10px; width:150px;">نشر البرنامج</button>
 																					</div>
 																				</div>
@@ -1086,7 +1102,7 @@ function validateInstructors() {
 		var errorMessage = document.querySelector('.error-message-trainer_selection');
 		
 
-		if (programleader){
+		if (programleader !== 'None'){
 			num_ofinstructors = num_ofinstructors -1;
 		}
 
@@ -1103,7 +1119,57 @@ function validateInstructors() {
 	});
 </script>
 
-<script>
+<script>$(document).ready(function() {
+    var form = $('#selectTrainersForm');
+    var confirmSelectTeam = false;
+
+    form.on('submit', function(e) {
+        e.preventDefault();
+
+        var isFormValid = validateInstructorsCount();
+        console.log('Form validation result:', isFormValid);
+
+        if (isFormValid && !confirmSelectTeam) {
+            console.log('Showing modal');
+            $('#customAlertSelectTeam').modal('show');
+        } else if (isFormValid && confirmSelectTeam) {
+            console.log('Submitting form');
+            form.off('submit');
+            form.submit();
+        }
+    });
+
+    $('#alertSelectTeam').click(function() {
+        console.log('Confirm button clicked');
+        confirmSelectTeam = true;
+        form.submit();
+    });
+
+    function validateInstructorsCount() {
+        var checkboxes = $('input[name="trainer_selection"]:checked');
+        var num_ofinstructors = parseInt($('#num_ofinstructors').val());
+        var programleader = $('#programleader').val();
+        var errorMessage = $('.error-message-trainer_selection');
+
+        if (programleader){
+            num_ofinstructors = num_ofinstructors - 1;
+        }
+
+        if(num_ofinstructors === 0){
+            num_ofinstructors = 1;
+        }   
+
+        if (checkboxes.length !== num_ofinstructors) {
+            errorMessage.text('الرجاء تحديد المدربين ' + num_ofinstructors + ' بالضبط للبرنامج.');
+            return false;
+        } else {
+            errorMessage.text('');
+            return true;
+        }
+    }
+});</script>
+
+<!--<script>
 	function validateForm() {
 		// Retrieve form elements
 		var lastenrollmentdateElement = document.querySelector('input[name="lastenrollmentdate"]');
@@ -1141,9 +1207,94 @@ function validateInstructors() {
 			return false;
 		}
 
-		return true;			
+		var confirmrelease = false;
+    
+        $('#customAlertReleaseProgram').on('show.bs.modal', function() {
+     
+       })
+    
+       $('#alertConfirmDelete').click(function() {
+		confirmrelease = true;
+		return true;  // Set formSubmitted to true when confirmed
+       $('#fromrelses').submit();
+       });
+    
+       $('#fromrelses').on('submit', function(e) {
+      if(!confirmrelease) {
+        e.preventDefault();
+        $('#alertReleaseProgram').modal('show');
+      }
+      });
+	  return false;
+
+					
 	}
+</script>-->
+
+<script>
+    $(document).ready(function() {
+        var form = $('#fromrelses');
+        var confirmRelease = false;
+
+        form.on('submit', function(e) {
+            e.preventDefault();
+
+            var isFormValid = validateForm();
+            console.log('Form validation result:', isFormValid); // Changed to console.log()
+
+            if (isFormValid && !confirmRelease) {
+                console.log('Showing modal'); // Changed to console.log()
+                $('#customAlertReleaseProgram').modal('show');
+            } else if (isFormValid && confirmRelease) {
+                console.log('Submitting form'); // Changed to console.log()
+                form.off('submit');
+                form.submit();
+            }
+        });
+
+        $('#alertReleaseProgram').click(function() {
+            console.log('Confirm button clicked'); // Changed to console.log()
+            confirmRelease = true;
+            form.submit();
+        });
+    });
+
+    function validateForm() {
+        var lastenrollmentdateElement = document.querySelector('input[name="lastenrollmentdate"]');
+        var startdateElement = document.getElementById('startdate'); 
+		var descriptionElement = document.querySelector('textarea[name="description"]');
+		var description_englishElement = document.querySelector('textarea[name="description_english"]');
+        var locationElement = document.querySelector('input[name="location"]');
+        var topicElement = document.querySelector('input[name="topic_english"]');
+        var lastenrollmentdate = new Date(lastenrollmentdateElement.value);
+        var startDate = new Date(startdateElement.value); 
+
+        if (lastenrollmentdate >= startDate) {
+            console.log('Last enrollment date is not before start date'); // Changed to console.log()
+            return false;
+        }
+
+        if (locationElement.value.length < 5 || /^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
+            console.log('Invalid location'); // Changed to console.log()
+            return false;
+        }
+
+        if (topicElement.value.length < 5 || /^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+            console.log('Invalid topic'); // Changed to console.log()
+            return false;
+        }
+
+        if (descriptionElement.value.length < 5 || description_englishElement.value.length < 5 || /^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_englishElement.value.trim())) {
+            console.log('Invalid description'); // Changed to console.log()
+            return false;
+        }
+
+        console.log('Form is valid'); // Changed to console.log()
+        return true;
+    }
 </script>
+
+
 
 <script>
 	$(document).ready(function() {

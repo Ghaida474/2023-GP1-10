@@ -439,7 +439,7 @@ if(!(document.querySelector('body').firstElementChild.classList.contains('respon
 
 /******* RTL VERSION *******/
 
-// $('body').addClass('rtl');
+$('body').addClass('rtl');
 
 /*Boxed Layout Start*/
 // $('body').addClass('boxed');
