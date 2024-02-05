@@ -29,10 +29,10 @@ class Collage(models.Model):
     nomalestudents = models.IntegerField(db_column='NoMaleStudents', blank=True, null=True)  # Field name made lowercase.
     adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail')  # Field name made lowercase.
     departments = ArrayField(models.TextField(),db_column='Departments',default=list)   # Field name made lowercase. This field type is a guess.
-    buemail = models.CharField(db_column='BUemail')  # Field name made lowercase.
+    buemail = models.CharField(db_column='BUemail', max_length=130)  # Field name made lowercase.
     userid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='userid')
-    buphonenumber = models.CharField(db_column='BUphoneNumber')  # Field name made lowercase.
-    password = models.CharField()
+    buphonenumber = models.CharField(db_column='BUphoneNumber', max_length=130)  # Field name made lowercase.
+    password = models.CharField( max_length=130)
     domain = models.TextField(blank=True, null=True)
 
 
@@ -53,7 +53,7 @@ class FacultyStaff(AbstractUser):
     phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  
     gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  
     nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)  
-    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)  
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True, max_length=130)  
     is_staff = models.BooleanField(blank=True, null=True)
     employeeid = models.CharField(db_column='EmployeeID', max_length=130)  
     position = models.CharField(db_column='Position', max_length=130) 
@@ -69,10 +69,10 @@ class FacultyStaff(AbstractUser):
     collageid = models.ForeignKey(Collage, models.DO_NOTHING, db_column='CollageID', blank=True, null=True) 
     is_buhead = models.BooleanField(db_column='is_BUhead', blank=True, null=True) 
     username = models.CharField(max_length=150, unique=True)
-    department_field = models.CharField(db_column='Department')
-    rank = models.CharField(blank=True, null=True)
-    first_nameeng = models.CharField(db_column='first_nameEng', blank=True, null=True)  # Field name made lowercase.
-    last_nameeng = models.CharField(db_column='last_nameEng', blank=True, null=True)  # 
+    department_field = models.CharField(db_column='Department', max_length=130)
+    rank = models.CharField(blank=True, null=True, max_length=130)
+    first_nameeng = models.CharField(db_column='first_nameEng', blank=True, null=True, max_length=130)  # Field name made lowercase.
+    last_nameeng = models.CharField(db_column='last_nameEng', blank=True, null=True, max_length=130)  # 
 
     groups = models.ManyToManyField(
         Group,
@@ -112,9 +112,9 @@ class Kaibuemployee(AbstractUser):
     phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  
     gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)  
     nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True) 
-    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)  
-    kaiemployeeid = models.CharField(db_column='KAIEmployeeID') 
-    position = models.CharField(db_column='Position') 
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True, max_length=130)  
+    kaiemployeeid = models.CharField(db_column='KAIEmployeeID', max_length=130) 
+    position = models.CharField(db_column='Position', max_length=130) 
     is_staff = models.BooleanField(blank=True, null=True)
     username = models.CharField(max_length=150, unique=True)
 
@@ -147,7 +147,7 @@ class Register(models.Model):
     programid = models.ForeignKey('Trainingprogram', models.DO_NOTHING, db_column='ProgramID')  # Field name made lowercase.
     id = models.ForeignKey('Trainees', models.DO_NOTHING, db_column='id')
     certifications = models.TextField(blank=True, null=True , db_column='certifications')
-    certifications_ext = models.CharField(blank=True, null=True , db_column='certifications_ext')
+    certifications_ext = models.CharField(blank=True, null=True , db_column='certifications_ext', max_length=130)
     hasregistered = models.BooleanField(db_column='hasRegistered', blank=True, null=True)  # Field name made lowercase.
     haspaid = models.BooleanField(blank=True, null=True , default=False)
     hasattended = models.BooleanField(db_column='hasAttended', blank=True, null=True , default=False)  # Field name made lowercase.
@@ -168,9 +168,9 @@ class Trainees(models.Model):
     phonenumber = models.CharField(db_column='phoneNumber', max_length=130, blank=True, null=True)  
     gender = models.CharField(db_column='Gender', max_length=130, blank=True, null=True)
     # nationality = models.CharField(db_column='Nationality', max_length=130, blank=True, null=True)
-    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True)
-    nationalid = models.CharField(db_column='NationalID', blank=True, null=True)
-    fullnamearabic = models.CharField(db_column='fullNameArabic', blank=True, null=True)
+    adminemail = models.CharField(db_column='AdminEmail', blank=True, null=True, max_length=130)
+    nationalid = models.CharField(db_column='NationalID', blank=True, null=True, max_length=130)
+    fullnamearabic = models.CharField(db_column='fullNameArabic', blank=True, null=True, max_length=130)
 
     class Meta:
         managed = False
@@ -208,7 +208,7 @@ class Trainingprogram(models.Model):
     instructorid = ArrayField(models.IntegerField(), default=list, blank=True, null=True , db_column='InstructorID')
     program_domain = models.CharField(db_column='Program_domain',max_length=130, blank=True, null=True)
     isbuaccepted = models.BooleanField(db_column='isbuaccepted', blank=True, null=True)
-    initiatedby = models.CharField(db_column='initiatedby',choices=INITIATED_BY_CHOICES,blank=True,null=True,)
+    initiatedby = models.CharField(db_column='initiatedby',choices=INITIATED_BY_CHOICES,blank=True,null=True, max_length=130)
     status = models.CharField(db_column='status', max_length=130, blank=True, null=True)
     cost = models.FloatField()
     costtype = models.CharField(db_column='costType', max_length=130)

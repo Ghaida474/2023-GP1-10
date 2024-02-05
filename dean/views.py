@@ -9,6 +9,30 @@ from django.http import FileResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
 
+@login_required
+def chat(request):
+    username = request.user.username
+    secret = request.user.id
+    return render(request, 'dean/chat.html' , {'username':username , 'secret': secret })
+
+################### Video calls ###################
+
+@login_required
+def callsDashboard(request):
+        #return redirect('business_unit_account:callsDashboard')
+    return render(request, 'dean/calls-dashboard.html', {'name': request.user.first_name})
+
+
+@login_required
+def videocall(request):
+    return render(request, 'dean/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+
+@login_required
+def joinroom(request):
+    if request.method == 'POST':
+        roomID = request.POST['roomID']
+        return redirect("/dean_account/dean-account-home/videocall?roomID=" + roomID)
+    return render(request, 'dean/joinroom.html')
 
 @login_required
 def dean_account_home (request):

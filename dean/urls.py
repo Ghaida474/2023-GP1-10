@@ -14,6 +14,10 @@ urlpatterns = [
     path('dean-account-home/profile/view-file/<int:user_id>/', views.view_file, name='view_file'),
     path('dean-account-home/edit-profile/delete_previouswork/<str:value_to_delete>/', views.delete_previouswork, name='delete_previouswork'),
     path('dean-account-home/edit-profile/delete_researchinterest/<str:value_to_delete>/', views.delete_researchinterest, name='delete_researchinterest'),
-   
+    path('dean-account-home/chat', views.chat, name='chat'),
+    path('dean-account-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
+    path('dean-account-home/videocall', views.videocall, name='videocall'),
+    path('dean-account-home/joinroom', views.joinroom, name='joinroom'),
+
 ]
     

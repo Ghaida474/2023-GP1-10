@@ -18,5 +18,9 @@ urlpatterns = [
 
     # path('kaistaff-home/traningprogram/TraningProgram-view2/<int:program_id>/', views.program_view2, name='program_view2'),
     path('kaistaff-home/traningprogram/rejecte_program/<int:id>/', views.rejecte_program, name='rejecte_program'),
+    path('kaistaff-home/chat', views.chat, name='chat'),
+    path('kaistaff-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
+    path('kaistaff-home/videocall', views.videocall, name='videocall'),
+    path('kaistaff-home/joinroom', views.joinroom, name='joinroom'),
 
 ]

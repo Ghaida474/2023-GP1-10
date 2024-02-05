@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Teams Integration</title>
+    <!-- Include Microsoft Teams JavaScript SDK -->
+    <script src="https://statics.teams.microsoft.com/sdk/v1.13.0/js/MicrosoftTeams.min.js"></script>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #0078D4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #joinCallButton {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Microsoft Teams Integration</h1>
+
+    <!-- Button to initiate group call -->
+    <button id="startCallButton">Start Group Call</button>
+
+    <!-- Button to join group call -->
+    <button id="joinCallButton">Join Group Call</button>
+
+    <script>
+        // Initialize Microsoft Teams SDK
+        microsoftTeams.initialize();
+
+        // Function to start a group call
+        function startGroupCall() {
+            // Check if Microsoft Teams is available
+            if (microsoftTeams) {
+                // Check if the Teams client is supported
+                if (microsoftTeams.Client && microsoftTeams.Client.supported) {
+                    // Call the SDK method to start a group call
+                    microsoftTeams.Client.startGroupCall({
+                        meetingTitle: "Group Call",
+                        chatTitle: "Group Chat"
+                    });
+                } else {
+                    console.error("Microsoft Teams client is not supported.");
+                }
+            } else {
+                console.error("Microsoft Teams SDK is not available.");
+            }
+        }
+
+        // Function to join a group call
+        function joinGroupCall() {
+            // Retrieve the meeting ID from the backend (replace 'MEETING_ID_ENDPOINT' with the actual endpoint URL)
+            fetch('MEETING_ID_ENDPOINT')
+                .then(response => response.json())
+                .then(data => {
+                    // Check if Microsoft Teams is available
+                    if (microsoftTeams) {
+                        // Check if the Teams client is supported
+                        if (microsoftTeams.Client && microsoftTeams.Client.supported) {
+                            // Call the SDK method to join a group call with the retrieved meeting ID
+                            microsoftTeams.Client.joinGroupCall({
+                                meetingId: data.meetingId,
+                                displayName: "User Name"
+                            });
+                        } else {
+                            console.error("Microsoft Teams client is not supported.");
+                        }
+                    } else {
+                        console.error("Microsoft Teams SDK is not available.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Failed to retrieve meeting ID:", error);
+                });
+        }
+
+        // Event listeners for buttons
+        document.getElementById("startCallButton").addEventListener("click", startGroupCall);
+        document.getElementById("joinCallButton").addEventListener("click", joinGroupCall);
+    </script>
+</body>
+</html>

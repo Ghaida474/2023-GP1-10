@@ -13,6 +13,31 @@ from django.shortcuts import get_object_or_404
 from django.http import FileResponse, Http404, HttpResponse
 import mimetypes
 from django.views.decorators.http import require_POST
+@login_required
+def chat(request):
+    username = request.user.username
+    secret = request.user.id
+    return render(request, 'faculty_staff/chat.html' , {'username':username , 'secret': secret })
+
+
+################### Video calls ###################
+
+@login_required
+def callsDashboard(request):
+        #return redirect('business_unit_account:callsDashboard')
+    return render(request, 'faculty_staff/calls-dashboard.html', {'name': request.user.first_name})
+
+
+@login_required
+def videocall(request):
+    return render(request, 'faculty_staff/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+
+@login_required
+def joinroom(request):
+    if request.method == 'POST':
+        roomID = request.POST['roomID']
+        return redirect("/faculty_staff_account/faculty-staff-home/videocall?roomID=" + roomID)
+    return render(request, 'faculty_staff/joinroom.html')
 
 @login_required
 def faculty_staff_home (request):

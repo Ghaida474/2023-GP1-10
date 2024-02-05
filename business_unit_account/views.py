@@ -16,7 +16,115 @@ from django.db import transaction
 from django.http import FileResponse, Http404, HttpResponse , JsonResponse
 import mimetypes
 
+################### Video calls ###################
 
+@login_required
+def callsDashboard(request):
+        #return redirect('business_unit_account:callsDashboard')
+    return render(request, 'bu/calls-dashboard.html', {'name': request.user.first_name})
+
+
+@login_required
+def videocall(request):
+    return render(request, 'bu/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+
+@login_required
+def joinroom(request):
+    if request.method == 'POST':
+        roomID = request.POST['roomID']
+        return redirect("/business-unit-account/business-unit-home/videocall?roomID=" + roomID)
+    return render(request, 'bu/joinroom.html')
+
+####################################################### 
+
+@login_required
+def chat(request):
+    username = request.user.username
+    secret = request.user.id
+    return render(request, 'bu/chat.html' , {'username':username , 'secret': secret })
+
+
+
+
+
+####################################    microsoft try ###################################
+
+# Add the necessary imports
+from django.shortcuts import redirect
+from django.http import JsonResponse
+from django.conf import settings
+import requests
+
+def exchange_authorization_code(authorization_code):
+    # Microsoft Graph token endpoint URL
+    token_endpoint = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+
+    # Azure AD application credentials
+    client_id = settings.AZURE_AD['CLIENT_ID']
+    client_secret = settings.AZURE_AD['CLIENT_SECRET']
+
+    # Token request parameters
+    token_data = {
+        'grant_type': 'authorization_code',
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'code': authorization_code,
+        'redirect_uri': 'http://localhost:8000/business-unit-home/auth_callback/'  
+    }
+
+    # Make a POST request to the token endpoint to exchange authorization code for access token
+    token_response = requests.post(token_endpoint, data=token_data)
+
+    # Check if the request was successful (status code 200)
+    if token_response.status_code == 200:
+        # Parse the JSON response to extract the access token
+        token_json = token_response.json()
+        access_token = token_json.get('access_token')
+        return access_token
+    else:
+        # If the request was not successful, print the error message
+        print("Failed to exchange authorization code for access token:", token_response.text)
+        return None
+
+
+def my_view(request):
+    client_id = settings.AZURE_AD['CLIENT_ID']
+    client_secret = settings.AZURE_AD['CLIENT_SECRET']
+    # Use client_id and client_secret for authentication
+
+TEAMS_API_URL = "https://graph.microsoft.com/v1.0/communications/calls/startMeeting"
+def create_online_meeting(request):
+    if request.method == 'POST':
+        # Authenticate and obtain access token (not shown here)
+        
+        # Create online meeting
+        headers = {
+            "Authorization": "Bearer ACCESS_TOKEN",  # Replace ACCESS_TOKEN with actual access token
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "startDateTime": "2024-01-25T14:30:34.2444915Z",
+            "endDateTime": "2024-01-25T15:00:34.2464912Z",
+            "subject": "Team Meeting"
+        }
+        response = requests.post(TEAMS_API_URL, headers=headers, json=payload)
+        
+        if response.status_code == 201:
+            return JsonResponse({"status": "success", "meeting_info": response.json()})
+        else:
+            return JsonResponse({"error": "Failed to create meeting"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+
+def auth_callback(request):
+    # Process authentication response from Azure AD
+    authorization_code = request.GET.get('code')
+    # Exchange authorization code for access token
+    access_token = exchange_authorization_code(authorization_code)
+    # Redirect user to desired page
+    return redirect('bu/calls.html')
+
+############################################# microsoft try ###################################
 @login_required
 def business_unit_home (request):
     user = request.user
@@ -28,7 +136,7 @@ def business_unit_home (request):
     count = len(collage.departments)
 
     context = {'user': user , 'collage':collage , "emp":emp , 'department':count }
-
+   
     return render(request, 'bu/Home.html', context)
 
 @login_required

@@ -22,6 +22,10 @@ urlpatterns = [
     path('faculty-staff-home/hasattend/<int:register_id>', views.hasattend, name='hasattend'), 
     path('faculty-staff-home/apply-for-traningprogram/<int:id>/', views.apply_for_traningprogram, name='apply_for_traningprogram'),
     path('faculty-staff-home/reject_program/<int:id>', views.reject_program, name='reject_program'), 
+    path('faculty-staff-home/chat', views.chat, name='chat'),
+    path('faculty-staff-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
+    path('faculty-staff-home/videocall', views.videocall, name='videocall'),
+    path('faculty-staff-home/joinroom', views.joinroom, name='joinroom'),
 
 
 

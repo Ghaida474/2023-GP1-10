@@ -1,0 +1,20 @@
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ arm64-macos ]
+flags:           [ not_app_extension_safe ]
+install-name:    '@rpath/flutter_localization.framework/Versions/A/flutter_localization'
+swift-abi-version: 7
+exports:
+  - targets:         [ arm64-macos ]
+    symbols:         [ '_$s20flutter_localization25FlutterLocalizationPluginC6handle_6resultySo0C10MethodCallC_yypSgctF', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginC6handle_6resultySo0C10MethodCallC_yypSgctFTq', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginC8register4withySo0cE9Registrar_p_tFZ', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCACycfC', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCACycfc', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCMa', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCMn', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCN', 
+                       '_$s20flutter_localization25FlutterLocalizationPluginCfD', 
+                       _flutter_localizationVersionNumber, _flutter_localizationVersionString ]
+    objc-classes:    [ PodsDummy_flutter_localization, _TtC20flutter_localization25FlutterLocalizationPlugin ]
+...

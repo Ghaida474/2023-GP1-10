@@ -71,9 +71,9 @@ ROOT_URLCONF = 'BusinessGate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'ce-quick-start/build')],
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS': { 
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -107,10 +107,10 @@ DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         # 'NAME': 'bg',
-        'NAME': 'businessgate',
+        'NAME': 'newBusiness',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
-        'PASSWORD': 'BusinessGateDeveloperTeamAccess',
+        'PASSWORD': 'Lina1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -159,8 +159,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [STATIC_DIR]
-print(STATIC_DIR)
+#STATIC_DIR,
+#os.path.join(BASE_DIR, 'reactApp-chat/build/static')
+STATICFILES_DIRS = [STATIC_DIR, os.path.join(BASE_DIR, 'ce-quick-start/build/static')]
+#print(STATIC_DIR) 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # STATIC_URL = '/static/'
@@ -191,4 +193,11 @@ CELERY_BEAT_SCHEDULE = {
 GRAPH_MODELS ={
 'all_applications':True,
 'group_models':True,
+}
+
+# Django Azure AD Authentication Settings
+
+AZURE_AD = {
+    'CLIENT_ID': '19df06c3-3fcd-4947-809f-064684abf608',
+    'CLIENT_SECRET': 'cxZ8Q~wqAelo5PiIE9HRvDQETYuyXuxsqoxOcc1w',
 }

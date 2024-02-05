@@ -74,7 +74,11 @@
         {% endblock %}
         <!-- CUSTOM JS -->
 		<script src="{% static 'assets/js/custom.js'%}"></script>
-   
+        <script>
+            console.log('Script is running...');
+            window.username = '{{ username|safe }}';
+            window.secret = '{{ secret|safe }}';
+        </script>
         <!-- SCRIPTS END-->
 
     </body>

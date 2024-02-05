@@ -23,6 +23,8 @@ from django.contrib.auth.decorators import login_required
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+def chatindex(request):
+    return render(request,'index2.html')
 
 def clear_messages(request):
     storage = messages.get_messages(request)

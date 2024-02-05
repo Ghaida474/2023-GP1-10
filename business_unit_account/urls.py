@@ -11,11 +11,21 @@ urlpatterns = [
     path('business-unit-home/faculty-list', views.facultylist_view, name='faculty-list'),
     path('business-unit-home/faculty-list/faculty-view/<int:faculty_id>/', views.facultyinfo_view, name='faculty-view'),
     path('business-unit-home/traningprogram', views.traningprogram_view, name='traning-program'),
+  
+   # path('meeting/',views.videocall, name='meeting'),
+   # path('join/',views.join_room, name='join_room'),
+    path('business-unit-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
+    path('business-unit-home/videocall', views.videocall, name='videocall'),
+    path('business-unit-home/joinroom', views.joinroom, name='joinroom'),
+
+     path('business-unit-home/chat', views.chat, name='chat'),
+
     path('business-unit-home/profile/view-file/<int:user_id>/', views.view_file, name='view_file'),
     path('business-unit-home/edit-profile/delete_previouswork/<str:value_to_delete>/', views.delete_previouswork, name='delete_previouswork'),
     path('business-unit-home/edit-profile/delete_researchinterest/<str:value_to_delete>/', views.delete_researchinterest, name='delete_researchinterest'),
-    
 
+    path('business-unit-home/auth_callback/', views.auth_callback, name='auth_callback'),
+    
     path('business-unit-home/edit_program/<int:value_to_edit>/', views.edit_program, name='edit_program'),
     path('business-unit-home/delete_course/<int:value_to_delete>/', views.delete_course, name='delete_course'),
     path('business-unit-home/traningprogram/TraningProgram-view/<int:program_id>/', views.program_view, name='program_view'),
@@ -34,5 +44,5 @@ urlpatterns = [
     path('business-unit-home/traningprogram/rejecte_facultyprogram/<int:program_id>/', views.rejecte_facultyprogram, name='rejecte_facultyprogram'),
 
     path('business-unit-home/edit_program/deleteWaittingInstructor/<int:id>/', views.deleteWaittingInstructor, name='deleteWaittingInstructor'),
-
+   #path('', views.chatindex ,name='chatindex')
 ]

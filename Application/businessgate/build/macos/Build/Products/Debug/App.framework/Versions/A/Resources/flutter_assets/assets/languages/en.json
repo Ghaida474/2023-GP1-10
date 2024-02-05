@@ -1,0 +1,317 @@
+{
+    "login": {
+        "welcome": "Welcome Back",
+        "content": "Login to your existing account of e-learning",
+        "account": "Don't have an account?",
+        "sign_up": "Sign Up",
+        "or_text": "Or connect using",
+        "login": "SIGN IN",
+        "forget": "Forgot password ?",
+        "password": "Enter Password",
+        "email_address": "Enter Email Address",
+        "email_not" : "Email is not Registered",
+        "up" : " SIGN UP"
+    },
+    "app_exit": {
+        "exit_app": "Press back once again to exit"
+    },
+    "otp": {
+        "number_text": "Please enter the verification code here we just sent you on +9188******10",
+        "otp_verification": "OTP Verification",
+        "please_wait": "Please wait",
+        "confirm": "Confirm",
+        "reset_pass": "Reset Password",
+        "forgot" : "Forget Password",
+        "enter_email" : "Enter Your Email To Get OTP",
+        "send_otp" : "Send OTP",
+        "reset" : "Reset Password",
+        "otp_num" : "Enter Your OTP",
+        "not_suc" : "Reset is not Successfull"
+    },
+    "signup": {
+        "get_started": "Let's get started!",
+        "content": "Create an account to  e-learning to get all features",
+        "account": "Already have an account?",
+        "login_now": "Login now",
+        "or_text": "Or connect using",
+        "sign_up": "Sign Up",
+        "password": "Enter Password",
+        "email_address": "Enter Email Address",
+        "confirm_password": "Confirm Password",
+        "name": "Name",
+        "mobile_number": "Enter Mobile Number",
+        "Gender": "Select Gender :",
+        "F": "Female",
+        "M": "Male",
+        "firstname": "Enter First Name",
+        "lastname": "Enter Last Name",
+        "NID": "Enter National ID",
+        "CN" : "Enter a Correct Name",
+        "CID" : "Enter a Correct ID",
+        "CE" : "Enter a Correct Email",
+        "CM" : "Enter a Correct Mobile Number",
+        "CP" : "Enter a Correct Password Must contain : \n Capital letter \n Small letter \n Number and Special Character",
+        "register_suc" : "Register Successful",
+        "register_fai" : "Register Failed",
+        "email_registered" : "Email Already Registered",
+        "something_wrong" : "Something Went Wrong"
+
+    },
+    "bottom_navi": {
+        "reset": "Reset",
+        "categories": "Categories",
+        "design": "Design",
+        "marketing": "Marketing",
+        "helth": "Helth",
+        "music": "Music",
+        "photography": "Photography",
+        "programmimg": "Programmimg",
+        "art": "Art",
+        "price": "Price",
+        "paid": "Paid",
+        "free": "Free",
+        "both": "Both",
+        "level": "Level",
+        "all_level": "All level",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advance": "Advance",
+        "other": "Other",
+        "filter": "Filter",
+        "profile": "Profile",
+        "wishlist": "Wishlist",
+        "courses": "Courses",
+        "search": "Search",
+        "home": "Home"
+    },
+    "catergory": {
+        "catergory": "Category"
+    },
+    "detail": {
+        "student_feedback": "Student Feedback",
+        "name": "Aklima Akatar",
+        "date": "20 march 2020",
+        "overall_rating": "Overall rating",
+        "review": "review",
+        "min": "min",
+        "lifetime": "Lifetime subscription",
+        "subscribe": "Subscribe",
+        "method": "Select your payment method",
+        "credit_card": "Credit card/Debit Card",
+        "net_banking": "Net banking",
+        "other_UPI": "Other UPI app",
+        "about": "About",
+        "video": "Video",
+        "review_text": "Review",
+        "detail_name": "Digital marketing zero to hero",
+        "author": "By Margarita storosin",
+        "creat_by": "Creat by",
+        "author_name": "Margarita storosin",
+        "new_york": "New York",
+        "view_profile": "View profile",
+        "subscribed": "Subscribed",
+        "courses": "courses",
+        "average_rating": "Average rating",
+        "description": "Description",
+        "course_brief": "Course brief",
+        "total_timing": "Total timing",
+        "total_video": "Total video",
+        "hours": "hours",
+        "accesssibility": "Accesssibility",
+        "life_time": "Life Time",
+        "course_uploaded": "Course uploaded"
+    },
+    "video_download": {
+        "download": "Download"
+    },
+    "home": {
+        "hello": "Welcome",
+        "good_morning": "Good morning",
+        "feature_course": "Feature course",
+        "review": "review",
+        "popular_course": "Popular courses",
+        "see_all": "See all",
+        "recommended": "Recommended",
+        "catergory": "Catergory",
+        "learn_text": "Learn from basics",
+        "content": "Full Ui and UX designs",
+        "know_more": "Know more"
+    },
+    "myCourses": {
+        "my_courses": "My Courses",
+        "purchase_courses": "Your purchase courses",
+        "ongoing_course": "Ongoing Course",
+        "course_name": "Full UX/UI Design",
+        "completed": "completed"
+    },
+    "notification": {
+        "notification": "Notification",
+        "yesterday": "Yesterday",
+        "minutes": "minutes ago",
+        "today": "Today",
+        "no_notification": "No new notification",
+        "remove_notification": "Romove From Notification"
+    },
+    "onboarding": {
+        "title1": "Fascinated learning",
+        "skip": "SKIP",
+        "next": "NEXT",
+        "title2": "Empower Your learning",
+        "title3": "Explore Your New Course",
+        "login": "LOGIN"
+    },
+    "payment": {
+        "credit_card": "Credit card",
+        "pay_securely": "Pay securely",
+        "cvv": "CVV code",
+        "enter_cvv": "Enter CVV",
+        "date": "DD/MM/YY",
+        "card_number": "Card Number",
+        "enter_number": "Enter card number",
+        "holder_name": "Card holder name",
+        "Enetr_name": "Enter card holder name"
+    },
+    "success": {
+        "congratulations": "Congratulations!",
+        "content": "Your payment has been process successfully now you can learn your favourite course and make your bright future",
+        "back_home": "Back to home"
+    },
+    "popular": {
+        "popular_course": "Popular course"
+    },
+    "changePassword": {
+        "change_password": "Change password",
+        "current_password": "Current password",
+        "new_password": "New password",
+        "repeat_password": "Repeat new password",
+        "save_change": "Save change"
+    },
+    "download": {
+        "download": "Download"
+    },
+    "editProfile": {
+        "change_photo": "Change profile photo",
+        "change" :"Edit Your Information",
+        "camera": "Camera",
+        "gallery": "Gallery",
+        "remove_image": "Remove image",
+        "edit_profile": "Edit Profile",
+        "update": "Update",
+        "name": "Name",
+        "email_address": "Email Address",
+        "mobile_number": "Mobile Number",
+        "date_birth": "Date of birth",
+        "user_name": "Samantha Smith",
+        "FN" : "First Name",
+        "LN" : "Last Name",
+        "mobile" : "Mobile Number",
+        "password" : "Password",
+        "update_suc" : "Update is Successfull",
+        "updtate_not" : "Update is not Successfull"
+    },
+    "help": {
+        "help_support": "Help and support",
+        "enter_name": "Enter your Name",
+        "enter_email": "Enter your Email id",
+        "write_message": "Write your Message Here",
+        "send": "Send"
+    },
+    "languages": "languages",
+    "notifiSetting": {
+        "notification_settings": "Notification settings",
+        "app_notification": "App notification",
+        "recommended_class": "Recommended class",
+        "promotion": "Promotion"
+    },
+    "profile": {
+        "profile": "Profile",
+        "edit_profile": "Edit Profile",
+        "notification": "Notification",
+        "settings": "Settings",
+        "downloads": "Downloads",
+        "languages": "Languages",
+        "certificates" :"Certificates",
+        "logout": "Sign Out",
+        "logout_que": "Are you sure you want to Sign Out?",
+        "cancel": "Cancel",
+        "user_name": "Samantha Smith"
+    },
+    "settings": {
+        "settings": "Settings",
+        "change_password": "Change password",
+        "terms_condition": "Terms and condition",
+        "help": "Help"
+    },
+    "termsCondition": {
+        "terms_condition": "Terms and condition",
+        "term_use": "Term of use",
+        "condition": "Condition of attending"
+    },
+    "program": {
+        "programming": "Programming",
+        "review": "review"
+    },
+    "queans": {
+        "q&a": "Q & A",
+        "add_question": "Add new Question",
+        "name_que": "Human Akhatar",
+        "class": "class",
+        "question": "Which tool You  have used in this video?",
+        "name_ans": "Margerita storosin"
+    },
+    "rate": {
+        "rate_review": "Rate and review",
+        "submit": "Submit",
+        "write_review": "Write your review",
+        "rate_question": "What is your rate?",
+        "rate_content": "give us your feedback with rating,so we \nknow if you like it?",
+        "not_now": "Not Now"
+    },
+    "recommended": {
+        "recommended": "Recommended",
+        "review": "review"
+    },
+    "search": {
+        "search": "Search",
+        "popular_courses": "Popular courses",
+        "popular_search": "Popular search"
+    },
+    "similarCourse": {
+        "similar_course": "Similar course",
+        "review": "review"
+    },
+    "videoScreen": {
+        "q&a": "Q & A",
+        "course_discription": "Course discription",
+        "share_course": "Share this course",
+        "Add_wishlist": "Add to wishlist",
+        "download": "Download",
+        "rate_review": "Rate and review this course",
+        "view_similar": "View similar courses",
+        "min": "min",
+        "by": "By",
+        "course_included": "Course Included",
+        "more": "More"
+    },
+    "view_profile": {
+        "review": "review",
+        "about_margarita": "About Margarita",
+        "show_less": "Show less",
+        "read_more": "Read more",
+        "social_link": "Social link",
+        "about": "About",
+        "course": "Course",
+        "name": "Margarita storosin",
+        "new_york": "New York",
+        "average_rating": "Average rating"
+    },
+    "wishlist": {
+        "wishlist": "Wishlist",
+        "empty_whishlist": "Empty Whishlist",
+        "content": "It feel like nothing to save in your list.\nlet's add someone",
+        "total": "Total",
+        "lession": "lession",
+        "romove_wishList": "Removed from wishlist",
+        "add_wishlist": "Added to wishlist"
+    }
+}

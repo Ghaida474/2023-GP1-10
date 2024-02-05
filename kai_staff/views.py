@@ -20,6 +20,30 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime
 from django.views.decorators.http import require_POST
+@login_required
+def chat(request):
+    username = request.user.username
+    secret = request.user.id
+    return render(request, 'kai_staff/chat.html' , {'username':username , 'secret': secret })
+################### Video calls ###################
+
+@login_required
+def callsDashboard(request):
+        #return redirect('business_unit_account:callsDashboard')
+    return render(request, 'kai_staff/calls-dashboard.html', {'name': request.user.first_name})
+
+
+@login_required
+def videocall(request):
+    return render(request, 'kai_staff/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+
+@login_required
+def joinroom(request):
+    if request.method == 'POST':
+        roomID = request.POST['roomID']
+        return redirect("/kai_staff/kaistaff-home/videocall?roomID=" + roomID)
+    return render(request, 'kai_staff/joinroom.html')
+
 
 @login_required
 def kaistaff_home (request):
