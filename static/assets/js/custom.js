@@ -601,7 +601,7 @@ $(document).ready(function () {
 
 	}
 	/***************** RTL HAs Class *********************/
-
+	
 /******* Transparent Bg-Image Style *******/
 
 // Bg-Image1 Style

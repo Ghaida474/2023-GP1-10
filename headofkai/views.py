@@ -4,31 +4,28 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from app.forms import updateKai,ChangePasswordForm
 from django.contrib.auth import update_session_auth_hash
-# from django.contrib.messages import get_messages
-################### Video calls ###################
+
 
 @login_required
 def callsDashboard(request):
-        #return redirect('business_unit_account:callsDashboard')
-    return render(request, 'headofkai/calls-dashboard.html', {'name': request.user.first_name})
-
+    return render(request, 'kai/calls-dashboard.html', {'name': request.user.first_name})
 
 @login_required
 def videocall(request):
-    return render(request, 'headofkai/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+    return render(request, 'kai/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
 
 @login_required
 def joinroom(request):
     if request.method == 'POST':
         roomID = request.POST['roomID']
         return redirect("/head-kai-account/kai-home/videocall?roomID=" + roomID)
-    return render(request, 'headofkai/joinroom.html')
+    return render(request, 'kai/joinroom.html')
 
 @login_required
 def chat(request):
     username = request.user.username
     secret = request.user.id
-    return render(request, 'headofkai/chat.html' , {'username':username , 'secret': secret })
+    return render(request, 'kai/chat.html' , {'username':username , 'secret': secret })
 
 @login_required
 def kai_home (request):
@@ -74,3 +71,8 @@ def changepassword_view(request):
             success = True
 
     return render(request, 'kai/change-password.html', {'user': user, 'form': form , 'success':success})
+
+@login_required
+def projectpage(request):
+    return render(request, 'kai/project/project-list.html')
+

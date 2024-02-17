@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <style>
+      .ce-chat-card {
+          margin-bottom: 10px;
+      }
+      .hidden {
+          display: none;
+      }
+      #root > div > div > div:nth-child(3) > div > div:nth-child(1) > button{
+          display: none;
+      }
+      .form-control {
+      direction: rtl; 
+      text-align: right; 
+      padding-right: 20px; 
+  }
+  </style>
+  </head>
+  
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <div id="filter" style="display:none; position: absolute; width: 330px; margin-left: 130px; margin-bottom: -70px;  margin-top: 20px; z-index: 999;">
+      <div style="position: relative;">
+          <input type="text" class="form-control" id="filterInput" placeholder="ابحث...">
+      </div>
+  </div>
+
+  <script>
+      // Check if window.template is 'chat' and display the filter div accordingly
+      if (window.template === 'chat') {
+          document.getElementById('filter').style.display = 'block';
+      }
+
+      document.getElementById("filterInput").addEventListener("input", function() {
+          var filterValue = this.value.toLowerCase().trim();
+          var cards = document.querySelectorAll(".ce-chat-card");
+          cards.forEach(function(card) {
+              var title = card.querySelector(".ce-chat-card-title").textContent.toLowerCase().trim();
+              if (title.includes(filterValue)) {
+                  card.classList.remove('hidden');
+              } else {
+                  card.classList.add('hidden');
+              }
+          });
+      });
+  </script>
+
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>

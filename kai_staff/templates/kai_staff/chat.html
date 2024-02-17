@@ -1,7 +1,27 @@
-{% extends 'kai_staff/components/base.html' %}
 {% load static %}
+{% include 'kai_staff/components/layouts/styles.html' %}  
 
 {% block content %}
-  {% include 'index.html' %}
-{% endblock %}
+<head>
+    <title>المحادثات</title>
+</head>
+<style>
+      body{background:  #F5FBFF!important;}
+</style>
+<script>
+    console.log('Script is running...');
+    window.username = '{{ username|safe }}';
+    window.secret = '{{ secret|safe }}';
+    window.template = 'chat';
+    console.log('window.username',window.username);
+    console.log('window.secret',window.secret);
+    console.log('window.template',window.template); 
+</script>
+     
+<div style="margin-top: 30px;">
+<a  href="{% url 'kai_staff:callsDashboard' %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
 
+{% include 'index.html' %} 
+</div>
+{% include 'kai_staff/components/layouts/footer.html' %}
+{% endblock %}

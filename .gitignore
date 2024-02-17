@@ -6,3 +6,4 @@ db.sqlite3
 testenv
 myenv
 __pycache__/
+myenv2

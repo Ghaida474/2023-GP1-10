@@ -1,0 +1,99 @@
+{% extends 'faculty_staff/components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+	<style>
+		body {
+			
+			overflow-x: hidden;
+		}
+	</style>
+    {% endblock %}
+
+        {% block content %}
+					<!-- PAGE HEADER -->
+					<div class="page-header d-lg-flex d-block">
+						<div class="page-leftheader">
+							<div class="page-title">تعديل المشروع</div>
+						</div> 
+					</div>
+					<!-- END PAGE HEADER -->
+						
+                        <!-- ROW -->
+					<div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
+						<form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+						<div class="modal-footer">
+							<a href="{% url 'faculty_staff_account:project_view' program_id=program.programid %}" name="submit" class="btn btn-danger">إغلاق</a>
+							<button  class="btn btn-primary projectnotify">تعديل</button>
+						</div>
+							{% csrf_token %}
+						<body>
+							<!--   -->
+                            <div class="modal-body border-top">
+							<div class="form-group">
+								<label class="form-label">الملفات</label>
+								<div class="form-group">
+									<label class="form-label"></label>
+									<input class="form-control" type="file" name="attachment" value="{{program.attachment}}" accept=".pdf, .pptx, .doc , .docx , .xlsx" multiple>
+									<span class="error-message-attachment" style="color: red;"></span>
+								</div>
+							</div>    
+							<div class="font-weight-semibold"  style="color:#0084BD;">
+								{% if files %}
+								{% for file in files %}
+									<a href="{% url 'faculty_staff_account:view_projectfile' program.programid file.fileid %}" type="button" class="btn btn-outline-info" target="_blank">الإطلاع على  الملف {{ forloop.counter }}</a>
+								{% endfor %}
+							{% else %}
+								<p>لا يوجد ملف مرفق  </p>
+							{% endif %}	
+							</div>
+						</div>
+						
+					</body>
+						
+					</form>
+				
+					</div>                  
+        {% endblock %}
+
+
+		
+		{% block scripts %}
+
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+		
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+				<script src="{% static 'assets/js/filupload.js'%}"></script>
+		
+				<!-- INTERNAL SUMOSELECT JS -->
+				<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+		
+				<!-- INTERNAL INTLTELINPUT JS -->
+				<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+		
+				<!-- INTERNAL JQUERY TRANSFER JS -->
+				<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+		
+				<!-- INTERNAL MULTI JS -->
+				<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+		
+				<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+				<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+		
+				<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+				<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+				<script src="{% static 'assets/js/form-elements.js'%}"></script>
+				<script src="{% static 'assets/js/select2.js'%}"></script>
+		
+				<!-- THEME COLOR JS -->
+				<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		
+		{% endblock %}

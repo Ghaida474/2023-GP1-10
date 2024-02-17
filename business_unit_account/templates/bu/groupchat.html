@@ -1,0 +1,223 @@
+{% load static %}
+{% include 'bu/components/layouts/styles.html' %} 
+<head>
+    <title>المحادثات</title>
+</head>
+
+<style>
+    .video-call-button {
+      position: relative;
+      display: inline-block;
+      font-size: 24px;
+      color: #ffffff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      outline: none;
+      padding: 10px;
+    }
+  
+    .video-call-button:hover {
+      background-color: #0056b3;
+    }
+    .dropdown {
+    position: absolute;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    border: 1px solid #007bff; /* Change border color to blue */
+    border-radius: 10px;
+  }
+  
+  .dropdown-content {
+    padding: 10px;
+  }
+  
+  .dropdown-option {
+    cursor: pointer;
+    border-bottom: 1px solid #007bff; /* Add blue border to separate options */
+  }
+  
+  .dropdown-option:last-child {
+    border-bottom: none; /* Remove bottom border from last option */
+  }
+  
+  .dropdown-option:hover {
+    background-color: #aec3db; /* Change background color on hover */
+  }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 20%;
+      position: relative; /* Add this line to make positioning relative */
+      text-align: right;
+  }
+  
+  .modal-content .close {
+      position: absolute;
+      top: 10px;
+      left: 10px; /* Change 'right' to 'left' */
+      cursor: pointer;
+  }
+  
+  
+  /* CSS for input field */
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* CSS for buttons */
+  .modal-content button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    
+  }
+  
+  .modal-content button:hover {
+    background-color: #0056b3;
+  }
+  
+  
+  
+</style>
+  
+<script>
+    console.log('in bu chatgroup.html');
+    window.username = '{{ username|safe }}';
+    window.secret = '{{ pass|safe }}';
+    window.chatid = '{{ chatgroup_id|safe }}';
+    window.access_key = '{{ access_key|safe }}';
+    window.template = 'chatgroup';
+
+    console.log('window.username',window.username);
+    console.log('window.secret',window.secret);
+    console.log('window.chatid',window.chatid);
+    console.log('window.access_key', window.access_key);
+    console.log('window.template',window.template);
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the button and dropdown menu
+    const button = document.getElementById('videoCallButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    let timeoutId;
+
+    // Show dropdown menu on button hover
+    button.addEventListener('mouseenter', function() {
+      clearTimeout(timeoutId); // Clear any existing timeout
+      dropdownMenu.style.display = 'block';
+    });
+
+    // Hide dropdown menu on button leave
+    button.addEventListener('mouseleave', function() {
+      timeoutId = setTimeout(function() {
+        dropdownMenu.style.display = 'none';
+      }, 1000); // 1000 milliseconds = 1 second
+    });
+
+    // Handle click on dropdown options
+    document.getElementById('newMeeting').addEventListener('click', function() {
+     
+      window.location.href = "{% url 'business_unit_account:videocall' %}";
+      
+    });
+
+const modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+const btn = document.getElementById('joinMeeting');
+
+// Get the <span> element that closes the modal
+const span = document.getElementsByClassName('close')[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+modal.style.display = 'block';
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+modal.style.display = 'none';
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+if (event.target == modal) {
+  modal.style.display = 'none';
+}
+}
+
+// When the user submits the form, redirect with room code
+document.getElementById('roomCodeForm').addEventListener('submit', function(event) {
+
+event.preventDefault();
+const roomCode = document.getElementById('roomCode').value;
+console.log("roomCode");
+
+if (roomCode) {
+  window.location.href = `{% url 'business_unit_account:videocall' %}?roomCode=${roomCode}`;
+
+}
+});
+    // Show dropdown menu on dropdown menu hover
+    dropdownMenu.addEventListener('mouseenter', function() {
+      clearTimeout(timeoutId); // Clear the timeout when the mouse enters the dropdown menu
+    });
+
+    // Hide dropdown menu on dropdown menu leave
+    dropdownMenu.addEventListener('mouseleave', function() {
+      timeoutId = setTimeout(function() {
+        dropdownMenu.style.display = 'none';
+      }, 1000); // 1000 milliseconds = 1 second
+    });
+  });
+</script>
+
+
+    <button class="video-call-button" id="videoCallButton" style=" position: absolute; margin-left: 130px; margin-bottom: -70px;  margin-top: 20px; z-index: 999;""><i class="fas fa-video"></i></button>
+    
+    <div style="margin-top: 60px;">
+    <a  href="{% url 'business_unit_account:project_view' program_id=program_id %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
+    </div>
+
+    <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-content">
+          <div class="dropdown-option" id="newMeeting">بدء إجتماع جديد</div>
+          <div class="dropdown-option" id="joinMeeting">انضم الى إجتماع </div>
+        </div>
+      </div>    
+         
+    <div style="padding: 100px;">
+    {% include 'index.html' %} 
+    </div>
+
+{% include 'bu/components/layouts/footer.html' %}
+

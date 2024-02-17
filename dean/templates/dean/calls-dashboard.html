@@ -1,22 +1,28 @@
+{% extends 'dean/components/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Video Conference</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <body>
-    <div class="dashboard">
-        <h1>Welcome, {{name}}!</h1>
-        <!-- create a "New Meeting" button -->
-        
-        <a href="{% url 'dean_account:videocall' %}" class="button">New Meeting</a>
-        <a href="{% url 'dean_account:joinroom' %}" class="button">Join Meeting</a>
-       
+{% block content %}
+<div class="row">	
+  <div class="col-xl-9 col-lg-8 col-md-12">
+    <div class=" card mg-b-20   overflow-hidden" style="margin:350px; margin-top:220px; width: 650px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+      <div class="main-profile-body">
+        <div class="tab-content">
+          <div class="tab-pane show active" id="about">
+            <div class="card-body">
+                <div class=" mt-3">
+                  <div class="btn-list text-center" >
+                    <a href="{% url 'dean_account:videocall' %}" style="display:block;  margin-bottom: 10px; margin-right: 30px; width:550px;" class="btn btn-lg btn-primary" class="button">مكالمة جديدة</a>
+                    <a href="{% url 'dean_account:joinroom' %}" style="display:block;  margin-right: 30px; margin-left: 10px; width:550px;" class="btn btn-lg btn-primary" class="button">الإنضمام الى مكالمة</a>
+                    <a href="{% url 'dean_account:chat' %}" style="display:block;  margin-right: 30px; margin-left: 10px; width:550px;" class="btn btn-lg btn-primary" class="button">المحادثات</a>
+                  </div>
+                </div>
+            </div>	
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </body>
-</head>
-</html>
+  </div>
+</div>
+
+{% endblock %}

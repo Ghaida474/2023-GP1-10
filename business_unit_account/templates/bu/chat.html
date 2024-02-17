@@ -1,6 +1,29 @@
-{% extends 'faculty_staff/components/base.html' %}
 {% load static %}
+{% include 'bu/components/layouts/styles.html' %}  
 
 {% block content %}
-  {% include 'index.html' %}
+<head>
+    <title>المحادثات</title>
+</head>
+<style>
+      body{background:  #F5FBFF!important;}
+</style>
+<script>
+    console.log('Script is running...');
+    window.username = '{{ username|safe }}';
+    window.secret = '{{ secret|safe }}';
+    window.template = 'chat';
+    console.log('window.username',window.username);
+    console.log('window.secret',window.secret);
+    console.log('window.template',window.template); 
+</script>
+     
+<div style="margin-top: 30px;">
+<a  href="{% url 'business_unit_account:callsDashboard' %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
+
+{% include 'index.html' %} 
+</div>
+{% include 'bu/components/layouts/footer.html' %}
 {% endblock %}
+
+

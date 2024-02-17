@@ -79,6 +79,13 @@
             window.username = '{{ username|safe }}';
             window.secret = '{{ secret|safe }}';
         </script>
+          <script>
+            jQuery(document).ready(function($) {
+             $('body').addClass('rtl');
+             $('body').removeClass('ltr');
+             $("html[lang=en]").attr("dir", "rtl");
+             });
+         </script>
         <!-- SCRIPTS END-->
 
     </body>

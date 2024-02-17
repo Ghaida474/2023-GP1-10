@@ -223,9 +223,7 @@ class Trainingprogram(models.Model):
     isonline = models.BooleanField(db_column='isOnline', blank=True, null=True) 
     location_field = models.CharField(db_column='location ', max_length=130, blank=True, null=True) 
     topic_english = models.CharField(max_length=130, blank=True, null=True)
-    # adminemail = models.ForeignKey(Admin, models.DO_NOTHING, db_column='AdminEmail', blank=True, null=True)  # Field name made lowercase.
-
-
+  
     class Meta:
         managed = False
         db_table = 'TrainingProgram'
@@ -239,6 +237,7 @@ class IdStatusDate(models.Model):
     date = models.DateField(blank=True, null=True)
     training_program = models.ForeignKey('TrainingProgram', on_delete=models.CASCADE, db_column='training_program')
     rejectionresons = models.CharField(max_length=500, blank=True, null=True)
+    project =models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project')
 
     class Meta:
         managed = False
@@ -257,3 +256,108 @@ class StatusDateCheck(models.Model):
         db_table = 'Trainingprogram _status'
 
 
+class Files(models.Model) :
+    fileid = models.AutoField(db_column='file_id', primary_key=True)
+    taskid = models.ForeignKey('Task', on_delete=models.CASCADE, db_column='task_ID')
+    training_program = models.ForeignKey('TrainingProgram', on_delete=models.CASCADE, db_column='training_program')
+    attachment = models.BinaryField(db_column='Attachment', blank=True, null=True)
+    attachment_name = models.CharField(db_column='Attachment_name', max_length=130, blank=True, null=True)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project')
+
+    class Meta:
+        managed = False
+        db_table = 'Files'
+
+
+class Task(models.Model):
+    task_id = models.AutoField(primary_key=True)
+    task_name = models.TextField()
+    task_type = models.TextField()
+    task_description = models.TextField(max_length=1000)
+    is_classified = models.BooleanField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    notes = models.TextField(max_length=1000)
+    necessary_procedure = models.TextField()
+    priority = models.TextField()
+    faculty_initiation = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE)
+    kai_initiation = models.ForeignKey('Kaibuemployee', on_delete=models.CASCADE, related_name='kaibuemployee_initiated_tasks', null=True, blank=True)
+    faculty_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True)  # Assuming PostgreSQL is being used
+    kai_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True)  # Also assuming PostgreSQL is being used
+    status = models.TextField()
+    main_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
+    statusarray = ArrayField(models.TextField(), blank=True, default=list)
+    datearray = ArrayField(models.DateField(), blank=True, default=list)
+    is_main_task = models.BooleanField(default=False)
+    attachment = models.BinaryField(db_column='attacment', blank=True, null=True)
+
+    def str(self):
+        return self.task_name
+
+    class Meta:
+        managed = False
+        db_table = 'task'
+
+
+class TaskToUser(models.Model):
+    status = models.TextField()
+    kai_user = models.ForeignKey('Kaibuemployee', on_delete=models.CASCADE, db_column='kai_user')
+    faculty_user = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE, db_column='faculty_user')
+    main_task = models.ForeignKey('Task', on_delete=models.CASCADE, db_column='main_task') 
+    attachment = models.BinaryField(db_column='attachment', blank=True, null=True) # Optional field for binary data
+    addedtext = models.TextField(blank=True)  # Optional field for large text data
+    addeddate = models.DateField(auto_now_add=False, blank=True, null=True)  # Optional field for date
+
+    class Meta:
+        managed = False
+        db_table = 'task_to_user' 
+
+
+class Project(models.Model):
+    Name = models.CharField(db_column='Name', max_length=130)
+    totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  
+    taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  
+    kaipercentage = models.FloatField(db_column='KAIPercentage', blank=True, null=True) 
+    acceptanceStatus = models.CharField(db_column='acceptanceStatus',  max_length=130) 
+    programtype = models.CharField(db_column='programType', max_length=130) 
+    collageid = models.IntegerField(db_column='Collage')
+    programleader = models.IntegerField(db_column='LeaderID',blank=True, null=True)  
+    startdate = models.DateField(db_column='startDate')  
+    enddate = models.DateField(db_column='endDate') 
+    status = models.CharField(db_column='programStatus', max_length=130, blank=True, null=True)
+    CompanyName = models.CharField(db_column='companyName',  max_length=130)
+    OfferingDate = models.DateField(db_column='offeringDate')
+    AcceptanceDeadline = models.DateField(db_column='AcceptanceDeadline')
+    QuestionDeadline = models.DateField(db_column='QuestionDeadline') 
+    EtimadDeadline = models.DateField(db_column='EtimadDeadline')  
+    ProposalSubmissionDeadline = models.DateField(db_column='ProposalSubmissionDeadline') 
+    contractDuration = models.IntegerField(db_column='contractDuration')
+    EnvelopeOpening =  models.DateField(db_column='EnvelopeOpening')
+    rejectionresons = models.CharField(db_column='RejectionReason',max_length=500, blank=True, null=True)
+    TechnicalProposalStatus = models.CharField(db_column='TechnicalProposalStatus', max_length=130, blank=True, null=True)
+    FinancialProposalStatus = models.CharField(db_column='FinancialProposalStatus', max_length=130, blank=True, null=True)
+    programid = models.AutoField(db_column='programID', primary_key=True) 
+    isteamfound = models.BooleanField(db_column='isTeamFound',blank=True, null=True)
+    isAccepted = models.BooleanField(db_column='isAccepted',blank=True, null=True) 
+    Teamid = ArrayField(models.IntegerField(), default=list, blank=True, null=True , db_column='teamID')
+    num_ofTeam = models.IntegerField(db_column='num_ofTeam', blank=True, null=True)
+    appourtunityopentoall = models.BooleanField(blank=True, null=True,db_column='appourtunityopentoall')
+    durationType = models.CharField(db_column='durationType', max_length=100)
+    description = models.CharField(db_column='descrription', max_length=200)
+    chatgroup_id = models.CharField(db_column='chatgroup_id', max_length=200)
+    chat_access_key = models.CharField(db_column='chat_access_key', max_length=200)
+    
+    class Meta:
+        managed = False
+        db_table = 'Project'
+
+
+class StatusDateCheckProject(models.Model):
+    status = models.CharField(max_length=130, blank=True, null=True)
+    date = models.DateField(blank=True, null=True)
+    indicator = models.CharField(max_length=1, blank=True, null=True)
+    project =models.ForeignKey('Project', on_delete=models.CASCADE, db_column='project')
+
+    class Meta:
+        managed = False
+        db_table = 'Project_status'

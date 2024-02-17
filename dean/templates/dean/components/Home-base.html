@@ -75,6 +75,13 @@
         {% endblock %}
         <!-- CUSTOM1 JS -->
 		<script src="{% static 'assets/js/custom1.js'%}"></script>
+        <script>
+            jQuery(document).ready(function($) {
+             $('body').addClass('rtl');
+             $('body').removeClass('ltr');
+             $("html[lang=en]").attr("dir", "rtl");
+             });
+         </script>
 
         <!-- SCRIPTS END-->
 

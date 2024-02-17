@@ -1,7 +1,27 @@
-{% extends 'dean/components/base.html' %}
 {% load static %}
+{% include 'dean/components/layouts/styles.html' %}  
 
 {% block content %}
-  {% include 'index.html' %}
-{% endblock %}
+<head>
+    <title>المحادثات</title>
+</head>
+<style>
+      body{background:  #F5FBFF!important;}
+</style>
+<script>
+    console.log('Script is running...');
+    window.username = '{{ username|safe }}';
+    window.secret = '{{ secret|safe }}';
+    window.template = 'chat';
+    console.log('window.username',window.username);
+    console.log('window.secret',window.secret);
+    console.log('window.template',window.template); 
+</script>
+     
+<div style="margin-top: 30px;">
+<a  href="{% url 'dean_account:callsDashboard' %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
 
+{% include 'index.html' %} 
+</div>
+{% include 'dean/components/layouts/footer.html' %}
+{% endblock %}

@@ -264,219 +264,215 @@
 				allowClear: true, // Allows clearing the selection
 			});
 		});
-	
 		</script>
-		
-		
 		<script>
 		
-		function updateWaitingForAccept(newValue) {
-				$('#waitingforaccept').val(newValue);
+			function updateWaitingForAccept(newValue) {
+					$('#waitingforaccept').val(newValue);
+				}
+
+			function handleDelete(event, id) {
+					var element = $('#' + id);
+					var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+					var deleteURL = "{% url 'business_unit_account:deleteWaittingInstructor' id=0 %}".replace('0', id);
+					
+						$.ajax({
+							url: deleteURL,
+							type: 'POST',
+							headers: {
+								'X-CSRFToken': csrfToken
+							},
+							success: function(response) {
+								element.hide();
+								$('#waitingforaccept').val(response.success1); 
+								$('numofreq_instructors').val(response.success2); 
+								validateNumOfInstructors();
+							},
+							error: function(error) {
+								console.error('Error occurred:', error);
+							}
+						});
 			}
-
-		function handleDelete(event, id) {
-				var element = $('#' + id);
-				var csrfToken = $('[name=csrfmiddlewaretoken]').val();
-				var deleteURL = "{% url 'business_unit_account:deleteWaittingInstructor' id=0 %}".replace('0', id);
 				
-					$.ajax({
-						url: deleteURL,
-						type: 'POST',
-						headers: {
-							'X-CSRFToken': csrfToken
-						},
-						success: function(response) {
-							element.hide();
-							$('#waitingforaccept').val(response.success1); 
-           					$('numofreq_instructors').val(response.success2); 
-							validateNumOfInstructors();
-						},
-						error: function(error) {
-							console.error('Error occurred:', error);
-						}
-					});
-		}
+			function validateNumOfInstructors() {
+					var topic = $('input[name="num_ofinstructors"]').val();
+					var numofreq_instructors = $('input[name="numofreq_instructors"]').val();
+					var waitingforaccept = $('input[name="waitingforaccept"]').val();
+					var IdStatusDateAccept = $('input[name="IdStatusDateAccept"]').val();
+					var deletewaititng = document.getElementById("deletewaititng");
+
+					if (topic < 1) {
+						$('input[name="num_ofinstructors"]').addClass('is-invalid');
+						$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
+					} else if ((waitingforaccept > 0 && topic === IdStatusDateAccept) || (waitingforaccept > 0 && (topic - IdStatusDateAccept) < waitingforaccept)) {
+						$('input[name="num_ofinstructors"]').addClass('is-invalid');
+						$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('here' + waitingforaccept)
+						// text('عدد المدربين في قيد انتظارهم اكثر من العدد المطلوب الرجاء حذف المدربين');
+						deletewaititng.style.display = "inline-block";
+					} else {
+						$('input[name="num_ofinstructors"]').removeClass('is-invalid');
+						$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('');
+						deletewaititng.style.display = "none";
+					}
+				}
+
+			// Function to validate the form on submission
+			function validateForm() {
+				// Retrieve form elements
+				var topicElement = document.querySelector('input[name="topic"]');
+				var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
+				var numofreq_instructorsElement = document.querySelector('input[name="numofreq_instructors"]');
+				var priceElement = document.querySelector('input[name="price"]');
+				var startDateElement = document.querySelector('input[name="startdate"]');
+				var endDateElement = document.querySelector('input[name="enddate"]');
+				var startTimeElement = document.querySelector('input[name="starttime"]');
+				var endTimeElement = document.querySelector('input[name="endtime"]');
+				var subjectElement = document.querySelector('textarea[name="subject"]');
+				var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
 			
+				var selectElement = document.getElementById("options");
+				var selectdomain = document.getElementById("domain");
+			
+				var otherdomainElement = document.querySelector('input[name="otherdomain"]');
+				var otherTextElement = document.querySelector('input[name="otherText"]');
+			
+				// select other reqtype
+				if (selectElement.value === "other") {
+					if (otherTextElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
+						return false;
+					} 
+				}   
+			
+				//select  other domain
+				if (selectdomain.value === "اخرى") {
+					if (otherdomainElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
+						return false;
+					} 
+				}   
+			
+				// Check topic
+				if (topicElement.value.length < 5) {
+					return false;
+				} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+					return false;
+				} 
+			
+				// Check numoftrainee
+				var numoftrainee = parseInt(numoftraineeElement.value);
+				if (isNaN(numoftrainee) || numoftrainee < 1) {
+					return false;
+				} 
+			
+				
 
-		function validateNumOfInstructors() {
-				var topic = $('input[name="num_ofinstructors"]').val();
-				var numofreq_instructors = $('input[name="numofreq_instructors"]').val();
-				var waitingforaccept = $('input[name="waitingforaccept"]').val();
-				var IdStatusDateAccept = $('input[name="IdStatusDateAccept"]').val();
-				var deletewaititng = document.getElementById("deletewaititng");
+				// check num_ofinstructorsElement
+				var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+				if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+					return false;
+				} 
 
-				if (topic < 1) {
-					$('input[name="num_ofinstructors"]').addClass('is-invalid');
-					$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
-				} else if ((waitingforaccept > 0 && topic === IdStatusDateAccept) || (waitingforaccept > 0 && (topic - IdStatusDateAccept) < waitingforaccept)) {
-					$('input[name="num_ofinstructors"]').addClass('is-invalid');
-					$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('here' + waitingforaccept)
-					// text('عدد المدربين في قيد انتظارهم اكثر من العدد المطلوب الرجاء حذف المدربين');
-					deletewaititng.style.display = "inline-block";
+				// check num_ofinstructors with waitingforaccept
+				if(numofreq_instructors > num_ofinstructors ){
+					return false;
+				}
+			
+				// Check price
+				var price = parseFloat(priceElement.value);
+				if (isNaN(price) || price < 0) {
+					return false;
+				} 
+			
+				// Check start date and end date
+				var startDate = new Date(startDateElement.value);
+				var endDate = new Date(endDateElement.value);
+			
+				if (startDate > endDate) {
+					return false; 
+				} 
+			
+				// Check start time and end time
+				var startTimeParts = startTimeElement.value.split(':');
+				var endTimeParts = endTimeElement.value.split(':');
+			
+				var startHour = parseInt(startTimeParts[0]);
+				var startMinute = parseInt(startTimeParts[1]);
+				var endHour = parseInt(endTimeParts[0]);
+				var endMinute = parseInt(endTimeParts[1]);
+			
+				if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+					return false;
+				} 
+			
+				// Check subject
+				if (subjectElement.value.length < 5) {
+					return false;
+				} else if (/^\d+$/.test(subjectElement.value.trim())) {
+					return false;
+				}
+			
+				
+				var fileInput = document.querySelector('input[name="attachment"]');
+				var errorMessage = document.querySelector('.error-message-attachment');
+			
+				// Skip validation if the file input is empty
+				if (!fileInput.files.length) {
+					errorMessage.textContent = '';
+					return true; 
+					// No validation needed for an empty file input
+				}
+			
+				var allowedExtensions = ['.pdf', '.doc', '.docx','.pptx' , '.xlsx'];
+				var filePath = fileInput.value.toLowerCase();
+			
+				var isValidExtension = allowedExtensions.some(function (extension) {
+					return filePath.endsWith(extension);
+				});
+			
+				if (!isValidExtension) {
+					errorMessage.textContent = 'يجب أن يكون الملف بامتداد .pdf أو .doc أو .pptx';
+					fileInput.value = '';
+					return false;
 				} else {
-					$('input[name="num_ofinstructors"]').removeClass('is-invalid');
-					$('input[name="num_ofinstructors"]').siblings('.error-message-num_ofinstructors').text('');
-					deletewaititng.style.display = "none";
+					errorMessage.textContent = '';
+				}
+				
+				return true;
+			}
+			
+			// **************************** select other order
+			function toggleOtherInput() {
+				var selectElement = document.getElementById("options");
+				var otherInput = document.getElementById("otherInput");
+				var otherText = document.getElementById("otherText");
+			
+				if (selectElement.value === "other") {
+					otherInput.style.display = "block";
+					otherText.setAttribute("required", "required");
+				} else {
+					otherInput.style.display = "none"; 
+					otherText.removeAttribute("required");
 				}
 			}
-
-		// Function to validate the form on submission
-		function validateForm() {
-			// Retrieve form elements
-			var topicElement = document.querySelector('input[name="topic"]');
-			var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
-			var numofreq_instructorsElement = document.querySelector('input[name="numofreq_instructors"]');
-			var priceElement = document.querySelector('input[name="price"]');
-			var startDateElement = document.querySelector('input[name="startdate"]');
-			var endDateElement = document.querySelector('input[name="enddate"]');
-			var startTimeElement = document.querySelector('input[name="starttime"]');
-			var endTimeElement = document.querySelector('input[name="endtime"]');
-			var subjectElement = document.querySelector('textarea[name="subject"]');
-			var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-		
-			var selectElement = document.getElementById("options");
-			var selectdomain = document.getElementById("domain");
-		
-			var otherdomainElement = document.querySelector('input[name="otherdomain"]');
-			var otherTextElement = document.querySelector('input[name="otherText"]');
-		
-			 // select other reqtype
-			 if (selectElement.value === "other") {
-				if (otherTextElement.value.length < 5) {
-					return false;
-				} else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
-					return false;
-				} 
-			}   
-		
-			//select  other domain
-			if (selectdomain.value === "اخرى") {
-				if (otherdomainElement.value.length < 5) {
-					return false;
-				} else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
-					return false;
-				} 
-			}   
-		
-			// Check topic
-			if (topicElement.value.length < 5) {
-				return false;
-			} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-				return false;
-			} 
-		
-			// Check numoftrainee
-			var numoftrainee = parseInt(numoftraineeElement.value);
-			if (isNaN(numoftrainee) || numoftrainee < 1) {
-				return false;
-			} 
-		
 			
-
-			// check num_ofinstructorsElement
-			var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-			if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
-				return false;
-			} 
-
-			// check num_ofinstructors with waitingforaccept
-			if(numofreq_instructors > num_ofinstructors ){
-			  	return false;
-			  }
-		
-			// Check price
-			var price = parseFloat(priceElement.value);
-			if (isNaN(price) || price < 0) {
-				return false;
-			} 
-		
-			// Check start date and end date
-			var startDate = new Date(startDateElement.value);
-			var endDate = new Date(endDateElement.value);
-		
-			if (startDate > endDate) {
-				return false; 
-			} 
-		
-			// Check start time and end time
-			var startTimeParts = startTimeElement.value.split(':');
-			var endTimeParts = endTimeElement.value.split(':');
-		
-			var startHour = parseInt(startTimeParts[0]);
-			var startMinute = parseInt(startTimeParts[1]);
-			var endHour = parseInt(endTimeParts[0]);
-			var endMinute = parseInt(endTimeParts[1]);
-		
-			if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-				return false;
-			} 
-		
-			// Check subject
-			if (subjectElement.value.length < 5) {
-				return false;
-			} else if (/^\d+$/.test(subjectElement.value.trim())) {
-				return false;
-			}
-		
+			// **************************** select other domain
+			function toggleOtherdomain() {
+				var selectElement = document.getElementById("domain");
+				var otherInput = document.getElementById("other-domain");
+				var otherdomain = document.getElementById("otherdomain");
 			
-			var fileInput = document.querySelector('input[name="attachment"]');
-			var errorMessage = document.querySelector('.error-message-attachment');
-		
-			// Skip validation if the file input is empty
-			if (!fileInput.files.length) {
-				errorMessage.textContent = '';
-				return true; // No validation needed for an empty file input
-			}
-		
-			var allowedExtensions = ['.pdf', '.doc', '.docx','.pptx' , '.xlsx'];
-			var filePath = fileInput.value.toLowerCase();
-		
-			var isValidExtension = allowedExtensions.some(function (extension) {
-				return filePath.endsWith(extension);
-			});
-		
-			if (!isValidExtension) {
-				errorMessage.textContent = 'يجب أن يكون الملف بامتداد .pdf أو .doc أو .pptx';
-				fileInput.value = '';
-				return false;
-			} else {
-				errorMessage.textContent = '';
+				if (selectElement.value === "اخرى") {
+					otherInput.style.display = "block";
+					otherdomain.setAttribute("required", "required"); 
+				} else {
+					otherInput.style.display = "none"; 
+					otherdomain.removeAttribute("required");
+				}
 			}
 			
-		
-			return true;
-		}
-		
-		// **************************** select other order
-		function toggleOtherInput() {
-			var selectElement = document.getElementById("options");
-			var otherInput = document.getElementById("otherInput");
-			var otherText = document.getElementById("otherText");
-		
-			if (selectElement.value === "other") {
-				otherInput.style.display = "block";
-				otherText.setAttribute("required", "required");
-			} else {
-				otherInput.style.display = "none"; 
-				otherText.removeAttribute("required");
-			}
-		}
-		
-		// **************************** select other domain
-		function toggleOtherdomain() {
-			var selectElement = document.getElementById("domain");
-			var otherInput = document.getElementById("other-domain");
-			var otherdomain = document.getElementById("otherdomain");
-		
-			if (selectElement.value === "اخرى") {
-				otherInput.style.display = "block";
-				otherdomain.setAttribute("required", "required"); 
-			} else {
-				otherInput.style.display = "none"; 
-				otherdomain.removeAttribute("required");
-			}
-		}
-		
 		</script>
 		<!-- **************************** AJAX -->
 		<script>
@@ -686,8 +682,7 @@
 					$(this).siblings('.error-message-domain').text('');
 					}
 				});
-			});
-		
+			});		
 		</script>
 		   
 		<script>

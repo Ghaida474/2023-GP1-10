@@ -2,7 +2,8 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from app.models import FacultyStaff,Collage, Trainingprogram,Register,Trainees,IdStatusDate, StatusDateCheck 
+import requests
+from app.models import  FacultyStaff,Collage, Trainingprogram,Register,Trainees,IdStatusDate, StatusDateCheck, Project, StatusDateCheckProject,Files 
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
@@ -10,23 +11,18 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from django.http import FileResponse, Http404, HttpResponse
 import mimetypes
 from django.views.decorators.http import require_POST
-@login_required
-def chat(request):
-    username = request.user.username
-    secret = request.user.id
-    return render(request, 'faculty_staff/chat.html' , {'username':username , 'secret': secret })
+from django.http import FileResponse, Http404, HttpResponse , JsonResponse , HttpResponseBadRequest
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 
 
-################### Video calls ###################
+################### communication ###################
 
 @login_required
 def callsDashboard(request):
-        #return redirect('business_unit_account:callsDashboard')
     return render(request, 'faculty_staff/calls-dashboard.html', {'name': request.user.first_name})
-
 
 @login_required
 def videocall(request):
@@ -38,6 +34,14 @@ def joinroom(request):
         roomID = request.POST['roomID']
         return redirect("/faculty_staff_account/faculty-staff-home/videocall?roomID=" + roomID)
     return render(request, 'faculty_staff/joinroom.html')
+
+@login_required
+def chat(request):
+    username = request.user.username
+    secret = request.user.id
+    return render(request, 'faculty_staff/chat.html' , {'username':username , 'secret': secret })
+
+################### Profile ###################
 
 @login_required
 def faculty_staff_home (request):
@@ -133,7 +137,6 @@ def editprofile_view(request):
 
     return render(request, 'faculty_staff/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'success':success , 'form2updated':form2updated })
 
-
 @login_required
 def delete_previouswork(request, value_to_delete):
     user = request.user
@@ -182,6 +185,8 @@ def changepassword_view(request):
             return redirect('faculty_staff_account:profile')
 
     return render(request, 'faculty_staff/change-password.html', {'user': user, 'form': form , 'success':success })
+
+################### TraningProgram ###################
 
 @login_required
 def delete_course(request, value_to_delete):
@@ -445,7 +450,6 @@ def hasattend(request, register_id):
             print('here3')
             return JsonResponse({'error_message': f'An error occurred: {e}'})
 
-
 def view_programfile(request, program_id):
     document = get_object_or_404(Trainingprogram, pk=program_id)
     
@@ -470,7 +474,6 @@ def view_programfile(request, program_id):
         return response
 
     raise Http404("Document not found")
-
 
 @login_required
 def edit_program(request, value_to_edit):
@@ -550,7 +553,6 @@ def edit_program(request, value_to_edit):
 
     return render(request, 'faculty_staff/TraningProgram-edit.html', {'program':editprogram ,'faculty':faculty , 'domain':domain ,'id_status_dates':id_status_dates ,'programflow':programflow })
 
-
 def get_programs_initiated_by_bu(user):
     collage_id = user.collageid.collageid
     programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='bu')
@@ -564,7 +566,6 @@ def get_programs_initiated_by_bu(user):
             program.instructor_first_name = ""
             program.instructor_last_name = ""
     return programs
-
 
 def update_status(request, program_id):
 
@@ -602,7 +603,6 @@ def update_status(request, program_id):
     
 
     return render(request, 'faculty_staff/TraningPrograms.html', {'user': user , 'programs':programs,'faculty':faculty, 'domain':domain })
-
 
 @login_required
 @require_POST
@@ -644,7 +644,6 @@ def accept_program(request, id):
 
     return redirect('faculty_staff_account:program_view' , program_id = training_program.programid )
 
-
 @login_required
 @require_POST
 def apply_for_traningprogram(request, id):
@@ -658,7 +657,6 @@ def apply_for_traningprogram(request, id):
                 training_program=training_program)
     
     return redirect('faculty_staff_account:traning-program')
-
   
 @login_required
 @require_POST
@@ -680,3 +678,263 @@ def reject_program(request, id):
     training_program.save()
 
     return redirect('faculty_staff_account:traning-program')
+
+################### Projects ###################
+
+@login_required
+def projects_view(request):
+    user = request.user
+    collage_id = user.collageid.collageid
+    programs = Project.objects.filter(collageid=collage_id)
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    #domain = collage.domain
+    
+        
+    bu_programs = Project.objects.filter(collageid=collage_id,Teamid__contains=[user.id])
+    print(bu_programs)
+    #faculty_or_staff_programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='FacultyOrStaff' , programleader=user.id)
+    opent_to_all_programs = Project.objects.filter(collageid=collage_id,appourtunityopentoall=True,status='فتح الفرصة للجميع')
+    opent_to_all_programs_list = list(opent_to_all_programs)
+    bu_programs_list = list(bu_programs)
+    combined_programs = opent_to_all_programs_list + bu_programs_list
+
+    return render(request, 'faculty_staff/Projects.html', {'user': user ,'combined_programs':combined_programs, 'programs':programs,'faculty':faculty, 'bu_programs':bu_programs ,'opent_to_all_programs':opent_to_all_programs  })
+
+
+def view_projectfile(request, program_id, file_id):
+    file = get_object_or_404(Files, fileid=file_id, project=program_id)
+
+    attachment_name = file.attachment_name
+    file_extension = attachment_name.split('.')[-1] if '.' in attachment_name else ''
+    content_type, _ = mimetypes.guess_type(attachment_name)
+
+    if content_type:
+        content_type_header = content_type
+    else:
+        if file_extension.lower() == 'pdf':
+            content_type_header = 'application/pdf'
+        elif file_extension.lower() == 'pptx':
+            content_type_header = 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        elif file_extension.lower() in ['doc', 'docx']:
+            content_type_header = 'application/msword'
+        else:
+            content_type_header = 'application/octet-stream'
+
+    response = HttpResponse(file.attachment, content_type=content_type_header)
+    response['Content-Disposition'] = f'inline; filename="{attachment_name}"'
+    return response
+
+@login_required
+def addFiles_project(request, value_to_edit):
+    editprogram = Project.objects.get(programid=value_to_edit)
+    user = request.user
+    collage_id = user.collageid.collageid
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+    id_status_dates = IdStatusDate.objects.filter(project=editprogram)
+    programflow = StatusDateCheckProject.objects.filter(project=editprogram)
+    edit_file = Files.objects.filter(project=editprogram)
+
+    if request.method == 'POST':
+
+     attachment_data = []
+     if 'attachment' in request.FILES:
+            attachments = request.FILES.getlist('attachment')
+
+            for attachment in attachments:
+                try:
+                    # Validate file extension
+                    FileExtensionValidator(allowed_extensions=['pdf', 'pptx', 'doc', 'docx', 'xlsx'])(attachment)
+                    attachment_data.append({
+                        'name': attachment.name,
+                        'content': attachment.read(),
+                    })
+                except ValidationError as e:
+                    # Handle invalid file extension
+                    error_message = f'Invalid file extension for {attachment.name}. Allowed extensions: pdf, pptx, doc, docx, xlsx.'
+                    return HttpResponseBadRequest(error_message)
+
+     else:
+            for edit_file_instance in edit_file:
+                attachment_data.append({
+            'name': edit_file_instance.attachment_name,
+            'content': edit_file_instance.attachment.read(),
+        })
+                
+     for attachment_data in attachment_data:
+               try:
+        # Assuming edit_file is a QuerySet, get the individual object
+                   edit_file_instance = edit_file.get(attachment_name=attachment_data['name'])
+
+        # Update attributes of the individual object
+                   edit_file_instance.attachment = attachment_data['content']
+                   edit_file_instance.project = editprogram
+                   edit_file_instance.save()
+               except edit_file.model.DoesNotExist:
+        # If the file doesn't exist, create a new one
+                   edit_file_instance = Files(
+                    attachment=attachment_data['content'],
+                    attachment_name=attachment_data['name'],
+                    project=editprogram)
+                   edit_file_instance.save()
+
+     return redirect('faculty_staff_account:project_view', program_id = editprogram.programid )
+   
+    return render(request, 'faculty_staff/Projects-edit.html', {'program':editprogram ,'faculty':faculty , 'domain':domain ,'id_status_dates':id_status_dates ,'programflow':programflow, 'files':edit_file})
+
+@login_required
+def project_view(request , program_id):
+    program = get_object_or_404(Project, programid=program_id)
+    instructors = program.Teamid
+    user = request.user
+    instructors_id = program.Teamid
+    file = Files.objects.filter(project=program_id)
+    instructor_names = []
+    for instructors in instructors_id:
+        try:
+            faculty_staff = FacultyStaff.objects.get(id=instructors)
+            name = [faculty_staff.first_name +' '+faculty_staff.last_name , faculty_staff.id , faculty_staff.major , faculty_staff.email ]
+            instructor_names.append(name)
+        except FacultyStaff.DoesNotExist:
+            instructor_names.append("")
+    program.instructor_names = instructor_names
+
+ 
+    id_status_dates = IdStatusDate.objects.filter(project=program)
+    # print('id_status_dates: ', id_status_dates )
+    programflow = StatusDateCheckProject.objects.filter(project=program)
+    # print('programflow: ', programflow )
+    applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id , project=program).count()
+    
+    if applicationidcount:
+        isfacultyinarray = False
+    else:
+        isfacultyinarray = True
+    
+    return render(request, 'faculty_staff/Projects-view.html', {'userid': user.id ,'program': program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'files': file})
+
+@login_required
+@require_POST
+def accept_project(request, id): 
+    id_status_date = get_object_or_404(IdStatusDate, id=id)
+    program = id_status_date.project
+
+    # Change status of the current IdStatusDate object
+    id_status_date.status = "تم قبول الطلب من قبل العضو"
+    id_status_date.date = timezone.now().date()
+    id_status_date.save()
+
+    # Check if all IdStatusDate objects associated with the same training program have been accepted
+    id_status_dates2 = IdStatusDate.objects.filter(project=program)
+    total_count = id_status_dates2.count()
+    accepted_count = id_status_dates2.filter(status="تم قبول الطلب من قبل العضو").count()
+
+    if program.num_ofTeam == len(program.Teamid):
+        # If the number of instructors equals the total numbers of values in instructorid
+
+        # Ensure all the ids in instructorid either not found in status_date_checks or status="تم قبول الطلب من قبل المدرب"
+        status_date_checks = StatusDateCheckProject.objects.filter(project=program)
+        for instructor_id in program.Teamid:
+            if not id_status_dates2.filter(instructor=instructor_id).exists() or id_status_dates2.filter(status="تم قبول الطلب من قبل العضو", instructor=instructor_id).exists():
+                continue
+            else:
+                break
+        else:
+            # If the above condition is met, update the training program status
+            if program.num_ofTeam == 1 or program.num_ofTeam =='1':
+                program.status = "تم قبول الطلب من قبل العضو"
+                status_date_checks.filter(status="تم قبول الطلب من قبل العضو").update(indicator='T')
+            else:
+                program.status = "تم قبول الطلب من قبل جميع الفريق"
+                status_date_checks.filter(status="تم قبول الطلب من قبل جميع الفريق").update(indicator='T' , date=timezone.now().date())
+            
+            status_date_checks.filter(status="اختيار رئيس الفريق").update(indicator='C')
+            program.save()
+
+    return redirect('faculty_staff_account:project_view' , program_id = program.programid )
+
+@login_required
+@require_POST
+def apply_for_project(request, id):
+    user = request.user
+    program = get_object_or_404(Project, programid=id)
+
+    IdStatusDate.objects.create(
+                instructor_id=user.id,
+                status="participationRequest",
+                date=timezone.now().date(),
+                project=program)
+    
+    return redirect('faculty_staff_account:projects')
+
+@login_required
+@require_POST
+def reject_project(request, id):
+    rejection_reason = request.POST.get('rejectionReason')
+    id_status_date = get_object_or_404(IdStatusDate, id=id)
+    program = id_status_date.project
+    print("instructors ids prior are :", program.Teamid )
+
+    # Change status of the current IdStatusDate object
+    id_status_date.status = "تم رفض الطلب من قبل العضو"
+    id_status_date.date = timezone.now().date()
+    id_status_date.rejectionresons= rejection_reason
+    id_status_date.save()
+
+    # Remove instructor's id from the instructorid array in the associated TrainingProgram object
+    team_id = id_status_date.instructor_id
+    program.Teamid = [id for id in program.Teamid if id != team_id]
+    program.save()
+    return redirect('faculty_staff_account:projects')
+
+@login_required
+def groupchat_view(request, program_id):
+    
+    project = Project.objects.get(programid=program_id)
+    if project.chatgroup_id:
+         chatid = project.chatgroup_id
+         access_key = project.chat_access_key
+         context = {'chatgroup_id':chatid , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key':access_key }
+         return render(request, 'faculty_staff/groupchat.html' , context)
+    else:
+       chat_credentials = creategroupchat(request , project )
+       project.chatgroup_id = chat_credentials['chatid']
+       project.chat_access_key = chat_credentials['access_key']
+       project.save()
+       context = {'chatgroup_id':project.chatgroup_id , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key': project.chat_access_key }
+       return render(request, 'faculty_staff/groupchat.html' , context)
+
+@login_required
+def creategroupchat(request , project):
+    usernamess = []
+    for teamMemberID in project.Teamid:
+        user = FacultyStaff.objects.get(id=teamMemberID)
+        usernamess.append(user.username)
+
+    print(usernamess)
+    print('------------------')
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": project.Name,
+        "is_direct_chat": False,
+        "usernames":usernamess
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    print('------------------')
+    # print(response.text)
+    # print(response.json())
+    responseINjson = response.json()
+    access_key = responseINjson['access_key']
+    chatid = responseINjson['id']
+    chat_credentials = {'access_key':access_key , 'chatid':chatid}
+    print('chat_credentials' ,chat_credentials)
+    print('response.status_code' ,response.status_code)
+    return chat_credentials 
+

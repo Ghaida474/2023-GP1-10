@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'business_unit_account',
     'kai_staff',
     'dean',
+    'rest_framework'
 ]
 
 
@@ -71,7 +72,7 @@ ROOT_URLCONF = 'BusinessGate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'ce-quick-start/build')],
+        'DIRS': [os.path.join(BASE_DIR, 'react-chat/ce-quick-start/build')],
         'APP_DIRS': True,
         'OPTIONS': { 
             'context_processors': [
@@ -107,10 +108,10 @@ DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         # 'NAME': 'bg',
-        'NAME': 'newBusiness',
+        'NAME': 'businessgate',
         # 'NAME': 'BusinessGate',
         'USER': 'postgres',
-        'PASSWORD': 'Lina1234',
+        'PASSWORD': 'BusinessGateDeveloperTeamAccess',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -161,7 +162,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 #STATIC_DIR,
 #os.path.join(BASE_DIR, 'reactApp-chat/build/static')
-STATICFILES_DIRS = [STATIC_DIR, os.path.join(BASE_DIR, 'ce-quick-start/build/static')]
+STATICFILES_DIRS = [STATIC_DIR, os.path.join(BASE_DIR, 'react-chat/ce-quick-start/build/static')]
 #print(STATIC_DIR) 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 

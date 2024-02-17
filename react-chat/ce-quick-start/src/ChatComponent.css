@@ -1,0 +1,253 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* الخلفيه الاساسيه */
+#root > div > div > div:nth-child(2) ,
+#root > div > div > div:nth-child(5),
+#root > div > div > div:nth-child(4),
+#root > div > div > div:nth-child(4) > div{
+  background: #F5FBFF!important;
+} 
+
+.ce-new-chat-button ,
+.ce-message-list ,
+.anticon-form , 
+div.ce-chat-list ,
+.ce-custom-message-form ,
+.ce-custom-chat-header , 
+.ce-message-list-content ,
+#root > div > div > div:nth-child(4) > div > div:nth-child(3),
+#root > div > div > div:nth-child(4) > div > div:nth-child(4){
+  background: aliceblue!important;
+}
+
+div.ce-chat-list{
+  width: 350px!important;
+  margin-left: 60px!important;
+} 
+
+#root > div > div > div:nth-child(3) > div > div:nth-child(1) > div{
+  color: aliceblue!important;
+}
+
+.ce-new-chat-button {
+  border:aliceblue!important; ;
+}
+
+div.ce-chat-list ,
+.ce-custom-chat-header {
+  border-color: #0084BD!important;
+  border: 1px;
+  border-style: solid;
+}
+
+.ce-message-list{ 
+  border:1px;
+  border-top-style: solid!important;
+  border-right-style: solid!important;
+  border-left-style: solid!important;
+  border-top-color:  #0084BD!important;
+  border-right-color: #0084BD!important;
+  border-left-color:  #0084BD!important;
+}
+
+.ce-custom-message-form ,
+#root > div > div > div:nth-child(4) > div > div:nth-child(3),
+#root > div > div > div:nth-child(4) > div > div:nth-child(4){
+  border:1px;
+  border-bottom-style: solid!important;
+  border-right-style: solid!important;
+  border-left-style: solid!important;
+  border-bottom-color:#0084BD!important;
+  border-right-color: #0084BD!important;
+  border-left-color:  #0084BD!important;
+  margin-left: 1.3%!important;
+}
+
+
+.ce-custom-message-input:placeholder-shown{
+background: #0084BD!important;
+} 
+
+.css-14ft38c-control , 
+.css-p4kzcr-Input ,
+#ce-message-list-content-undefined , 
+.css-1hb7zxy-IndicatorsContainer , 
+#react-select-3-input , 
+#react-select-3-placeholder ,
+.css-1f43avz-a11yText-A11yText , 
+#react-select-3-live-region , 
+.css-1if0x6v-SelectContainer{
+background: #0084BD!important;
+} 
+
+.ce-new-chat-button ,
+.ce-custom-header-title , 
+span.ce-my-message-timestamp,
+#ce-message-920936 > div > div:nth-child(4) > span,
+span.ce-their-message-timestamp,
+div.ce-message-date-text {
+  color: #0084BD!important;
+}
+
+.ce-custom-chat-header , 
+div.ce-chat-list{
+  border-radius: 8px; 
+}
+
+
+
+.ce-chat-card-title ,.ce-chat-card-subtitle ,
+ .ce-my-message-body , .ce-custom-send-button{
+  background: #0084BD!important;
+  color:  aliceblue!important;
+}
+/*             
+.ce-chat-card-title{
+  margin-left: -40px!important;
+}
+
+.ce-avatar ,.ce-custom-header-avatar{
+  margin-right:20px!important;
+}
+
+#root > div > div > div:nth-child(4){
+  margin-right:-110px!important;
+} */
+
+.ce-ice-breaker-gif{
+  display: none!important;
+}
+
+.ce-chat-card { 
+  border: 1px solid #0084BD!important;
+  background: #0084BD!important;
+} 
+ 
+/*             
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-header{
+  margin-right: 14px!important;
+  width: 700px!important;
+}
+
+#ce-message-list-228943 ,
+#root > div > div > div:nth-child(4) > div > form , 
+#ce-message-list-undefined ,
+#root > div > div > div:nth-child(4) > div > div:nth-child(3),
+.ce-message-list{
+  width: 700px!important;
+}
+
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-form > div > div{
+  width: 670px!important;
+}
+
+#root > div > div > div:nth-child(4) > div > form > input{
+margin-right:50px!important;
+}
+
+#root > div > div > div:nth-child(4) > div > form > button{
+  margin-right:-30px!important;
+}
+
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-form > button{
+  margin-right: 663px!important;
+} */
+
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-header > div.ce-custom-header-icon-wrapper > span > svg > path{
+  color: #0084BD!important;
+
+}
+/* #root > div > div > div:nth-child(4) > div > div.ce-custom-chat-header > div.ce-custom-header-icon-wrapper{
+  margin-right:70px!important;
+}  */
+
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-form > button{
+  background: #0084BD!important;
+}
+
+#root > div > div > div:nth-child(4) > div > div.ce-ice-breaker-wrapper{
+  border: none!important;
+  background: none!important;
+}
+
+/* .ce-chat-card-unread{
+  margin-top:7px!important;
+}
+
+.ce-my-message{
+margin-right:450px!important;
+} 
+
+
+.ce-their-message-body{
+  margin-right:40px!important;
+} 
+
+.ce-message-date-text{
+  margin-right:-500px!important;
+}
+
+
+span.ce-their-message-timestamp{
+  margin-right:-50px!important;
+} 
+
+.ce-avatar-dot{
+  display: none!important;
+} 
+
+div.ce-avatar.undefined {
+  margin-left:570px!important;
+} 
+
+.ce-their-message-sender-username{
+  margin-right:-22px!important;
+} */
+
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-header > div.ce-custom-header-icon-wrapper > span > svg{
+  display: none;
+}
+#root > div > div > div:nth-child(4) > div > div.ce-custom-chat-header > div.ce-custom-header-icon-wrapper > form > label > span > svg{
+  margin-left: 55px!important;
+} 
+
+
+

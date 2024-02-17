@@ -1,0 +1,32 @@
+{% load static %}
+{% include 'faculty_staff/components/layouts/styles.html' %}  
+
+{% block content %}
+<head>
+    <title>المحادثات</title>
+</head>
+
+<script>
+    console.log('in faculty chatgroup.html');
+    window.username = '{{ username|safe }}';
+    window.secret = '{{ pass|safe }}';
+    window.chatid = '{{ chatgroup_id|safe }}';
+    window.access_key = '{{ access_key|safe }}';
+    window.template = 'chatgroup';
+
+    console.log('window.username',window.username);
+    console.log('window.secret',window.secret);
+    console.log('window.chatid',window.chatid);
+    console.log('window.access_key', window.access_key);
+    console.log('window.template',window.template);
+
+</script>
+     
+<div style="margin-top: 60px;">
+<a  href="{% url 'faculty_staff_account:project_view' program_id=program_id %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
+</div>
+<div style="padding: 100px;">
+{% include 'index.html' %} 
+</div>
+{% include 'faculty_staff/components/layouts/footer.html' %}
+{% endblock %}

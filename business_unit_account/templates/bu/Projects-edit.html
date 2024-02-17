@@ -1,0 +1,624 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+    {% block styles %}
+	<style>
+		body {
+			
+			overflow-x: hidden;
+		}
+	</style>
+    {% endblock %}
+
+    {% block content %}
+					<!-- PAGE HEADER -->
+					<div class="page-header d-lg-flex d-block">
+						<div class="page-leftheader">
+							<div class="page-title">تعديل معلومات المشروع</div>
+						</div> 
+					</div>
+					<!-- END PAGE HEADER -->
+						
+                        <!-- ROW -->
+					<div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
+						<form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+						<div class="modal-footer">
+							<a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" name="submit" class="btn btn-danger">إغلاق</a>
+							<button  class="btn btn-primary projectnotify">تعديل</button>
+						</div>
+							{% csrf_token %}
+						<body>
+							<!--   -->
+						<div class="modal-body border-top">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">اسم المشروع  <span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="اسم المشروع " name="topic" value="{{program.Name}}">
+										<span class="error-message-topic" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">المجال<span style="color: red;">*</span></label>
+										<input class="form-control" type="text" placeholder="أدخل المجال" id="domain" name="domain" value="{{program.programtype}}">
+										<span class="error-message-domain" style="color: red;"></span>
+									</div>
+								</div> 
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">عدد فريق العمل <span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="عدد المدربين" type="number" min="{{IdStatusDateAccept}}" name="num_ofteam" id="num_ofinstructors" value="{{program.num_ofTeam}}" {% if IdStatusDateAccept ==  program.num_ofTeam %}readonly {% endif %}>
+										<span class="error-message-num_ofinstructors" style="color: red;"></span><br>
+										
+										<!-- <p> numofreq_instructors : {{numofreq_instructors}}</p>
+										<p> waitingforaccept : {{waitingforaccept}}</p>
+										<p> IdStatusDateAccept : {{IdStatusDateAccept}}</p>
+										<p> program.num_ofTeam : {{program.num_ofTeam}}</p> -->
+
+										<input hidden name="numofreq_instructors" type="number" id="numofreq_instructors" value="{{numofreq_instructors}}">
+										<input hidden name="waitingforaccept"  type="number" id="waitingforaccept" value="{{waitingforaccept}}">
+										<input hidden name="IdStatusDateAccept" type="number" id="IdStatusDateAccept" value="{{IdStatusDateAccept}}">
+										
+										<div id="deletewaititng" style="display: none;" >
+											{% for waitinginstructor in id_status_dates %}
+												{% if waitinginstructor.status == 'في انتظار قبول العضو' %}	
+													<a class="btn btn-sm btn-white mt-1" id="{{waitinginstructor.id}}" onclick="handleDelete( event , '{{  waitinginstructor.id }}')">{{waitinginstructor.instructor.first_name}} {{waitinginstructor.instructor.last_name}}<span class="fe fe-x"></span></a>
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تكلفة المشروع<span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="التكلفة" type="number" name="price" value="{{program.totalcost}}">
+										<span class="error-message-price" style="color: red;"></span>
+									</div>
+								</div>
+							</div>    
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">مدة المشروع<span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="مدة المشروع" type="number" name="duration" id="duration" value="{{program.contractDuration}}">
+										<span class="error-message-duration" style="color: red;"></span>
+									</div>
+								</div>
+							
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">نوع المدة<span style="color: red;">*</span></label>
+										<select class="form-control select2"  name="durationType" data-placeholder="أدخل نوع المدة"  required>       
+											<option value= "ساعة" {% if program.durationType == 'ساعة' %} selected {% endif %}>ساعة</option>  
+											<option value= "يوم" {% if program.durationType == 'يوم' %} selected {% endif %}>يوم</option> 
+											<option value= "إسبوع" {% if program.durationType == 'إسبوع' %} selected {% endif %}>إسبوع</option> 
+											<option value= "شهر" {% if program.durationType == 'شهر' %} selected {% endif %}>شهر</option> 
+											<option value= "سنة" {% if program.durationType == 'سنة' %} selected {% endif %}>سنة</option> 
+										</select> 
+										<span class="error-message" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+						   
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ تسليم المشروع للمعهد</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="proposalSubmission" value="{{program.ProposalSubmissionDeadline|date:'Y-m-d'}}">
+										<span class="error-message-proposalSubmission" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label"> آخر تاريخ لاستلام الأسئلة</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate"  value="{{program.QuestionDeadline|date:'Y-m-d'}}">
+										<span class="error-message-questionDate" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ تسليم المشروع للجهة</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="companyDate" value="{{program.EtimadDeadline|date:'Y-m-d'}}">
+										<span class="error-message-companyDate" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ الانتهاء</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" value="{{program.enddate|date:'Y-m-d'}}">
+										<span class="error-message-enddate" style="color: red;"></span>
+									</div>
+								</div>
+								</div>
+							
+						   
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ فتح المظاريف </label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="envelopeDate" value="{{program.EnvelopeOpening|date:'Y-m-d'}}">
+										<span class="error-message-envelopeDate" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">اسم الجهة</label>
+										<input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" value="{{program.CompanyName}}" required>
+										<span class="error-message-company" style="color: red;"></span>
+									</div>
+							</div>
+						</div>
+					
+
+							<div class="form-group">
+								<label class="form-label">وصف المشروع<span style="color: red;">*</span></label>    
+								<textarea class="form-control" rows="4" cols="105" placeholder="" name="subject" required>{{program.description}}</textarea>
+								<span class="error-message-subject" style="color: red;"></span>
+							</div>
+							
+							<div class="form-group">
+								<label class="form-label">الملفات</label>
+								<div class="form-group">
+									<label class="form-label"></label>
+									<input class="form-control" type="file" name="attachment" value="{{program.attachment}}" accept=".pdf, .pptx, .doc , .docx , .xlsx" multiple>
+									<span class="error-message-attachment" style="color: red;"></span>
+								</div>
+							</div>    
+							<div class="font-weight-semibold"  style="color:#0084BD;">
+								{% if files %}
+								{% for file in files %}
+									<a href="{% url 'business_unit_account:view_projectfile' program.programid file.fileid %}" type="button" class="btn btn-outline-info" target="_blank">الإطلاع على  الملف {{ forloop.counter }}</a>
+								{% endfor %}
+							{% else %}
+								<p>لا يوجد ملف مرفق  </p>
+							{% endif %}	
+							</div>
+						</div>
+						
+					</body>
+						
+					</form>
+					</div>
+    {% endblock %}
+
+
+		
+	{% block scripts %}
+	
+		<script>
+			function handleDelete(event, id) {
+					var element = $('#' + id);
+					var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+					var deleteURL = "{% url 'business_unit_account:deleteWaittingMember' id=0 %}".replace('0', id);
+					
+						$.ajax({
+							url: deleteURL,
+							type: 'POST',
+							headers: {
+								'X-CSRFToken': csrfToken
+							},
+							success: function(response) {
+								element.hide();
+								$('input[name="waitingforaccept"]').val(response.success1);
+								$('input[name="numofreq_instructors"]').val(response.success2);
+								console.log('response.success1',response.success1);
+								console.log('response.success2',response.success2);
+							},
+							error: function(error) {
+								console.error('Error occurred:', error);
+							}
+						});
+				}
+		</script>
+		
+		<script>
+		function validateForm() {
+			var topicElement = document.querySelector('input[name="topic"]');
+			var domainElement = document.querySelector('input[name="domain"]');
+			var companyElement = document.querySelector('input[name="CompanyName"]');
+			var priceElement = document.querySelector('input[name="price"]');
+			var durationElement = document.querySelector('input[name="duration"]');
+			var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
+			var subjectElement = document.querySelector('textarea[name="subject"]');
+
+			var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
+			var enddate = new Date(document.querySelector('input[name="enddate"]').value);
+			var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
+			var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
+			var envelopeDate = new Date(document.querySelector('input[name="envelopeDate"]').value);
+
+				
+					// Check topic 1
+					if (topicElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+						return false;
+					} 
+
+					// Check domain 2
+					if (domainElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
+						return false;
+					} 
+
+					// Check companyName 3
+					if (companyElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
+						return false;
+					} 
+				
+					// not working!
+					// check num_ofteam 3
+					var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+					if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+						return false;
+					} 
+
+					var numofreq_instructors = $('input[name="numofreq_instructors"]').val();
+					var waitingforaccept = $('input[name="waitingforaccept"]').val();
+					var IdStatusDateAccept = $('input[name="IdStatusDateAccept"]').val();
+					// if( (waitingforaccept > 0 && num_ofinstructors === IdStatusDateAccept )|| (waitingforaccept > 0 && (num_ofinstructors - IdStatusDateAccept) < waitingforaccept)  ){
+					// 	return false;
+					// }
+		
+					// check num_ofinstructors with waitingforaccept 
+					if(numofreq_instructors > num_ofinstructors ){
+						alert('numofreq_instructors: ' + numofreq_instructors + ', num_ofinstructors: ' + num_ofinstructors);
+						return false;
+					}
+				
+					// Check price 4
+					var price = parseFloat(priceElement.value);
+					if (isNaN(price) || price < 0) {
+						return false;
+					} 
+
+					// Check duration 5
+					var duration = parseFloat(durationElement.value);
+					if (isNaN(duration) || duration < 1) {
+						return false;
+					} 
+								
+					// Check subject 6
+					if (subjectElement.value.length < 5) {
+						return false;
+					} else if (/^\d+$/.test(subjectElement.value.trim())) {
+						return false;
+					}
+
+					// Check dates 7   
+						//  A
+							if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+								return false;
+							}
+							// B
+							if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+								return false;
+							} 
+							//  C
+							if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+								return false;
+							}
+							//  D
+							if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+								return false;
+							}
+							//  E
+							if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+								return false;
+							}  
+				
+				return true;
+				}
+		</script>
+
+
+		<!-- **************************** AJAX -->
+		<script>
+			$(document).ready(function() {
+			// check check 1	   
+				$('input[name="topic"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					}else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-topic').text('');
+					}
+				});
+			// check CompanyName 2
+				$('input[name="CompanyName"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-company').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-company').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					}else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-company').text('');
+					}
+				});
+			// check domain 3
+				$('input[name="domain"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+					}else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-domain').text('');
+					}
+				});
+		
+				$('select').on('blur', function() {
+					var topic = $(this).val();
+					if (topic === '') {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message').text('يجب ملئ الحقل');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message').text('');
+					}
+				});
+			 // check price 4  
+				$('input[name="price"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 0) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-price').text('');
+					}
+				});
+			// check num_ofteam 5	   
+				$('input[name="num_ofteam"]').on('blur', function() {
+					var topic = $(this).val();
+					var numofreq_instructors = $('input[name="numofreq_instructors"]').val();
+					var waitingforaccept = $('input[name="waitingforaccept"]').val();
+					var IdStatusDateAccept = $('input[name="IdStatusDateAccept"]').val();
+					var deletewaititng = document.getElementById("deletewaititng");
+		
+					if (topic < 1) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
+					}else if( (waitingforaccept > 0 && topic === IdStatusDateAccept ) ){
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-num_ofinstructors').text('عدد الفريق في قيد انتظارهم اكثر من العدد المطلوب الرجاء حذف احد افراد الفريق');
+						deletewaititng.style.display = "inline-block";
+					}else if((waitingforaccept > 0 && (topic - IdStatusDateAccept) < waitingforaccept)  ){
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-num_ofinstructors').text('عدد الفريق في قيد انتظارهم اكثر من العدد المطلوب الرجاء حذف احد افراد الفريق');
+						deletewaititng.style.display = "inline-block";
+					} else {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-num_ofinstructors').text('');
+						deletewaititng.style.display = "none";
+					}
+				});
+				
+				// check subject 6	
+				$('textarea[name="subject"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic.length < 5) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+					}else if (/^\d+$/.test(topic.trim())) {
+						$(this).addClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+					} else {
+						$(this).removeClass('is-invalid');
+						$(this).siblings('.error-message-subject').text('');
+					}
+				});
+			// check duration 7
+				$('input[name="duration"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 1) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-duration').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-duration').text('');
+					}
+				});
+ 			//  check dates 8
+				// A
+				$('input[name="enddate"]').on('blur', function() {
+					var $errorMessage = $(this).siblings('.error-message-enddate');
+					// Retrieve the date values of other input fields
+					var questionDate = new Date($('input[name="questionDate"]').val());
+					var enddate = new Date($('input[name="enddate"]').val());
+					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+					var companyDate = new Date($('input[name="companyDate"]').val());
+					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					// Perform validation
+					if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+						$(this).addClass('is-invalid');
+						$errorMessage.text('يجب ان يكون تاريخ الانتهاء بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+					} else {
+						$(this).removeClass('is-invalid');
+						$errorMessage.text('');
+					}
+				});
+				// B
+				$('input[name="questionDate"]').on('blur', function() {
+					var $errorMessage = $(this).siblings('.error-message-questionDate');
+					// Retrieve the date values of other input fields
+					var questionDate = new Date($('input[name="questionDate"]').val());
+					var enddate = new Date($('input[name="enddate"]').val());
+					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+					var companyDate = new Date($('input[name="companyDate"]').val());
+					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					// Perform validation
+					if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+						$(this).addClass('is-invalid');
+						$errorMessage.text('يجب ان يكون آخر تاريخ لاستلام الأسئلة قبل التواريخ الاخرى');
+					} else {
+						$(this).removeClass('is-invalid');
+						$errorMessage.text('');
+					}
+				}); 
+				// C
+				$('input[name="proposalSubmission"]').on('blur', function() {
+					var $errorMessage = $(this).siblings('.error-message-proposalSubmission');
+					// Retrieve the date values of other input fields
+					var questionDate = new Date($('input[name="questionDate"]').val());
+					var enddate = new Date($('input[name="enddate"]').val());
+					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+					var companyDate = new Date($('input[name="companyDate"]').val());
+					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					// Perform validation
+					if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+						$(this).addClass('is-invalid');
+						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ الانتهاء و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+					} else {
+						$(this).removeClass('is-invalid');
+						$errorMessage.text('');
+					}
+				});  
+				//  D
+				$('input[name="companyDate"]').on('blur', function() {
+					var $errorMessage = $(this).siblings('.error-message-companyDate');
+					// Retrieve the date values of other input fields
+					var questionDate = new Date($('input[name="questionDate"]').val());
+					var enddate = new Date($('input[name="enddate"]').val());
+					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+					var companyDate = new Date($('input[name="companyDate"]').val());
+					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					// Perform validation
+					if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+						$(this).addClass('is-invalid');
+						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة قبل تاريخ فتح المظاريف و بعد التواريخ الاخرى');
+					} else {
+						$(this).removeClass('is-invalid');
+						$errorMessage.text('');
+					}
+				});   
+				//  E
+				$('input[name="envelopeDate"]').on('blur', function() {
+					var $errorMessage = $(this).siblings('.error-message-envelopeDate');
+					// Retrieve the date values of other input fields
+					var questionDate = new Date($('input[name="questionDate"]').val());
+					var enddate = new Date($('input[name="enddate"]').val());
+					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+					var companyDate = new Date($('input[name="companyDate"]').val());
+					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					// Perform validation
+					if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+						$(this).addClass('is-invalid');
+						$errorMessage.text('يجب ان يكون تاريخ فتح المظاريف بعد التواريخ الاخرى');
+					} else {
+						$(this).removeClass('is-invalid');
+						$errorMessage.text('');
+					}
+				});   
+				
+		});
+		</script>
+		   
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Initialize flatpickr for date inputs
+				flatpickr('.flatpickr[data-input][data-date]', {
+					dateFormat: "d-m-Y",
+					minDate: "today",
+				});
+		
+				// Initialize flatpickr for time inputs
+				flatpickr('.flatpickr[data-input][data-time]', {
+					enableTime: true,
+					noCalendar: true,
+					dateFormat: "H:i",
+				});
+			});
+			
+			$(function() {
+				  $(document).ready(function () {
+					var todaysDate = new Date();
+					var year = todaysDate.getFullYear();
+					var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+					var day = ("0" + todaysDate.getDate()).slice(-2);
+					var maxDate = (year +"-"+ month +"-"+ day);
+					$('.date').attr('min',maxDate);
+				  });
+				});``
+		</script>
+		
+		
+				<!-- INTERNAL TIMEPICKER JS -->
+				<script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+				<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+		
+				<!-- INTERNAL DATEPICKER JS -->
+				<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+				<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+				<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+		
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+				<script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+		
+				<!-- INTERNAL FILE-UPLOADS JS -->
+				<script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+				<script src="{% static 'assets/js/filupload.js'%}"></script>
+		
+				<!-- INTERNAL SUMOSELECT JS -->
+				<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+		
+				<!-- INTERNAL INTLTELINPUT JS -->
+				<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+				<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+		
+				<!-- INTERNAL JQUERY TRANSFER JS -->
+				<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+		
+				<!-- INTERNAL MULTI JS -->
+				<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+		
+				<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+				<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+		
+				<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+				<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+				<script src="{% static 'assets/js/form-elements.js'%}"></script>
+				<script src="{% static 'assets/js/select2.js'%}"></script>
+		
+				<!-- INTERNAL MULTIPLE SELECT JS -->
+				<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+				<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+		
+				<!-- THEME COLOR JS -->
+				<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+		
+			  
+		
+	{% endblock %}

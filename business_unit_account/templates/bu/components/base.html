@@ -1,4 +1,5 @@
 {% load static %}
+
 <!doctype html>
 <html lang="en" dir="ltr">
 	<head>
@@ -73,12 +74,22 @@
         {% block scripts %}
         {% endblock %}
         <!-- CUSTOM JS -->
+ 
 		<script src="{% static 'assets/js/custom.js'%}"></script>
+
         <script>
             console.log('Script is running...');
             window.username = '{{ username|safe }}';
-            print("testtttt");
             window.secret = '{{ secret|safe }}';
+        </script>
+        <script>
+           jQuery(document).ready(function($) {
+            $('body').addClass('rtl');
+            $('body').removeClass('ltr');
+            $("html[lang=en]").attr("dir", "rtl");
+                // $("head link#style").attr("href", $(this));
+                // (document.getElementById("style")?.setAttribute("href", "static/assets/plugins/bootstrap/css/bootstrap.ltr.css"));
+            });
         </script>
         <!-- SCRIPTS END-->
 

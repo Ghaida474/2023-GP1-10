@@ -1,8 +1,0 @@
-version: "Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)"
-options: "6cb7ccbdeb8aa7c63d699a5c9bea46db16a7c515176a948eb2dabf291e912806"
-build_start_time: [1698838788, 496100000]
-build_end_time: [1698838788, 557219000]
-inputs:
-  "/Users/linafaisal/Documents/GitHub/2023-GP1-10/Application/businessgate/macos/Flutter/GeneratedPluginRegistrant.swift": !private [1698838749, 211834573]
-  "/Users/linafaisal/Documents/GitHub/2023-GP1-10/Application/businessgate/macos/Runner/AppDelegate.swift": !private [1698665128, 243883235]
-  "/Users/linafaisal/Documents/GitHub/2023-GP1-10/Application/businessgate/macos/Runner/MainFlutterWindow.swift": !private [1698665128, 246499140]

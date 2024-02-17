@@ -1,0 +1,918 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+{% block styles %}
+<style>
+    #otherInput {
+        display: none; 
+    }
+    #other-domain{
+        display: none;
+    }
+    body {
+        
+        overflow-x: hidden;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header d-lg-flex d-block">
+        <div class="page-leftheader">
+            <div class="page-title"> المشاريع</div>
+        </div>
+        <div class="page-rightheader ms-md-auto">
+            <div class="page-rightheader ms-md-auto">
+                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+                    <div class="btn-list">
+                        <a  href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newprojectmodal"><i class="feather feather-plus fs-15 my-auto me-2"></i>إنشاء مشروع</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+ 
+    
+        <div class="tab-menu-heading hremp-tabs p-0 ">
+            <div class="tabs-menu1" >
+                <!-- Tabs -->
+                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
+                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">المشاريع</a></li>
+                    <!-- <li><a href="#tab2" data-bs-toggle="tab">المشاريع الحالية</a></li> -->
+                    <li><a href="#tab3" data-bs-toggle="tab">المشاريع المنتهية</a></li>
+                </ul>
+            </div>
+        </div>
+
+                 
+                    <div class="panel-body tabs-menu-body hremp-tabs1 p-0">
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="tab1">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+
+										<div class="table-vcenter">
+                                            <table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">	
+												<thead>
+                                                    
+                                                    <div class="row mt-2">
+                                                        <div style="margin-right: 748px; height: 40px;">
+                                                            <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                            <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                                <option value="all">جميع الحالات</option>           
+                                                                    <option value="انتظار قبول الطلب من قبل العضو-انتظار قبول الطلب من قبل جميع الفريق"> انتظار قبول فريق العمل</option>
+                                                                    <option value="تم بدء العمل على المشروع">تم البدء في المشروع</option>
+                                                                    <option value="تسليم المشروع للمعهد للمراجعة">تم تسليم المشروع للمعهد</option>
+                                                                    <option value="تم رفض المشروع">تم الرفض </option>
+                                                                    <option value="التاريخ المتوقع للرد على المشروع">انتظار الرد لاستكمال المشروع</option>
+                                                                    <option value="إكمال المشروع">يتم العمل عليه</option>
+                                                                    <option value="إنهاء المشروع">مكتمل</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+													<tr>
+														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">نوع المشروع</th>
+														<th class="border-bottom-0">تاريخ الإنشاء </th>
+														<th class="border-bottom-0">حالة المشروع</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for program in bu_programs %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}    
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+                
+                            <!-- <div class="tab-pane" id="tab2">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">  
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div  style="margin-right: 755px; height: 40px;">
+                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                                <option value="all">جميع الحالات</option>           
+                                                                    <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
+                                                                    <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>     
+                                                            </select>
+                                                        </div>
+                                                    </div>
+													<tr>
+														<th class="border-bottom-0">مقدم الطلب</th> 
+														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">تاريخ الإنشاء </th>
+														<th class="border-bottom-0">حالة الطلب</th>
+                                                        <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+													</tr>
+												</thead>
+                                                
+												<tbody>
+													
+													<tr>
+                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												</tbody>
+											</table>
+										</div> 
+									</div>  
+							    </div> 
+						    </div> -->
+
+                            <div class="tab-pane" id="tab3">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">  
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div  style="margin-right: 755px; height: 40px;">
+                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
+                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+                                                                <option value="all">جميع الحالات</option>           
+                                                                <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
+                                                                <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>      
+                                                            </select>
+                                                        </div>
+                                                    </div>
+													<tr>
+														<th class="border-bottom-0">مقدم الطلب</th> 
+														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">تاريخ الإنشاء </th>
+														<th class="border-bottom-0">حالة الطلب</th>
+                                                        <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+													</tr>
+												</thead>
+                                                
+												<tbody>
+										
+													<tr>
+                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+										
+												</tbody>
+											</table>
+										</div> 
+									</div>  
+							    </div> 
+						    </div> 
+                        
+                        </div>
+                    </div>
+                
+						
+				
+<!--********************************************مودل طلب الانشاء  *************************************************-->
+    <div class="modal fade"  id="newprojectmodal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="smartwizard-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">طلب إنشاء</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="modal-body">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">اسم المشروع <span style="color: red;">*</span></label>
+                                <input class="form-control" type="text" placeholder="اسم المشروع " name="topic" required>
+                                <span class="error-message-topic" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">المجال<span style="color: red;">*</span></label>
+                                <input class="form-control" type="text" placeholder="أدخل المجال" id="domain" name="domain" required>
+                                <span class="error-message-domain" style="color: red;"></span>
+                            </div>
+                        </div>  
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">عدد فريق العمل <span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="عدد الفريق" type="number" name="num_ofteam" id="num_ofteam" required>
+                                <span class="error-message-num_ofinstructors" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تكلفة المشروع<span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="التكلفة" type="number" name="price" required>
+                                <span class="error-message-price" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">مدة المشروع<span style="color: red;">*</span></label>
+                                <input class="form-control" placeholder="مدة المشروع" type="number" name="duration" id="duration" required>
+                                <span class="error-message-duration" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">نوع المدة<span style="color: red;">*</span></label>
+                                <select class="form-control select2"  name="durationType" data-placeholder="أدخل نوع المدة"  required>       
+                                    <option value= "" disabled selected>أدخل نوع المدة</option> 
+                                    <option value= "ساعة">ساعة</option>  
+                                    <option value= "يوم">يوم</option> 
+                                    <option value= "إسبوع">إسبوع</option> 
+                                    <option value= "شهر">شهر</option> 
+                                    <option value= "سنة">سنة</option> 
+                                </select> 
+                                <span class="error-message" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                            <div class="form-group">
+                                <label class="form-label">الفريق <span style="color: red;">*</span></label>
+                                <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار الفريق" multiple required>
+                                    {% for faculty_member in faculty %}   
+                                     <option value= "{{faculty_member.id}}" >
+                                         {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+                                    </option> 
+                                    {% endfor %}
+                                </select> 
+                                <span class="error-message-instructor" style="color: red;"></span><br>
+
+                                <input type="checkbox" id="openToAllCheckbox" name="openToAllCheckbox" value ="open_to_all_memebers">
+                                <label for="openToAllCheckbox">ارسال لجميع اعضاء هيئة التدريس </label>
+                            </div>                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ تسليم المشروع للمعهد</label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="proposalSubmission">
+                                <span class="error-message-proposalSubmission" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label"> آخر تاريخ لاستلام الأسئلة</label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate">
+                                <span class="error-message-questionDate" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ تسليم المشروع للجهة</label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="companyDate">
+                                <span class="error-message-companyDate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ الانتهاء <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" required>
+                                <span class="error-message-enddate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ فتح المظاريف</label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="envelopeDate">
+                                <span class="error-message-envelopeDate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">اسم الجهة</label>
+                                <input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" required>
+                                <span class="error-message-CompanyName" style="color: red;"></span>
+                            </div>
+                    </div>
+                       
+                    <div class="form-group">
+                        <label class="form-label">وصف المشروع<span style="color: red;">*</span></label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="" name="subject" required></textarea>
+                        <span class="error-message-subject" style="color: red;"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">ارفاق الملفات<small style="color: red;"> .pdf , .pptx , .doc , .docx , .xlsx </small></label>
+                        <div class="form-group">
+                            <label class="form-label"></label>
+                            <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc , .docx , .xlsx" multiple>
+                            <span class="error-message-attachment" style="color: red;"></span>
+                        </div>
+                    </div>    
+                </div>
+                
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
+                </div>
+            </div></form>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+
+
+{% block scripts %}
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+        
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+
+
+          <script>
+            $(document).ready(function () {
+                  // Set minimum and maximum time values (8:00 AM and 10:00 PM)
+                  var minTime = '08:00';
+                  var maxTime = '22:00';
+  
+                  // Set the min and max attributes for the time inputs
+                  $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
+              });
+          </script>
+
+          <script>
+             $(document).ready(function() {
+                  $('#status_filter').change(function() {
+                      var selectedDepartment = $(this).val();
+  
+                      if (selectedDepartment.includes("-")) {
+                          var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
+                          var firstValue = values[0].trim(); // First value after splitting
+                          var secondValue = values[1].trim(); // Second value after splitting
+                          
+                          $('tbody tr').hide();
+                          // Show rows matching either the first or second value
+                          $('tbody tr').filter(function() {
+                              var status = $(this).find('td:nth-child(5)').text().trim();
+                              return status === firstValue || status === secondValue;
+                          }).show();
+                      } else if (selectedDepartment === 'all') {
+                          // Show all rows if 'all' is selected
+                          $('tbody tr').show();
+                      } else {
+                          // Hide all rows
+                          $('tbody tr').hide();
+                          // Show only rows with the selected status
+                          $('tbody tr').filter(function() {
+                              return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
+                          }).show();
+                      }
+                  });
+              });
+          </script>
+
+          <script>
+              $(document).ready(function() {
+                   $('#status_filter2').change(function() {
+                       var selectedDepartment = $(this).val();
+                       if (selectedDepartment === 'all') {
+                           // Show all rows if 'all' is selected
+                           $('tbody tr').show();
+                       } else {
+                           // Hide all rows
+                           $('tbody tr').hide();
+                           // Show only rows with the selected status
+                           $('tbody tr').filter(function() {
+                               return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
+                           }).show();
+                       }
+                   });
+               });
+        </script>
+    
+
+    <script>
+        jQuery(document).ready(function ($) {
+                       // Initialize Selectize on #mySelect
+                       var $select = $('#mySelect').selectize();
+                       var $select = $('#mySelect2').selectize();
+                   
+                       // Event listener for the checkbox change
+                       $('#openToAllCheckbox').change(function() {
+                           // Retrieve the selectize instance
+                           var selectize = $('#mySelect')[0].selectize;
+                   
+                           // Clear selected options if checkbox is checked
+                           if ($(this).prop('checked')) {
+                               selectize.clear();
+                               selectize.disable(); // Disable the selectize control
+                               $('.error-message-instructor').text(''); // Clear error message
+                           } else {
+                               selectize.enable(); // Enable the selectize control
+                           }
+                       });
+                   
+                       // Event listener for changes in #num_ofinstructors and #mySelect
+                       $('#num_ofinstructors, #mySelect').on('change', function() {
+                           validateInstructors();
+                       });
+                   
+                       // Validation function for instructors
+                       function validateInstructors() {
+                           var num_ofinstructors = parseInt($('#num_ofinstructors').val());
+                           var selectedCount = $('#mySelect').val().length;
+                           
+                           if (selectedCount !== num_ofinstructors) {
+                               $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+                           } else {
+                               $('.error-message-instructor').text('');
+                           }
+                       }
+                   });
+    </script>
+            
+    <script>
+        // Function to validate the form on submission
+    function validateForm() {
+        // Retrieve form elements
+        var topicElement = document.querySelector('input[name="topic"]');
+        var domainElement = document.querySelector('input[name="domain"]');
+        var companyElement = document.querySelector('input[name="CompanyName"]');
+        var priceElement = document.querySelector('input[name="price"]');
+        var durationElement = document.querySelector('input[name="duration"]');
+        var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
+        var subjectElement = document.querySelector('textarea[name="subject"]');
+
+        var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
+        var enddate = new Date(document.querySelector('input[name="enddate"]').value);
+        var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
+        var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
+        var envelopeDate = new Date(document.querySelector('input[name="envelopeDate"]').value);
+
+
+        // Check topic 1
+        if (topicElement.value.length < 5) {
+            return false;
+        } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+            return false;
+        } 
+
+        // Check domain 2
+        if (domainElement.value.length < 5) {
+            return false;
+        } else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
+            return false;
+        } 
+
+        // Check company 3
+        if (companyElement.value.length < 5) {
+            return false;
+        } else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
+            return false;
+        } 
+    
+       // Check price 4
+       var price = parseFloat(priceElement.value);
+        if (isNaN(price) || price < 0) {
+            return false;
+        } 
+    
+        // Check duration 5
+        var duration = parseFloat(durationElement.value);
+        if (isNaN(duration) || duration < 1) {
+            return false;
+        } 
+
+        // check num_ofinstructorsElement 6
+        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+        if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+            return false;
+        } 
+
+        if (!validateInstructorsCount()) {
+            console.log("Instructors count validation failed");
+            return false;
+        }
+    
+        // Check subject 7
+        if (subjectElement.value.length < 5) {
+            return false;
+        } else if (/^\d+$/.test(subjectElement.value.trim())) {
+            return false;
+        }
+       
+        // Check dates 8   
+           //  A
+              if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+                return false;
+             }
+            // B
+             if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+                return false;
+             } 
+            //  C
+             if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+                return false;
+             }
+            //  D
+             if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+                return false;
+             }
+            //  E
+             if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+                return false;
+             }  
+    
+    return true;
+    
+    }
+    </script>
+
+    <script>
+    function validateInstructorsCount() {
+        var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
+        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+        var selectedInstructors = document.getElementById('mySelect').options;
+        var selectedCount = selectedInstructors.length;
+    
+        var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
+        if(openToAllCheckboxElement.checked){
+            return true;
+        }
+    
+        return selectedCount === num_ofinstructors;
+    }
+    </script>
+
+    <script>
+    // **************************** select other order
+    function toggleOtherInput() {
+        var selectElement = document.getElementById("options");
+        var otherInput = document.getElementById("otherInput");
+        var otherText = document.getElementById("otherText");
+    
+        if (selectElement.value === "other") {
+            otherInput.style.display = "block";
+            otherText.setAttribute("required", "required");
+        } else {
+            otherInput.style.display = "none"; 
+            otherText.removeAttribute("required");
+        }
+    }
+    
+    // **************************** select other domain
+    function toggleOtherdomain() {
+        var selectElement = document.getElementById("domain");
+        var otherInput = document.getElementById("other-domain");
+        var otherdomain = document.getElementById("otherdomain");
+    
+        if (selectElement.value === "اخرى") {
+            otherInput.style.display = "block";
+            otherdomain.setAttribute("required", "required"); 
+        } else {
+            otherInput.style.display = "none"; 
+            otherdomain.removeAttribute("required");
+        }
+    }
+    
+    </script>
+
+<!-- **************************** AJAX -->
+  <script> 
+      $(document).ready(function() {  
+        // 1
+          $('input[name="topic"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-topic').text('');
+              }
+          });
+        // 2 
+          $('input[name="CompanyName"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-CompanyName').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-CompanyName').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-CompanyName').text('');
+              }
+          });
+        // 3
+          $('input[name="domain"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-domain').text('');
+              }
+          }); 
+        // 4
+          $('input[name="price"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 0) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-price').text('');
+              }
+          });
+        // 5
+          $('input[name="num_ofteam"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 1) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-num_ofinstructors').text('');
+              }
+          });
+        // 6
+          $('input[name="duration"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 1) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-duration').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-duration').text('');
+              }
+          });
+        // 7
+          $('textarea[name="subject"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+              }else if (/^\d+$/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+              } else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('');
+              }
+          });
+        // 8 dates check
+        // A
+        $('input[name="enddate"]').on('blur', function() {
+             var $errorMessage = $(this).siblings('.error-message-enddate');
+            // Retrieve the date values of other input fields
+             var questionDate = new Date($('input[name="questionDate"]').val());
+             var enddate = new Date($('input[name="enddate"]').val());
+             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+             var companyDate = new Date($('input[name="companyDate"]').val());
+             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            // Perform validation
+             if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+                 $(this).addClass('is-invalid');
+                 $errorMessage.text('يجب ان يكون تاريخ الانتهاء بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+             } else {
+                 $(this).removeClass('is-invalid');
+                 $errorMessage.text('');
+             }
+         });
+        // B
+        $('input[name="questionDate"]').on('blur', function() {
+             var $errorMessage = $(this).siblings('.error-message-questionDate');
+            // Retrieve the date values of other input fields
+             var questionDate = new Date($('input[name="questionDate"]').val());
+             var enddate = new Date($('input[name="enddate"]').val());
+             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+             var companyDate = new Date($('input[name="companyDate"]').val());
+             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            // Perform validation
+             if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+                 $(this).addClass('is-invalid');
+                 $errorMessage.text('يجب ان يكون آخر تاريخ لاستلام الأسئلة قبل التواريخ الاخرى');
+             } else {
+                 $(this).removeClass('is-invalid');
+                 $errorMessage.text('');
+             }
+         }); 
+         // C
+         $('input[name="proposalSubmission"]').on('blur', function() {
+             var $errorMessage = $(this).siblings('.error-message-proposalSubmission');
+            // Retrieve the date values of other input fields
+             var questionDate = new Date($('input[name="questionDate"]').val());
+             var enddate = new Date($('input[name="enddate"]').val());
+             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+             var companyDate = new Date($('input[name="companyDate"]').val());
+             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            // Perform validation
+             if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+                 $(this).addClass('is-invalid');
+                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ الانتهاء و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+             } else {
+                 $(this).removeClass('is-invalid');
+                 $errorMessage.text('');
+             }
+         });  
+        //  D
+         $('input[name="companyDate"]').on('blur', function() {
+             var $errorMessage = $(this).siblings('.error-message-companyDate');
+            // Retrieve the date values of other input fields
+             var questionDate = new Date($('input[name="questionDate"]').val());
+             var enddate = new Date($('input[name="enddate"]').val());
+             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+             var companyDate = new Date($('input[name="companyDate"]').val());
+             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            // Perform validation
+             if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+                 $(this).addClass('is-invalid');
+                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة قبل تاريخ فتح المظاريف و بعد التواريخ الاخرى');
+             } else {
+                 $(this).removeClass('is-invalid');
+                 $errorMessage.text('');
+             }
+         });   
+        //  E
+        $('input[name="envelopeDate"]').on('blur', function() {
+             var $errorMessage = $(this).siblings('.error-message-envelopeDate');
+            // Retrieve the date values of other input fields
+             var questionDate = new Date($('input[name="questionDate"]').val());
+             var enddate = new Date($('input[name="enddate"]').val());
+             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+             var companyDate = new Date($('input[name="companyDate"]').val());
+             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            // Perform validation
+             if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+                 $(this).addClass('is-invalid');
+                 $errorMessage.text('يجب ان يكون تاريخ فتح المظاريف بعد التواريخ الاخرى');
+             } else {
+                 $(this).removeClass('is-invalid');
+                 $errorMessage.text('');
+             }
+         });   
+                  
+      });
+  </script>
+     
+  <script>
+      let dropdowns = document.querySelectorAll('.dropdown-button');
+      dropdowns.forEach(dropdown => {
+          dropdown.addEventListener('click', () => {
+              let content = dropdown.nextElementSibling;
+              content.style.display = content.style.display === 'none' ? 'block' : 'none';
+          });
+      });
+  </script>
+  
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          // Initialize flatpickr for date inputs
+          flatpickr('.flatpickr[data-input][data-date]', {
+              dateFormat: "d-m-Y",
+              minDate: "today",
+          });
+  
+          // Initialize flatpickr for time inputs
+          flatpickr('.flatpickr[data-input][data-time]', {
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: "H:i",
+          });
+      });
+      
+      $(function() {
+            $(document).ready(function () {
+              var todaysDate = new Date();
+              var year = todaysDate.getFullYear();
+              var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+              var day = ("0" + todaysDate.getDate()).slice(-2);
+              var maxDate = (year +"-"+ month +"-"+ day);
+              $('.date').attr('min',maxDate);
+            });
+          });
+  
+  </script>
+  
+  <script>
+      $(document).ready(function () {
+          flatpickr('.flatpickr', {
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: 'H:i',
+              minTime: '08:00',
+              maxTime: '22:00',
+              onClose: function (selectedDates, dateStr, instance) {
+                  if (dateStr < '08:00' || dateStr > '22:00') {
+                      instance.clear();
+                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
+                  } else {
+                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
+                  }
+              }
+          });
+  
+  });
+  </script>
+  
+  {% endblock %}
+  
