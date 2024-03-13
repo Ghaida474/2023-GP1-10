@@ -46,7 +46,7 @@
   background: #F5FBFF!important;
 } 
 
-.ce-new-chat-button ,
+
 .ce-message-list ,
 .anticon-form , 
 div.ce-chat-list ,
@@ -68,7 +68,7 @@ div.ce-chat-list{
 }
 
 .ce-new-chat-button {
-  border:aliceblue!important; ;
+ display: none;
 }
 
 div.ce-chat-list ,
@@ -118,7 +118,7 @@ background: #0084BD!important;
 background: #0084BD!important;
 } 
 
-.ce-new-chat-button ,
+
 .ce-custom-header-title , 
 span.ce-my-message-timestamp,
 #ce-message-920936 > div > div:nth-child(4) > span,

@@ -1,0 +1,517 @@
+{% extends 'admin/components/base.html' %}
+{% load static %}
+    {% block styles %}
+    {% endblock %}
+
+        {% block content %}
+           
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+        
+        <script>                               
+        $(document).ready(function() {
+
+                $("#collageSelect").change(function () {
+                    var val = $(this).val();
+                    var departmentsString = $(this).find('option:selected').attr('data-departments');
+                    var departments = departmentsString.substring(1, departmentsString.length - 1).split(", ");
+                    console.log('departments',departments)
+                    $("#departmentSelect").html("<option label='اختر'></option>");
+                    
+                    departments.forEach(function(department) {
+                        department = department.substring(1, department.length - 1); 
+                        console.log('department',department)
+                        $("#departmentSelect").append("<option value='" + department + "'>" + department + "</option>");
+                    });
+                    
+                    $("#departmentSelect").prop("disabled", false);
+                });
+        
+                $("#positionSelect").change(function () {
+                    var selectedValue = $(this).val();
+                    if (selectedValue === "عضو هيئة التدريس") {
+                        $("#rankSelect").prop("disabled", false);
+                    } else {
+                        $("#rankSelect").prop("disabled", true);
+                    }
+                });
+
+                $("#rankSelect").change(function () {
+                    var selectedValue = $(this).val();
+                    if (selectedValue === "استاذ" ||  selectedValue ==="استاذ مساعد" || selectedValue === "استاذ مشارك") {
+                        $("#major").prop("disabled", false);
+                    } else {
+                        $("#major").prop("disabled", true);
+                    }
+                });
+       
+                $("#isbu").change(function () {
+                    var checkbox = $(this);
+                    var element = $('.error-message-isbu');
+                    if ( !checkbox.is(':checked')) {
+                       element.text('');
+                    }
+                });
+        });
+
+        $(document).ready(function () {
+            $("#collageSelect").select2();
+            $("#departmentSelect").select2();
+            $("#selectNationality").select2();
+            });
+         // AJAX
+        $(document).ready(function () {
+         $('input[name="firstName"]').on('blur', function() {
+              var topic = $(this).val();
+              var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+              var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+              if (topic.length < 2) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstName').text('يجب ملئ الحقل و ان يكون  حرفين او اكثر ');
+              }else if (numberPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstName').text('لا يمكن أن يكون يحتوي على أرقام'); 
+             }else if (!arabicPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstName').text('يجب ان يكون باللغة العربية');
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-firstName').text('');
+              }
+          });
+
+         $('input[name="lastName"]').on('blur', function() {
+              var topic = $(this).val();
+              var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+              var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+              if (topic.length < 2) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastName').text('يجب ملئ الحقل و ان يكون  حرفين او اكثر ');
+              }else if (numberPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastName').text('لا يمكن أن يكون يحتوي على أرقام'); 
+             }else if (!arabicPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastName').text('يجب ان يكون باللغة العربية');
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-lastName').text('');
+              }
+          });
+     
+         $('input[name="firstNameENG"]').on('blur', function() {
+              var topic = $(this).val();
+              var englishPattern = /^[a-zA-Z\s]+$/;
+              var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+              if (topic.length < 2) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstNameENG').text('يجب ملئ الحقل و ان يكون  حرفين او اكثر ');
+              }else if (numberPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstNameENG').text('لا يمكن أن يكون يحتوي على أرقام'); 
+             }else if (!englishPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-firstNameENG').text('يجب ان يكون باللغة الانجليزية');
+              }else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-firstNameENG').text('');
+              }
+          });
+     
+         $('input[name="lastNameENG"]').on('blur', function() {
+              var topic = $(this).val();
+              var englishPattern = /^[a-zA-Z\s]+$/;
+              var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+              if (topic.length < 2) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastNameENG').text('يجب ملئ الحقل و ان يكون  حرفين او اكثر ');
+              }else if (numberPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastNameENG').text('لا يمكن أن يكون يحتوي على أرقام'); 
+             }else if (!englishPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-lastNameENG').text('يجب ان يكون باللغة الانجليزية');
+              }else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-lastNameENG').text('');
+              }
+          });
+
+         $('input[name="email"]').on('blur', function() {
+              var result2 = $('#result2').val();
+              var topic = $(this).val();
+              var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
+              if (!emailPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('يجب ان يكون الايميل بصيغة جامعه الملك سعود (ksu.edu.sa@*******)');
+              }else if(result2 === 'true'){
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('البريد إلكتروني يوجد في النظام');
+              }else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('');
+              }
+          });
+
+         $('input[name="email"]').on('change', function() {
+              var result2 = $('#result2').val();
+              var topic = $(this).val();
+              var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
+              if (!emailPattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('يجب ان يكون الايميل بصيغة جامعه الملك سعود (ksu.edu.sa@*******)');
+              }else if(result2 === 'true'){
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('البريد إلكتروني يوجد في النظام');
+              }else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-email').text('');
+              }
+          });
+
+         $('input[name="phonenumber"]').on('blur', function() {
+              var topic = $(this).val();
+              var phonePattern = /^05\d{8}$/;
+              if (!phonePattern.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-phonenumber').text('يجب ان يكون بالمفتاح السعودي(********05)');
+              }else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-phonenumber').text('');
+              }
+          });
+       
+        });  
+       </script>
+       
+        <script>
+        function validateForm() {
+            var firstname = document.querySelector('input[name="firstName"]');
+            var lastname = document.querySelector('input[name="lastName"]');
+            var firstnameENG = document.querySelector('input[name="firstNameENG"]');
+            var lastnameENG = document.querySelector('input[name="lastNameENG"]');
+            var email = document.querySelector('input[name="email"]');
+            var phonenumber = document.querySelector('input[name="phonenumber"]');
+            var result = document.getElementById('result');
+            var result2 = document.getElementById('result2');
+            var checkbox = $('input[name="isbu"]');
+            
+            var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+            var englishPattern = /^[a-zA-Z\s]+$/;
+            var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
+            var phonePattern = /^05\d{8}$/;
+            var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+
+            if (firstname.value.length < 2 || numberPattern.test(firstname.value.trim()) || !arabicPattern.test(firstname.value.trim())) {
+                console.log('in firstname check');
+                return false;
+            } 
+
+            if (lastname.value.length < 2 || numberPattern.test(lastname.value.trim()) || !arabicPattern.test(lastname.value.trim())) {
+                console.log('in lastname check');
+                return false;
+            } 
+
+            if (firstnameENG.value.length < 2 || numberPattern.test(firstnameENG.value.trim()) || !englishPattern.test(firstnameENG.value.trim())) {
+                console.log('in firstnameENG check');
+                return false;
+            } 
+
+            if (lastnameENG.value.length < 2 || numberPattern.test(lastnameENG.value.trim()) || !englishPattern.test(lastnameENG.value.trim())) {
+                console.log('in lastnameENG check');
+                return false;
+            } 
+
+            if (!emailPattern.test(email.value.trim())) {
+                console.log('in email check');
+                return false;
+            } 
+              
+            if (!phonePattern.test(phonenumber.value.trim())) {
+                console.log('in phonenumber check');
+                return false;
+            } 
+
+            console.log('result2: ', result2.value); 
+            if (result2.value.trim() === 'true') {
+                console.log('in checkEmail check');
+                return false;
+            }
+           
+            if (!checkbox.is(':checked')) {
+                result.val('false');
+            }
+        
+            console.log('result: ', result.value); 
+            if (result.value.trim() === 'true') {
+                console.log('in checkBU check');
+                return false;
+            }
+
+    
+        // return true;
+        
+        }
+        </script>
+       
+        <script>
+        function checkBU(){
+            var collageid = parseInt(document.getElementById('collageSelect').value);
+            var element = $('.error-message-isbu');
+            var result = $('#result');
+            var attendURL =  "{% url 'admin_account:checkBU' collage_id=0 %}".replace('0', collageid);
+
+            $.ajax({
+                url: attendURL,
+                type: 'GET',
+                success: function(response) { 
+                    if (response.success_message !== undefined) {
+                        if (response.success_message === true) {
+                            console.log('here inside true ')
+                            element.text('يوجد رئيس وحدة اعمال في الكلية المختارة');
+                            result.val('true');
+                        } else {
+                            element.text('');
+                            result.val('false');
+                        }
+                    } else {
+                        console.log('Response message not received');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error occurred:', error);
+                }
+            }); 
+         }
+        </script>
+    
+        <script>
+        function checkEmail(){
+            var email = document.querySelector('input[name="email"]').value;
+            var result2 = $('#result2');
+            var element = $('.error-message-email');
+            var attendURL =  "{% url 'admin_account:checkEmail' email='placeholder' %}".replace('placeholder', email);
+
+            $.ajax({
+                url: attendURL,
+                type: 'GET',
+                success: function(response) { 
+                    if (response.success_message !== undefined) {
+                        if (response.success_message === true) {
+                            console.log('Email exists in the system');
+                            element.text('البريد إلكتروني يوجد في النظام');
+                            result2.val('true');
+                            console.log('in response.success_message = true result2: ', result2.val());
+                        } else {
+                            element.text('');
+                            result2.val('false');
+                            console.log('in response.success_message = false result2: ', result2.val());
+                        }
+                    } else {
+                        console.log('Response message not received2');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error occurred2:', error);
+                }
+            }); 
+         }
+        </script>  
+
+
+       	<!-- PAGE HEADER -->
+            <div class="page-header d-xl-flex d-block">
+                <div class="page-leftheader">
+                    <div class="page-title">إضافة منسوب في جامعة الملك سعود </div>
+                    <span class="text-red">يجب ان تكون الكلية المراد تسجيلها للمنسوب موجودة في النظام</span>
+                </div>
+            </div>
+        <!-- END PAGE HEADER -->
+
+        <!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-md-12 col-lg-12">
+								<div class="card">
+                                    <form method="post" onsubmit="return validateForm();" id="myForm" enctype="multipart/form-data">
+                                        {% csrf_token %}	
+									    <div class="card-body">	
+                                           
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">الاسم الاول<span class="text-red">*</span></label>
+                                                        <input class="form-control" type="text" placeholder="الاسم الاول" name="firstName" required>
+                                                        <span class="error-message-firstName" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">الاسم الاخير<span class="text-red">*</span></label>
+                                                        <input class="form-control" type="text" placeholder="الاسم الاخير" name="lastName" required>
+                                                        <span class="error-message-lastName" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label"> الاسم الاول بالانجليزي <span class="text-red">*</span></label>
+                                                        <input class="form-control" type="text" placeholder="First Name in English" name="firstNameENG" required>
+                                                        <span class="error-message-firstNameENG" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">  الاسم الاخير بالانجليزي  <span class="text-red">*</span></label>
+                                                        <input class="form-control" type="text" placeholder="Last Name in English" name="lastNameENG" required>
+                                                        <span class="error-message-lastNameENG" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">البريد الإلكتروني<span class="text-red">*</span></label>
+                                                        <input  type="hidden" id="result2" name="result2" value="false">
+                                                        <input class="form-control" type="email" name="email" placeholder="ksu.edu.sa@*******" onchange="checkEmail()" required>
+                                                        <span class="error-message-email" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">رقم الجوال<span class="text-red">*</span></label>
+                                                        <input class="form-control" type="text" name="phonenumber" placeholder="********05" required>
+                                                        <span class="error-message-phonenumber" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">الجنس<span class="text-red">*</span></label>
+                                                        <select name="gender"  class="form-control select2"  data-placeholder="اختر" required>
+                                                            <option value="">اختر</option> 
+                                                            <option value="ذكر">ذكر</option>
+                                                            <option value="انثى">انثى</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group" style="width: 525px;">
+                                                        <label class="form-label">الجنسية<span class="text-red">*</span></label>
+                                                        <select class="form-control select2" name="nationality" id="selectNationality" data-placeholder="اختر" required>
+                                                            <option label="اختر"></option> 
+                                                           {% for nationality in nationalities %}
+                                                           <option value="{{nationality}}">{{nationality}}</option>
+                                                           {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group"  style="width: 525px;">
+                                                        <label class="form-label">الكلية<span class="text-red">*</span></label>
+                                                        <select class="form-control select2 " data-placeholder="اختر" name="collage" id="collageSelect" required>
+                                                            <option value="">اختر</option>
+                                                            {% for coll in collage %}
+                                                            <option value="{{ coll.collageid }}" data-departments="{{ coll.departments }}">{{ coll.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!-- disabled utill collage  is choosen -->
+                                                <div class="col-md-6">
+                                                    <div class="form-group"  style="width: 525px;">
+                                                        <label class="form-label">القسم<span class="text-red">*</span></label>
+                                                        <select class="form-control select2" data-placeholder="اختر" name="deparment" id="departmentSelect" disabled required>
+                                                            <option value="">اختر</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label"> المسمى الوظيفي<span class="text-red">*</span></label>
+                                                        <select  class="form-control select2" data-placeholder="اختر" id="positionSelect" name="position" required>
+                                                            <option value="">اختر</option>
+                                                            <option value="عميد الكلية">عميد الكلية</option>
+                                                            <option value="عضو هيئة التدريس">عضو هيئة التدريس</option>
+                                                            <option value="موظف في الكلية">موظف في الكلية</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!-- disabled utill عضو هيئة التدريس is choosen -->
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">المرتبة الوظيفية</label>
+                                                        <select  class="form-control select2" data-placeholder="اختر" name="rank" id="rankSelect" disabled>
+                                                            <option value="">اختر</option>
+                                                            <option value="استاذ">استاذ</option>
+                                                            <option value="استاذ مساعد"> استاذ مساعد</option>
+                                                            <option value="استاذ مشارك"> استاذ مشارك</option>
+                                                            <option value="محاضر">محاضر</option>
+                                                            <option value="معيد">معيد</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">التخصص العلمي</label>
+                                                        <input class="form-control" type="text" placeholder="التخصص العلمي" name="major" id="major" disabled >
+                                                        <span class="error-message-major" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">الرقم الوظيفي</label>
+                                                        <input class="form-control" type="text" placeholder="الرقم الوظيفي" name="empNum">
+                                                        <span class="error-message-empNum" style="color: red;"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group" style="margin-top: 35px;">
+                                                        <input  type="hidden" id="result" name="result" value="false">
+                                                        <input  type="checkbox" id="isbu" name="isbu" style="display: inline;  margin-right: 10px;" onclick="checkBU()">
+                                                        <label  style="display: inline-block;">تعيين كرئيس وحدة الاعمال</label>
+                                                    </div>
+                                                    <span class="error-message-isbu" style="color: red;"></span>
+                                                </div>      
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="form-group" style="margin-top: 35px;">
+                                                        <input  type="hidden" id="result" name="result" value="false">
+                                                        <input  type="checkbox" id="assistant" name="assistant" style="display: inline;  margin-right: 10px;" onclick="">
+                                                        <label  style="display: inline-block;">تعيين مساعد رئيس وحدة الاعمال</label>
+                                                    </div>
+                                                    <span class="error-message-assistant" style="color: red;"></span>
+                                                </div>    
+                                            </div>
+                                       
+                                        </div> 
+                                       
+                                        <div class="card-footer text-end">
+                                            <button  type="submit" name="addfaculty" class="btn btn-primary btn-lg">إضافه</button>
+                                            <a  href="{% url 'admin_account:admin_home' %}" class="btn btn-primary btn-lg">رجوع</a>
+                                        </div>
+								   
+                                    </form>
+                                </div>
+							</div>
+						</div>
+		<!-- END ROW -->	
+        {% endblock %}

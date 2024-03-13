@@ -50,15 +50,17 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
+										<label class="form-label">اسم الجهة</label>
+										<input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" value="{{program.CompanyName}}" required>
+										<span class="error-message-company" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
 										<label class="form-label">عدد فريق العمل <span style="color: red;">*</span></label>
-										<input class="form-control" placeholder="عدد المدربين" type="number" min="{{IdStatusDateAccept}}" name="num_ofteam" id="num_ofinstructors" value="{{program.num_ofTeam}}" {% if IdStatusDateAccept ==  program.num_ofTeam %}readonly {% endif %}>
+										<input class="form-control" placeholder="عدد المدربين" type="number" min="{{IdStatusDateAccept}}" name="num_ofteam" id="num_ofinstructors" value="{{program.num_ofTeam}}">
 										<span class="error-message-num_ofinstructors" style="color: red;"></span><br>
 										
-										<!-- <p> numofreq_instructors : {{numofreq_instructors}}</p>
-										<p> waitingforaccept : {{waitingforaccept}}</p>
-										<p> IdStatusDateAccept : {{IdStatusDateAccept}}</p>
-										<p> program.num_ofTeam : {{program.num_ofTeam}}</p> -->
-
 										<input hidden name="numofreq_instructors" type="number" id="numofreq_instructors" value="{{numofreq_instructors}}">
 										<input hidden name="waitingforaccept"  type="number" id="waitingforaccept" value="{{waitingforaccept}}">
 										<input hidden name="IdStatusDateAccept" type="number" id="IdStatusDateAccept" value="{{IdStatusDateAccept}}">
@@ -72,13 +74,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-label">تكلفة المشروع<span style="color: red;">*</span></label>
-										<input class="form-control" placeholder="التكلفة" type="number" name="price" value="{{program.totalcost}}">
-										<span class="error-message-price" style="color: red;"></span>
-									</div>
-								</div>
+								
 							</div>    
 							
 							<div class="row">
@@ -108,6 +104,23 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
+										<label class="form-label"> آخر تاريخ لاستلام الأسئلة</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate"  value="{{program.QuestionDeadline|date:'Y-m-d'}}">
+										<span class="error-message-questionDate" style="color: red;"></span>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label">تاريخ تسليم الفريق</label>
+										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" value="{{program.enddate|date:'Y-m-d'}}">
+										<span class="error-message-enddate" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
 										<label class="form-label">تاريخ تسليم المشروع للمعهد</label>
 										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="proposalSubmission" value="{{program.ProposalSubmissionDeadline|date:'Y-m-d'}}">
 										<span class="error-message-proposalSubmission" style="color: red;"></span>
@@ -115,49 +128,14 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="form-label"> آخر تاريخ لاستلام الأسئلة</label>
-										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate"  value="{{program.QuestionDeadline|date:'Y-m-d'}}">
-										<span class="error-message-questionDate" style="color: red;"></span>
-									</div>
-								</div>
-							</div>
-							
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
 										<label class="form-label">تاريخ تسليم المشروع للجهة</label>
 										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="companyDate" value="{{program.EtimadDeadline|date:'Y-m-d'}}">
 										<span class="error-message-companyDate" style="color: red;"></span>
 									</div>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-label">تاريخ الانتهاء</label>
-										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" value="{{program.enddate|date:'Y-m-d'}}">
-										<span class="error-message-enddate" style="color: red;"></span>
-									</div>
-								</div>
-								</div>
+							</div>
 							
 						   
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-label">تاريخ فتح المظاريف </label>
-										<input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="envelopeDate" value="{{program.EnvelopeOpening|date:'Y-m-d'}}">
-										<span class="error-message-envelopeDate" style="color: red;"></span>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-label">اسم الجهة</label>
-										<input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" value="{{program.CompanyName}}" required>
-										<span class="error-message-company" style="color: red;"></span>
-									</div>
-							</div>
-						</div>
-					
-
 							<div class="form-group">
 								<label class="form-label">وصف المشروع<span style="color: red;">*</span></label>    
 								<textarea class="form-control" rows="4" cols="105" placeholder="" name="subject" required>{{program.description}}</textarea>
@@ -224,7 +202,6 @@
 			var topicElement = document.querySelector('input[name="topic"]');
 			var domainElement = document.querySelector('input[name="domain"]');
 			var companyElement = document.querySelector('input[name="CompanyName"]');
-			var priceElement = document.querySelector('input[name="price"]');
 			var durationElement = document.querySelector('input[name="duration"]');
 			var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
 			var subjectElement = document.querySelector('textarea[name="subject"]');
@@ -233,7 +210,6 @@
 			var enddate = new Date(document.querySelector('input[name="enddate"]').value);
 			var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
 			var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
-			var envelopeDate = new Date(document.querySelector('input[name="envelopeDate"]').value);
 
 				
 					// Check topic 1
@@ -277,12 +253,7 @@
 						return false;
 					}
 				
-					// Check price 4
-					var price = parseFloat(priceElement.value);
-					if (isNaN(price) || price < 0) {
-						return false;
-					} 
-
+					
 					// Check duration 5
 					var duration = parseFloat(durationElement.value);
 					if (isNaN(duration) || duration < 1) {
@@ -298,25 +269,22 @@
 
 					// Check dates 7   
 						//  A
-							if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+							if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate) {
 								return false;
 							}
 							// B
-							if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+							if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate ) {
 								return false;
 							} 
 							//  C
-							if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+							if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate) {
 								return false;
 							}
 							//  D
-							if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+							if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate) {
 								return false;
 							}
-							//  E
-							if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
-								return false;
-							}  
+							
 				
 				return true;
 				}
@@ -379,17 +347,6 @@
 					$(this).siblings('.error-message').text('');
 					}
 				});
-			 // check price 4  
-				$('input[name="price"]').on('blur', function() {
-					var topic = $(this).val();
-					if (topic < 0) {
-					$(this).addClass('is-invalid');
-					$(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
-					} else {
-					$(this).removeClass('is-invalid');
-					$(this).siblings('.error-message-price').text('');
-					}
-				});
 			// check num_ofteam 5	   
 				$('input[name="num_ofteam"]').on('blur', function() {
 					var topic = $(this).val();
@@ -450,11 +407,11 @@
 					var enddate = new Date($('input[name="enddate"]').val());
 					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
 					var companyDate = new Date($('input[name="companyDate"]').val());
-					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					
 					// Perform validation
-					if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+					if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate ) {
 						$(this).addClass('is-invalid');
-						$errorMessage.text('يجب ان يكون تاريخ الانتهاء بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+						$errorMessage.text('يجب ان يكون تاريخ تسليم الفريق بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
 					} else {
 						$(this).removeClass('is-invalid');
 						$errorMessage.text('');
@@ -468,9 +425,8 @@
 					var enddate = new Date($('input[name="enddate"]').val());
 					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
 					var companyDate = new Date($('input[name="companyDate"]').val());
-					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
 					// Perform validation
-					if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+					if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate ) {
 						$(this).addClass('is-invalid');
 						$errorMessage.text('يجب ان يكون آخر تاريخ لاستلام الأسئلة قبل التواريخ الاخرى');
 					} else {
@@ -486,11 +442,10 @@
 					var enddate = new Date($('input[name="enddate"]').val());
 					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
 					var companyDate = new Date($('input[name="companyDate"]').val());
-					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
 					// Perform validation
-					if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+					if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate ) {
 						$(this).addClass('is-invalid');
-						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ الانتهاء و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ تسليم الفريق و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
 					} else {
 						$(this).removeClass('is-invalid');
 						$errorMessage.text('');
@@ -504,34 +459,16 @@
 					var enddate = new Date($('input[name="enddate"]').val());
 					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
 					var companyDate = new Date($('input[name="companyDate"]').val());
-					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+					
 					// Perform validation
-					if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+					if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate) {
 						$(this).addClass('is-invalid');
-						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة قبل تاريخ فتح المظاريف و بعد التواريخ الاخرى');
+						$errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة بعد التواريخ الاخرى');
 					} else {
 						$(this).removeClass('is-invalid');
 						$errorMessage.text('');
 					}
-				});   
-				//  E
-				$('input[name="envelopeDate"]').on('blur', function() {
-					var $errorMessage = $(this).siblings('.error-message-envelopeDate');
-					// Retrieve the date values of other input fields
-					var questionDate = new Date($('input[name="questionDate"]').val());
-					var enddate = new Date($('input[name="enddate"]').val());
-					var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
-					var companyDate = new Date($('input[name="companyDate"]').val());
-					var envelopeDate = new Date($('input[name="envelopeDate"]').val());
-					// Perform validation
-					if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
-						$(this).addClass('is-invalid');
-						$errorMessage.text('يجب ان يكون تاريخ فتح المظاريف بعد التواريخ الاخرى');
-					} else {
-						$(this).removeClass('is-invalid');
-						$errorMessage.text('');
-					}
-				});   
+				});   	
 				
 		});
 		</script>

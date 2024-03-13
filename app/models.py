@@ -10,9 +10,34 @@ from django.contrib.auth.models import AbstractUser , Group, Permission , UserMa
 from django.utils.translation import gettext as _
 from django.contrib.postgres.fields import ArrayField
 
-class Admin(models.Model):
-    email = models.CharField(db_column='Email', primary_key=True, max_length=130)  # Field name made lowercase.
-    password = models.CharField(db_column='Password', max_length=130)  # Field name made lowercase.
+class Admin(AbstractUser):
+    email = models.CharField(primary_key=True, max_length=130)
+    password = models.CharField(max_length=130)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField(blank=True, null=True)
+    first_name = models.CharField(max_length=130, blank=True, null=True)
+    last_name = models.CharField(max_length=130, blank=True, null=True)
+    is_active = models.BooleanField( blank=True, null=True)
+    date_joined = models.DateTimeField(max_length=130, blank=True, null=True)
+    is_staff = models.BooleanField(blank=True, null=True)
+    username = models.CharField(max_length=130, blank=True, null=True) 
+
+    # groups = models.ManyToManyField(
+    #     Group,
+    #     verbose_name=_('groups'),
+    #     blank=True,
+    #     related_name='admin_groups'
+    # )
+    # user_permissions = models.ManyToManyField(
+    #     Permission,
+    #     verbose_name=_('user permissions'),
+    #     blank=True,
+    #     related_name='admin_permissions'
+    # )
+
+    # USERNAME_FIELD = 'email'
+
+    objects = UserManager()
 
     class Meta:
         managed = False
@@ -33,13 +58,15 @@ class Collage(models.Model):
     userid = models.ForeignKey('FacultyStaff', models.DO_NOTHING, db_column='userid')
     buphonenumber = models.CharField(db_column='BUphoneNumber', max_length=130)  # Field name made lowercase.
     password = models.CharField( max_length=130)
-    domain = models.TextField(blank=True, null=True)
+    domain = ArrayField(models.TextField(blank=True, null=True) ,db_column='domain',default=list )
+    nobuilding = models.IntegerField(db_column='Nobuilding', blank=True, null=True) 
+    nofloor = models.CharField( blank=True, null=True , max_length=130)
+    nodisk = models.IntegerField(db_column='Nodisk', blank=True, null=True) 
 
 
     class Meta:
         managed = False
         db_table = 'Collage'
-
 
 class FacultyStaff(AbstractUser):
     password = models.CharField(max_length=128)
@@ -72,7 +99,8 @@ class FacultyStaff(AbstractUser):
     department_field = models.CharField(db_column='Department', max_length=130)
     rank = models.CharField(blank=True, null=True, max_length=130)
     first_nameeng = models.CharField(db_column='first_nameEng', blank=True, null=True, max_length=130)  # Field name made lowercase.
-    last_nameeng = models.CharField(db_column='last_nameEng', blank=True, null=True, max_length=130)  # 
+    last_nameeng = models.CharField(db_column='last_nameEng', blank=True, null=True, max_length=130) 
+    bu_assistant = models.BooleanField(blank=True, null=True)
 
     groups = models.ManyToManyField(
         Group,
@@ -98,7 +126,6 @@ class FacultyStaff(AbstractUser):
     class Meta:
         managed = False
         db_table = 'Faculty_Staff'
-
 
 class Kaibuemployee(AbstractUser):
     password = models.CharField(max_length=128)
@@ -140,8 +167,6 @@ class Kaibuemployee(AbstractUser):
         managed = False
         db_table = 'KAIBUEmployee'
 
-
-
 class Register(models.Model):
     registerid = models.AutoField(db_column='RegisterID', primary_key=True)  # Field name made lowercase.
     programid = models.ForeignKey('Trainingprogram', models.DO_NOTHING, db_column='ProgramID')  # Field name made lowercase.
@@ -157,8 +182,6 @@ class Register(models.Model):
     class Meta:
         managed = False
         db_table = 'Register'
-
-
 
 class Trainees(models.Model):
     password = models.CharField(max_length=128)
@@ -229,8 +252,6 @@ class Trainingprogram(models.Model):
         db_table = 'TrainingProgram'
 
 
-
-
 class IdStatusDate(models.Model):
     instructor = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE, db_column='instructorid', null=True)
     status = models.CharField(max_length=130, blank=True, null=True)
@@ -242,7 +263,6 @@ class IdStatusDate(models.Model):
     class Meta:
         managed = False
         db_table = 'WorksOn'
-
 
 
 class StatusDateCheck(models.Model):
@@ -280,10 +300,10 @@ class Task(models.Model):
     notes = models.TextField(max_length=1000)
     necessary_procedure = models.TextField()
     priority = models.TextField()
-    faculty_initiation = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE)
-    kai_initiation = models.ForeignKey('Kaibuemployee', on_delete=models.CASCADE, related_name='kaibuemployee_initiated_tasks', null=True, blank=True)
-    faculty_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True)  # Assuming PostgreSQL is being used
-    kai_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True)  # Also assuming PostgreSQL is being used
+    faculty_initation = models.ForeignKey(FacultyStaff, models.DO_NOTHING, db_column='faculty_initation', blank=True, null=True)
+    kai_initiation = models.ForeignKey(Kaibuemployee, models.DO_NOTHING, db_column='kai_initiation', blank=True, null=True)
+    faculty_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True) 
+    kai_ids = ArrayField(models.IntegerField(), default=list, blank=True, null=True)  
     status = models.TextField()
     main_task = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sub_tasks')
     statusarray = ArrayField(models.TextField(), blank=True, default=list)
@@ -301,8 +321,8 @@ class Task(models.Model):
 
 class TaskToUser(models.Model):
     status = models.TextField()
-    kai_user = models.ForeignKey('Kaibuemployee', on_delete=models.CASCADE, db_column='kai_user')
-    faculty_user = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE, db_column='faculty_user')
+    kai_user = models.ForeignKey(Kaibuemployee, models.DO_NOTHING, db_column='kai_user', blank=True, null=True)
+    faculty_user = models.ForeignKey(FacultyStaff, models.DO_NOTHING, db_column='faculty_user', blank=True, null=True)
     main_task = models.ForeignKey('Task', on_delete=models.CASCADE, db_column='main_task') 
     attachment = models.BinaryField(db_column='attachment', blank=True, null=True) # Optional field for binary data
     addedtext = models.TextField(blank=True)  # Optional field for large text data

@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 from .forms import Loginform 
 from .models import Admin, FacultyStaff, Kaibuemployee
 from django.conf import settings
-from .forms import ForgetPasswordForm
 from django.core.mail import send_mail
 import random
 import string
@@ -23,9 +22,6 @@ from django.contrib.auth.decorators import login_required
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def chatindex(request):
-    return render(request,'index2.html')
-
 def clear_messages(request):
     storage = messages.get_messages(request)
     for _ in storage:
@@ -36,6 +32,12 @@ def index(request):
 
 
 def login_view(request):
+
+    # admin = Admin.objects.get(email='442200922@student.ksu.edu.sa')
+    # admin.password = "Bgate123@"
+    # admin.password = make_password(admin.password)
+    # admin.save()
+
     user = None
     if request.method == 'POST':
         form = Loginform(request.POST)
@@ -48,7 +50,7 @@ def login_view(request):
             if role in ['facultyandstaff', 'dean', 'BU']:
                 if FacultyStaff.objects.filter(email=email).exists():
                     user = authenticate(request, email=email, password=password)
-                elif Kaibuemployee.objects.filter(email=email).exists():
+                elif Kaibuemployee.objects.filter(email=email).exists() or Admin.objects.filter(email=email).exists():
                     clear_messages(request)
                     messages.error(request, 'فئة المستخدم غير صحيحة')
                     return render(request, 'auth/login.html', {'form': form})
@@ -56,7 +58,16 @@ def login_view(request):
             elif role in ['kaistaff', 'Hkai']:
                 if Kaibuemployee.objects.filter(email=email).exists():
                     user = authenticate(request, email=email, password=password)
-                elif FacultyStaff.objects.filter(email=email).exists():
+                elif FacultyStaff.objects.filter(email=email).exists() or Admin.objects.filter(email=email).exists():
+                    clear_messages(request)
+                    messages.error(request, 'فئة المستخدم غير صحيحة')
+                    return render(request, 'auth/login.html', {'form': form})
+                
+            elif role in ['Admin']:
+                if Admin.objects.filter(email=email).exists():
+                    user = authenticate(request, email=email, password=password)
+                    print('here' , user)
+                elif FacultyStaff.objects.filter(email=email).exists() or Kaibuemployee.objects.filter(email=email).exists():
                     clear_messages(request)
                     messages.error(request, 'فئة المستخدم غير صحيحة')
                     return render(request, 'auth/login.html', {'form': form})
@@ -83,6 +94,9 @@ def login_view(request):
                 elif role == 'Hkai' and user.position == 'رئيس المعهد':
                     login(request, user)
                     return redirect('head-kai-account:kai-home')
+                elif role == 'Admin':
+                    login(request, user)
+                    return redirect('admin_account:admin_home')
                 else:
                     clear_messages(request)
                     messages.error(request, 'فئة المستخدم غير صحيحة')

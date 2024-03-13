@@ -39,8 +39,7 @@ urlpatterns = [
     path('faculty-staff-home/videocall', views.videocall, name='videocall'),
     path('faculty-staff-home/joinroom', views.joinroom, name='joinroom'),
     path('faculty-staff-home/projects/groupchat/<int:program_id>/', views.groupchat_view, name='groupchat'),
-
-
+    path('faculty-staff-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
 
 ]
     

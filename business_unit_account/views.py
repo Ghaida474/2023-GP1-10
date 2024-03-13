@@ -7,6 +7,7 @@ from app.models import FacultyStaff,Collage, Trainingprogram,Register,Trainees,I
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.messages import get_messages
 from django.utils import timezone
 from datetime import date, datetime
@@ -40,10 +41,150 @@ def joinroom(request):
     return render(request, 'bu/joinroom.html')
 
 @login_required
+def groupchat_view(request, program_id):
+    
+    project = Project.objects.get(programid=program_id)
+    if project.chatgroup_id:
+         chatid = project.chatgroup_id
+         access_key = project.chat_access_key
+         context = {'chatgroup_id':chatid , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key':access_key }
+         return render(request, 'bu/groupchat.html' , context)
+    else:
+       chat_credentials = creategroupchat(request , project )
+       project.chatgroup_id = chat_credentials['chatid']
+       project.chat_access_key = chat_credentials['access_key']
+       project.save()
+       context = {'chatgroup_id':project.chatgroup_id , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key': project.chat_access_key }
+       return render(request, 'bu/groupchat.html' , context)
+
+@login_required
+def creategroupchat(request , project):
+    usernamess = []
+    for teamMemberID in project.Teamid:
+        user = FacultyStaff.objects.get(id=teamMemberID)
+        usernamess.append(user.username)
+
+    print(usernamess)
+    print('------------------')
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": project.Name,
+        "is_direct_chat": False,
+        "usernames":usernamess
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    print('------------------')
+    # print(response.text)
+    # print(response.json())
+    responseINjson = response.json()
+    access_key = responseINjson['access_key']
+    chatid = responseINjson['id']
+    chat_credentials = {'access_key':access_key , 'chatid':chatid}
+    print('chat_credentials' ,chat_credentials)
+    print('response.status_code' ,response.status_code)
+    return chat_credentials 
+
+@login_required
 def chat(request):
     username = request.user.username
     secret = request.user.id
-    return render(request, 'bu/chat.html' , {'username':username , 'secret': secret })
+    users = filteredUsers(request)
+    return render(request, 'bu/chat.html' , {'username':username , 'secret': secret ,'users':users})
+
+@login_required
+def myChat(request):
+    url = "https://api.chatengine.io/chats/"
+
+    payload = {}
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name': request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status() 
+
+        users = response.json()
+        my_users = []
+
+        for user_data in users:
+            people_data = user_data.get('people', [])
+            for person_data in people_data:
+                person = person_data.get('person', {})
+                username = person.get('username', '')
+                my_users.append({'username': username})
+
+        return my_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def filteredUsers(request):
+    mychat = myChat(request)
+  
+    print("my_fi")
+    # print(mychat)
+    url = "https://api.chatengine.io/users/"
+    payload = {}
+    headers = {'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'}
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status()  
+
+        users = response.json()
+        matching_users = []
+        # print('users' , users)
+        for checkuser in users:
+            if checkuser['username'] not in [entry['username'] for entry in mychat]:
+                try:
+                    newuser = FacultyStaff.objects.get(username=checkuser['username'])
+                except FacultyStaff.DoesNotExist:
+                    newuser = None 
+
+                if newuser: 
+                    collageidRequest = request.user.collageid.collageid
+                    if newuser.id != request.user.id:
+                        if newuser.collageid.collageid == collageidRequest or newuser.is_buhead:
+                            matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+                else:
+                    matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+
+        # print("Matching users:", matching_users)
+        return matching_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def createDirect(request,direct_username):
+  
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": direct_username,
+        "is_direct_chat": False,
+        "usernames":direct_username    
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    responseINjson = response.json()
+    users = filteredUsers(request)
+    context = {'username': request.user.username , 'secret' :request.user.id , 'users':users }
+    return render(request, 'bu/chat.html' , context)
 
 ###########################Profile#################### 
 
@@ -708,6 +849,22 @@ def program_view(request , program_id):
             traniees_names.append("")
 
     program.traniees_names = traniees_names
+
+    Registertraniees = Register.objects.filter(programid=program_id ,haspaid = True )
+    traniees_paid = []
+    for register in Registertraniees:
+        try:
+            traniee_info = Trainees.objects.get(id=register.id.id)
+            name = [traniee_info.fullnamearabic ,
+                     register.haspaid ,
+                       register.id.id ,
+                         register.certifications ,
+                         register.registerid]
+            traniees_paid.append(name)
+        except Trainees.DoesNotExist:
+            traniees_paid.append("")
+
+    program.traniees_paid = traniees_paid
   
     # get info for workflow
     id_status_dates = IdStatusDate.objects.filter(training_program=program)
@@ -794,6 +951,50 @@ def haspaid(request, register_id):
             
             trainee.save()
             return JsonResponse({'success_message': trainee.haspaid })
+
+        except Register.DoesNotExist:
+            print('here2')
+            return JsonResponse({'error_message': 'Register not found'})
+
+        except Exception as e:
+            print('here3')
+            return JsonResponse({'error_message': f'An error occurred: {e}'})
+
+@login_required
+def save_certifications(request, program_id, trainee_id):
+    if request.method == 'POST' and request.FILES.get('attachment'):
+        try:
+            trainee = Register.objects.get(id=trainee_id, programid=program_id)
+            uploaded_file = request.FILES['attachment']
+            attachment_name = request.FILES['attachment'].name
+            
+            binary_data = base64.b64encode(uploaded_file.read()).decode('utf-8')  
+            # print(binary_data)
+            trainee.certifications = binary_data
+            trainee.certifications_ext = attachment_name
+            trainee.save()
+
+            return JsonResponse({ 'success_message': 'تم الرفع بنجاح' })
+            
+        except Register.DoesNotExist:
+            return JsonResponse({'error_message': 'Register not found'})
+        
+        except Exception as e:
+            return JsonResponse({'error_message': f'An error occurred: {e}'})
+
+    # Default response if the form submission fails
+    return JsonResponse({'error_message': 'Form submission failed'})
+
+@login_required
+def delete_certifications(request, register_id):
+        try:
+            trainee = Register.objects.get(registerid=register_id)
+            
+            # delete the certifications 
+            trainee.certifications = None
+            trainee.certifications_ext = None
+            trainee.save()
+            return JsonResponse({'success_message': 'certificate deleted'})
 
         except Register.DoesNotExist:
             print('here2')
@@ -1092,14 +1293,12 @@ def projects_view(request):
     projects = Project.objects.filter(collageid=collage_id)
     faculty = FacultyStaff.objects.filter(collageid=collage_id)
     collage =  Collage.objects.get(collageid=collage_id)
-    #domain = collage.domain
-    #bu_programs = Projects.objects.filter(collageid=collage_id, isbuaccepted=True).order_by('-dataoffacultyproposal')
     bu_programs = Project.objects.filter(collageid=collage_id).order_by('-OfferingDate')
-    #faculty_or_staff_programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='FacultyOrStaff', isbuaccepted=False)
- 
+
+  
     if request.method == 'POST':
         Name = request.POST.get('topic')
-        TotalCost = request.POST.get('price')
+        # TotalCost = request.POST.get('price')
         programtype = request.POST.get('domain')
         team_id = request.POST.getlist('instructor')
         end_date = request.POST.get('enddate')
@@ -1109,11 +1308,12 @@ def projects_view(request):
         ProposalSubmissionDeadline = request.POST.get('proposalSubmission')
         contractDuration = request.POST.get('duration')
         durationType = request.POST.get('durationType') 
-        EnvelopeOpening = request.POST.get('envelopeDate')
-        num_ofteam = request.POST.get('num_ofteam')
+        # EnvelopeOpening = request.POST.get('envelopeDate')
+        num_ofteam = request.POST.get('num_ofinstructors')
         openToAllCheckbox = request.POST.get('openToAllCheckbox')
         project_description = request.POST.get('subject')
-   
+
+
         attachment_data = []
         if 'attachment' in request.FILES:
             attachments = request.FILES.getlist('attachment')
@@ -1129,26 +1329,25 @@ def projects_view(request):
         tempStatus2="انتظار قبول الطلب من قبل جميع الفريق"
         tempStatus3="تم قبول الطلب من قبل جميع الفريق"
 
+
         if openToAllCheckbox:
             print("instructor sent to all faculty")
             new_project = Project( 
                 Name = Name,
-                totalcost = TotalCost,
+                # totalcost = TotalCost,
                 collageid=collage_id,
                 Teamid = team_id,
                 enddate=end_date,
                 status ='فتح الفرصة للجميع',
                 CompanyName = companyName,
                 OfferingDate = date.today(),
-                QuestionDeadline = QuestionDeadline,
-                EtimadDeadline = EtimadDeadline,
-                ProposalSubmissionDeadline = ProposalSubmissionDeadline,
+                QuestionDeadline = None if not QuestionDeadline else QuestionDeadline,
+                EtimadDeadline = None if not EtimadDeadline else EtimadDeadline,
+                ProposalSubmissionDeadline = None if not ProposalSubmissionDeadline else ProposalSubmissionDeadline,
                 contractDuration = contractDuration,
                 durationType = durationType,
-                EnvelopeOpening = EnvelopeOpening,
-                num_ofTeam = num_ofteam,
-                isteamfound = False,
-                isAccepted = False,          
+                # EnvelopeOpening = EnvelopeOpening,
+                num_ofTeam = num_ofteam,         
                 programtype=programtype,
                 appourtunityopentoall=True,
                 description = project_description)
@@ -1166,7 +1365,7 @@ def projects_view(request):
             new_StatusDateCheck =StatusDateCheckProject(
                 status="إنشاء المشروع",
                 date=timezone.now().date(),
-                indicator='T',# means finished
+                indicator='T',
                 project=new_project)
             new_StatusDateCheck.save()
 
@@ -1180,14 +1379,14 @@ def projects_view(request):
             new_StatusDateCheck3 =StatusDateCheckProject(
                 status="تم فرز الطلبات واختيار فريق العمل",
                 date=None,
-                indicator='W',#waiting C: current,  F: fail 
+                indicator='W',
                 project=new_project)
             new_StatusDateCheck3.save()
 
             new_StatusDateCheck4 =StatusDateCheckProject(
                 status="اختيار رئيس الفريق",
                 date=None,
-                indicator='W',#waiting C: current,  F: fail 
+                indicator='W',
                 project=new_project)
             new_StatusDateCheck4.save()
 
@@ -1198,19 +1397,19 @@ def projects_view(request):
                 project=new_project)
             new_StatusDateCheck5.save()
 
-            new_StatusDateCheck6 =StatusDateCheckProject(
-                status="آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck6.save()
+            # new_StatusDateCheck6 =StatusDateCheckProject(
+            #     status="آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck6.save()
 
-            new_StatusDateCheck7 =StatusDateCheckProject(
-                status="تسليم المشروع للمعهد للمراجعة",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck7.save()
+            # new_StatusDateCheck7 =StatusDateCheckProject(
+            #     status="تسليم المشروع للمعهد للمراجعة",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck7.save()
 
             new_StatusDateCheck8 =StatusDateCheckProject(
                 status="المراجعة من قبل المعهد",
@@ -1219,12 +1418,12 @@ def projects_view(request):
                 project=new_project)
             new_StatusDateCheck8.save()
 
-            new_StatusDateCheck9 =StatusDateCheckProject(
-                status="التاريخ المتوقع للرد على المشروع",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck9.save()
+            # new_StatusDateCheck9 =StatusDateCheckProject(
+            #     status="التاريخ المتوقع للرد على المشروع",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck9.save()
 
             new_StatusDateCheck10 =StatusDateCheckProject(
                 status="حالة المشروع بعد الرد",
@@ -1237,25 +1436,18 @@ def projects_view(request):
         else:
             new_project = Project( 
                 Name = Name,
-                totalcost = TotalCost,
                 collageid=collage_id,
-                #programleader = programleader,
                 Teamid = team_id,
-                #startdate=start_date,
                 enddate=end_date,
                 status =tempStatus2,
                 CompanyName = companyName,
                 OfferingDate = date.today(),
-                #AcceptanceDeadline = AcceptanceDeadline,
                 QuestionDeadline = QuestionDeadline,
                 EtimadDeadline = EtimadDeadline,
                 ProposalSubmissionDeadline = ProposalSubmissionDeadline,
                 contractDuration = contractDuration,
                 durationType = durationType,
-                EnvelopeOpening = EnvelopeOpening,
-                num_ofTeam = num_ofteam,
-                isteamfound = False,
-                isAccepted = False,          
+                num_ofTeam = num_ofteam,         
                 programtype=programtype,
                 appourtunityopentoall=True,
                 description = project_description)
@@ -1328,19 +1520,19 @@ def projects_view(request):
                 project=new_project)
             new_StatusDateCheck6.save()
 
-            new_StatusDateCheck7 =StatusDateCheckProject(
-                status="آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck7.save()
+            # new_StatusDateCheck7 =StatusDateCheckProject(
+            #     status="آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck7.save()
 
-            new_StatusDateCheck8 =StatusDateCheckProject(
-                status="تسليم المشروع للمعهد للمراجعة",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck8.save()
+            # new_StatusDateCheck8 =StatusDateCheckProject(
+            #     status="تسليم المشروع للمعهد للمراجعة",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck8.save()
 
             new_StatusDateCheck9 =StatusDateCheckProject(
                 status="المراجعة من قبل المعهد",
@@ -1349,12 +1541,12 @@ def projects_view(request):
                 project=new_project)
             new_StatusDateCheck9.save()
 
-            new_StatusDateCheck10 =StatusDateCheckProject(
-                status="التاريخ المتوقع للرد على المشروع",
-                date=None,
-                indicator='W',
-                project=new_project)
-            new_StatusDateCheck10.save()
+            # new_StatusDateCheck10 =StatusDateCheckProject(
+            #     status="التاريخ المتوقع للرد على المشروع",
+            #     date=None,
+            #     indicator='W',
+            #     project=new_project)
+            # new_StatusDateCheck10.save()
 
             new_StatusDateCheck11 =StatusDateCheckProject(
                 status="حالة المشروع بعد الرد",
@@ -1386,27 +1578,26 @@ def edit_project(request, value_to_edit):
     collage_id = user.collageid.collageid
     faculty = FacultyStaff.objects.filter(collageid=collage_id)
     collage =  Collage.objects.get(collageid=collage_id)
+
     id_status_dates = IdStatusDate.objects.filter(project=editproject)
     programflow = StatusDateCheckProject.objects.filter(project=editproject)
     waitingforaccept = IdStatusDate.objects.filter(status="في انتظار قبول العضو", project=editproject ).count()
     IdStatusDateAccept = IdStatusDate.objects.filter( project=editproject, status= "تم قبول الطلب من قبل العضو").count()
     numofreq_instructors = IdStatusDateAccept + waitingforaccept
+   
     edit_file = Files.objects.filter(project=editproject)
     attachment_data = []
     
     if request.method == 'POST':
         Name = request.POST.get('topic')
-        TotalCost = request.POST.get('price')
         programtype = request.POST.get('domain')
         end_date = request.POST.get('enddate')
         CompanyName = request.POST.get('CompanyName')
-        #AcceptanceDeadline = request.POST.get('AcceptanceDeadline')
         QuestionDeadline = request.POST.get('questionDate')
         EtimadDeadline = request.POST.get('companyDate')
         ProposalSubmissionDeadline = request.POST.get('proposalSubmission')
         contractDuration = request.POST.get('duration')
         durationType = request.POST.get('durationType') 
-        EnvelopeOpening = request.POST.get('EnvelopeOpening')
         num_ofteam = request.POST.get('num_ofteam')
         project_description = request.POST.get('subject')
 
@@ -1433,27 +1624,21 @@ def edit_project(request, value_to_edit):
          })
      
         editproject.Name=Name
-        editproject.totalcost=TotalCost
         editproject.programtype = programtype
         editproject.enddate=end_date
         editproject.CompanyName=CompanyName
-        #editproject.AcceptanceDeadline=AcceptanceDeadline
-        editproject.QuestionDeadline=QuestionDeadline
-        editproject.EtimadDeadline=EtimadDeadline
-        editproject.ProposalSubmissionDeadline=ProposalSubmissionDeadline
+        # editproject.QuestionDeadline=QuestionDeadline
+        # editproject.EtimadDeadline=EtimadDeadline
+        # editproject.ProposalSubmissionDeadline=ProposalSubmissionDeadline
+        editproject.QuestionDeadline = None if not QuestionDeadline else QuestionDeadline
+        editproject.EtimadDeadline = None if not EtimadDeadline else EtimadDeadline
+        editproject.ProposalSubmissionDeadline = None if not ProposalSubmissionDeadline else ProposalSubmissionDeadline
         editproject.contractDuration=contractDuration
         editproject.durationType=durationType
         editproject.num_ofTeam=num_ofteam
-        editproject.EnvelopeOpening=EnvelopeOpening
         editproject.description = project_description
 
-        if  attachment_data:
-            ''' for attachmentt in attachment_data:
-                edit_file.attachment = attachmentt['content']
-                edit_file.attachment_name = attachmentt['name']
-                edit_file.project = editproject
-                edit_file.save()'''
-
+        if  attachment_data:         
             for attachment_data in attachment_data:
                     try:
             # Assuming edit_file is a QuerySet, get the individual object
@@ -1481,13 +1666,8 @@ def edit_project(request, value_to_edit):
             status_check.filter(status="تم قبول الطلب من قبل جميع الفريق").update(indicator='T')
             status_check.filter(status="اختيار رئيس الفريق").update(indicator='C')
             editproject.status = 'تم قبول الطلب من قبل جميع الفريق'
-            # checkLeader = status_check.filter(status="اختيار رئيس الفريق").get()
-            # if checkLeader.indicator == 'W':
-            #     status_check.filter(status="اختيار رئيس الفريق").update(indicator='C')
-           
+
             IdStatusDeletetheRest = IdStatusDate.objects.filter(project = editproject, status= 'في انتظار قبول العضو')
-            # print('IdStatusDeletetheRest: ', IdStatusDeletetheRest)
-            # print('editproject.Teamid: ', editproject.Teamid)
             for id  in IdStatusDeletetheRest:
                 id.delete()
                 editproject.Teamid.remove(id.instructor_id)
@@ -1515,7 +1695,7 @@ def project_view(request , program_id):
     instructors = project.Teamid
     file = Files.objects.filter(project=program_id)
 
- 
+   
     instructors_id = project.Teamid
     if instructors_id :
         instructor_names = []
@@ -1545,7 +1725,7 @@ def project_view(request , program_id):
     IdStatusDateAccept = IdStatusDate.objects.filter( project=program_id, status= "تم قبول الطلب من قبل العضو").count()
     faculty_members = FacultyStaff.objects.filter(collageid=project.collageid)
     numofreq = IdStatusDateAccept + waitingforaccept
-    newinstructors = project.num_ofTeam- numofreq 
+    newinstructors = project.num_ofTeam - numofreq 
    
     return render(request, 'bu/Projects-view.html', { 'applicationidcount':applicationidcount , 'newinstructors':newinstructors, 'numofreq':numofreq  ,'forall':forall,'user':user,'waitingforaccept':waitingforaccept,'IdStatusDateAccept':IdStatusDateAccept, 'program': project ,'id_status_dates': id_status_dates , 'programflow' : programflow,'IdStatusDateRejectionValues':IdStatusDateRejectionValues, 'IdStatusDateRejection': IdStatusDateRejection , 'faculty_members':faculty_members, 'files':file})
 
@@ -1577,6 +1757,7 @@ def select_project_team(request, program_id):
  
     return redirect('business_unit_account:project_view' , program_id = program.programid)
 
+# send to new member after someone reject
 @login_required
 def send_to_new_member(request, program_id , instructor_id):
     if request.method == 'POST':
@@ -1610,58 +1791,6 @@ def send_to_new_member(request, program_id , instructor_id):
     
     return HttpResponse("Unexpected error or GET request")
 
-'''@login_required
-def send_to_new_member2(request, program_id):
-    if request.method == 'POST':
-        try:
-            # Get the program from the database
-            project = Project.objects.get(programid=program_id)
-            project.status=  "انتظار قبول الطلب من قبل جميع الفريق"
-            # Get the new instructors from the form
-            new_instructors = request.POST.getlist('instructor')
-            openToAllCheckbox = request.POST.get('openToAllCheckbox')
-
-            if openToAllCheckbox:
-                print("send to new trainee case 1")
-                project.status='فتح الفرصة للجميع'
-                project.appourtunityopentoall=True
-                project.save()
-                new_StatusDateCheck2= StatusDateCheckProject.objects.filter(project=program_id)
-                new_StatusDateCheck2.filter(status="فتح الانضمام للمشروع لأعضاء هيئة التدريس ").update(indicator='T' , date=timezone.now().date())
-                
-                new_StatusDateCheck3 = StatusDateCheck(
-                        status="تم فرز الطلبات واختيار فريق البرنالعملامج",
-                        date=None,
-                        indicator='W',
-                        project=project)
-                new_StatusDateCheck3.save()
-            else:
-                print("send to new trainee case 2")
-            # Add new instructor ids to the training program
-                for instructor_id in new_instructors:
-                        instructor_id = int(instructor_id)
-                        if instructor_id not in project.Teamid:
-                            project.Teamid.append(instructor_id)
-                        project.save()
-
-            # Create new id_status_date for each new instructor
-                for instructor_id in new_instructors:
-                    IdStatusDate.objects.create(
-                        instructor_id=instructor_id,
-                        status="في انتظار قبول المدرب",
-                        date=None,
-                        project=project
-                    )
-            program=project
-            return redirect('business_unit_account:program_view' , program_id = program.programid)
-        except Project.DoesNotExist:
-            print("Project not found:", e)
-         
-        except Exception as e:
-            print("An error occurred:", e)
-           
-    print("Didn't enter POST request handling")
-'''
 @login_required
 def send_to_new_member3(request, program_id):
     if request.method == 'POST':
@@ -1748,53 +1877,4 @@ def chooseleader(request, program_id):
             print("An error occurred:", e)
             return HttpResponse("An error occurred")
     return HttpResponse("Unexpected error or GET request")
-
-@login_required
-def groupchat_view(request, program_id):
-    
-    project = Project.objects.get(programid=program_id)
-    if project.chatgroup_id:
-         chatid = project.chatgroup_id
-         access_key = project.chat_access_key
-         context = {'chatgroup_id':chatid , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key':access_key }
-         return render(request, 'bu/groupchat.html' , context)
-    else:
-       chat_credentials = creategroupchat(request , project )
-       project.chatgroup_id = chat_credentials['chatid']
-       project.chat_access_key = chat_credentials['access_key']
-       project.save()
-       context = {'chatgroup_id':project.chatgroup_id , 'program_id':program_id ,'username': request.user.username , 'pass' :request.user.id , 'access_key': project.chat_access_key }
-       return render(request, 'bu/groupchat.html' , context)
-
-@login_required
-def creategroupchat(request , project):
-    usernamess = []
-    for teamMemberID in project.Teamid:
-        user = FacultyStaff.objects.get(id=teamMemberID)
-        usernamess.append(user.username)
-
-    print(usernamess)
-    print('------------------')
-    url = "https://api.chatengine.io/chats/"
-    payload = {
-        "title": project.Name,
-        "is_direct_chat": False,
-        "usernames":usernamess
-    }
-    headers = {
-        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
-        'User-Name':  request.user.username,
-        'User-Secret': str(request.user.id),
-    }
-    response = requests.request("PUT", url, headers=headers, data=payload)
-    print('------------------')
-    # print(response.text)
-    # print(response.json())
-    responseINjson = response.json()
-    access_key = responseINjson['access_key']
-    chatid = responseINjson['id']
-    chat_credentials = {'access_key':access_key , 'chatid':chatid}
-    print('chat_credentials' ,chat_credentials)
-    print('response.status_code' ,response.status_code)
-    return chat_credentials 
 

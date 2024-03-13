@@ -2,6 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import requests
 from app.models import FacultyStaff,Collage
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
@@ -9,11 +10,103 @@ from django.http import FileResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
 
+
 @login_required
 def chat(request):
     username = request.user.username
     secret = request.user.id
-    return render(request, 'dean/chat.html' , {'username':username , 'secret': secret })
+    users = filteredUsers(request)
+    return render(request, 'dean/chat.html' , {'username':username , 'secret': secret ,'users':users})
+
+@login_required
+def myChat(request):
+    url = "https://api.chatengine.io/chats/"
+
+    payload = {}
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name': request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status() 
+
+        users = response.json()
+        my_users = []
+
+        for user_data in users:
+            people_data = user_data.get('people', [])
+            for person_data in people_data:
+                person = person_data.get('person', {})
+                username = person.get('username', '')
+                my_users.append({'username': username})
+
+        return my_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def filteredUsers(request):
+    mychat = myChat(request)
+  
+    print("my_fi")
+    # print(mychat)
+    url = "https://api.chatengine.io/users/"
+    payload = {}
+    headers = {'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'}
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+
+        users = response.json()
+        matching_users = []
+        # print('users' , users)
+        for checkuser in users:
+            if checkuser['username'] not in [entry['username'] for entry in mychat]:
+
+                try:
+                    newuser = FacultyStaff.objects.get(username=checkuser['username'])
+                except FacultyStaff.DoesNotExist:
+                    newuser = None 
+
+                if newuser: 
+                    if newuser.id != request.user.id:
+                     if newuser.position == 'عميد الكلية' or newuser.is_buhead:
+                        matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+                else:
+                    matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+
+        # print("Matching users:", matching_users)
+        return matching_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def createDirect(request,direct_username):
+  
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": direct_username,
+        "is_direct_chat": False,
+        "usernames":direct_username    
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    responseINjson = response.json()
+    users = filteredUsers(request)
+    context = {'username': request.user.username , 'secret' :request.user.id , 'users':users }
+    return render(request, 'dean/chat.html' , context)
 
 ################### Video calls ###################
 
@@ -21,7 +114,6 @@ def chat(request):
 def callsDashboard(request):
         #return redirect('business_unit_account:callsDashboard')
     return render(request, 'dean/calls-dashboard.html', {'name': request.user.first_name})
-
 
 @login_required
 def videocall(request):
@@ -55,7 +147,6 @@ def profile_view(request):
     collagename = collage.name 
     context = {'user': user , 'collagename':collagename }
     return render(request, 'dean/profile.html' ,context) 
-
 
 @login_required
 def facultylist_view (request):
@@ -145,9 +236,6 @@ def editprofile_view(request):
 
     return render(request, 'dean/edit-profile.html', {'form': form ,'form2':form2, 'user' : user , 'form2updated':form2updated })
 
-
-
-
 def delete_previouswork(request, value_to_delete):
     user = request.user
 
@@ -161,7 +249,6 @@ def delete_previouswork(request, value_to_delete):
         messages.error(request, 'No previouswork values to delete.')
 
     return redirect('dean_account:edit-profile')
-
 
 def delete_researchinterest(request, value_to_delete):
     user = request.user

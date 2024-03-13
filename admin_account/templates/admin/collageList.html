@@ -1,0 +1,124 @@
+{% extends 'admin/components/faculty-base.html' %}
+    {% load static %}
+
+        {% block styles %}
+        {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-xl-flex d-block">
+							<div class="page-leftheader">
+								<div class="page-title">قائمة الكليات</div>
+							</div>
+							<div class="page-rightheader ms-md-auto">
+								<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">	
+								</div>
+							</div>
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-md-12 col-lg-12">
+								<div class="card">
+									<div class="card-body">
+										<div class="table-vcenter">
+											<table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">
+												<thead>
+													<tr>
+														<th class="border-bottom-0">اسم الكلية</th>
+														<th class="border-bottom-0">البريد الإلكتروني لوحدة الاعمال</th>
+                                                        <th class="border-bottom-0">رقم جوال وحدة الاعمال</th>	
+													</tr>
+												</thead>
+												<tbody>
+													{% for collage in collageList %}
+													<tr>	
+														<td>
+															<div class="me-3 mt-0 mt-sm-2 d-block">
+																<a style="text-decoration: underline;" href="{% url 'admin_account:editcollage' id=collage.collageid  %}"><h6 class="mb-1 fs-14">{{ collage.name }}</h6></a>
+															</div>
+														</td>
+														<td >{{collage.buemail}}</td>
+														<td>{{collage.buphonenumber}}</td>	
+													</tr>
+													{% empty %}
+													<tr>No collage members found.</tr>
+												  {% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END ROW -->
+        {% endblock %}
+
+		
+        {% block scripts %}
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+        
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script> 
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+        
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+
+        {% endblock %}

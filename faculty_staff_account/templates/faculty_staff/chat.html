@@ -5,9 +5,57 @@
 <head>
     <title>المحادثات</title>
 </head>
+
 <style>
-      body{background:  #F5FBFF!important;}
+    body{background:  #F5FBFF!important;}
+   
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+      padding: 12px 16px;
+      z-index: 1;
+      margin-left:300px;
+      margin-top: 50px; 
+      }
+
+      /* Style the button */
+      #dropdownButton {
+      background-color: aliceblue;
+      color: rgb(51, 113, 195);
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      margin-left:330px; 
+      position:absolute;
+      margin-bottom: -90px;
+      margin-top: 50px; 
+      z-index: 999;
+      }
+
+      /* Display the dropdown menu when the button is clicked */
+      #dropdownButton:hover + #dropdownContent {
+      display: block;
+      }
+
+      /* Style the dropdown links */
+      .user-item {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      }
+
+      /* Change color of dropdown links on hover */
+      .user-item:hover {
+      background-color: #f1f1f1;
+      }
+
 </style>
+
 <script>
     console.log('Script is running...');
     window.username = '{{ username|safe }}';
@@ -20,6 +68,46 @@
      
 <div style="margin-top: 30px;">
 <a  href="{% url 'faculty_staff_account:callsDashboard' %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
+
+<button id="dropdownButton"><i class="fa-solid fa-pen-to-square"></i></button>
+<div class="dropdown-content" id="dropdownContent">
+  {% for user in users %}
+          <a href="{% url 'faculty_staff_account:createDirect' direct_username=user.username %}" class="user-item">{{ user.first_name }} {{ user.last_name }}</a>
+  {% endfor %}
+</div>
+  
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+ <script>
+   document.addEventListener('DOMContentLoaded', function() {
+     // Get the button and dropdown content
+     const button = document.getElementById('dropdownButton');
+     const dropdownContent = document.getElementById('dropdownContent');
+     let timeoutId;
+ 
+     // Show dropdown menu on button hover
+     button.addEventListener('mouseenter', function() {
+       clearTimeout(timeoutId); // Clear any existing timeout
+       dropdownContent.style.display = 'block';
+     });
+ 
+     // Hide dropdown menu on button leave
+     button.addEventListener('mouseleave', function() {
+       timeoutId = setTimeout(function() {
+         dropdownContent.style.display = 'none';
+       }, 5000); // 5000 milliseconds = 5 seconds
+     });
+ 
+     // Close the dropdown menu if the user clicks outside of it
+     document.addEventListener('click', function(event) {
+       if (!event.target.matches('#dropdownButton') && !dropdownContent.contains(event.target)) {
+         dropdownContent.style.display = 'none';
+       }
+     });
+   });
+ </script>
+
+
 
 {% include 'index.html' %} 
 </div>

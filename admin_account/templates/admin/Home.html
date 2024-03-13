@@ -1,0 +1,170 @@
+{% extends 'admin/components/Home-base.html' %}
+{% load static %}
+    {% block styles %}
+    {% endblock %}
+        {% block content %}
+
+							<div class="page-header d-xl-flex d-block">
+								<div class="page-leftheader">
+									<div class="page-title"><span class="font-weight-normal text-muted ms-2">لوحة القيادة</span></div>
+								</div>
+								<div class="page-rightheader ms-md-auto">
+									<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+										<div class="d-flex">
+											
+											<div class="header-datepicker me-3">
+												<div class="input-group" style="width: 200px;">
+													<div class="input-group-prepend">
+														<div class="input-group-text" >
+															<i class="feather feather-calendar"></i>
+														</div>
+													</div>
+													<p id="date" class="form-control fc-datepicker"></p>
+												</div>
+											</div>
+											
+											<div class="header-datepicker me-3" style="border-radius:20px;">
+												<div class="input-group" style="width: 140px;">
+													<div class="input-group-prepend">
+														<div class="input-group-text">
+															<i class="feather feather-clock"></i>
+														</div>
+													</div>
+													<p  type="text" id="time" class="form-control input-small" ></p>
+												</div>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- PAGE-HEADER END -->
+
+							<!-- ROW -->
+							<div class="row">
+								<div class="col-xl-9 col-md-12 col-lg-12">
+									<div class="row">
+										<div class="col-xl-4 col-lg-4 col-md-12">
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:50px; box-shadow: inset; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold"> منسوب في جامعه الملك سعود</span>
+																<h3 class="mb-0 mt-1 mb-2">{{FacultyStaff}}</h3>
+															</div>
+														</div>
+														<div class="col-4">
+															<div class="icon1 bg-primary my-auto  float-end"> <i class="feather feather-users"></i> </div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-xl-4 col-lg-4 col-md-12" >
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:120px; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">كلية</span>
+																<h3 class="mb-0">{{collage}}</h3>	
+															</div>
+														</div>
+														<div class="col-4">
+															<div class="icon1 bg-primary my-auto  float-end"> <i class="fe fe-layers"></i> </div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-xl-4 col-lg-4 col-md-12" >
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:190px; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">موظف في معهد الملك عبدالله</span>
+																<h3 class="mb-0 mt-1 mb-2">{{Kaibuemployee}}</h3>
+															</div>
+														</div>
+														<div class="col-4">
+															<div class="icon1 bg-primary my-auto  float-center"> <i class="fe feather-users"></i> </div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>	
+								</div>
+							</div>
+
+							<div class="row">	
+								<div class="col-xl-9 col-lg-8 col-md-12">
+								<div class=" card mg-b-20   overflow-hidden" style="margin-top: 40px; margin-right: 50px; width: 1000px; box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+									<div class="main-profile-body">
+									<div class="tab-content">
+										<div class="tab-pane show active" id="about">
+										<div class="card-body">
+											<div class=" mt-3">
+												<div class="btn-list text-center" style="margin-right: 150px;">
+												<a href="{% url 'admin_account:addCollage' %}" style="display:block;  margin-right: 30px; margin-left: 10px; width:550px;" class="btn btn-lg btn-primary" class="button">إضافة كلية</a>	
+												<a href="{% url 'admin_account:addFaculty' %}" style="display:block;  margin-bottom: 10px; margin-right: 30px; width:550px;" class="btn btn-lg btn-primary" class="button">إضافة منسوب في جامعة الملك سعود</a>
+												<a href="{% url 'admin_account:addKai' %}" style="display:block;  margin-right: 30px; margin-left: 10px; width:550px;" class="btn btn-lg btn-primary" class="button">إضافة موظف في معهد الملك عبدالله</a>
+												</div>
+											</div>
+										</div>	
+										</div>
+										</div>
+									</div>
+									</div>
+								</div>
+								</div>
+							</div>
+    {% endblock %}
+
+		
+    {% block scripts %}
+		<!-- INTERNAL PEITY CHART JS -->
+		<script src="{% static 'assets/plugins/peitychart/jquery.peity.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/peitychart/peitychart.init.js'%}"></script>
+
+		<!-- INTERNAL APEXCHART JS -->
+		<script src="{% static 'assets/plugins/apexchart/apexcharts.js'%}"></script>
+
+		<!-- INTERNAL VERTICAL-SCROLL JS -->
+		<script src="{% static 'assets/plugins/vertical-scroll/jquery.bootstrap.newsbox.js'%}"></script>
+		<script src="{% static 'assets/plugins/vertical-scroll/vertical-scroll.js'%}"></script>
+
+		<!-- INTERNAL  DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+
+		<!-- INTERNAL CHART JS-->
+		<script src="{% static 'assets/plugins/chart/chart.bundle.js'%}"></script>
+		<script src="{% static 'assets/plugins/chart/utils.js'%}"></script>
+
+		<!-- INTERNAL TIMEPICKER JS-->
+		<script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL CHARTJS ROUNDED-BARCHART JS-->
+		<script src="{% static 'assets/plugins/chart.min/chart.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/chart.min/rounded-barchart.js'%}"></script>
+
+		<!-- INTERNAL jQUERY-COUNTDOWNTIMER JS -->
+		<script src="{% static 'assets/plugins/jQuery-countdowntimer/jQuery.countdownTimer.js'%}"></script>
+
+		<!-- INTERNAL INDEX JS-->
+		<script src="{% static 'assets/js/index1.js'%}"></script>
+
+		<!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+		
+		<script>
+			const d = new Date();
+			const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', localeMatcher: 'best fit', weekday: 'long', era: 'short' };
+			const timeOptions = { hour: '2-digit', minute: '2-digit' };
+	
+			document.getElementById("date").innerHTML = d.toLocaleDateString('ar', dateOptions);
+			document.getElementById("time").innerHTML = d.toLocaleTimeString('ar', timeOptions);
+		</script>
+
+    {% endblock %}

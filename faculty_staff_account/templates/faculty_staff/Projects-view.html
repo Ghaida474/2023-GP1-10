@@ -14,6 +14,32 @@
 		 background-color: #F5FBFF;
 		}
 
+		.inline-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.inline-list li {
+			margin-right: 10px;
+		
+		}
+
+		.custom-list-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.milestone {
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			background-color: #007bff;
+			margin-right: 40px;
+		
+		}
+
 
 	</style>
     {% endblock %}
@@ -120,28 +146,26 @@
 											<ul class="nav" style="height: 45px;">
 												<li><a href="#tab-1" class="active" data-bs-toggle="tab">معلومات المشروع </a></li>
 												<li><a href="#tab-2" data-bs-toggle="tab" class="">تفاصيل الحالة </a></li>
-												<!-- {% for id_status_date in id_status_dates %}
-												{% if id_status_date.status == "في انتظار قبول العضو" %} -->
-													{% if id_status_dates %}
-													<div class="button-container" style="display: flex; margin-top: -42px; margin-right: 700px;">
-														<form method="POST" action="{% url 'faculty_staff_account:accept-project' id_status_date.id %}" id="acceptForm" style="margin-right:8px;">
-															{% csrf_token %}
-															<input type="hidden" name="update_status" value="accept">
-															<button type="button" class="btn btn-outline-info" style="width:180px;" onclick="confirmAcceptance();">قبول الطلب</button>
-														</form>
-														<form method="POST" action="{% url 'faculty_staff_account:reject_project' id_status_date.id %}" id="rejectionForm" style="margin-right: 5px;">
-															{% csrf_token %}
-															<input type="hidden" name="update_status" value="reject">
-															<button type="button" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
-															<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
-																<label for="rejectionReason">الرجاء كتابة سبب الرفض</label>
-																<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3"></textarea>
-															</div>
-														</form>
-													</div>
+												{% for id_status_date in id_status_dates %}
+													{% if id_status_date.status == "في انتظار قبول العضو" and id_status_date.instructor.id == userid  %} 
+														<div class="button-container" style="display: flex; margin-top: -42px; margin-right: 700px;">
+															<form method="POST" action="{% url 'faculty_staff_account:accept-project' id_status_date.id %}" id="acceptForm" style="margin-right:8px;">
+																{% csrf_token %}
+																<input type="hidden" name="update_status" value="accept">
+																<button type="button" class="btn btn-outline-info" style="width:180px;" onclick="confirmAcceptance();">قبول الطلب</button>
+															</form>
+															<form method="POST" action="{% url 'faculty_staff_account:reject_project' id_status_date.id %}" id="rejectionForm" style="margin-right: 5px;">
+																{% csrf_token %}
+																<input type="hidden" name="update_status" value="reject">
+																<button type="button" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
+																<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
+																	<label for="rejectionReason">الرجاء كتابة سبب الرفض</label>
+																	<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3"></textarea>
+																</div>
+															</form>
+														</div>
 													{% endif %}
-												<!-- {% endif %}
-											{% endfor %} -->
+												{% endfor %}
 											
 											{% if program.status == 'فتح الفرصة للجميع' and  isfacultyinarray %}
 											<form method="POST" action="{% url 'faculty_staff_account:apply_for_project' program.programid %}" id="applyForm" style=" margin-top: -42px; margin-right: 950px;">
@@ -179,21 +203,7 @@
 													</div>
 												</div>
 												
-												<div class="card-body border-top h5">
-													<h4 class="font-weight-semibold">التاريخ</h4>
-													<div class="main-profile-contact-list d-lg-flex">
-														<div class="font-weight-semibold"  style="color:#0084BD;">
-															<small class="text-muted">من </small>
-															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
-															{{program.OfferingDate | date:"d-m-Y"}}
-															
-															<small class="text-muted">الى </small>
-															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
-															 {{program.enddate | date:"d-m-Y"}}
-														</div>
-													</div>
-												</div>
-
+												
 												<div class="card-body border-top h5">
 													<h4 class="font-weight-semibold">اسم الجهة</h4>
 													<div class="font-weight-semibold" style="color:#0084BD;">
@@ -202,13 +212,7 @@
 													</div>	
 												</div>
 												
-												<div class="card-body border-top h5">
-													<h4 class="font-weight-semibold">تكلفة المشروع</h4>
-													<div class="font-weight-semibold" style="color:#0084BD;">
-														<i class="" style="margin-right: 5px;"></i>
-														{{program.totalcost}}ر.س
-													</div>	
-												</div>
+												
 
 												<div class="card-body border-top h5">
 													<h4 class="font-weight-semibold">مدة العقد</h4>
@@ -227,11 +231,18 @@
 												</div>
 
 												<div class="card-body border-top h5">
-													<h4 class="font-weight-semibold"> تاريخ تسليم المستندات للمعهد </h4>
-													<div class="font-weight-semibold" style="color:#0084BD;">
-														<i class="" style="margin-right: 5px;"></i>
-														{{program.ProposalSubmissionDeadline}}
-													</div>	
+													<h4 class="font-weight-semibold">تاريخ تسليم الفريق </h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+															<!-- <small class="text-muted">من </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															{{program.OfferingDate | date:"d-m-Y"}} -->
+															
+															<!-- <small class="text-muted">الى </small> -->
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															 {{program.enddate | date:"d-m-Y"}}
+														</div>
+													</div>
 												</div>
 
 												<div class="card-body border-top h5">
@@ -306,6 +317,23 @@
 															{% endif %}
 														{% endif %}
 													{% endfor %}
+												    <!-- ------------------------------------------------------------------------------------------------------------>
+													{% for flow in id_status_dates %} 	
+														{% if flow.status ==  'تم قبول الطلب من قبل العضو' %}
+															<li>
+																<i class="fa fa-user bg-success"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																	<div class="timelinestart-body">
+																			<div class="wrapper ms-3">
+																				<p class="mb-0 mt-1 text-dark font-weight-semibold">{{flow.instructor.first_name}} {{flow.instructor.last_name}} | <small><a href="mailto:{{flow.instructor.email}}">{{flow.instructor.email}}</a></small></p>
+																			</div>
+																	</div>
+																</div>
+															</li>
+														{% endif %}
+													{% endfor %}
 													<!-- ------------------------------------------------------------------------------------------------------------>
 													<!-- 4  -->
 															{% for flow in programflow  %} 
@@ -376,11 +404,21 @@
 																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
 																		<div class="timelinestart-body" >
 																			<div class="wrapper ms-3">
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold"> تاريخ الانتهاء : {{program.enddate}}</p>
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold"> آخر تاريخ لاستلام الأسئلة : {{program.QuestionDeadline}} </p>
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold">تاريخ تسليم المشروع للمعهد : {{program.ProposalSubmissionDeadline}} </p>
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold">تاريخ تسليم المشروع للجهة : {{program.EtimadDeadline}} </p>
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold">تاريخ فتح المظاريف : {{program.EnvelopeOpening}} </p>
+																				<ul class="inline-list" style=" margin-top: 20px; margin-right: 100px;">
+																					<hr style="border-color: #007bff; border-width: 2px; margin-right: 150px;  margin-bottom:-10px; width: 380px;">
+
+																						<li class="primary" class="custom-list-item" style=" margin-left: 110px;">
+																							<div class="milestone"></div>
+																							<a class="font-weight-semibold fs-15 ms-3">{{program.QuestionDeadline}}</a>
+																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3 " style="font-weight:bolder;" >آخر تاريخ لاستلام الأسئلة من المعهد</p>
+																						</li>
+																						
+																						<li class="primary" class="custom-list-item" >
+																							<div class="milestone"></div>
+																							<a class="font-weight-semibold fs-15 ms-3">{{program.enddate}}</a>
+																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;"> تاريخ تسليم الفريق المشروع </p>
+																						</li>
+																				</ul>						
 																			</div>
 																	</div> 
 																</li>	

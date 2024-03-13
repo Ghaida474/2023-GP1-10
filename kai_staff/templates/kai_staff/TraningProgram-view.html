@@ -126,9 +126,9 @@
 										<div class="tabs-menu1 px-3">
 											<ul class="nav">
 												<li><a href="#tab-1" class="active" data-bs-toggle="tab">معلومات البرنامج التدريبي</a></li>
-												{% if program.isreleased_field %}
+												<!-- {% if program.isreleased_field %}
 												<li><a href="#tab-2" data-bs-toggle="tab" class="">المتدربين</a></li>
-												{% endif %}
+												{% endif %} -->
 												<li><a href="#tab-3" data-bs-toggle="tab" class="">المدربين</a></li>
 												
 												{% if program.status == 'تم ارسال الطلب إلى المعهد' %} 
@@ -233,7 +233,7 @@
 											</div>
 										</div>
 										<!-- Trainees -->
-										<div class="tab-pane" id="tab-2">
+										<!-- <div class="tab-pane" id="tab-2">
 											<div class="card p-5">
 												<div class="row">	
 													<div class="card-body">
@@ -301,7 +301,7 @@
 													</div>		
 												</div>
 											</div>
-										</div>
+										</div> -->
 
 										<!-- instructors --------------------------------------------------->
 									<div class="tab-pane" id="tab-3">
@@ -343,7 +343,7 @@
 	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
 	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
 	<script src="{% static 'assets/js/datatables.js'%}"></script>
-	<script>
+	<!-- <script>
 			
 			function submitForm(event, programId, traineeId, register_id) {
 				event.preventDefault();
@@ -401,7 +401,7 @@
 					'<i style="width:20px;" class="feather feather-trash text-nowrap"></i></a></div>');
 			}
 	
-</script>
+</script> -->
 
 
 <script>

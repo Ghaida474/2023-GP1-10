@@ -1,0 +1,670 @@
+{% extends 'admin/components/base.html' %}
+    {% load static %}
+        {% block styles %}
+        {% endblock %}
+
+        {% block content %}
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+                    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+                    
+                    <script>                               
+                    // AJAX
+                    $(document).ready(function () {
+                    $('input[name="name"]').on('blur', function() {
+                        var topic = $(this).val();
+                        var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+                        var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+                        if (topic.length < 10) {
+                            $(this).addClass('is-invalid');
+                            $(this).siblings('.error-message-name').text('يجب ملئ الحقل و ان يكون  عشرة حروف او اكثر ');
+                        }else if (numberPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            $(this).siblings('.error-message-name').text('لا يمكن أن يكون يحتوي على أرقام'); 
+                        }else if (!arabicPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            $(this).siblings('.error-message-name').text('يجب ان يكون باللغة العربية');
+                        }else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-name').text('');
+                        }
+                    });
+                
+                    $('input[name="buemail"]').on('blur', function() {
+                        var topic = $(this).val();
+                        var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
+                        if (!emailPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            $(this).siblings('.error-message-buemail').text('يجب ان يكون الايميل بصيغة جامعه الملك سعود (ksu.edu.sa@*******)');
+                        }else {
+                            $(this).removeClass('is-invalid');
+                            $(this).siblings('.error-message-buemail').text('');
+                        }
+                    });
+
+                    $('input[name="buphonenumber"]').on('blur', function() {
+                        var topic = $(this).val();
+                        var phonePattern = /^01\d{8}$/;
+                        if (!phonePattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            $(this).siblings('.error-message-buphonenumber').text('يجب ان يكون بالمفتاح السعودي(********01)');
+                        }else {
+                            $(this).removeClass('is-invalid');
+                            $(this).siblings('.error-message-buphonenumber').text('');
+                        }
+                    });
+                
+                    $('input[name="nofaculty"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-nofaculty').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-nofaculty').text('');
+                        }
+                    });
+
+                    $('input[name="nofaculty2"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-nofaculty2').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-nofaculty2').text('');
+                        }
+                    });
+
+                    $('input[name="disknum"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-disknum').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-disknum').text('');
+                        }
+                    });
+
+                    $('input[name="buildingnum"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-buildingnum').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-buildingnum').text('');
+                        }
+                    });
+
+                    $('input[name="nofemalestudents"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-nofemalestudents').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-nofemalestudents').text('');
+                        }
+                    });
+
+                    $('input[name="nomalestudents"]').on('blur', function() {
+                        var topic = $(this).val();
+                        if (topic < 1) {
+                        $(this).addClass('is-invalid');
+                        $(this).siblings('.error-message-nomalestudents').text('يجب ملئ الحقل برقم صحيح');
+                        } else {
+                        $(this).removeClass('is-invalid');
+                        $(this).siblings('.error-message-nomalestudents').text('');
+                        }
+                    });
+
+                    $('.department-inputs').on('blur', 'input[name="departments[]"]', function() {
+                        var topic = $(this).val();
+                        var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+                        var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+                        var errorMessage = $(this).siblings('.error-message-departments');
+
+                        if (topic.length < 2) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('يجب أن يكون طول التخصص حرفين أو أكثر');
+                        } else if (numberPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('التخصص لا يمكن أن يحتوي على أرقام');
+                        } else if (!arabicPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('يجب أن يكون التخصص باللغة العربية');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                            errorMessage.text('');
+                        }
+                    });
+
+                    $('.domain-inputs').on('blur', 'input[name="domains[]"]', function() {
+                        var topic = $(this).val();
+                        var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+                        var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+                        var errorMessage = $(this).siblings('.error-message-domains');
+
+                        if (topic.length < 2) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('يجب أن يكون طول التخصص حرفين أو أكثر');
+                        } else if (numberPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('التخصص لا يمكن أن يحتوي على أرقام');
+                        } else if (!arabicPattern.test(topic.trim())) {
+                            $(this).addClass('is-invalid');
+                            errorMessage.text('يجب أن يكون التخصص باللغة العربية');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                            errorMessage.text('');
+                        }
+                    });
+
+                    });  
+                    </script>
+
+                    <script>
+                    function validateForm() {
+                        var name = document.querySelector('input[name="name"]');
+                        var buemail = document.querySelector('input[name="buemail"]');
+                        var buphonenumber = document.querySelector('input[name="buphonenumber"]');
+                        var nofaculty = document.querySelector('input[name="nofaculty"]');
+                        var nofaculty2 = document.querySelector('input[name="nofaculty2"]');
+                        var nofemalestudents = document.querySelector('input[name="nofemalestudents"]');
+                        var nomalestudents = document.querySelector('input[name="nomalestudents"]');
+                        var disknum = document.querySelector('input[name="disknum"]');
+                        var buildingnum = document.querySelector('input[name="buildingnum"]');
+                        var departments = document.querySelectorAll('input[name="departments[]"]');
+                        var domains = document.querySelectorAll('input[name="domains[]"]');
+                        
+                        var arabicPattern = /^[\u0600-\u06FF\s]+$/;
+                        var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
+                        var phonePattern = /^01\d{8}$/;
+                        var numberPattern = /[\u0660-\u0669\u0030-\u0039]/;
+
+                        if (name.value.length < 10 || numberPattern.test(name.value.trim()) || !arabicPattern.test(name.value.trim())) {
+                            console.log('in name check');
+                            return false;
+                        } 
+
+                        if (!emailPattern.test(buemail.value.trim())) {
+                            console.log('in buemail check');
+                            return false;
+                        } 
+                        
+                        if (!phonePattern.test(buphonenumber.value.trim())) {
+                            console.log('in buphonenumber check');
+                            return false;
+                        } 
+
+                        var numOFfaculty= parseInt(nofaculty.value);
+                        if (isNaN(numOFfaculty) || numOFfaculty < 1) {
+                            console.log('in numOFfaculty check');
+                            return false;
+                        } 
+
+                        var numOFfaculty2 = parseInt(nofaculty2.value);
+                        if (isNaN(numOFfaculty2) || numOFfaculty2 < 1) {
+                            console.log('in numOFfaculty2 check');
+                            return false;
+                        } 
+
+                        var numOFfemalestudents= parseInt(nofemalestudents.value);
+                        if (isNaN(numOFfemalestudents) || numOFfemalestudents < 1) {
+                            console.log('in numOFfemalestudents check');
+                            return false;
+                        } 
+
+                        var numOFmalestudents= parseInt(nomalestudents.value);
+                        if (isNaN(numOFmalestudents) || numOFmalestudents < 1) {
+                            console.log('in numOFmalestudents check');
+                            return false;
+                        } 
+
+                        var diskNum = parseInt(disknum.value);
+                        if (isNaN(diskNum) || diskNum < 1) {
+                            console.log('in diskNum check');
+                            return false;
+                        } 
+
+                        var buildingNum = parseInt(buildingnum.value);
+                        if (isNaN(buildingNum) || buildingNum < 1) {
+                            console.log('in buildingnum check');
+                            return false;
+                        } 
+
+                        var isDomainsValid = true;
+                        domains.forEach(function(domain) {
+                            var topic = domain.value.trim();
+                            console.log('in domain loop validation :', topic);
+                            if (topic.length < 2 || numberPattern.test(topic) || !arabicPattern.test(topic)) {
+                                console.log('domain validation failed:', topic);
+                                isDomainsValid = false;
+                            }
+                        });
+
+                        if (!isDomainsValid) {
+                            console.log('Domains check failed');
+                            return false;
+                        }
+
+                        var isDepartmentsValid = true;
+                        departments.forEach(function(department) {
+                            var topic = department.value.trim();
+                            console.log('in Department loop validation :', topic);
+                            if (topic.length < 2 || numberPattern.test(topic) || !arabicPattern.test(topic)) {
+                                console.log('Department validation failed:', topic);
+                                isDepartmentsValid = false;
+                            }
+                        });
+
+                        if (!isDepartmentsValid) {
+                            console.log('Departments check failed');
+                            return false;
+                        }
+
+                        console.log('All checks passed');
+                        return true;
+                    }
+                    </script>
+
+                    <script>
+                    function checkdepartment( buttom , department){
+                        var attendURL =  "{% url 'admin_account:checkdepartment' department='placeholder' %}".replace('placeholder', department);
+                        $.ajax({
+                            url: attendURL,
+                            type: 'GET',
+                            success: function(response) { 
+                                if (response.success_message !== undefined) {
+                                    if (response.success_message === true) {
+                                        console.log('here inside true')
+                                        $('.department-modal-body').html('<p>لا يمكن الحذف لوجود موظفين/منسوبي مسجلين في القسم</p>');
+                                        $('.department-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
+                                    } else {
+                                        console.log('here inside false');
+                                        $('#bottom_value').val(buttom);
+                                        $('.department-modal-body').html('<p>هل أنت متأكد من حذف القسم</p>');
+                                        $('.department-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDepartmentField()">تأكيد</button>');
+                                    }
+                                } else {
+                                    console.log('Response message not received');
+                                }
+                            },
+                            error: function(error) {
+                                console.error('Error occurred:', error);
+                            }
+                        }); 
+                    }
+
+                    function addDepartmentField() {
+                    const departmentInputs = document.getElementById('departmentFields');
+                    const newInput = document.createElement('div');
+                    newInput.classList.add('row', 'department-row');
+                    newInput.innerHTML = `
+                        <div class="col-8">
+                            <input class="form-control" type="text" name="departments[]" placeholder="التخصص" required>
+                            <span class="error-message-departments" style="color: red;"></span> 
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-icon btn-danger remove-department-btn" onclick="removeDepartmentField2(this)"> حذف</button>
+                        </div>
+                    `;
+                    departmentInputs.appendChild(newInput);
+
+                    // Hide the add button if there are enough departments
+                    const departmentRows = document.querySelectorAll('.department-row');
+                    const addButton = document.querySelector('.add-department-btn');
+                    if (departmentRows.length >= MAX_DEPARTMENTS) {
+                        addButton.style.display = 'none';
+                        }
+                    }
+
+                    function removeDepartmentField() {
+                        button = $('#bottom_value').val()
+                        const departmentRow = button.closest('.department-row');
+                        departmentRow.remove();
+
+                        const addButton = document.querySelector('.add-department-btn');
+                        addButton.style.display = 'block';
+                    }
+
+                    function removeDepartmentField2(button) {
+                        const departmentRow = button.closest('.department-row');
+                        departmentRow.remove();
+
+                        const addButton = document.querySelector('.add-department-btn');
+                        addButton.style.display = 'block';
+                    }
+
+           
+                    function checkdomain( buttom , domain){
+                        var attendURL =  "{% url 'admin_account:checkdomain' domain='placeholder' %}".replace('placeholder', domain);
+                        $.ajax({
+                            url: attendURL,
+                            type: 'GET',
+                            success: function(response) { 
+                                if (response.success_message !== undefined) {
+                                    if (response.success_message === true) {
+                                        console.log('here inside true')
+                                        $('.domain-modal-body').html('<p>لا يمكن الحذف لوجود برامج تدريبية مسجلة في المجال</p>');
+                                        $('.domain-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
+                                    } else {
+                                        console.log('here inside false');
+                                        $('#bottom_value2').val(buttom);
+                                        $('.domain-modal-body').html('<p>هل أنت متأكد من حذف المجال</p>');
+                                        $('.domain-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDomainField()">تأكيد</button>');
+                                    }
+                                } else {
+                                    console.log('Response message not received');
+                                }
+                            },
+                            error: function(error) {
+                                console.error('Error occurred:', error);
+                            }
+                        }); 
+                    }
+
+                    function addDomainField() {
+                        const domainInputs = document.getElementById('domainFields');
+                        const newInput = document.createElement('div');
+                        newInput.classList.add('row', 'domain-row');
+                        newInput.innerHTML = `
+                            <div class="col-8">
+                                <input class="form-control" type="text" name="domains[]" placeholder="المجال" required>
+                                <span class="error-message-domains" style="color: red;"></span> 
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-icon btn-danger remove-domain-btn" onclick="removeDomainField(this)"> حذف</button>
+                            </div>
+                        `;
+                        domainInputs.appendChild(newInput);
+
+                        // Hide the add button if there are enough domains
+                        const domainRows = document.querySelectorAll('.domain-row');
+                        const addButton = document.querySelector('.add-domain-btn');
+                        if (domainRows.length >= MAX_DOMAINS) {
+                            addButton.style.display = 'none';
+                        }
+                    }
+
+                    function removeDomainField() {
+                        button = $('#bottom_value2').val()
+                        const domainRow = button.closest('.domain-row');
+                        domainRow.remove();
+
+                        // Show the add button after removing a domain field
+                        const addButton = document.querySelector('.add-domain-btn');
+                        addButton.style.display = 'block';
+                    }
+
+                    function removeDomainField2(button) {
+                        const domainRow = button.closest('.domain-row');
+                        domainRow.remove();
+
+                        // Show the add button after removing a domain field
+                        const addButton = document.querySelector('.add-domain-btn');
+                        addButton.style.display = 'block';
+                    }
+                    </script>
+
+                    <div class="modal" tabindex="-1" id="deletecollage">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                </div>
+                                {% if facultyexists %}
+                                    <div class="modal-body">
+                                        <p> لا يمكن الحذف  لوجود موظفين/منسوبي مسجلين في الكلية </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>
+                                    </div>
+                                {% else %}
+                                    <div class="modal-body">
+                                        <p >هل أنت متأكد من حذف الكلية</p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                                        <a href="{% url 'admin_account:deletecollage' id=editcollage.collageid %}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" tabindex="-1" id="deletedepartment">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                </div>
+                                <div class="modal-body">
+                                    <div class="department-modal-body"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="department-modal-footer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" tabindex="-1" id="deletedomain">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                </div>
+                                <div class="modal-body">
+                                    <div class="domain-modal-body"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="domain-modal-footer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAGE HEADER -->
+                    <div class="page-header d-xl-flex d-block" >
+                        <div class="page-leftheader">
+                            <div class="page-title">تعديل معلومات الكلية</div>
+                        </div>
+                    </div>
+                    <!-- END PAGE HEADER -->
+
+                    <!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-md-12 col-lg-12">
+								<div class="card">
+                                    <form method="post" onsubmit="return validateForm();" id="myForm" enctype="multipart/form-data">
+                                        {% csrf_token %}	
+									    <div class="card-body">
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">اسم الكلية<span class="text-red">*</span></label>
+                                                            <input class="form-control" type="text" name="name" placeholder="كلية ......" required value="{{editcollage.name}}"> 
+                                                            <span class="error-message-name" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> البريد الإلكتروني لوحدة الاعمال <span class="text-red">*</span></label>
+                                                            <input  type="hidden" id="result2" name="result2" value="false">
+                                                            <input class="form-control" type="email" name="buemail" placeholder="البريد الإلكتروني لوحدة الاعمال"  required value="{{editcollage.buemail}}">
+                                                            <span class="error-message-buemail" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                               
+                                                <div class="row">    
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">رقم الهاتف الثابت لوحدة الاعمال</label>
+                                                            <input class="form-control" type="text" name="buphonenumber" placeholder="********01" value="{{editcollage.buphonenumber}}">
+                                                            <span class="error-message-buphonenumber" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> عدد موظفين الكلية </label>
+                                                            <input class="form-control" type="number" name="nofaculty" placeholder="عدد موظفين الكلية" value="{{editcollage.nostaff}}" >
+                                                            <span class="error-message-nofaculty" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> عدد اعضاء هيئة التدريس في الكلية</label>
+                                                            <input class="form-control" type="number" name="nofaculty2" placeholder=" عدد اعضاء هيئة التدريس " value="{{editcollage.nofaculty}}">
+                                                            <span class="error-message-nofaculty2" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> عدد الطلاب </label>
+                                                            <input class="form-control" type="number" name="nomalestudents" placeholder="عدد الطلاب"  value="{{editcollage.nomalestudents}}">
+                                                            <span class="error-message-nomalestudents" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                    
+                                                <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label"> عدد الطالبات </label>
+                                                                <input class="form-control" type="number" name="nofemalestudents" placeholder="عدد الطالبات" value="{{editcollage.nofemalestudents}}">
+                                                                <span class="error-message-nofemalestudents" style="color: red;"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label"> رقم مبنى الكلية</label>
+                                                                <input class="form-control" type="number" name="buildingnum" placeholder="رقم مبنى الكلية" value="{{editcollage.nobuilding}}" >
+                                                                <span class="error-message-buildingnum" style="color: red;"></span>
+                                                            </div>
+                                                        </div>
+                                                </div> 
+                                              
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> دور مكتب وحدة الاعمال</label>
+                                                            <select class="form-control select2" name="floor" data-placeholder="اختر" >
+                                                                <option value="" >اختر</option>
+                                                                <option value="الارضي" {% if editcollage.nofloor == "الارضي" %} selected {% endif %}>الارضي</option>
+                                                                <option value="الاول" {% if editcollage.nofloor == "الاول" %} selected {% endif %} >الاول</option>
+                                                                <option value="الثاني" {% if editcollage.nofloor == "الثاني" %} selected {% endif %} >الثاني</option>
+                                                                <option value="الثالث" {% if editcollage.nofloor == "الثالث" %} selected {% endif %} >الثالث</option>
+                                                            </select> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label"> رقم مكتب وحدة الاعمال </label>
+                                                            <input class="form-control" type="number" name="disknum" placeholder="رقم مكتب وحدة الاعمال " value="{{editcollage.nodisk}}">
+                                                            <span class="error-message-disknum" style="color: red;"></span>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <div class="department-inputs">
+                                                                <label class="form-label">التخصصات <span style="color: red;">*</span></label>
+                                                                <div id="departmentFields">
+                                                                    {% for department in editcollage.departments %}
+                                                                    <div class="row department-row">
+                                                                        <div class="col-8">
+                                                                            <input class="form-control" type="text" name="departments[]" placeholder="التخصص" required value="{{ department }}">
+                                                                            <span class="error-message-departments" style="color: red;"></span> 
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <buttom type="hidden" id="bottom_value">
+                                                                            <button type="button" class="btn btn-icon btn-danger remove-department-btn" data-bs-toggle="modal" data-bs-target="#deletedepartment" onclick="checkdepartment( this , '{{ department }}')"> حذف</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                                <button type="button" style="margin-top: 20px;" class="btn btn-icon btn-primary add-department-btn"  onclick="addDepartmentField()"><i class="fa fa-plus ms-2"></i> اضافة تخصص اخر</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <div class="domain-inputs">
+                                                                <label class="form-label">المجالات</label>
+                                                                <div id="domainFields">
+                                                                    {% for domain in editcollage.domain %}
+                                                                        {% if domain != 'اخرى' %}
+                                                                            <div class="row domain-row">
+                                                                                <div class="col-8">
+                                                                                    <input class="form-control" type="text" name="domains[]" placeholder="المجال"  value="{{ domain }}">
+                                                                                    <span class="error-message-domains" style="color: red;"></span> 
+                                                                                </div>
+                                                                                <div class="col-4">
+                                                                                    <buttom type="hidden" id="bottom_value2">
+                                                                                    <button type="button" class="btn btn-icon btn-danger remove-domain-btn" data-bs-toggle="modal" data-bs-target="#deletedomain" onclick="checkdomain( this , '{{ domain }}')"> حذف</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                                <button type="button" style="margin-top: 20px;" class="btn btn-icon btn-primary add-domain-btn" onclick="addDomainField()"><i class="fa fa-plus ms-2"></i> اضافة مجال اخر</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                   
+                                                <div class="card-footer text-end">
+                                                    <button type="submit" name="addcollage" class="btn btn-primary btn-lg projectnotify">حفظ</button>
+                                                    <button type="button" name="deletecollage" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deletecollage" >حذف</button>
+                                                    <a  href="{% url 'admin_account:collageList' %}" class="btn btn-primary btn-lg">رجوع</a>
+                                                </div>
+                                        </div>
+                                    </form>
+                                </div>
+							</div>
+						</div>
+						<!-- END ROW -->	
+        {% endblock %}
+
+        {% block script %}
+            <!-- NOTIFICATIONS JS -->
+            <script src="{% static 'assets/plugins/notify/js/notifIt.js'%}"></script>
+
+            <!-- INTERNAL CHART JS -->
+            <script src="{% static 'assets/plugins/chart/chart.bundle.js'%}"></script>
+            <script src="{% static 'assets/plugins/chart/utils.js'%}"></script>
+
+            <!-- INTERNAL DATEPICKER JS -->
+            <script src="{% static 'assets/plugins/modal-datepicker/datepicker.js'%}"></script>
+            
+            <!-- THEME COLOR JS -->
+            <script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+            <!-- INTERNAL SUMOSELECT JS -->
+            <script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+    
+        
+            <!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+            <script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+            <script src="{% static 'assets/js/form-elements.js'%}"></script>
+            <script src="{% static 'assets/js/select2.js'%}"></script>
+    
+            <!-- INTERNAL MULTIPLE SELECT JS -->
+            <script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+            <script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+        {% endblock %}
+    

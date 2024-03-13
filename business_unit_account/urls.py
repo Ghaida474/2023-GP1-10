@@ -22,6 +22,7 @@ urlpatterns = [
     path('business-unit-home/joinroom', views.joinroom, name='joinroom'),
     path('business-unit-home/chat', views.chat, name='chat'), 
     path('business-unit-home/projects/groupchat/<int:program_id>/', views.groupchat_view, name='groupchat'),
+    path('business-unit-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
 # 16
     path('business-unit-home/traningprogram', views.traningprogram_view, name='traning-program'),
     path('business-unit-home/edit_program/<int:value_to_edit>/', views.edit_program, name='edit_program'),
@@ -39,7 +40,7 @@ urlpatterns = [
     path('business-unit-home/traningprogram/accepte_facultyprogram/<int:program_id>/', views.accepte_facultyprogram, name='accepte_facultyprogram'),
     path('business-unit-home/traningprogram/rejecte_facultyprogram/<int:program_id>/', views.rejecte_facultyprogram, name='rejecte_facultyprogram'),
     path('business-unit-home/edit_program/deleteWaittingInstructor/<int:id>/', views.deleteWaittingInstructor, name='deleteWaittingInstructor'),
-# 10
+# 9
     path('business-unit-home/projects', views.projects_view, name='projects'),
     path('business-unit-home/projects/project-view/<int:program_id>/', views.project_view, name='project_view'),
     path('business-unit-home/edit_project/<int:value_to_edit>/', views.edit_project, name='edit_project'),
@@ -47,7 +48,6 @@ urlpatterns = [
     path('business-unit-home/projects/select_project_team/<int:program_id>/', views.select_project_team, name='select_project_team'),
     path('business-unit-home/projects/send_to_new_member/<int:program_id>/<int:instructor_id>/', views.send_to_new_member, name='send_to_new_member'),
     path('business-unit-home/projects/send_to_new_member/<int:program_id>/', views.send_to_new_member3, name='send_to_new_member3'),
-    # path('business-unit-home/projects/send_to_new_members/<int:program_id>/', views.send_to_new_member2, name='send_to_new_member2'),
     path('business-unit-home/projects/chooseleader/<int:program_id>/', views.chooseleader, name='chooseleader'),
     path('business-unit-home/projects/view-file/<int:program_id>/<int:file_id>/', views.view_projectfile, name='view_projectfile'),
     path('business-unit-home/projects/deleteWaittingMember/<int:id>/', views.deleteWaittingMember, name='deleteWaittingMember'),

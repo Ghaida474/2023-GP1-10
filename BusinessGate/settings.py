@@ -89,17 +89,18 @@ WSGI_APPLICATION = 'BusinessGate.wsgi.application'
 
 MIME_TYPES = {
     '.pdf': 'application/pdf',
-    # Add more file extensions and content types as needed
 }
 
 
 AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
     'app.auth_backends.FacultyStaffAuthBackend',
+    'app.auth_backends.AdminAuthBackend',
 ]
 
 AUTH_USER_MODEL = 'app.Kaibuemployee' 
 AUTH_USER_MODEL = 'app.FacultyStaff'
+AUTH_USER_MODEL = 'app.Admin'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

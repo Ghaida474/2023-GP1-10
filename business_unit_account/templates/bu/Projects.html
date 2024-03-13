@@ -3,17 +3,9 @@
 
 {% block styles %}
 <style>
-    #otherInput {
-        display: none; 
-    }
-    #other-domain{
-        display: none;
-    }
-    body {
-        
+    body {  
         overflow-x: hidden;
     }
-
 </style>
 {% endblock %}
 
@@ -103,7 +95,7 @@
                                                             </tr>
 													{% empty %}
 													<tr >
-                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
                                                     </tr>      
 												  {% endfor %}    
 												</tbody>
@@ -178,7 +170,7 @@
 												<tbody>
 										
 													<tr>
-                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+                                                        <td colspan="7">لا يوجد مشاريع </td>
                                                     </tr>      
 										
 												</tbody>
@@ -227,18 +219,25 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label class="form-label">اسم الجهة <span style="color: red;">*</span></label>
+                                <input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" required>
+                                <span class="error-message-CompanyName" style="color: red;"></span>
+                            </div>
+                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label class="form-label">عدد فريق العمل <span style="color: red;">*</span></label>
-                                <input class="form-control" placeholder="عدد الفريق" type="number" name="num_ofteam" id="num_ofteam" required>
+                                <input class="form-control" placeholder="عدد الفريق" type="number" name="num_ofinstructors" id="num_ofinstructors" required>
                                 <span class="error-message-num_ofinstructors" style="color: red;"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">تكلفة المشروع<span style="color: red;">*</span></label>
                                 <input class="form-control" placeholder="التكلفة" type="number" name="price" required>
                                 <span class="error-message-price" style="color: red;"></span>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     
                     <div class="row">
@@ -277,8 +276,25 @@
                                 <span class="error-message-instructor" style="color: red;"></span><br>
 
                                 <input type="checkbox" id="openToAllCheckbox" name="openToAllCheckbox" value ="open_to_all_memebers">
-                                <label for="openToAllCheckbox">ارسال لجميع اعضاء هيئة التدريس </label>
+                                <label for="openToAllCheckbox">ارسال لجميع اعضاء هيئة التدريس</label>
                             </div>                    
+                   
+                            <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label"> آخر تاريخ لإستلام أسئلة الفريق</label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate">
+                                <span class="error-message-questionDate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ تسليم الفريق <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" required>
+                                <span class="error-message-enddate" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -289,42 +305,20 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label"> آخر تاريخ لاستلام الأسئلة</label>
-                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="questionDate">
-                                <span class="error-message-questionDate" style="color: red;"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label class="form-label">تاريخ تسليم المشروع للجهة</label>
                                 <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="companyDate">
                                 <span class="error-message-companyDate" style="color: red;"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">تاريخ الانتهاء <span style="color: red;">*</span></label>
-                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate" required>
-                                <span class="error-message-enddate" style="color: red;"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
+                       
+                        <!-- <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">تاريخ فتح المظاريف</label>
                                 <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="envelopeDate">
                                 <span class="error-message-envelopeDate" style="color: red;"></span>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label">اسم الجهة</label>
-                                <input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" required>
-                                <span class="error-message-CompanyName" style="color: red;"></span>
-                            </div>
-                    </div>
-                       
+                        </div> -->
+                        
                     <div class="form-group">
                         <label class="form-label">وصف المشروع<span style="color: red;">*</span></label>    
                         <textarea class="form-control" rows="4" cols="105" placeholder="" name="subject" required></textarea>
@@ -419,16 +413,6 @@
           <script src="{% static 'assets/js/client/client-list.js'%}"></script>
 
 
-          <script>
-            $(document).ready(function () {
-                  // Set minimum and maximum time values (8:00 AM and 10:00 PM)
-                  var minTime = '08:00';
-                  var maxTime = '22:00';
-  
-                  // Set the min and max attributes for the time inputs
-                  $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
-              });
-          </script>
 
           <script>
              $(document).ready(function() {
@@ -478,194 +462,160 @@
                        }
                    });
                });
-        </script>
+          </script>
     
 
-    <script>
-        jQuery(document).ready(function ($) {
-                       // Initialize Selectize on #mySelect
-                       var $select = $('#mySelect').selectize();
-                       var $select = $('#mySelect2').selectize();
-                   
-                       // Event listener for the checkbox change
-                       $('#openToAllCheckbox').change(function() {
-                           // Retrieve the selectize instance
-                           var selectize = $('#mySelect')[0].selectize;
-                   
-                           // Clear selected options if checkbox is checked
-                           if ($(this).prop('checked')) {
-                               selectize.clear();
-                               selectize.disable(); // Disable the selectize control
-                               $('.error-message-instructor').text(''); // Clear error message
-                           } else {
-                               selectize.enable(); // Enable the selectize control
-                           }
-                       });
-                   
-                       // Event listener for changes in #num_ofinstructors and #mySelect
-                       $('#num_ofinstructors, #mySelect').on('change', function() {
-                           validateInstructors();
-                       });
-                   
-                       // Validation function for instructors
-                       function validateInstructors() {
-                           var num_ofinstructors = parseInt($('#num_ofinstructors').val());
-                           var selectedCount = $('#mySelect').val().length;
-                           
-                           if (selectedCount !== num_ofinstructors) {
-                               $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
-                           } else {
-                               $('.error-message-instructor').text('');
-                           }
-                       }
-                   });
-    </script>
+            <script>
+                jQuery(document).ready(function ($) {
+                            // Initialize Selectize on #mySelect
+                            var $select = $('#mySelect').selectize();
+                            var $select = $('#mySelect2').selectize();
+                        
+                            // Event listener for the checkbox change
+                            $('#openToAllCheckbox').change(function() {
+                                // Retrieve the selectize instance
+                                var selectize = $('#mySelect')[0].selectize;
+                        
+                                // Clear selected options if checkbox is checked
+                                if ($(this).prop('checked')) {
+                                    selectize.clear();
+                                    selectize.disable(); // Disable the selectize control
+                                    $('.error-message-instructor').text(''); // Clear error message
+                                } else {
+                                    selectize.enable(); // Enable the selectize control
+                                }
+                            });
+                        
+                            // Event listener for changes in #num_ofinstructors and #mySelect
+                            $('#mySelect').on('change', function() {
+                                validateInstructors();
+                            });
+                        
+                            // Validation function for instructors
+                            function validateInstructors() {
+                                var num_ofinstructors = parseInt($('#num_ofinstructors').val());
+                                var selectedCount = $('#mySelect').val().length;
+                                
+                                if (selectedCount !== num_ofinstructors) {
+                                    $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+                                } else {
+                                    $('.error-message-instructor').text('');
+                                }
+                            }
+                        });
+            </script>
+                    
+            <script>
+            function validateForm() {
+                // Retrieve form elements
+                var topicElement = document.querySelector('input[name="topic"]');
+                var domainElement = document.querySelector('input[name="domain"]');
+                var companyElement = document.querySelector('input[name="CompanyName"]');
+                // var priceElement = document.querySelector('input[name="price"]');
+                var durationElement = document.querySelector('input[name="duration"]');
+                var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+                var subjectElement = document.querySelector('textarea[name="subject"]');
+
+                var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
+                var enddate = new Date(document.querySelector('input[name="enddate"]').value);
+                var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
+                var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
+                // var envelopeDate = new Date(document.querySelector('input[name="envelopeDate"]').value);
+
+
+                // Check topic 1
+                if (topicElement.value.length < 5) {
+                    return false;
+                } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+                    return false;
+                } 
+
+                // Check domain 2
+                if (domainElement.value.length < 5) {
+                    return false;
+                } else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
+                    return false;
+                } 
+
+                // Check company 3
+                if (companyElement.value.length < 5) {
+                    return false;
+                } else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
+                    return false;
+                } 
             
-    <script>
-        // Function to validate the form on submission
-    function validateForm() {
-        // Retrieve form elements
-        var topicElement = document.querySelector('input[name="topic"]');
-        var domainElement = document.querySelector('input[name="domain"]');
-        var companyElement = document.querySelector('input[name="CompanyName"]');
-        var priceElement = document.querySelector('input[name="price"]');
-        var durationElement = document.querySelector('input[name="duration"]');
-        var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
-        var subjectElement = document.querySelector('textarea[name="subject"]');
+            // Check price 4
+            //    var price = parseFloat(priceElement.value);
+            //     if (isNaN(price) || price < 0) {
+            //         return false;
+            //     } 
+            
+                // Check duration 5
+                var duration = parseFloat(durationElement.value);
+                if (isNaN(duration) || duration < 1) {
+                    return false;
+                } 
 
-        var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
-        var enddate = new Date(document.querySelector('input[name="enddate"]').value);
-        var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
-        var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
-        var envelopeDate = new Date(document.querySelector('input[name="envelopeDate"]').value);
+                // check num_ofinstructorsElement 6
+                var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+                if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+                    return false;
+                } 
 
-
-        // Check topic 1
-        if (topicElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-            return false;
-        } 
-
-        // Check domain 2
-        if (domainElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
-            return false;
-        } 
-
-        // Check company 3
-        if (companyElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
-            return false;
-        } 
-    
-       // Check price 4
-       var price = parseFloat(priceElement.value);
-        if (isNaN(price) || price < 0) {
-            return false;
-        } 
-    
-        // Check duration 5
-        var duration = parseFloat(durationElement.value);
-        if (isNaN(duration) || duration < 1) {
-            return false;
-        } 
-
-        // check num_ofinstructorsElement 6
-        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-        if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
-            return false;
-        } 
-
-        if (!validateInstructorsCount()) {
-            console.log("Instructors count validation failed");
-            return false;
-        }
-    
-        // Check subject 7
-        if (subjectElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(subjectElement.value.trim())) {
-            return false;
-        }
-       
-        // Check dates 8   
-           //  A
-              if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
-                return false;
-             }
-            // B
-             if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
-                return false;
-             } 
-            //  C
-             if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
-                return false;
-             }
-            //  D
-             if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
-                return false;
-             }
-            //  E
-             if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
-                return false;
-             }  
-    
-    return true;
-    
-    }
-    </script>
-
-    <script>
-    function validateInstructorsCount() {
-        var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
-        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-        var selectedInstructors = document.getElementById('mySelect').options;
-        var selectedCount = selectedInstructors.length;
-    
-        var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
-        if(openToAllCheckboxElement.checked){
+                if (!validateInstructorsCount()) {
+                    console.log("Instructors count validation failed");
+                    return false;
+                }
+            
+                // Check subject 7
+                if (subjectElement.value.length < 5) {
+                    return false;
+                } else if (/^\d+$/.test(subjectElement.value.trim())) {
+                    return false;
+                }
+            
+                // Check dates 8   
+                //  A
+                    if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate) {
+                        return false;
+                    }
+                    // B
+                    if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate) {
+                        return false;
+                    } 
+                    //  C
+                    if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate) {
+                        return false;
+                    }
+                    //  D
+                    if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate ) {
+                        return false;
+                    }
+                    // //  E
+                    //  if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+                    //     return false;
+                    //  }  
+            
             return true;
-        }
-    
-        return selectedCount === num_ofinstructors;
-    }
-    </script>
+            
+            }
+            </script>
 
-    <script>
-    // **************************** select other order
-    function toggleOtherInput() {
-        var selectElement = document.getElementById("options");
-        var otherInput = document.getElementById("otherInput");
-        var otherText = document.getElementById("otherText");
-    
-        if (selectElement.value === "other") {
-            otherInput.style.display = "block";
-            otherText.setAttribute("required", "required");
-        } else {
-            otherInput.style.display = "none"; 
-            otherText.removeAttribute("required");
-        }
-    }
-    
-    // **************************** select other domain
-    function toggleOtherdomain() {
-        var selectElement = document.getElementById("domain");
-        var otherInput = document.getElementById("other-domain");
-        var otherdomain = document.getElementById("otherdomain");
-    
-        if (selectElement.value === "اخرى") {
-            otherInput.style.display = "block";
-            otherdomain.setAttribute("required", "required"); 
-        } else {
-            otherInput.style.display = "none"; 
-            otherdomain.removeAttribute("required");
-        }
-    }
-    
-    </script>
+            <script>
+            function validateInstructorsCount() {
+                var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+                var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+                var selectedInstructors = document.getElementById('mySelect').options;
+                var selectedCount = selectedInstructors.length;
+            
+                var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
+                if(openToAllCheckboxElement.checked){
+                    return true;
+                }
+            
+                return selectedCount === num_ofinstructors;
+            }
+            </script>
 
 <!-- **************************** AJAX -->
   <script> 
@@ -713,18 +663,18 @@
               }
           }); 
         // 4
-          $('input[name="price"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 0) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-price').text('');
-              }
-          });
+        //   $('input[name="price"]').on('blur', function() {
+        //       var topic = $(this).val();
+        //       if (topic < 0) {
+        //       $(this).addClass('is-invalid');
+        //       $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+        //       } else {
+        //       $(this).removeClass('is-invalid');
+        //       $(this).siblings('.error-message-price').text('');
+        //       }
+        //   });
         // 5
-          $('input[name="num_ofteam"]').on('blur', function() {
+          $('input[name="num_ofinstructors"]').on('blur', function() {
               var topic = $(this).val();
               if (topic < 1) {
               $(this).addClass('is-invalid');
@@ -768,11 +718,11 @@
              var enddate = new Date($('input[name="enddate"]').val());
              var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
              var companyDate = new Date($('input[name="companyDate"]').val());
-             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            //  var envelopeDate = new Date($('input[name="envelopeDate"]').val());
             // Perform validation
-             if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate || enddate >= envelopeDate) {
+             if (enddate <= questionDate || enddate >= proposalSubmission || enddate >= companyDate ) {
                  $(this).addClass('is-invalid');
-                 $errorMessage.text('يجب ان يكون تاريخ الانتهاء بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+                 $errorMessage.text('يجب ان يكون تاريخ تسليم الفربق بعد آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
              } else {
                  $(this).removeClass('is-invalid');
                  $errorMessage.text('');
@@ -786,9 +736,9 @@
              var enddate = new Date($('input[name="enddate"]').val());
              var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
              var companyDate = new Date($('input[name="companyDate"]').val());
-             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            //  var envelopeDate = new Date($('input[name="envelopeDate"]').val());
             // Perform validation
-             if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate || questionDate >= envelopeDate) {
+             if (enddate <= questionDate || questionDate >= proposalSubmission || questionDate >= companyDate) {
                  $(this).addClass('is-invalid');
                  $errorMessage.text('يجب ان يكون آخر تاريخ لاستلام الأسئلة قبل التواريخ الاخرى');
              } else {
@@ -804,11 +754,11 @@
              var enddate = new Date($('input[name="enddate"]').val());
              var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
              var companyDate = new Date($('input[name="companyDate"]').val());
-             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            //  var envelopeDate = new Date($('input[name="envelopeDate"]').val());
             // Perform validation
-             if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate || proposalSubmission >= envelopeDate) {
+             if (enddate >= proposalSubmission || questionDate >= proposalSubmission || proposalSubmission >= companyDate ) {
                  $(this).addClass('is-invalid');
-                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ الانتهاء و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
+                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للمعهد بعد تاريخ تسليم الفريق و آخر تاريخ لاستلام الأسئلة و قبل التواريخ الاخرى');
              } else {
                  $(this).removeClass('is-invalid');
                  $errorMessage.text('');
@@ -822,34 +772,34 @@
              var enddate = new Date($('input[name="enddate"]').val());
              var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
              var companyDate = new Date($('input[name="companyDate"]').val());
-             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+            //  var envelopeDate = new Date($('input[name="envelopeDate"]').val());
             // Perform validation
-             if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate || companyDate >= envelopeDate) {
+             if (enddate >= companyDate || questionDate >= companyDate || proposalSubmission >= companyDate) {
                  $(this).addClass('is-invalid');
-                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة قبل تاريخ فتح المظاريف و بعد التواريخ الاخرى');
+                 $errorMessage.text('يجب ان يكون تاريخ تسليم المشروع للجهة بعد التواريخ الاخرى');
              } else {
                  $(this).removeClass('is-invalid');
                  $errorMessage.text('');
              }
          });   
         //  E
-        $('input[name="envelopeDate"]').on('blur', function() {
-             var $errorMessage = $(this).siblings('.error-message-envelopeDate');
-            // Retrieve the date values of other input fields
-             var questionDate = new Date($('input[name="questionDate"]').val());
-             var enddate = new Date($('input[name="enddate"]').val());
-             var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
-             var companyDate = new Date($('input[name="companyDate"]').val());
-             var envelopeDate = new Date($('input[name="envelopeDate"]').val());
-            // Perform validation
-             if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
-                 $(this).addClass('is-invalid');
-                 $errorMessage.text('يجب ان يكون تاريخ فتح المظاريف بعد التواريخ الاخرى');
-             } else {
-                 $(this).removeClass('is-invalid');
-                 $errorMessage.text('');
-             }
-         });   
+        // $('input[name="envelopeDate"]').on('blur', function() {
+        //      var $errorMessage = $(this).siblings('.error-message-envelopeDate');
+        //     // Retrieve the date values of other input fields
+        //      var questionDate = new Date($('input[name="questionDate"]').val());
+        //      var enddate = new Date($('input[name="enddate"]').val());
+        //      var proposalSubmission = new Date($('input[name="proposalSubmission"]').val());
+        //      var companyDate = new Date($('input[name="companyDate"]').val());
+        //      var envelopeDate = new Date($('input[name="envelopeDate"]').val());
+        //     // Perform validation
+        //      if (enddate >= envelopeDate || questionDate >= envelopeDate || proposalSubmission >= envelopeDate || companyDate >= envelopeDate) {
+        //          $(this).addClass('is-invalid');
+        //          $errorMessage.text('يجب ان يكون تاريخ فتح المظاريف بعد التواريخ الاخرى');
+        //      } else {
+        //          $(this).removeClass('is-invalid');
+        //          $errorMessage.text('');
+        //      }
+        //  });   
                   
       });
   </script>
@@ -889,8 +839,7 @@
               var maxDate = (year +"-"+ month +"-"+ day);
               $('.date').attr('min',maxDate);
             });
-          });
-  
+          }); 
   </script>
   
   <script>

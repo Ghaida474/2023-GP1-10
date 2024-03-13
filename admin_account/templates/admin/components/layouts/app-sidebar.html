@@ -1,0 +1,67 @@
+  {% load static %}   
+  <style>
+.slide:hover{
+	background-color: #0084BD !important;
+}
+
+.slide:hover .sidemenu_icon{
+	color: #fff !important;
+}
+
+  </style>        
+				<div class="sticky">
+					<aside class="app-sidebar">
+						<div class="app-sidebar__logo">
+							<a class="header-brand" href="{% url 'admin_account:admin_home' %}">
+								<img src="" class="header-brand-img desktop-lgo" alt="businessgatelogo">
+								<img src="{% static 'assets/images/brand/logowithname.png'%}" class="header-brand-img dark-logo" alt="businessgatelogo" height="60" >
+								<img src="" class="header-brand-img mobile-logo" alt="businessgatelogo">
+								<img src="{% static 'assets/images/brand/businessgatelogo.png'%}" class="header-brand-img darkmobile-logo" alt="businessgatelogo"  height="55" >
+							</a>
+						</div>
+						<div class="app-sidebar3" >
+							<div class="main-menu"  >
+								<div class="app-sidebar__user" >
+									<div class="dropdown user-pro-body text-center">
+										<div class="user-info" style="color:#0084BD;">
+											<h5 class=" mb-2" >{{user.first_name}} {{user.last_name}}</h5>
+											<span class="text-muted app-sidebar__user-name text-sm" >مسؤل النظام</span>
+										</div>
+									</div>
+								</div>
+								<div class="slide-left disabled" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"><path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"/></svg></div>
+								<ul class="side-menu" >
+									<!-- ********************** -->
+									<li class="slide" >
+										<a href="{% url 'admin_account:admin_home'%}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather feather-home  sidemenu_icon"  style="color:#0084BD;"></i>
+											<span class="side-menu__label">لوحة التحكم</span>
+										</a>
+									</li>
+									<!-- ********************** -->
+									<li class="slide">
+										<a href="{% url 'admin_account:facultyList'%}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-address-book sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">قائمة منسوبي جامعة الملك سعود</span>
+										</a>
+									</li>
+									<!-- ********************** -->
+									<li class="slide">
+										<a href="{% url 'admin_account:kaiList'%}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-address-book sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">قائمة موظفين المعهد</span>
+										</a>
+									</li>
+									<!-- **********************-->
+									<li class="slide">
+										<a href="{% url 'admin_account:collageList'%}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-address-book sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">قائمة الكليات</span>
+										</a>
+									</li>
+									<!-- **********************-->
+								</ul>
+							</div>
+						</div>
+					</aside>
+				</div>

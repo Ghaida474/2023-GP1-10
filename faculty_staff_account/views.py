@@ -39,7 +39,96 @@ def joinroom(request):
 def chat(request):
     username = request.user.username
     secret = request.user.id
-    return render(request, 'faculty_staff/chat.html' , {'username':username , 'secret': secret })
+    users = filteredUsers(request)
+    return render(request, 'faculty_staff/chat.html' , {'username':username , 'secret': secret ,'users':users})
+
+@login_required
+def myChat(request):
+    url = "https://api.chatengine.io/chats/"
+
+    payload = {}
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name': request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status() 
+
+        users = response.json()
+        my_users = []
+
+        for user_data in users:
+            people_data = user_data.get('people', [])
+            for person_data in people_data:
+                person = person_data.get('person', {})
+                username = person.get('username', '')
+                my_users.append({'username': username})
+
+        return my_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def filteredUsers(request):
+    mychat = myChat(request)
+  
+    print("my_fi")
+    # print(mychat)
+    url = "https://api.chatengine.io/users/"
+    payload = {}
+    headers = {'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'}
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+
+        users = response.json()
+        matching_users = []
+        # print('users' , users)
+        for checkuser in users:
+            if checkuser['username'] not in [entry['username'] for entry in mychat]:
+
+                try:
+                    newuser = FacultyStaff.objects.get(username=checkuser['username'])
+                except FacultyStaff.DoesNotExist:
+                    newuser = None 
+
+                if newuser: 
+                    collageidRequest = request.user.collageid.collageid
+                    if newuser.id != request.user.id:
+                        if newuser.collageid.collageid == collageidRequest and newuser.position != 'عميد الكلية':
+                            matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+         
+        # print("Matching users:", matching_users)
+        return matching_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def createDirect(request,direct_username):
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": direct_username,
+        "is_direct_chat": False,
+        "usernames":direct_username    
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    responseINjson = response.json()
+    users = filteredUsers(request)
+    context = {'username': request.user.username , 'secret' :request.user.id , 'users':users }
+    return render(request, 'faculty_staff/chat.html' , context)
 
 ################### Profile ###################
 
@@ -701,7 +790,6 @@ def projects_view(request):
 
     return render(request, 'faculty_staff/Projects.html', {'user': user ,'combined_programs':combined_programs, 'programs':programs,'faculty':faculty, 'bu_programs':bu_programs ,'opent_to_all_programs':opent_to_all_programs  })
 
-
 def view_projectfile(request, program_id, file_id):
     file = get_object_or_404(Files, fileid=file_id, project=program_id)
 
@@ -803,9 +891,7 @@ def project_view(request , program_id):
 
  
     id_status_dates = IdStatusDate.objects.filter(project=program)
-    # print('id_status_dates: ', id_status_dates )
     programflow = StatusDateCheckProject.objects.filter(project=program)
-    # print('programflow: ', programflow )
     applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id , project=program).count()
     
     if applicationidcount:
@@ -813,14 +899,15 @@ def project_view(request , program_id):
     else:
         isfacultyinarray = True
     
-    return render(request, 'faculty_staff/Projects-view.html', {'userid': user.id ,'program': program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'files': file})
+    return render(request, 'faculty_staff/Projects-view.html', {'userid':user.id ,'program':program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'files': file})
 
 @login_required
 @require_POST
 def accept_project(request, id): 
     id_status_date = get_object_or_404(IdStatusDate, id=id)
     program = id_status_date.project
-
+    user =id_status_date.instructor
+   
     # Change status of the current IdStatusDate object
     id_status_date.status = "تم قبول الطلب من قبل العضو"
     id_status_date.date = timezone.now().date()
@@ -852,6 +939,10 @@ def accept_project(request, id):
             
             status_date_checks.filter(status="اختيار رئيس الفريق").update(indicator='C')
             program.save()
+    
+    check = status_date_checks.get(status=" تم بدء العمل على المشروع ")
+    if(check.indicator =='T'):
+        addmembertogroupchat(request, user , program)
 
     return redirect('faculty_staff_account:project_view' , program_id = program.programid )
 
@@ -891,7 +982,6 @@ def reject_project(request, id):
 
 @login_required
 def groupchat_view(request, program_id):
-    
     project = Project.objects.get(programid=program_id)
     if project.chatgroup_id:
          chatid = project.chatgroup_id
@@ -908,6 +998,8 @@ def groupchat_view(request, program_id):
 
 @login_required
 def creategroupchat(request , project):
+
+    bu = FacultyStaff.objects.get(collageid=project.collageid , is_buhead=True)
     usernamess = []
     for teamMemberID in project.Teamid:
         user = FacultyStaff.objects.get(id=teamMemberID)
@@ -923,12 +1015,12 @@ def creategroupchat(request , project):
     }
     headers = {
         'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
-        'User-Name':  request.user.username,
-        'User-Secret': str(request.user.id),
+        'User-Name': bu.username,
+        'User-Secret': str(bu.id),
     }
     response = requests.request("PUT", url, headers=headers, data=payload)
     print('------------------')
-    # print(response.text)
+    print(response.text)
     # print(response.json())
     responseINjson = response.json()
     access_key = responseINjson['access_key']
@@ -938,3 +1030,18 @@ def creategroupchat(request , project):
     print('response.status_code' ,response.status_code)
     return chat_credentials 
 
+@login_required
+def addmembertogroupchat(request , user , program):
+    print('user',user)
+    chatid = program.chatgroup_id
+    bu = FacultyStaff.objects.get(collageid=user.collageid , is_buhead=True)
+    url = f"https://api.chatengine.io/chats/{chatid}/people/"
+    print('url' , url)
+    payload = {"username": user.username }
+    headers = {
+    'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+    'User-Name': bu.username,
+    'User-Secret': str(bu.id),
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)

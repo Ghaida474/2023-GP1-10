@@ -18,6 +18,6 @@ urlpatterns = [
     path('dean-account-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
     path('dean-account-home/videocall', views.videocall, name='videocall'),
     path('dean-account-home/joinroom', views.joinroom, name='joinroom'),
-
+    path('dean-account-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
 ]
     

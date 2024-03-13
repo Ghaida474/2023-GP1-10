@@ -6,21 +6,18 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 
 
-
-
 ROLE_CHOICES= [
-    
     ('BU', 'رئيس وحدة الأعمال'),
     ('dean', 'عميد الكلية'),
     ('facultyandstaff', 'عضو هيئة التدريس - موظف/ة'),
     ('Hkai', 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله'),
     ('kaistaff', 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله'),
+    ('Admin' , 'مسؤول النظام')
     ]
 
 class emailcheckform(forms.Form):
      email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'البريد الإلكتروني'}))
      role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
-
 
 class ForgetPasswordForm(forms.Form):
   role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.Select())
@@ -31,23 +28,6 @@ class Loginform(forms.Form):
     password= forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control' , 'placeholder': '*************'}))
     role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
 
-class adminform(forms.ModelForm):
-
-     class Meta:
-            model = Admin
-            fields = ['email','password']
-            widgets = {
-            'password': forms.TextInput(attrs={
-                'class': "form-control",
-                'style': 'max-width: 300px;',
-                'placeholder': 'Name'
-                }),
-            'email': forms.EmailInput(attrs={
-                'class': "form-control", 
-                'style': 'max-width: 300px;',
-                'placeholder': 'Email'
-                })
-        }
 
 class FASform(forms.ModelForm):
      

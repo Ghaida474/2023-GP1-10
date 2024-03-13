@@ -3,6 +3,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import requests
 from app.forms import updateKai,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import update_session_auth_hash
@@ -20,18 +21,107 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime
 from django.views.decorators.http import require_POST
+
+################### coomunication  ###################
 @login_required
 def chat(request):
     username = request.user.username
     secret = request.user.id
-    return render(request, 'kai_staff/chat.html' , {'username':username , 'secret': secret })
-################### Video calls ###################
+    users = filteredUsers(request)
+    return render(request, 'kai_staff/chat.html' , {'username':username , 'secret': secret ,'users':users})
+
+@login_required
+def myChat(request):
+    url = "https://api.chatengine.io/chats/"
+
+    payload = {}
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name': request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status() 
+
+        users = response.json()
+        my_users = []
+
+        for user_data in users:
+            people_data = user_data.get('people', [])
+            for person_data in people_data:
+                person = person_data.get('person', {})
+                username = person.get('username', '')
+                my_users.append({'username': username})
+
+        return my_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+
+@login_required
+def filteredUsers(request):
+    mychat = myChat(request)
+  
+    print("my_fi")
+    # print(mychat)
+    url = "https://api.chatengine.io/users/"
+    payload = {}
+    headers = {'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'}
+
+    try:
+        response = requests.get(url, headers=headers, data=payload)
+        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+
+        users = response.json()
+        matching_users = []
+        # print('users' , users)
+        for checkuser in users:
+            if checkuser['username'] not in [entry['username'] for entry in mychat]:
+
+                try:
+                    newuser = FacultyStaff.objects.get(username=checkuser['username'])
+                except FacultyStaff.DoesNotExist:
+                    newuser = None 
+
+                if newuser: 
+                    if  newuser.position == 'عميد الكلية' or newuser.is_buhead:
+                        matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+                else:
+                    if checkuser['username'] != request.user.id:
+                        matching_users.append({'username': checkuser.get('username'), 'secret': checkuser.get('secret'),'first_name':checkuser.get('first_name'),'last_name':checkuser.get('last_name')})
+
+        # print("Matching users:", matching_users)
+        return matching_users
+
+    except requests.RequestException as e:
+        print("Error fetching data:", e)
+        return []
+    
+@login_required
+def createDirect(request,direct_username):
+    url = "https://api.chatengine.io/chats/"
+    payload = {
+        "title": direct_username,
+        "is_direct_chat": False,
+        "usernames":direct_username    
+    }
+    headers = {
+        'Project-ID': 'f0e1d373-0995-4a51-a2df-cf314fc0e034',
+        'User-Name':  request.user.username,
+        'User-Secret': str(request.user.id),
+    }
+    response = requests.request("PUT", url, headers=headers, data=payload)
+    responseINjson = response.json()
+    users = filteredUsers(request)
+    context = {'username': request.user.username , 'secret' :request.user.id , 'users':users }
+    return render(request, 'kai_staff/chat.html' , context)
 
 @login_required
 def callsDashboard(request):
-        #return redirect('business_unit_account:callsDashboard')
     return render(request, 'kai_staff/calls-dashboard.html', {'name': request.user.first_name})
-
 
 @login_required
 def videocall(request):
@@ -44,7 +134,7 @@ def joinroom(request):
         return redirect("/kai_staff/kaistaff-home/videocall?roomID=" + roomID)
     return render(request, 'kai_staff/joinroom.html')
 
-
+################### Profile  ###################
 @login_required
 def kaistaff_home (request):
     user = request.user
@@ -87,6 +177,7 @@ def changepassword_view(request):
 
     return render(request, 'kai_staff/change-password.html', {'user': user, 'form': form})
 
+################### Training program  ###################
 @login_required
 def traningprogram_view(request):
     user = request.user
@@ -99,7 +190,6 @@ def traningprogram_view(request):
         program.collagename = collagename
         
     return render(request, 'kai_staff/TraningPrograms.html', {'user': user , 'programs':programs})
-
 
 @login_required
 def view_certifications(request, register_id):
@@ -128,7 +218,6 @@ def view_certifications(request, register_id):
         return response
 
     raise Http404("Document not found")
-
 
 @login_required
 def program_view(request , program_id):
@@ -160,7 +249,6 @@ def program_view(request , program_id):
     program.traniees_names = traniees_names
     return render(request, 'kai_staff/TraningProgram-view.html', {'program': program})
 
-  
 @login_required
 def save_certifications(request, program_id, trainee_id):
     if request.method == 'POST' and request.FILES.get('attachment'):
@@ -205,7 +293,6 @@ def delete_certifications(request, register_id):
             print('here3')
             return JsonResponse({'error_message': f'An error occurred: {e}'})
 
-
 @login_required
 def accept_program(request, id):
     program = Trainingprogram.objects.get(programid=id)
@@ -226,7 +313,6 @@ def accept_program(request, id):
     status_date_checks.filter(status="انتظار قبول المعهد").update(indicator='T')
     status_date_checks.filter(status="تم نشر البرنامج").update(indicator='C')
     return redirect('kai_staff:program_view' , program_id = program.programid)
-
 
 @login_required
 @require_POST
