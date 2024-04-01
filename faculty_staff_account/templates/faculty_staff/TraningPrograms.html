@@ -35,15 +35,34 @@
     </div>
    
     
-        <div class="tab-menu-heading hremp-tabs p-0 ">
-            <div class="tabs-menu1" >
-                <!-- Tabs -->
-                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
-                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">البرامج التدريبية</a></li>
-                    <li><a href="#tab2" data-bs-toggle="tab">طلباتي </a></li>
-                </ul>
-            </div>
+    <div class="tab-menu-heading hremp-tabs p-0">
+        <div class="tabs-menu1">
+            <!-- Tabs -->
+            <ul class="nav panel-tabs" style="margin-right: 400px;">
+                <li class="ms-4 position-relative">
+                    <a href="#tab1" class="active" data-bs-toggle="tab">
+                        البرامج التدريبية
+                    </a>
+                    {% if notifications_in_combined_programs.count > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_combined_programs.count }}
+                        </span>
+                    {% endif %}
+                </li>
+                <li class="position-relative">
+                    <a href="#tab2" data-bs-toggle="tab">
+                        طلباتي
+                    </a>
+                    {% if notifications_in_faculty_or_staff_programs.count > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ faculty_or_staff_program_ids.count }}
+                        </span>
+                    {% endif %}
+                </li>
+                <li><a href="#tab4" data-bs-toggle="tab">البرامج تم رفضها</a></li>
+            </ul>
         </div>
+    </div>
 
         <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
             <div class="tab-content">
@@ -71,6 +90,7 @@
                                             </div>
                                         </div>
                                         <tr>
+                                            <th></th>
                                             <th class="border-bottom-0">إسم البرنامج</th>
                                             <th class="border-bottom-0">نوع البرنامج</th>
                                             <th class="border-bottom-0">موضوع البرنامج</th>
@@ -82,6 +102,11 @@
                                     <tbody>
                                         {% for program in combined_programs %}
                                         <tr>
+                                            <td>
+                                                {% if program.programid in combined_program_ids %}
+                                                <i class="feather feather-bell text-nowrap"></i>
+                                             {% endif %}
+                                            </td>
                                             <td>
                                                 <div class="me-3 mt-0 mt-sm-2 d-block">
                                                     <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
@@ -173,6 +198,45 @@
 						</div>
 					</div>
 				</div>
+
+                <div class="tab-pane" id="tab4">
+                    <div class="card-body">
+                        <div class="col-xl-12 col-md-12 col-lg-12">  
+                            <div class="table-vcenter">
+                                <table class="table table-bordered text-nowrap border-bottom" id="example2" >
+                                    <thead>
+                                        <tr>
+                                            <th class="border-bottom-0">إسم البرنامج</th>
+                                            <th class="border-bottom-0">نوع البرنامج</th>
+                                            <th class="border-bottom-0">موضوع البرنامج</th>
+                                            <th class="border-bottom-0">تاريخ الإنشاء </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for program in rejected_projects %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                            <h6 class="mb-1 fs-14">{{program.topic}}</h6>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{program.programtype}}</td>
+                                                    <td >{{program.program_domain}}</td>
+                                                    <td>{{program.dataoffacultyproposal}}</td>
+                                                </tr>
+                                        {% empty %}
+                                        <tr >
+                                            <td colspan="4">لا يوجد رفض</td>
+                                        </tr>      
+                                      {% endfor %}    
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>  
+                    </div> 
+                </div> 
+            
             
             </div>
         </div>
@@ -299,7 +363,6 @@
                                         <div class="form-control" readonly>{{faculty_member.first_name}} {{faculty_member.last_name}} </small></div>
                                     {% endif %}
                                  {% endfor %}
-                             
                                 <span class="error-message-instructor" style="color: red;"></span>
                             </div>
                             
@@ -500,28 +563,28 @@
     
 
 <script>
-$(document).ready(function () {
-    var mySelect = $('#mySelect');
+    $(document).ready(function () {
+        var mySelect = $('#mySelect');
 
-    mySelect.on('change', function () {
-        var selectedValues = $(this).val();
+        mySelect.on('change', function () {
+            var selectedValues = $(this).val();
 
-        // Check if '-1' is among the selected values
-        if (selectedValues && selectedValues.includes('-1')) {
-            // If '-1' is selected, clear all other selections
-            mySelect.val('-1');
-        }
+            // Check if '-1' is among the selected values
+            if (selectedValues && selectedValues.includes('-1')) {
+                // If '-1' is selected, clear all other selections
+                mySelect.val('-1');
+            }
 
-        // Refresh Select2 to update the UI
-        mySelect.trigger('change.select2');
+            // Refresh Select2 to update the UI
+            mySelect.trigger('change.select2');
+        });
+
+        // Initialize Select2
+        mySelect.select2({
+            placeholder: 'اختار المدرب',
+            allowClear: true, // Allows clearing the selection
+        });
     });
-
-    // Initialize Select2
-    mySelect.select2({
-        placeholder: 'اختار المدرب',
-        allowClear: true, // Allows clearing the selection
-    });
-});
 </script>
 
 
@@ -549,7 +612,7 @@ function validateForm() {
 
      // select other reqtype
      if (selectElement.value === "other") {
-        if (otherTextElement.value.length < 5) {
+        if (otherTextElement.value.length < 3) {
             return false;
         } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
             return false;
@@ -558,7 +621,7 @@ function validateForm() {
 
     //select  other domain
     if (selectdomain.value === "اخرى") {
-        if (otherdomainElement.value.length < 5) {
+        if (otherdomainElement.value.length < 3) {
             return false;
         } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
             return false;
@@ -566,7 +629,7 @@ function validateForm() {
     }   
 
     // Check topic
-    if (topicElement.value.length < 5) {
+    if (topicElement.value.length < 3) {
         return false;
     } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
         return false;
@@ -618,7 +681,7 @@ function validateForm() {
     } 
 
     // Check subject
-    if (subjectElement.value.length < 5) {
+    if (subjectElement.value.length < 3) {
         return false;
     } else if (/^\d+$/.test(subjectElement.value.trim())) {
         return false;
@@ -690,9 +753,9 @@ function toggleOtherdomain() {
        
         $('input[name="topic"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
                 $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+                $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -853,9 +916,9 @@ function toggleOtherdomain() {
 
         $('textarea[name="subject"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
                 $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+                $(this).siblings('.error-message-subject').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
@@ -867,9 +930,9 @@ function toggleOtherdomain() {
         
         $('input[name="otherText"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
             $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+            $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -881,9 +944,9 @@ function toggleOtherdomain() {
         
         $('input[name="otherdomain"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
             $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+            $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 

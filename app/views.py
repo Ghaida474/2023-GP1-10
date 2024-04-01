@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login , logout
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import check_password, make_password , identify_hasher
 from django.shortcuts import render, redirect
 from .forms import Loginform 
-from .models import Admin, FacultyStaff, Kaibuemployee
+from .models import Admin, FacultyStaff, Kaibuemployee,Collage
 from django.conf import settings
 from django.core.mail import send_mail
 import random
@@ -30,84 +30,78 @@ def clear_messages(request):
 def index(request): 
     return render(request, 'auth/index.html')
 
-
+'''
 def login_view(request):
-
-    # admin = Admin.objects.get(email='442200922@student.ksu.edu.sa')
-    # admin.password = "Bgate123@"
-    # admin.password = make_password(admin.password)
-    # admin.save()
-
-    user = None
     if request.method == 'POST':
         form = Loginform(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            role = form.cleaned_data.get('role')
-            next_url = request.POST.get('next')
+           
+            if Collage.objects.filter(buemail=email).exists():
+                bu = Collage.objects.get(buemail=email)
+                if check_password(password, bu.password):
+                    buuser = FacultyStaff.objects.get(is_buhead = True , collageid = bu)
+                    if authenticate(request, email=buuser.email, password=buuser.password):
+                        user = authenticate(request, email=email, password=password)
+                        login(request, user)
+                        return redirect('business_unit_account:business_unit_home')
+                else:
+                    clear_messages(request)
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+                    form = Loginform()
+                    return render(request, 'auth/login.html', {'form': form })
 
-            if role in ['facultyandstaff', 'dean', 'BU']:
-                if FacultyStaff.objects.filter(email=email).exists():
+            elif FacultyStaff.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
                     user = authenticate(request, email=email, password=password)
-                elif Kaibuemployee.objects.filter(email=email).exists() or Admin.objects.filter(email=email).exists():
+                    login(request, user)
+                    faculty = FacultyStaff.objects.get(email=email)
+                    if faculty.bu_assistant:
+                        return redirect('business_unit_account:business_unit_home')
+                    elif faculty.position == 'عميد الكلية':
+                        return redirect('dean_account:dean-account-home')
+                    elif faculty.position == 'عضو هيئة التدريس' or faculty.position == 'موظف في الكلية':
+                        return redirect('faculty_staff_account:faculty_staff_home')
+                else:
                     clear_messages(request)
-                    messages.error(request, 'فئة المستخدم غير صحيحة')
-                    return render(request, 'auth/login.html', {'form': form})
- 
-            elif role in ['kaistaff', 'Hkai']:
-                if Kaibuemployee.objects.filter(email=email).exists():
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+                    form = Loginform()
+                    return render(request, 'auth/login.html', {'form': form })
+               
+            elif Kaibuemployee.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
                     user = authenticate(request, email=email, password=password)
-                elif FacultyStaff.objects.filter(email=email).exists() or Admin.objects.filter(email=email).exists():
+                    login(request, user)
+                    kai = Kaibuemployee.objects.get(email=email)
+                    if kai.position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله':
+                        return redirect('head-kai-account:kai-home')
+                    elif kai.position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله':
+                        return redirect('kai_staff:kaistaff-home')  
+                else:
                     clear_messages(request)
-                    messages.error(request, 'فئة المستخدم غير صحيحة')
-                    return render(request, 'auth/login.html', {'form': form})
-                
-            elif role in ['Admin']:
-                if Admin.objects.filter(email=email).exists():
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+                    form = Loginform()
+                    return render(request, 'auth/login.html', {'form': form })
+                         
+            elif Admin.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
                     user = authenticate(request, email=email, password=password)
-                    print('here' , user)
-                elif FacultyStaff.objects.filter(email=email).exists() or Kaibuemployee.objects.filter(email=email).exists():
+                    login(request, user)
+                    return redirect('admin_account:admin_home')  
+                else:
                     clear_messages(request)
-                    messages.error(request, 'فئة المستخدم غير صحيحة')
-                    return render(request, 'auth/login.html', {'form': form})
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+                    form = Loginform()
+                    return render(request, 'auth/login.html', {'form': form })
 
             else:
                 clear_messages(request)
                 messages.error(request, 'البريد الإلكتروني غير صحيح.')
+                form = Loginform()
                 return render(request, 'auth/login.html', {'form': form})
 
-
-            if user is not None:
-                if role == 'facultyandstaff' and (user.position == 'عضو هيئة التدريس' or user.position == 'موظف في الكلية'):
-                    login(request, user)
-                    return redirect('faculty_staff_account:faculty_staff_home')
-                elif  role == 'dean' and user.position == 'عميد الكلية':
-                    login(request, user)
-                    return redirect('dean_account:dean-account-home')
-                elif  role == 'BU' and user.is_buhead == True:
-                    login(request, user)
-                    return redirect('business_unit_account:business_unit_home')
-                elif role == 'kaistaff' and user.position == 'موظف في المعهد':
-                    login(request, user)
-                    return redirect('kai_staff:kaistaff-home')
-                elif role == 'Hkai' and user.position == 'رئيس المعهد':
-                    login(request, user)
-                    return redirect('head-kai-account:kai-home')
-                elif role == 'Admin':
-                    login(request, user)
-                    return redirect('admin_account:admin_home')
-                else:
-                    clear_messages(request)
-                    messages.error(request, 'فئة المستخدم غير صحيحة')
-            else:              
-                if Kaibuemployee.objects.filter(email=email).exists() or FacultyStaff.objects.filter(email=email).exists():
-                    clear_messages(request)
-                    messages.error(request, 'كلمة السر غير صحيحة.')
-                else:
-                    clear_messages(request)
-                    messages.error(request, ' البريد الإلكتروني غير صحيح.')
-            return render(request, 'auth/login.html', {'form': form})
+            # return render(request, 'auth/login.html', {'form': form})
         else:
             clear_messages(request)
             messages.error(request,'خطأ ما حصل وقت الارسال حاول تسجيل الدخول مره آخرى')
@@ -117,6 +111,83 @@ def login_view(request):
         form = Loginform()
         return render(request, 'auth/login.html', {'form': form })
     
+'''
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = Loginform(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+           
+            if Collage.objects.filter(buemail=email).exists():
+                bu = Collage.objects.get(buemail=email)
+                if check_password(password, bu.password):
+                    if FacultyStaff.objects.filter(is_buhead=True, collageid=bu).exists():
+                        buuser = FacultyStaff.objects.get(is_buhead=True, collageid=bu)
+                        user = authenticate(request, email=buuser.email, password=buuser.password ,backend='buAuthBackend')
+                        login(request, user)
+                        return redirect('business_unit_account:business_unit_home')
+                    else:
+                        clear_messages(request)
+                        messages.error(request, 'لا يوجد رئيس وحدة اعمال في هذه الكلية في النظام')
+                else:
+                    clear_messages(request)
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+         
+
+            elif FacultyStaff.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
+                    user = authenticate(request, email=email, password=password)
+                    login(request, user)
+                    faculty = FacultyStaff.objects.get(email=email)
+                    if faculty.bu_assistant:
+                        return redirect('business_unit_account:business_unit_home')
+                    elif faculty.position == 'عميد الكلية':
+                        return redirect('dean_account:dean-account-home')
+                    elif faculty.position == 'عضو هيئة التدريس' or faculty.position == 'موظف في الكلية':
+                        return redirect('faculty_staff_account:faculty_staff_home')
+                else:
+                    clear_messages(request)
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+   
+
+            elif Kaibuemployee.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
+                    user = authenticate(request, email=email, password=password)
+                    login(request, user)
+                    kai = Kaibuemployee.objects.get(email=email)
+                    if kai.position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله':
+                        return redirect('head-kai-account:kai-home')
+                    elif kai.position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله':
+                        return redirect('kai_staff:kaistaff-home')  
+                else:
+                    clear_messages(request)
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+
+
+            elif Admin.objects.filter(email=email).exists():
+                if authenticate(request, email=email, password=password):
+                    user = authenticate(request, email=email, password=password)
+                    login(request, user)
+                    return redirect('admin_account:admin_home')  
+                else:
+                    clear_messages(request)
+                    messages.error(request, 'كلمة السر غير صحيحة.')
+                
+            else:
+                clear_messages(request)
+                messages.error(request, 'البريد الإلكتروني غير صحيح.')
+        else:
+            clear_messages(request)
+            messages.error(request,'خطأ ما حصل وقت الارسال حاول تسجيل الدخول مره آخرى')
+            form = Loginform()
+            return render(request, 'auth/login.html', {'form': form })
+    else:
+        form = Loginform()
+    return render(request, 'auth/login.html', {'form': form })
+
 
 def check_user_to_role(request, email, role):
     role = role.lower()

@@ -2,8 +2,9 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 import requests
-from app.models import  FacultyStaff,Collage, Trainingprogram,Register,Trainees,IdStatusDate, StatusDateCheck, Project, StatusDateCheckProject,Files 
+from app.models import  FacultyStaff,Collage, Trainingprogram,Register,Trainees,IdStatusDate, StatusDateCheck, Project, StatusDateCheckProject,Files, Notification 
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
@@ -135,13 +136,25 @@ def createDirect(request,direct_username):
 @login_required
 def faculty_staff_home (request):
     user = request.user
-    collage_id = user.collageid.collageid
-    collage = Collage.objects.get(collageid=collage_id)
+    if user.new_user:
+        return redirect('faculty_staff_account:change_new_user_password')
+    else:
+        collage_id = user.collageid.collageid
+        collage = Collage.objects.get(collageid=collage_id)
+        context = {'user': user, 'collage': collage}
+        return render(request, 'faculty_staff/Home.html', context)
 
-    context = {'user': user , 'collage':collage , }
+@login_required
+def change_new_user_password(request):
+    user = request.user
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        user.set_password(new_password)
+        user.new_user = False
+        user.save()
+        return redirect('faculty_staff_account:faculty_staff_home')
+    return render(request, 'faculty_staff/new-use-reset-password.html')
 
-    return render(request, 'faculty_staff/Home.html', context)
-     
 @login_required
 def profile_view(request):
     user = request.user
@@ -260,7 +273,6 @@ def delete_researchinterest(request, value_to_delete):
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
-    success = False
     
     if request.method == 'POST':
         print('here1')
@@ -270,12 +282,12 @@ def changepassword_view(request):
             user.set_password(new_password)
             user.save()
             update_session_auth_hash(request, user)
-            # messages(request, 'Password changed successfully.') 
+            messages.success(request, "تم تغيير كلمة المرور بنجاح.")
             return redirect('faculty_staff_account:profile')
 
-    return render(request, 'faculty_staff/change-password.html', {'user': user, 'form': form , 'success':success })
+    return render(request, 'faculty_staff/change-password.html', {'user': user, 'form': form  })
 
-################### TraningProgram ###################
+'''################### TraningProgram ###################
 
 @login_required
 def delete_course(request, value_to_delete):
@@ -767,6 +779,717 @@ def reject_program(request, id):
     training_program.save()
 
     return redirect('faculty_staff_account:traning-program')
+'''
+
+@login_required
+def delete_course(request, value_to_delete):
+    program = Trainingprogram.objects.get(programid=value_to_delete)
+    if program:
+        program.delete()
+    else:
+        messages.error(request, 'No values to delete.')
+
+    return redirect('faculty_staff_account:traning-program')
+
+@login_required
+def traningprogram_view(request):
+    user = request.user
+    notifications_in_programs = Notification.objects.filter(
+        faculty_target=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+    )
+    collage_id = user.collageid.collageid
+    programs = Trainingprogram.objects.filter(collageid=collage_id)
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+    BuHead=FacultyStaff.objects.filter(is_buhead=True, collageid=user.collageid)
+    
+        
+    bu_programs = Trainingprogram.objects.filter(collageid=collage_id,instructorid__contains=[user.id]).exclude(programleader=user.id)
+    print(bu_programs)
+    faculty_or_staff_programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='FacultyOrStaff' , programleader=user.id)
+    opent_to_all_programs = Trainingprogram.objects.filter(collageid=collage_id,appourtunityopentoall=True,status='فتح الفرصة للجميع').exclude(programleader=user.id)
+    opent_to_all_programs_list = list(opent_to_all_programs)
+    bu_programs_list = list(bu_programs)
+    combined_programs = opent_to_all_programs_list + bu_programs_list
+
+    rejected = IdStatusDate.objects.filter( status= "تم رفض الطلب من قبل المدرب", instructor=user)
+    rejected_programs1 = [reject.training_program for reject in rejected]
+    rejected_programs2 = Trainingprogram.objects.filter(collageid=collage_id , status ="تم رفض الطلب من قبل وحدة الأعمال" ,programleader=user.id )
+    rejected_projects = list(rejected_programs1) + list(rejected_programs2)
+
+
+    if request.method == 'POST':
+        programtype = request.POST.get('reqType')
+        topic = request.POST.get('topic')
+        Domain = request.POST.get('domain')
+        price = request.POST.get('price')
+        priceType = request.POST.get('priceType')
+        capacity = request.POST.get('numoftrainee')
+        instructors_id = request.POST.getlist('instructor')
+        start_date = request.POST.get('startdate')
+        end_date = request.POST.get('enddate')
+        start_time = request.POST.get('starttime')
+        end_time = request.POST.get('endtime')
+        Descriptionofrequirements = request.POST.get('subject')
+        num_ofinstructors = request.POST.get('num_ofinstructors')
+        pricefortrainee  = request.POST.get('pricefortrainee')
+        isOnline = request.POST.get('isonline')
+
+        if isOnline == "online" :
+            isOnline = True
+        else:
+            isOnline = False
+        
+        if 'attachment' in request.FILES:
+            attachment = request.FILES['attachment'].read()
+            attachment_name = request.FILES['attachment'].name
+        else:
+            attachment = None
+            attachment_name = ''
+        
+        if programtype == 'other':
+            programtype = request.POST.get('otherText')
+        
+        if Domain == 'اخرى':
+            Domain = request.POST.get('otherdomain')
+
+   
+        new_program = Trainingprogram(
+            isonline = isOnline,
+            programleader = user.id,
+            programtype=programtype,
+            instructorid=instructors_id,
+            num_ofinstructors=num_ofinstructors,
+            capacity=capacity,
+            Descriptionofrequirements=Descriptionofrequirements,
+            topic=topic,
+            program_domain=Domain,
+            cost=price,
+            costtype=priceType,
+            startdate=start_date,
+            enddate=end_date,
+            starttime=start_time,
+            endtime=end_time,
+            attachment=attachment,
+            totalcost = pricefortrainee,
+            attachment_name=attachment_name,
+            collageid=collage_id,
+            # isfacultyfound= True,
+            iskaiaccepted=False,
+            isreleased_field=False,
+            isbuaccepted=False,
+            initiatedby='FacultyOrStaff',
+            status="في انتظار قبول وحدة الأعمال",
+            dataoffacultyproposal = timezone.now().date()
+        )
+        new_program.save()
+
+        tempStatus="تم ارسال الطلب إلى وحدة الاعمال"
+        tempStatus2="انتظار قبول الطلب من قبل وحدة الاعمال"
+        tempStatus3= "تم قبول الطلب من قبل وحدة الاعمال"
+
+        new_StatusDateCheck =StatusDateCheck(
+                status="إنشاء الطلب من قبل المدرب",
+                date=timezone.now().date(),
+                indicator='T',
+                training_program=new_program)
+        new_StatusDateCheck.save()
+
+        new_StatusDateCheck2 =StatusDateCheck(
+                status=tempStatus,
+                date=timezone.now().date(),
+                indicator='T',
+                training_program=new_program)
+        new_StatusDateCheck2.save()
+
+        new_StatusDateCheck3 =StatusDateCheck(
+                status=tempStatus2,
+                date=None,
+                indicator='C',
+                training_program=new_program)
+        new_StatusDateCheck3.save()
+        
+        new_StatusDateCheck4 =StatusDateCheck(
+                status=tempStatus3,
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck4.save()
+
+        new_StatusDateCheck5 =StatusDateCheck(
+                status="تم ارسال الطلب إلى المعهد",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck5.save()
+
+        new_StatusDateCheck61 =StatusDateCheck(
+                status="انتظار قبول المعهد",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck61.save()
+
+        new_StatusDateCheck6 =StatusDateCheck(
+                status="تم قبول الطلب من قبل المعهد",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck6.save()
+
+        new_StatusDateCheck7 =StatusDateCheck(
+                status="تم نشر البرنامج ",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck7.save()
+
+        new_StatusDateCheck10 =StatusDateCheck(
+                status="انتهى تسجيل المتدربين",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck10.save()
+
+        new_StatusDateCheck8 =StatusDateCheck(
+                status="بدأ البرنامج",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck8.save()
+
+        new_StatusDateCheck9 =StatusDateCheck(
+                status="إنتهاء البرنامج",
+                date=None,
+                indicator='W',
+                training_program=new_program)
+        new_StatusDateCheck9.save()
+
+        new_StatusDateCheck10 =StatusDateCheck(
+                        status="فتح التقديم لتقديم البرنامج لأعضاء هيئة التدريس ",
+                        date=None,
+                        indicator='W',
+                        training_program=new_program)
+        new_StatusDateCheck10.save()
+
+        new_IdStatusDate = IdStatusDate(
+                instructor=user,
+                status="تم قبول الطلب من قبل المدرب",
+                date=timezone.now().date(),
+                training_program=new_program)
+        new_IdStatusDate.save()
+
+        for head in BuHead:
+    
+            new_notification = Notification(
+                        
+                        training_program=new_program,
+                        notification_message= f"طلب إنشاء برنامج من قبل  {head.first_name} {head.last_name} الرجاء الإطلاع على التفاصيل",
+                        faculty_target=head,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                        need_to_be_opened=True,
+                        need_to_be_shown=True,
+            )
+            new_notification.save()
+            if head.sendnotificationbyemail:
+                send_custom_email(request, head.email, 'طلب إنشاء برنامج تدريبي', f"طلب إنشاء برنامج من قبل  {head.first_name} {head.last_name} الرجاء الإطلاع على التفاصيل")
+
+
+        return redirect('faculty_staff_account:traning-program')
+    
+
+    # Get the program IDs from faculty_or_staff_programs
+    faculty_or_staff_program_ids = faculty_or_staff_programs.values_list('programid', flat=True)
+
+    # Get the program IDs from combined_programs
+    combined_program_ids = [program.programid for program in combined_programs]
+
+    # Filter notifications for faculty_or_staff_programs
+    notifications_in_faculty_or_staff_programs = notifications_in_programs.filter(
+        training_program__programid__in=faculty_or_staff_program_ids
+    )
+
+    # Filter notifications for combined_programs
+    notifications_in_combined_programs = notifications_in_programs.filter(
+        training_program__programid__in=combined_program_ids
+    )
+
+    faculty_or_staff_program_ids = notifications_in_faculty_or_staff_programs.values_list(
+    'training_program__programid', flat=True).distinct()
+
+# Retrieve the programid(s) for combined programs
+    combined_program_ids = notifications_in_combined_programs.values_list(
+    'training_program__programid', flat=True).distinct()
+
+
+    return render(request, 'faculty_staff/TraningPrograms.html', { 'rejected_projects':rejected_projects, 'user': user ,'combined_programs':combined_programs, 'programs':programs,'faculty':faculty, 'domain':domain , 'bu_programs':bu_programs ,'faculty_or_staff_programs':faculty_or_staff_programs ,'opent_to_all_programs':opent_to_all_programs , 'notifications_in_programs':notifications_in_programs, 'notifications_in_faculty_or_staff_programs':notifications_in_faculty_or_staff_programs, 'notifications_in_combined_programs':notifications_in_combined_programs , 'faculty_or_staff_program_ids':faculty_or_staff_program_ids, 'combined_program_ids':combined_program_ids })
+
+@login_required
+def program_view(request , program_id):
+    program = get_object_or_404(Trainingprogram, programid=program_id)
+    instructors = program.instructorid
+    user = request.user
+    notifications_in_programs = Notification.objects.filter(
+        faculty_target=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+    )
+    instructors_id = program.instructorid
+    instructor_names = []
+    for instructors in instructors_id:
+        try:
+            faculty_staff = FacultyStaff.objects.get(id=instructors)
+            name = [faculty_staff.first_name +' '+faculty_staff.last_name , faculty_staff.id , faculty_staff.major , faculty_staff.email ]
+            instructor_names.append(name)
+        except FacultyStaff.DoesNotExist:
+            instructor_names.append("")
+    program.instructor_names = instructor_names
+
+    if program.programleader:
+        Requestername = FacultyStaff.objects.get(id = program.programleader)
+        name = Requestername.first_name +' '+Requestername.last_name
+        program.Requestername = name
+
+    id_status_dates = IdStatusDate.objects.filter(training_program=program )
+    programflow = StatusDateCheck.objects.filter(training_program=program)
+    applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id).count()
+    
+    if applicationidcount:
+        isfacultyinarray = False
+        print('here1')
+    else:
+        isfacultyinarray = True
+        print('here2')
+    
+  
+
+    Registertraniees = Register.objects.filter(programid=program_id)
+    traniees_names = []
+    for register in Registertraniees:
+        try:
+            traniee_info = Trainees.objects.get(id=register.id.id)
+            name = [traniee_info.fullnamearabic , register.hasattended , register.id.id , register.registerid, traniee_info.email, traniee_info.phonenumber]
+            traniees_names.append(name)
+        except Trainees.DoesNotExist:
+            traniees_names.append("")
+    program.traniees_names = traniees_names
+
+  
+
+    return render(request, 'faculty_staff/TraningProgram-view.html', {'userid': user.id ,'program': program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'notifications_in_programs':notifications_in_programs})
+
+@login_required
+def hasattend(request, register_id):
+        print('here1')
+        try:
+            trainee = Register.objects.get(registerid=register_id) 
+            if trainee.hasattended:
+                trainee.hasattended = False
+            else:
+                trainee.hasattended = True
+            trainee.save()
+            return JsonResponse({'success_message': trainee.hasattended})
+
+        except Register.DoesNotExist:
+            print('here2')
+            return JsonResponse({'error_message': 'Register not found'})
+
+        except Exception as e:
+            print('here3')
+            return JsonResponse({'error_message': f'An error occurred: {e}'})
+
+def view_programfile(request, program_id):
+    document = get_object_or_404(Trainingprogram, pk=program_id)
+    
+    if document.attachment:
+        attachment_name = document.attachment_name
+        file_extension = attachment_name.split('.')[-1] if '.' in attachment_name else ''
+        content_type, _ = mimetypes.guess_type(attachment_name)
+        
+        if content_type:
+            response = HttpResponse(document.attachment, content_type=content_type)
+        else:
+            if file_extension.lower() == 'pdf':
+                response = HttpResponse(document.attachment, content_type='application/pdf')
+            elif file_extension.lower() == 'pptx':
+                response = HttpResponse(document.attachment, content_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
+            elif file_extension.lower() in ['doc', 'docx']:
+                response = HttpResponse(document.attachment, content_type='application/msword')
+            else:
+                response = HttpResponse(document.attachment, content_type='application/octet-stream')
+
+        response['Content-Disposition'] = f'inline; filename="{attachment_name}"'
+        return response
+
+    raise Http404("Document not found")
+
+@login_required
+def edit_program(request, value_to_edit):
+    editprogram = Trainingprogram.objects.get(programid=value_to_edit)
+    user = request.user
+    notifications_in_programs = Notification.objects.filter(
+        faculty_target=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+    )
+    collage_id = user.collageid.collageid
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+    id_status_dates = IdStatusDate.objects.filter(training_program=editprogram)
+    programflow = StatusDateCheck.objects.filter(training_program=editprogram)
+   
+    if request.method == 'POST':
+        programtype = request.POST.get('reqType')
+        topic = request.POST.get('topic')
+        Domain = request.POST.get('domain')
+        price = request.POST.get('price')
+        priceType = request.POST.get('priceType')
+        capacity = request.POST.get('numoftrainee')
+        start_date = request.POST.get('startdate')
+        end_date = request.POST.get('enddate')
+        start_time = request.POST.get('starttime')
+        end_time = request.POST.get('endtime')
+        Descriptionofrequirements = request.POST.get('subject')
+        num_ofinstructors = request.POST.get('num_ofinstructors')
+        pricefortrainee  = request.POST.get('pricefortrainee')
+        isOnline = request.POST.get('isonline')
+
+        if isOnline == "online" :
+            isOnline = True
+        else:
+            isOnline = False
+
+        if not programtype:
+            programtype = editprogram.programtype
+
+        if not priceType:
+            priceType = editprogram.costtype
+        
+
+        if not Domain:
+            Domain = editprogram.program_domain
+
+        if 'attachment' in request.FILES:
+            attachment = request.FILES['attachment'].read()
+            attachment_name = request.FILES['attachment'].name
+        else:
+            attachment = editprogram.attachment
+            attachment_name = editprogram.attachment_name
+        
+        if programtype == 'other':
+            programtype = request.POST.get('otherText')
+        
+        if Domain == 'اخرى':
+            Domain = request.POST.get('otherdomain')
+
+        
+        editprogram.isonline = isOnline
+        editprogram.programtype = programtype
+        editprogram.num_ofinstructors=num_ofinstructors
+        editprogram.capacity=capacity
+        editprogram.Descriptionofrequirements=Descriptionofrequirements
+        editprogram.topic=topic
+        editprogram.program_domain=Domain
+        editprogram.cost=price
+        editprogram.costtype=priceType
+        editprogram.startdate=start_date
+        editprogram.enddate=end_date
+        editprogram.starttime=start_time
+        editprogram.endtime=end_time
+        editprogram.attachment=attachment
+        editprogram.attachment_name=attachment_name
+        editprogram.totalcost = pricefortrainee
+
+        editprogram.save()
+        return redirect('faculty_staff_account:program_view', program_id = editprogram.programid )
+   
+
+    return render(request, 'faculty_staff/TraningProgram-edit.html', {'program':editprogram ,'faculty':faculty , 'domain':domain ,'id_status_dates':id_status_dates ,'programflow':programflow, 'notifications_in_programs':notifications_in_programs })
+
+def get_programs_initiated_by_bu(user):
+    collage_id = user.collageid.collageid
+    programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='bu')
+    for program in programs:
+        instructor_id = program.instructorid
+        try:
+            faculty_staff = FacultyStaff.objects.get(id=instructor_id)
+            program.instructor_first_name = faculty_staff.first_name
+            program.instructor_last_name = faculty_staff.last_name
+        except FacultyStaff.DoesNotExist:
+            program.instructor_first_name = ""
+            program.instructor_last_name = ""
+    return programs
+
+def update_status(request, program_id):
+
+    print("enterid update status successfully")
+    program = get_object_or_404(Trainingprogram, programid=program_id)
+    print(program)
+    user = request.user
+    notifications_in_programs = Notification.objects.filter(
+        faculty_target=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+    )
+    collage_id = user.collageid.collageid
+    programs = Trainingprogram.objects.filter(collageid=collage_id)
+    faculty = FacultyStaff.objects.filter(collageid=collage_id)
+    collage =  Collage.objects.get(collageid=collage_id)
+    domain = collage.domain
+ 
+    if request.method == "POST":
+        status_value = request.POST.get('update_status')
+
+        if status_value == "understudy":
+            program.status = "تحت الدراسة من قبل المدرب"
+        elif status_value == "accept":
+            program.status = "تم قبول الطلب من قبل المتدرب"
+        elif status_value == "reject":
+            program.status = "تم الرفض من قبل المتدرب"
+        
+        program.save()
+        print(program.status)
+        for program in programs:
+            instructor_id = program.instructorid
+            try:
+                faculty_staff = FacultyStaff.objects.get(id=instructor_id)
+                program.instructor_first_name = faculty_staff.first_name
+                program.instructor_last_name = faculty_staff.last_name
+            except FacultyStaff.DoesNotExist:
+                program.instructor_first_name = ""
+                program.instructor_last_name = ""
+
+
+   
+    
+
+    return render(request, 'faculty_staff/TraningPrograms.html', {'user': user , 'programs':programs,'faculty':faculty, 'domain':domain , 'notifications_in_programs':notifications_in_programs})
+
+@login_required
+@require_POST
+def accept_program(request, id):
+    user = request.user
+    BuHead=FacultyStaff.objects.filter(is_buhead=True, collageid=user.collageid)
+
+    date_time=timezone.now() 
+    id_status_date = get_object_or_404(IdStatusDate, id=id)
+    training_program = id_status_date.training_program
+
+    # Change status of the current IdStatusDate object
+    id_status_date.status = "تم قبول الطلب من قبل المدرب"
+    id_status_date.date = timezone.now().date()
+    id_status_date.save()
+
+    first_name =user.first_name
+    last_name =user.last_name
+
+    notifications = Notification.objects.filter(training_program=training_program, faculty_target=user, function_indicator=1)
+    print("Notifications Found:", notifications.count())
+
+    for notification in notifications:
+        notification.isread = True
+        notification.isopened = True
+        notification.save()
+        notification.refresh_from_db()
+        print(f'Notification ID: {notification.id}, isopened: {notification.isopened}, isread: {notification.isread}')
+    
+
+
+
+    # Check if all IdStatusDate objects associated with the same training program have been accepted
+    id_status_dates2 = IdStatusDate.objects.filter(training_program=training_program)
+    total_count = id_status_dates2.count()
+    accepted_count = id_status_dates2.filter(status="تم قبول الطلب من قبل المدرب").count()
+
+    if training_program.num_ofinstructors == len(training_program.instructorid):
+        # If the number of instructors equals the total numbers of values in instructorid
+
+        # Ensure all the ids in instructorid either not found in status_date_checks or status="تم قبول الطلب من قبل المدرب"
+        status_date_checks = StatusDateCheck.objects.filter(training_program=training_program)
+        for instructor_id in training_program.instructorid:
+            if not id_status_dates2.filter(instructor=instructor_id).exists() or id_status_dates2.filter(status="تم قبول الطلب من قبل المدرب", instructor=instructor_id).exists():
+                continue
+            else:
+                break
+        else:
+            # If the above condition is met, update the training program status
+            if training_program.num_ofinstructors == 1 or training_program.num_ofinstructors =='1':
+                training_program.status = "تم قبول الطلب من قبل المدرب"
+                status_date_checks.filter(status="تم قبول الطلب من قبل المدرب").update(indicator='T')
+                for head in BuHead:
+    
+                    new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"قبول المشاركة في البرنامج من قبل المدرب {first_name} {last_name} الرجاء ارسال البرنامج الى المعهد",
+                        faculty_target=head,
+                        need_to_be_opened=True,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties
+                        need_to_be_shown=True, 
+                    )
+                    new_notification.save()
+                    if head.sendnotificationbyemail:
+                          send_custom_email(request, head.email, 'قبول طلب المشاركة في برنامج التدريب', f"قبول المشاركة في البرنامج {training_program.topic} من قبل المدرب {first_name} {last_name}  ")
+
+            else:
+                training_program.status = "تم قبول الطلب من قبل جميع المدربين"
+                status_date_checks.filter(status="تم قبول الطلب من قبل جميع المدربين").update(indicator='T' , date=timezone.now().date())
+                for head in BuHead:
+    
+                    new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"قبول المشاركة في البرنامج من قبل المدرب {first_name} {last_name}",
+                        faculty_target=head,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                        need_to_be_shown=True,
+                    )
+                    new_notification.save()
+                    if head.sendnotificationbyemail:
+                        send_custom_email(request, head.email, 'قبول طلب المشاركة في برنامج التدريب', f"قبول المشاركة في البرنامج {training_program.topic} من قبل المدرب {first_name} {last_name}  ")
+                    new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"تم قبول الطلب من قبل جميع المدربين الرجاء ارسال البرنامج الى المعهد",
+                        faculty_target=head,
+                        need_to_be_opened=True,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                        need_to_be_shown=True,
+                    )
+                    new_notification.save()
+                    if head.sendnotificationbyemail:
+                        send_custom_email(request, head.email, 'قبول طلب المشاركة في برنامج التدريب', f"قبول المشاركة في البرنامج {training_program.topic} من قبل المدرب {first_name} {last_name}  ")
+                        
+    
+
+            
+            status_date_checks.filter(status="تم ارسال الطلب إلى المعهد").update(indicator='C')
+            training_program.save()
+    else:
+        for head in BuHead:
+    
+            new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"قبول المشاركة في البرنامج من قبل المدرب {first_name} {last_name}",
+                        faculty_target=head,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                        need_to_be_shown=True,
+            )
+            new_notification.save()
+            if head.sendnotificationbyemail:
+                send_custom_email(request, head.email, 'قبول طلب المشاركة في برنامج التدريب', f"قبول المشاركة في البرنامج {training_program.topic} من قبل المدرب {first_name} {last_name}  ")
+
+
+    return redirect('faculty_staff_account:program_view' , program_id = training_program.programid )
+
+@login_required
+@require_POST
+def apply_for_traningprogram(request, id):
+    user = request.user
+    training_program = get_object_or_404(Trainingprogram, programid=id)
+
+    BuHead=FacultyStaff.objects.filter(is_buhead=True, collageid=user.collageid)
+    
+    first_name =user.first_name
+    last_name =user.last_name
+    for head in BuHead:
+    
+        new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"{first_name} {last_name} {training_program.topic}تقدم بالطلب للمشاركة بالبرنامج التدريبي",
+                        faculty_target=head,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                       
+                        need_to_be_shown=True,
+        )
+        new_notification.save()
+        if head.sendnotificationbyemail:
+            send_custom_email(request, head.email, 'طلب المشاركة بالبرنامج التدريبي',f"{first_name} {last_name} {training_program.topic}تقدم بالطلب للمشاركة بالبرنامج التدريبي")
+
+
+
+
+    IdStatusDate.objects.create(
+                instructor_id=user.id,
+                status="participationRequest",
+                date=timezone.now().date(),
+                training_program=training_program)
+    
+    return redirect('faculty_staff_account:traning-program')
+
+@login_required
+@require_POST
+def reject_program(request, id):
+    user = request.user
+    BuHead=FacultyStaff.objects.filter(is_buhead=True, collageid=user.collageid)
+    first_name =user.first_name
+    last_name =user.last_name
+
+    date_time=timezone.now() 
+    rejection_reason = request.POST.get('rejectionReason')
+    id_status_date = get_object_or_404(IdStatusDate, id=id)
+    training_program = id_status_date.training_program
+    print("instructors ids prior are :", training_program.instructorid )
+    user = request.user
+
+    notifications = Notification.objects.filter(training_program=training_program, faculty_target=user, function_indicator=1)
+    print("Notifications Found:", notifications.count())
+
+    for notification in notifications:
+        notification.isread = True
+        notification.isopened = True
+        notification.save()
+        notification.refresh_from_db()
+        print(f'Notification ID: {notification.id}, isopened: {notification.isopened}, isread: {notification.isread}')
+
+    
+
+    # Change status of the current IdStatusDate object
+    id_status_date.status = "تم رفض الطلب من قبل المدرب"
+    id_status_date.date = timezone.now().date()
+    id_status_date.rejectionresons= rejection_reason
+    id_status_date.save()
+
+    for head in BuHead:
+    
+        new_notification = Notification(
+                        
+                        training_program=training_program,
+                        notification_message= f"رفض المشاركة في البرنامج من قبل المدرب {first_name} {last_name} الرجاء تعين مدرب بديل",
+                        faculty_target=head,
+                        function_indicator=1, # this is an indicator that will be used when instructor accept or decline a program
+                        target_indicator=1, # this to indicate that notification is targeted to faculties 
+                        need_to_be_opened=True,
+                        need_to_be_shown=True,
+        )
+        new_notification.save()
+        if head.sendnotificationbyemail:
+            send_custom_email(request, head.email, 'رفض طلب المشاركة في برنامج التدريب', f"رفض المشاركة في البرنامج{training_program.topic} من قبل المدرب {first_name} {last_name} الرجاء تعين مدرب بديل")
+
+
+
+    # Remove instructor's id from the instructorid array in the associated TrainingProgram object
+    instructor_id = id_status_date.instructor_id
+    training_program.instructorid = [id for id in training_program.instructorid if id != instructor_id]
+    training_program.save()
+
+    return redirect('faculty_staff_account:traning-program')
 
 ################### Projects ###################
 
@@ -774,21 +1497,30 @@ def reject_program(request, id):
 def projects_view(request):
     user = request.user
     collage_id = user.collageid.collageid
-    programs = Project.objects.filter(collageid=collage_id)
-    faculty = FacultyStaff.objects.filter(collageid=collage_id)
-    collage =  Collage.objects.get(collageid=collage_id)
-    #domain = collage.domain
-    
-        
-    bu_programs = Project.objects.filter(collageid=collage_id,Teamid__contains=[user.id])
-    print(bu_programs)
-    #faculty_or_staff_programs = Trainingprogram.objects.filter(collageid=collage_id, initiatedby='FacultyOrStaff' , programleader=user.id)
-    opent_to_all_programs = Project.objects.filter(collageid=collage_id,appourtunityopentoall=True,status='فتح الفرصة للجميع')
-    opent_to_all_programs_list = list(opent_to_all_programs)
-    bu_programs_list = list(bu_programs)
-    combined_programs = opent_to_all_programs_list + bu_programs_list
+    faculty = FacultyStaff.objects.get(collageid=collage_id , id = user.id)
+   
+    opent_to_all_programs = Project.objects.filter(collageid=collage_id, appourtunityopentoall=True,status='فتح الفرصة للجميع')
+    acceptenss = IdStatusDate.objects.filter(status="تم قبول الطلب من قبل العضو" , instructor=faculty)
+    waiting = IdStatusDate.objects.filter( status="في انتظار قبول العضو", instructor=faculty)
+    rejected = IdStatusDate.objects.filter( status="تم رفض الطلب من قبل العضو", instructor=faculty)
 
-    return render(request, 'faculty_staff/Projects.html', {'user': user ,'combined_programs':combined_programs, 'programs':programs,'faculty':faculty, 'bu_programs':bu_programs ,'opent_to_all_programs':opent_to_all_programs  })
+    # طلبات الشاريع
+    opent_to_all_programs_list = list(opent_to_all_programs)
+    waiting_projects = [accepted.project for accepted in waiting]
+    combined_programs = opent_to_all_programs_list + waiting_projects
+    # مشاريع حالية
+    accepted_projects = [accepted.project for accepted in acceptenss]
+    program = StatusDateCheckProject.objects.filter(project__in=accepted_projects ,status= 'الانتهاء من المشروع' , indicator='W')
+    accepted_projects = [accepted.project for accepted in program]
+    # مشاريع منتيه
+    fineshed_projects = Project.objects.filter(collageid=collage_id, Teamid__contains=[user.id])
+    program2 = StatusDateCheckProject.objects.filter(project__in=fineshed_projects ,status= 'الانتهاء من المشروع' , indicator='T')
+    fineshed_projects = [fineshed.project for fineshed in program2]
+    # مشاريع مرفوضه
+    rejected_projects = [accepted.project for accepted in rejected]
+
+    return render(request, 'faculty_staff/Projects.html', {'user': user , 'rejected_projects':rejected_projects, 'combined_programs':combined_programs,'accepted_projects':accepted_projects,'fineshed_projects':fineshed_projects, 'faculty':faculty})
+
 
 def view_projectfile(request, program_id, file_id):
     file = get_object_or_404(Files, fileid=file_id, project=program_id)
@@ -891,6 +1623,9 @@ def project_view(request , program_id):
 
  
     id_status_dates = IdStatusDate.objects.filter(project=program)
+    team_member = IdStatusDate.objects.filter(project=program , instructor = user.id ,status = 'تم قبول الطلب من قبل العضو').count()
+    memberHaveRequest = IdStatusDate.objects.filter(project=program , instructor = user.id ,status = 'participationRequest')
+    TeamAcceptance = IdStatusDate.objects.filter( project=program_id, status= "تم قبول الطلب من قبل العضو")
     programflow = StatusDateCheckProject.objects.filter(project=program)
     applicationidcount = IdStatusDate.objects.filter(status='participationRequest', instructor =user.id , project=program).count()
     
@@ -899,51 +1634,39 @@ def project_view(request , program_id):
     else:
         isfacultyinarray = True
     
-    return render(request, 'faculty_staff/Projects-view.html', {'userid':user.id ,'program':program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'files': file})
+    return render(request, 'faculty_staff/Projects-view.html', {'memberHaveRequest': memberHaveRequest ,'TeamAcceptance': TeamAcceptance ,'team_member':team_member ,'userid':user.id ,'program':program , 'id_status_dates': id_status_dates ,'programflow':programflow ,'isfacultyinarray': isfacultyinarray , 'applicationidcount':applicationidcount, 'files': file})
 
 @login_required
 @require_POST
 def accept_project(request, id): 
     id_status_date = get_object_or_404(IdStatusDate, id=id)
     program = id_status_date.project
-    user =id_status_date.instructor
-   
-    # Change status of the current IdStatusDate object
+    user = id_status_date.instructor
+
     id_status_date.status = "تم قبول الطلب من قبل العضو"
     id_status_date.date = timezone.now().date()
     id_status_date.save()
 
-    # Check if all IdStatusDate objects associated with the same training program have been accepted
     id_status_dates2 = IdStatusDate.objects.filter(project=program)
     total_count = id_status_dates2.count()
     accepted_count = id_status_dates2.filter(status="تم قبول الطلب من قبل العضو").count()
 
-    if program.num_ofTeam == len(program.Teamid):
-        # If the number of instructors equals the total numbers of values in instructorid
+    status_date_checks = StatusDateCheckProject.objects.filter(project=program)
+    checkstart = status_date_checks.get(status="تم بدء العمل على المشروع")
 
-        # Ensure all the ids in instructorid either not found in status_date_checks or status="تم قبول الطلب من قبل المدرب"
-        status_date_checks = StatusDateCheckProject.objects.filter(project=program)
-        for instructor_id in program.Teamid:
-            if not id_status_dates2.filter(instructor=instructor_id).exists() or id_status_dates2.filter(status="تم قبول الطلب من قبل العضو", instructor=instructor_id).exists():
-                continue
-            else:
-                break
-        else:
-            # If the above condition is met, update the training program status
-            if program.num_ofTeam == 1 or program.num_ofTeam =='1':
-                program.status = "تم قبول الطلب من قبل العضو"
-                status_date_checks.filter(status="تم قبول الطلب من قبل العضو").update(indicator='T')
-            else:
-                program.status = "تم قبول الطلب من قبل جميع الفريق"
-                status_date_checks.filter(status="تم قبول الطلب من قبل جميع الفريق").update(indicator='T' , date=timezone.now().date())
-            
-            status_date_checks.filter(status="اختيار رئيس الفريق").update(indicator='C')
-            program.save()
-    
-    check = status_date_checks.get(status=" تم بدء العمل على المشروع ")
-    if(check.indicator =='T'):
+    if program.num_ofTeam == accepted_count and checkstart.indicator != 'T':
+        program.status = "تم قبول الطلب من قبل جميع الفريق"
+        status_date_checks.filter(status="تم قبول الطلب من قبل جميع الفريق").update(indicator='T' , date=timezone.now().date())
+         
+    checkAccept = status_date_checks.get(status="تم قبول الطلب من قبل جميع الفريق")
+    checkleader = status_date_checks.get(status="اختيار رئيس الفريق")
+
+    if(checkstart.indicator == 'T'):
         addmembertogroupchat(request, user , program)
+    elif (checkAccept.indicator == 'T' and checkleader == 'W'):
+        status_date_checks.filter(status="اختيار رئيس الفريق").update(indicator='C')
 
+    program.save()
     return redirect('faculty_staff_account:project_view' , program_id = program.programid )
 
 @login_required
@@ -1045,3 +1768,41 @@ def addmembertogroupchat(request , user , program):
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
+
+################### email ###################
+
+import smtplib
+import ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from django.conf import settings
+from django.http import HttpResponse
+
+def send_custom_email(request, receiver_email, topic, message):
+    # Set the email subject and body to the provided topic and message
+    subject = topic
+    body = message
+
+    # Create MIMEText object with the body text and charset
+    body_mime = MIMEText(body, 'plain', 'utf-8')
+
+    # Construct the email with headers and body
+    email_msg = MIMEMultipart()
+    email_msg['Subject'] = subject
+    email_msg['From'] = settings.EMAIL_HOST_USER
+    email_msg['To'] = receiver_email  # Set the receiver's email address
+    email_msg.attach(body_mime)
+
+    # Create the SSL context for a secure connection
+    ssl_context = ssl.create_default_context()
+
+    # Connect to the SMTP server, secure the connection, login, and send the email
+    with smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT) as connection:
+        connection.starttls(context=ssl_context)  # Secure the connection with TLS
+        connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)  # Perform SMTP authentication
+        connection.send_message(email_msg)  # Send the email to the receiver
+
+    print("Email sent successfully to", receiver_email)
+
+    # Return an HttpResponse indicating success
+    return HttpResponse("Email sent successfully.")

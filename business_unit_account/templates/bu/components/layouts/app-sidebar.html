@@ -45,19 +45,25 @@
 											<span class="side-menu__label">قائمة هيئة التدريس</span>
 										</a>
 									</li>
+									<!-- ********************** -->
 									
-									<!-- ********************** -->
-									<!-- <li class="slide">
-										<a href="project-list" class="side-menu__item">
-											<i class="feather fa fa-opera  sidemenu_icon"></i>
-											<span class="side-menu__label">Projects</span>
-										</a>
-									</li> -->
-									<!-- ********************** -->
 									<li class="slide">
 										<a href="{% url 'business_unit_account:traning-program' %}" class="side-menu__item" style="color:#0084BD;">
-											<i class="feather fa fa-ravelry  sidemenu_icon" style="color:#0084BD;"></i>
+											<i class="feather fa fa-ravelry sidemenu_icon" style="color:#0084BD;"></i>
 											<span class="side-menu__label">البرامج التدريبية</span>
+											{% if notifications_in_programs.count > 0 %}
+												<span class="badge badge-pill" style="background-color:red;">{{ notifications_in_programs.count }}</span>
+											{% endif %}
+										</a>
+									</li>
+									<!-- ********************** -->
+									<li class="slide">
+										<a href="{% url 'business_unit_account:tasks' %}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-check  sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">المهام</span>
+											{% if notifications_in_tasks.count > 0 %}
+												<span class="badge badge-pill" style="background-color:red;">{{ notifications_in_tasks.count }}</span>
+											{% endif %}
 										</a>
 									</li>
 									<!-- ********************** -->
@@ -69,12 +75,18 @@
 							         </li> 
 									 <!-- ********************** -->
 									 <li class="slide">
+										<a href="#" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-bar-chart sidemenu_icon" style="color:#0084BD;"></i>
+											<span class="side-menu__label">لوحة الإحصائيات</span>
+										</a>
+									</li>
+									 <!-- ********************** -->
+									 <li class="slide">
 										<a href="{% url 'business_unit_account:callsDashboard' %}" class="side-menu__item" style="color:#0084BD;">
 											<i class="feather fa fa-comments  sidemenu_icon" style="color:#0084BD;"></i>
 											<span class="side-menu__label"> التواصل </span>
 										</a>
 									</li>
-									<!-- ********************** -->
 								</ul>
 							</div>
 						</div>

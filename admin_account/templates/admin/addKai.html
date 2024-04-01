@@ -187,7 +187,7 @@
             var result = $('#result');
             var attendURL =  "{% url 'admin_account:checkposition' %}";
             
-            if (position == "رئيس المعهد"){
+            if (position == "رئيس قسم وحدات الأعمال بمعهد الملك عبدالله"){
                 $.ajax({
                 url: attendURL,
                 type: 'GET',
@@ -195,7 +195,7 @@
                     if (response.success_message !== undefined) {
                         if (response.success_message === true) {
                             console.log('here inside position true ')
-                            element.text('يوجد رئيس معهد في النظام');
+                            element.text('يوجد رئيس قسم وحدات الأعمال بمعهد الملك عبدالله في النظام');
                             result.val('true');
                         } else {
                             element.text('');
@@ -300,8 +300,8 @@
                                                         <input  type="hidden" id="result" name="result" value="false">
                                                         <select  class="form-control select2" data-placeholder="اختر" id="positionSelect" name="position" onchange="checkposition()" required>
                                                             <option value="">اختر</option>
-                                                            <option value="موظف في المعهد">موظف في المعهد</option>
-                                                            <option value="رئيس المعهد">رئيس المعهد</option>
+                                                            <option value='رئيس قسم وحدات الأعمال بمعهد الملك عبدالله'>رئيس قسم وحدات الأعمال بمعهد الملك عبدالله</option>
+                                                            <option value='موظف بقسم وحدات الأعمال بمعهد الملك عبدالله'>موظف بقسم وحدات الأعمال بمعهد الملك عبدالله</option>
                                                         </select>
                                                         <span class="error-message-position" style="color: red;"></span>
                                                     </div>

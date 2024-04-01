@@ -6,6 +6,7 @@ app_name = 'faculty_staff_account'
 urlpatterns = [ 
 # 8
     path('faculty-staff-home/', views.faculty_staff_home, name='faculty_staff_home'),
+    path('faculty-staff-home/change_new_user_password', views.change_new_user_password, name='change_new_user_password'),
     path('faculty-staff-home/profile', views.profile_view, name='profile'),
     path('faculty-staff-home/edit-profile', views.editprofile_view, name='edit-profile'),
     path('faculty-staff-home/empty-page', views.emptypage_view, name='empty-page'),

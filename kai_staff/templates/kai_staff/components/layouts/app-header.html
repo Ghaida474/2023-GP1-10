@@ -41,6 +41,13 @@
 													<span class="bg-dot"></span>
 												</a>
 											</div> -->
+											<div class="dropdown header-notify">
+												<span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
+												<a id="read-notification" href="{% url 'kai_staff:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+													<i class="feather feather-bell header-icon"></i>
+													<span class="bg-dot"></span>
+												</a>
+											</div>
 											<!-- profile -->
 											<div class="dropdown profile-dropdown">
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">

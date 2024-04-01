@@ -1,4 +1,5 @@
-{% load static %}     
+{% load static %}   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  
 				<div class="app-header header sticky" >
 					<div class="container-fluid main-container" id="headerhor">
 						<div class="d-flex">
@@ -34,13 +35,23 @@
 													<i class="feather feather-minimize fullscreen-button exit-fullscreen header-icons"></i>
 												</a>
 											</div>
+											
+
 											<!-- noti -->
-											<!-- <div class="dropdown header-notify">
-												<a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
-													<i class="feather feather-bell header-icon"></i>
-													<span class="bg-dot"></span>
-												</a>
-											</div> -->
+                                            <!--<div class="dropdown header-notify">
+                                                <span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
+                                                <a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+                                                    <i class="feather feather-bell header-icon"></i>
+                                                    <span class="bg-dot"></span>
+                                                </a>
+                                            </div>-->
+											<div class="dropdown header-notify">
+											<span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
+											<a id="read-notification" href="{% url 'business_unit_account:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+												<i class="feather feather-bell header-icon"></i>
+												<span class="bg-dot"></span>
+											</a>
+										</div>
 											<!-- profile -->
 											<div class="dropdown profile-dropdown">
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
@@ -49,10 +60,17 @@
 													</span>
 												</a>
 												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
-													<a class="dropdown-item d-flex" href="{% url 'business_unit_account:profile'%}">
-														<i class="feather feather-user me-3 fs-16 my-auto"></i>
-														<div class="mt-1">حسابي التعريفي</div>
-													</a>
+													{% if user.is_buhead %}
+														<a class="dropdown-item d-flex" href="{% url 'business_unit_account:change-password'%}">
+															<i class="feather feather-lock me-3 fs-16 my-auto"></i>
+															<div class="mt-1">تغيير كلمة المرور</div>
+														</a>
+													{% else %}
+														<a class="dropdown-item d-flex" href="{% url 'business_unit_account:profile'%}">
+															<i class="feather feather-user me-3 fs-16 my-auto"></i>
+															<div class="mt-1">حسابي التعريفي</div>
+														</a>
+													{% endif %}
 													<!-- <a class="dropdown-item d-flex" href="#">
 														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
 														<div class="mt-1">Messages</div>
@@ -71,3 +89,15 @@
 						</div>
 					</div>
 				</div>
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+				<script>
+					$(document).ready(function() {
+						$('#read-notification').on('click', function(event) {
+							// Perform the default action for the link (go to the URL specified in href).
+							
+							// After the default action, reload the current page.
+							location.reload(true); // 'true' forces a hard reload from the server
+						});
+					});
+					</script>
+				

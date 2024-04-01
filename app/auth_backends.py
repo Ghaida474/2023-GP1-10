@@ -13,7 +13,7 @@ class KaibuemployeeAuthBackend(ModelBackend):
                 print(f"User '{user.email}' authenticated successfully.")
                 return user
         except Kaibuemployee.DoesNotExist:
-            print(f"User with email '{email}' does not exist.")
+            print(f"User with email '{email}' does not exist. in Kaibuemployee")
         return None
 
     def get_user(self, user_id):
@@ -54,5 +54,20 @@ class AdminAuthBackend(ModelBackend):
         except Admin.DoesNotExist:
             return None
 
+class buAuthBackend(ModelBackend):
+    def authenticate(self, request, email=None, password=None, backend=None, **kwargs):
+        try:
+            user = FacultyStaff.objects.get(email__iexact=email)
+            if user.password == password:
+                print(user)
+                return user
+        except FacultyStaff.DoesNotExist:
+            return None
 
+    def get_user(self, user_id):
+        try:
+            return FacultyStaff.objects.get(pk=user_id)
+        except FacultyStaff.DoesNotExist:
+            return None
+   
 

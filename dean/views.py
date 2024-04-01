@@ -129,6 +129,8 @@ def joinroom(request):
 @login_required
 def dean_account_home (request):
     user = request.user
+    if user.new_user:
+        return redirect('dean_account:change_new_user_password')
     collage_id = user.collageid.collageid
     collage = Collage.objects.get(collageid=collage_id)
     staff = collage.nostaff 
@@ -139,6 +141,18 @@ def dean_account_home (request):
     context = {'user': user , 'collage':collage , "emp":emp , 'department':count }
     return render(request, 'dean/Home.html', context)
       
+@login_required
+def change_new_user_password(request):
+    user = request.user
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        user.set_password(new_password)
+        user.new_user = False
+        user.save()
+        return redirect('dean_account:dean-account-home')
+    return render(request, 'dean/new-use-reset-password.html')
+
+
 @login_required
 def profile_view(request):
     user = request.user
@@ -268,7 +282,6 @@ def delete_researchinterest(request, value_to_delete):
 def changepassword_view(request):
     user = request.user
     form = ChangePasswordForm(user)
-    success = False
     
     if request.method == 'POST':
         print('here1')
@@ -278,10 +291,10 @@ def changepassword_view(request):
             user.set_password(new_password)
             user.save()
             update_session_auth_hash(request, user)
-            # messages(request, 'Password changed successfully.') 
+            messages.success(request, "تم تغيير كلمة المرور بنجاح.")
             return redirect('dean_account:profile')
 
-    return render(request, 'dean/change-password.html', {'user': user, 'form': form , 'success':success })
+    return render(request, 'dean/change-password.html', {'user': user, 'form': form  })
 
 @login_required
 def facultyinfo_view(request,faculty_id):

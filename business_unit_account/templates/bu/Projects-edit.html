@@ -213,21 +213,21 @@
 
 				
 					// Check topic 1
-					if (topicElement.value.length < 5) {
+					if (topicElement.value.length < 3) {
 						return false;
 					} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
 						return false;
 					} 
 
 					// Check domain 2
-					if (domainElement.value.length < 5) {
+					if (domainElement.value.length < 3) {
 						return false;
 					} else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
 						return false;
 					} 
 
 					// Check companyName 3
-					if (companyElement.value.length < 5) {
+					if (companyElement.value.length < 3) {
 						return false;
 					} else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
 						return false;
@@ -261,7 +261,7 @@
 					} 
 								
 					// Check subject 6
-					if (subjectElement.value.length < 5) {
+					if (subjectElement.value.length < 3) {
 						return false;
 					} else if (/^\d+$/.test(subjectElement.value.trim())) {
 						return false;
@@ -297,9 +297,9 @@
 			// check check 1	   
 				$('input[name="topic"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -311,9 +311,9 @@
 			// check CompanyName 2
 				$('input[name="CompanyName"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-company').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+						$(this).siblings('.error-message-company').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-company').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -325,9 +325,9 @@
 			// check domain 3
 				$('input[name="domain"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+						$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -376,9 +376,9 @@
 				// check subject 6	
 				$('textarea[name="subject"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+						$(this).siblings('.error-message-subject').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 

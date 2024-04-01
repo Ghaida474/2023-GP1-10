@@ -53,10 +53,10 @@
                             $(this).siblings('.error-message-buphonenumber').text('');
                         }
                     });
-                
+                  
                     $('input[name="nofaculty"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofaculty').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -66,8 +66,8 @@
                     });
 
                     $('input[name="nofaculty2"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofaculty2').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -77,8 +77,8 @@
                     });
 
                     $('input[name="disknum"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-disknum').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -88,8 +88,8 @@
                     });
 
                     $('input[name="buildingnum"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-buildingnum').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -99,8 +99,8 @@
                     });
 
                     $('input[name="nofemalestudents"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofemalestudents').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -110,8 +110,8 @@
                     });
 
                     $('input[name="nomalestudents"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nomalestudents').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -199,38 +199,38 @@
                             return false;
                         } 
 
-                        var numOFfaculty= parseInt(nofaculty.value);
-                        if (isNaN(numOFfaculty) || numOFfaculty < 1) {
+                        var numOFfaculty = parseInt(nofaculty.value);
+                        if ( nofaculty.value.trim() !== "" && (isNaN(numOFfaculty) || numOFfaculty < 1)) {
                             console.log('in numOFfaculty check');
                             return false;
-                        } 
+                        }
 
                         var numOFfaculty2 = parseInt(nofaculty2.value);
-                        if (isNaN(numOFfaculty2) || numOFfaculty2 < 1) {
+                        if (nofaculty2.value.trim() !== "" && (isNaN(numOFfaculty2) || numOFfaculty2 < 1)) {
                             console.log('in numOFfaculty2 check');
                             return false;
-                        } 
+                        }
 
-                        var numOFfemalestudents= parseInt(nofemalestudents.value);
-                        if (isNaN(numOFfemalestudents) || numOFfemalestudents < 1) {
+                        var numOFfemalestudents = parseInt(nofemalestudents.value);
+                        if (buildingnum.value.trim() !== "" && (isNaN(numOFfemalestudents) || numOFfemalestudents < 1)) {
                             console.log('in numOFfemalestudents check');
                             return false;
-                        } 
+                        }
 
-                        var numOFmalestudents= parseInt(nomalestudents.value);
-                        if (isNaN(numOFmalestudents) || numOFmalestudents < 1) {
+                        var numOFmalestudents = parseInt(nomalestudents.value);
+                        if (nomalestudents.value.trim() !== "" && (isNaN(numOFmalestudents) || numOFmalestudents < 1)) {
                             console.log('in numOFmalestudents check');
                             return false;
-                        } 
+                        }
 
                         var diskNum = parseInt(disknum.value);
-                        if (isNaN(diskNum) || diskNum < 1) {
+                        if ( disknum.value.trim() !== "" && (isNaN(diskNum) || diskNum < 1 )) {
                             console.log('in diskNum check');
                             return false;
                         } 
 
                         var buildingNum = parseInt(buildingnum.value);
-                        if (isNaN(buildingNum) || buildingNum < 1) {
+                        if ( buildingnum.value.trim() !== "" && (isNaN(buildingNum) || buildingNum < 1) ) {
                             console.log('in buildingnum check');
                             return false;
                         } 
@@ -361,7 +361,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"> عدد موظفين الكلية </label>
-                                                            <input class="form-control" type="number" name="nofaculty" placeholder="عدد موظفين الكلية" required>
+                                                            <input class="form-control" type="number" name="nofaculty" placeholder="عدد موظفين الكلية" >
                                                             <span class="error-message-nofaculty" style="color: red;"></span>
                                                         </div>
                                                     </div>
@@ -371,7 +371,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"> عدد اعضاء هيئة التدريس في الكلية</label>
-                                                            <input class="form-control" type="number" name="nofaculty2" placeholder=" عدد اعضاء هيئة التدريس " required>
+                                                            <input class="form-control" type="number" name="nofaculty2" placeholder=" عدد اعضاء هيئة التدريس " >
                                                             <span class="error-message-nofaculty2" style="color: red;"></span>
                                                         </div>
                                                     </div>
@@ -379,7 +379,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"> عدد الطلاب </label>
-                                                            <input class="form-control" type="number" name="nomalestudents" placeholder="عدد الطلاب" required>
+                                                            <input class="form-control" type="number" name="nomalestudents" placeholder="عدد الطلاب" >
                                                             <span class="error-message-nomalestudents" style="color: red;"></span>
                                                         </div>
                                                     </div>
@@ -389,7 +389,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="form-label"> عدد الطالبات </label>
-                                                            <input class="form-control" type="number" name="nofemalestudents" placeholder="عدد الطالبات" required>
+                                                            <input class="form-control" type="number" name="nofemalestudents" placeholder="عدد الطالبات" >
                                                             <span class="error-message-nofemalestudents" style="color: red;"></span>
                                                         </div>
                                                     </div>

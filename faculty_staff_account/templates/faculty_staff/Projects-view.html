@@ -77,7 +77,7 @@
 										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
 										<br><br><p id="alertPlaceholder"></p> 
 										<p>الرجاء كتابة سبب الرفض: <span style="color: red;">*</span></p>
-										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 5 أحرف ولا يحتوي فقط على أرقام.</p>
+										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 3 أحرف ولا يحتوي فقط على أرقام.</p>
 										<input id="rejectionReasonInput" type="text" class="form-control">
 									</div>
 									<div class="modal-footer justify-content-end align-items-start">
@@ -109,9 +109,16 @@
 								<div class="col-xl-5 col-lg-7">
 									<div class="text-xl-end mt-4 mt-xl-0 d-flex justify-content-end">
 										{% for flow in programflow %} 
-											{% if flow.status == " تم بدء العمل على المشروع " and flow.indicator == 'T' %}
+											{% if flow.status == "تم بدء العمل على المشروع" and flow.indicator == 'T' and team_member %}
 											<a href="{% url 'faculty_staff_account:edit_projectFiles' value_to_edit=program.programid %}" id="editbtn" class="btn btn-primary me-2">تعديل</a>
 											<a href="{% url 'faculty_staff_account:groupchat' program_id=program.programid %}" id="roombtn" class="btn btn-primary me-2">مجموعة العمل</a>
+											{% endif %}
+											{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' %}
+											<style>
+												#editbtn{
+													display: none;
+												}
+											</style>
 											{% endif %}
 										{% endfor %}		
 										<a href="{% url 'faculty_staff_account:projects' %}" class="btn btn-primary">رجوع</a>
@@ -157,7 +164,7 @@
 															<form method="POST" action="{% url 'faculty_staff_account:reject_project' id_status_date.id %}" id="rejectionForm" style="margin-right: 5px;">
 																{% csrf_token %}
 																<input type="hidden" name="update_status" value="reject">
-																<button type="button" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
+																<button type="submit" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
 																<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
 																	<label for="rejectionReason">الرجاء كتابة سبب الرفض</label>
 																	<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3"></textarea>
@@ -317,6 +324,16 @@
 															{% endif %}
 														{% endif %}
 													{% endfor %}
+
+													{% if memberHaveRequest %}
+																	<li>
+																		<i class="fa fa-check-square bg-warning"></i> 
+																		<div class="timelinestart-item">
+																			<span class="time">{{memberHaveRequest.status}}</span>
+																			<h3 class="timelinestart-header"><span> تم طلب الانضمام للمشروع </span></h3>
+																	</div>
+																</li>
+													{% endif %}
 												    <!-- ------------------------------------------------------------------------------------------------------------>
 													{% for flow in id_status_dates %} 	
 														{% if flow.status ==  'تم قبول الطلب من قبل العضو' %}
@@ -351,11 +368,11 @@
 																					</div>
 																					{% endif %}
 																				{% endfor %}
-																				{% for instructor in program.instructor_names %} 
-																					{% if program.programleader != instructor.1 %}
-																					<div class="wrapper ms-3">
-																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
-																					</div>
+																				{% for team in TeamAcceptance %} 
+																					{% if program.programleader != team.instructor.id %}
+																						<div class="wrapper ms-3">
+																							<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ team.instructor.first_name }} {{ team.instructor.last_name }} | <small><a href="mailto:{{ team.instructor.email }}">{{ team.instructor.email }}</a></small></p>
+																						</div>
 																					{% endif %}
 																				{% endfor %}
 																			</div>
@@ -380,13 +397,13 @@
 																					</div>
 																					{% endif %}
 																				{% endfor %}
-																				{% for instructor in program.instructor_names %} 
-																					{% if program.programleader != instructor.1 %}
+																				{% for team in TeamAcceptance %} 
+																				{% if program.programleader != team.instructor.id %}
 																					<div class="wrapper ms-3">
-																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
+																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ team.instructor.first_name }} {{ team.instructor.last_name }} | <small><a href="mailto:{{ team.instructor.email }}">{{ team.instructor.email }}</a></small></p>
 																					</div>
-																					{% endif %}
-																				{% endfor %}
+																				{% endif %}
+																			{% endfor %}
 																			</div>
 																	</div>
 																</div>
@@ -396,7 +413,7 @@
 													<!-------------------------------------------------------------------------------------------------------------->
 													<!-- or (room here) -->
 													{% for flow in programflow %} 	
-														{% if flow.status == " تم بدء العمل على المشروع "  and flow.indicator == 'T' %}
+														{% if flow.status == "تم بدء العمل على المشروع"  and flow.indicator == 'T' %}
 																<li>
 																	<i class="fa fa-check-square bg-warning"></i> 
 																	<div class="timelinestart-item">
@@ -425,64 +442,19 @@
 														{% endif %}
 													{% endfor %}
 													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 6 -->
-														{% for flow in programflow %} 	
-															{% if flow.status == "آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد"  and flow.indicator == 'T' %}
-																<li>
-																	<i class="fa fa-ellipsis-h bg-warning"></i> 
-																	<div class="timelinestart-item">
-																		<span class="time">{{flow.date}}</span>
-																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-																	</div> 
-																</li>	
-															{% endif %}
-														{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 7 -->
-														{% if program.status == "تسليم المشروع للمعهد للمراجعة" %}
-														<li>
-															<i class="fa fa-ellipsis-h bg-warning"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div> 
-														</li>
-														{% endif %}					
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 8 -->
 													{% for flow in programflow %} 	
 														{% if flow.status == "المراجعة من قبل المعهد" and flow.indicator == 'T' %}
 														<li>
-															<i class="fa fa-chevron-circle-up bg-primary"></i> 
+															<i class="fa fa-chevron-circle-up bg-warning"></i> 
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div>
-														</li>
-														{% endif %}
-													{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 9 -->
-													{% for flow in programflow %} 	
-														{% if flow.status == "التاريخ المتوقع للرد على المشروع" and flow.indicator == 'T' %}
-														<li>
-															<i class="fa fa-chevron-circle-down bg-primary"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div>
-														</li>
-														{% endif %}
-													{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 10 -->
-													{% for flow in programflow %} 	
-														{% if flow.status == "حالة المشروع بعد الرد" and flow.indicator == 'C' %}
-														<li>
-															<i class="fa fa-check-square bg-primary"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																<h3 class="timelinestart-header"><span> تتم {{flow.status}}</span></h3>
+																{% if program.isAccepted is None  %}
+																	<div style=" display: inline-block; vertical-align: top; margin-top: 10px; margin-right: 350px;">
+																		<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIAcceptance" >تم التعميد على المشروع</button>
+																		<button type="button" style=" margin-bottom: 10px;"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIRejection" >لم يتم التعميد على المشروع</button>
+																	</div> 
+																{% endif %}
 															</div>
 														</li>
 														{% endif %}
@@ -490,20 +462,68 @@
 													<!-- ------------------------------------------------------------------------------------------------------------>
 													<!-- 11 -->
 													{% for flow in programflow %} 	
-														{% if flow.status == 'إنتهاء البرنامج' and flow.indicator == 'T' %}
+														{% if flow.status == 'حالة المشروع بعد الرد' and flow.indicator == 'T' %}
 														<li>
-															<i class="fa fa-check-square bg-success"></i> 
+															{% if program.isAccepted  %} <i class="fa fa-check-square bg-success"></i> {% else %} <i class="fa fa-check-square bg-danger"></i> {% endif %}	
+
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																<h3 class="timelinestart-header"><span> {{flow.status}} : </span> {% if program.isAccepted  %}	تم تعميد المشروع {% else %}	لم يتم تعميد المشروع{% endif %}</h3>
+																
+																{% for flow in programflow %} 	
+																	{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'W' %}
+																		{% if program.isAccepted and program.isAccepted is not None  %}
+																			<div class="timelinestart-body" >
+																				<div class="wrapper ms-3">
+																					<div style="margin-right: 900px;">
+																						<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmDONEproject" >انتهاء المشروع</button>
+																					</div> 
+																				</div>
+																			</div>
+																		{% endif %}
+																	{% endif %}
+																{% endfor %} 
 															</div>
 														</li>
 														{% endif %}
 													{% endfor %} 
 													<!-- ---------------------------------------------------------------------------------------------------------->
-													<li>
-														<i class="fa fa-clock-o bg-primary pb-3"></i>
-													</li>
+													{% for flow in programflow %} 	
+														{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' and program.isAccepted is not None and not program.isAccepted %}
+															<li>
+																<i class="fa fa-ellipsis-h bg-danger"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>انتهاء المشروع</span></h3>
+																</div>
+															</li>
+															<li>
+																<i class="fa fa-lock bg-blue pb-3"></i>
+															</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ---------------------------------------------------------------------------------------------------------->
+													<!-- or -->
+													{% for flow in programflow %} 	
+														{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' and program.isAccepted  and program.isAccepted is not None %}
+															<li>
+																<i class="fa fa-check-square bg-primary"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>انتهاء المشروع</span></h3>
+																</div>
+															</li>
+															<li>
+																<i class="fa fa-lock bg-blue pb-3"></i>
+															</li>
+														{% endif %}
+													{% endfor %}
+													
+													{% if program.isAccepted is None %}
+														<li>
+															<i class="fa fa-clock-o bg-primary pb-3"></i>
+														</li>
+													{% endif %}
 											</ul>
 										</div>
 										
@@ -604,7 +624,7 @@
 			// Event listener for the confirm button of the rejection reason modal
 			$('#rejectionReasonConfirm').on('click', function() {
 				var rejectionReason = $('#rejectionReasonInput').val();
-				if (rejectionReason.length > 5 && isNaN(rejectionReason)) {
+				if (rejectionReason.length > 3 && isNaN(rejectionReason.trim())) {
 					$('#rejectionReasonModal').modal('hide');
 					document.getElementById('rejectionReason').value = rejectionReason;
 					document.getElementById('rejectionForm').submit();

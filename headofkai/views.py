@@ -124,8 +124,21 @@ def createDirect(request,direct_username):
 @login_required
 def kai_home (request):
     user = request.user
+    if user.new_user:
+        return redirect('head-kai-account:change_new_user_password')
     return render(request, 'kai/Home.html', {'user': user })
       
+@login_required
+def change_new_user_password(request):
+    user = request.user
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        user.set_password(new_password)
+        user.new_user = False
+        user.save()
+        return redirect('head-kai-account:kai-home')
+    return render(request, 'kai/new-use-reset-password.html')
+
 @login_required
 def profile_view(request):
     user = request.user

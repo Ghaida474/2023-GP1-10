@@ -51,7 +51,7 @@
 										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
 										<br><br><p id="alertPlaceholder"></p> 
 										<p>الرجاء كتابة سبب الرفض: <span style="color: red;">*</span></p>
-										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 5 أحرف ولا يحتوي فقط على أرقام.</p>
+										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 3 أحرف ولا يحتوي فقط على أرقام.</p>
 										<input id="rejectionReasonInput" type="text" class="form-control">
 									</div>
 									<div class="modal-footer justify-content-end align-items-start">
@@ -473,17 +473,6 @@
 																</li>
 														{% endif %} 
 													{% endfor %} 
-													{% for status in id_status_dates %} 
-														{% if not isfacultyinarray and status.status == 'participationRequest' and status.instructor_id == userid %}
-																	<li>
-																		<i class="fa fa-user bg-success"></i>
-																		<div class="timelinestart-item">
-																			<span class="time">{{status.date}}</span>
-																			<h3 class="timelinestart-header"><span>تم تقديمك على طلب التدريب</span></h3>
-																		</div>
-																	</li>
-															{% endif %} 
-														{% endfor %} 
 													<!-- ---------------------------------------------------------------------------- -->
 													{% if program.status == 'تم رفض الطلب من قبل وحدة الأعمال' %}
 														<li>
@@ -699,7 +688,7 @@
 	
 </script>
 
-<script>
+	<script>
 		// Define the customAlert function
 		function customAlert(message) {
 			// Update the alert message
@@ -720,7 +709,7 @@
 		// Event listener for the confirm button of the rejection reason modal
 		$('#rejectionReasonConfirm').on('click', function() {
 			var rejectionReason = $('#rejectionReasonInput').val();
-			if (rejectionReason.length > 5 && isNaN(rejectionReason)) {
+			if (rejectionReason.length > 3 && isNaN(rejectionReason)) {
 				$('#rejectionReasonModal').modal('hide');
 				document.getElementById('rejectionReason').value = rejectionReason;
 				document.getElementById('rejectionForm').submit();
@@ -761,6 +750,6 @@
 				}
 			});
 		}
-</script>
+		</script>
 	
 	{% endblock %}

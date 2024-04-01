@@ -1,0 +1,2178 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+
+
+    {% block styles %}
+	<style>
+	body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Text alignment */
+.text-right, .media-body, .btn, .text-xl-end, form * {
+  text-align: right;
+}
+
+/* Flex alignment */
+.d-flex, .justify-content-end, #deleteForm, #editbtn {
+  justify-content: flex-end;
+}
+
+/* Button icon alignment */
+.btn .feather {
+  margin-right: auto;
+  margin-right: 0.5rem;
+}
+
+/* Task item styling */
+.task-item, .sub-task {
+  margin-top: 0.5em;
+  padding-right: 1em;
+}
+
+.task-item {
+  border-right: 2px solid #ccc;
+}
+
+/* Tree view styling */
+
+/* Reset default margin for the body */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* Use your preferred font */
+}
+/* Style for the list container */
+.tree-container {
+    font-family: Arial, sans-serif;
+    position: relative;
+}
+
+.task-box {
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
+    position: relative;
+}
+
+.task-header {
+    cursor: pointer;
+}
+
+.children-container {
+    margin-left: 20px; /* Adjust as needed for indentation */
+}
+
+</style>
+
+<style>
+	.btn {
+	  background-color: #33aaff; /* Very vibrant light blue background */
+	  border: 1px solid #0099ff; /* Saturated blue border */
+	  color: #ffffff; /* White text color for contrast */
+	  padding: 0.5rem 1rem; /* Padding for a larger click area and visual space */
+	  border-radius: 0.25rem; /* Rounded corners for a softer look */
+	  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Transition for smooth color change */
+	  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2); /* Text shadow for better legibility */
+	}
+	
+	/* Hover state for the base button class */
+	
+	
+	.btn.btn-primary {
+	  background-color: #0055cc; /* Primary button, deep vibrant blue background */
+	  border-color: #0044bb; /* Primary button, matching border */
+	}
+	
+	/* Hover state for primary button */
+	
+	
+	.btn.btn-danger {
+	  background-color: #ff4444; /* Danger button, vibrant red background */
+	  border-color: #ff3333; /* Danger button, slightly darker border */
+	  color: #ffffff; /* Danger button, white text color */
+	}
+	
+	/* Hover state for danger button */
+	
+	
+	/* Additional styles for .media-icon */
+	.media-icon.bg-primary {
+	  background-color: #33aaff; /* Vibrant blue background matching the buttons */
+	}
+	
+	.media-icon.bg-primary i {
+	  color: #ffffff; /* White color for the icon */
+	}
+	</style>
+
+
+
+
+
+  
+    {% endblock %}
+
+        {% block content %}
+						<!-- PAGE HEADER -->
+                        <div class="page-header d-lg-flex d-block">
+						</div>
+						<!-- END PAGE HEADER -->
+
+						<!-- alerts -->
+
+						  <!--rejectionAlart -->
+
+						  <div class="modal" tabindex="-1" id="rejectionAlert">
+							<div class="modal-dialog">
+								 <div class="modal-content">
+									<div class="modal-header">
+										 <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										 <p>تأكيد</p>
+									</div>
+									<form method="post" action="{% url 'business_unit_account:reject_task' task_id=givenTask.task_id %}">
+										{% csrf_token %}
+										<div class="modal-body">
+											 <p id="alertMessage">الرجاء كتابة سبب رفض المهمة</p>
+											 <textarea class="form-control" rows="4" cols="50" placeholder="أسباب الرفض" name="rejection_reasons"></textarea>
+										</div>
+										<div class="modal-footer">
+											 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											 <button type="submit" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+										</div>
+									</form>
+								 </div>
+							</div>
+						</div>
+						  <!-- end of rejectionAlart -->
+
+						  <!--custome alert  -->
+
+
+
+						  <div class="modal" tabindex="-1" id="customAlert">
+							<div class="modal-dialog">
+							  <div class="modal-content">
+								<div class="modal-header">
+								  <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+								  <p>تأكيد</p>
+								</div>
+								<div class="modal-body">
+								  <p id="alertMessage">Message goes here</p>
+								</div>
+								<div class="modal-footer">
+								  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+								  <button type="button" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+								</div>
+							  </div>
+							</div>
+						  </div>
+
+						
+
+						  <!--Task completion alert-->
+
+						  <div class="modal" tabindex="-1" id="TaskCompletion12">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png' %}" class="img-fluid" style="max-width: 100px; float: right;">
+										<p>تأكيد</p>
+									</div>
+									<div class="modal-body">
+										{% if not_completed_subtasks_count > 0 %}
+											<p id="alertMessageT3">هناك مهام فرعية غير منجزة مرتبطة بهذه المهمة. لا يمكن إكمال هذه المهمة حتى يتم استرجاع المهمة الفرعية من قبل المنشئ أو إكمال المهمة من قبل المسند إليه/إليهم.</p>
+											<p>المهام الفرعية الغير منجزة هي:</p>
+											{% for task in NotCompletedSubTasks %}
+												<div class="form-group">
+													<label class="form-label">إسم المهمة</label>
+													{{ task.task_name }}
+												</div>
+												<div class="form-group">
+													<label class="form-label">منشأة من قبل</label>
+													{{ task.faculty_initiationk.first_name }} {{ task.faculty_initiationk.last_name }}
+													{{ task.kai_initiationk.first_name }} {{ task.kai_initiationk.last_name }}
+												</div>
+											{% endfor %}
+										{% else %}
+											<p id="alertMessageT2">في حال كانت إجابتك نعم الرجاء رفع او كتابة خطاب الإنجاز </p>
+											<form method="post" action="{% url 'business_unit_account:Task_completion' task_id=givenTask.task_id %}">
+												{% csrf_token %}
+												<div class="form-group">
+													<label class="form-label">خطاب المهمة<span style="color: red;">*</span></label>
+													<textarea class="form-control" rows="4" cols="105" placeholder="خطاب المهمة" name="taskdescription" ></textarea>
+													<span class="error-message-subject" style="color: red;"></span>
+												</div>
+												<div class="form-group">
+													<label class="form-label">ارفاق خطاب المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+													<input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+													<span class="error-message-attachment" style="color: red;"></span>
+													<div id="fileList" class="file-list"></div>
+												</div>
+												<!-- Repeat the attachment input if needed or remove duplicate -->
+												<div class="form-group">
+													<label class="form-label">ارفاق ملفات أخرى<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+													<input class="form-control" type="file" name="other_attachments" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+													<span class="error-message-attachment" style="color: red;"></span>
+													<div id="otherFilesList" class="file-list"></div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+													<button type="submit" class="btn btn-primary" id="alertConfirm1">تأكيد</button>
+												</div>
+											</form>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						 
+						   <!--Task completion alert-->
+						   
+						   <!--Reassigning  alert-->
+
+
+
+						   <div class="modal" tabindex="-1" id="Reassigning">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="{% static 'assets/images/brand/logowithname.png' %}" class="img-fluid" style="max-width: 100px; float: right;">
+                <p>تأكيد</p>
+            </div>
+            <div class="modal-body">
+				<span id="error-message" style="display: none; color: red; text-align: center;">الرجاء اسناد المهمة او الضغط على عدم اسناد المهمة</span>
+                {% for rejection in recent_rejected_tasks %}
+                <p>رفض من قبل:</p>
+                <p> {{ rejection.faculty_user.first_name }} {{ rejection.faculty_user.last_name }}</p>
+                <p> {{ rejection.kai_user.first_name }} {{ rejection.kai_user.last_name }}</p>
+                <p> اسباب الرفض:{{ rejection.addedtext }}</p>
+                {% endfor %}
+                <form method="post" action="{% url 'business_unit_account:send_to_new_Instructor' task_id=givenTask.task_id %}" id="reassignForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">إسناد المهمة إلى <span style="color: red;">*</span></label>
+                        <select class="form-control select2" id="mySelect_assigningto" name="assigningto" data-placeholder="إسناد المهمة إلى" multiple >
+                            {% for person in kaiBuHead %}
+                            {% if person.id not in givenTask.kai_ids %}
+                            <option value="a.{{ person.id }}">
+                                {{ person.position }} في معهد الملك عبدالله للبحوث و الدراسات الإستشارية {{ person.first_name }} {{ person.last_name }}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                            {% for head in otherCollagesBUHeads %}
+                            {% if head.id not in givenTask.faculty_ids %}
+                            <option value="c.{{ head.id }}">
+                                رئيس وحدة الأعمال {{ head.collage_name }} {{ head.first_name }} {{ head.last_name }}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                            {% for dean in collageDean %}
+                            {% if dean.id not in givenTask.faculty_ids %}
+                            <option value="d.{{ dean.id }}">
+                                عميد الكلية {{ dean.first_name }} {{ dean.last_name }}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+
+		
+                        </select>
+						<div class="form-group">
+							<label class="form-label">عدم اسناد المهمة</label>
+							<input type="checkbox" name="no-assignment" id="no-assignment">
+						{% if givenTask.status == 'مرفوضة' %}
+						<span style="color: red;">تم رفض هذه المهمة من قبل جميع الأشخاص الذين أُسندت إليهم. في حالة عدم تعيين شخص آخر لها، سيتم استرجاع المهمة.</span>
+						{% endif %}
+						</div>
+						
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" >تأكيد</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+						<!-- end of Reassigning  alert-->
+						
+						<!--pending request alert-->
+						
+
+						<div class="modal" tabindex="-1" id="pendingRequest">
+							<div class="modal-dialog">
+								 <div class="modal-content">
+									<div class="modal-header">
+										 <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										 <p>تأكيد</p>
+									</div>
+									<form method="post" action="{% url 'business_unit_account:ask_for_pending' task_id=givenTask.task_id %}">
+										{% csrf_token %}
+										<div class="modal-body">
+											 <p id="alertMessagePending">الرجاء كتابة أسبب طلب تعليق المهمة</p>
+											 <textarea class="form-control" rows="4" cols="50" placeholder="أسباب طلب التعليق" name="pending_reasons" id="pending_reasons_textarea"></textarea>
+
+										</div>
+
+
+										<div class="modal-footer">
+											 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											 <button type="submit" class="btn btn-primary" id="alertConfirmPending">تأكيد</button>
+										</div>
+									</form>
+								 </div>
+							</div>
+						</div>
+						<!--end of pending request alert-->
+
+
+						<!-- pendingReview alert-->
+						
+
+						<div class="modal" tabindex="-1" id="pendingReview">
+							<div class="modal-dialog">
+								 <div class="modal-content">
+									<div class="modal-header">
+										 <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										 <p>تأكيد</p>
+									</div>
+								    {% for name, reason in zipped_names_reasons %}
+
+									<div style="display: flex; flex-wrap: wrap; align-items: baseline; margin-bottom: 10px;">
+										<h5 style="margin-right: 5px; white-space: nowrap;">من قبل:</h4>
+										<p style="margin-right: 15px;">{{ name }}</p>
+									  </div>
+									  <div style="display: flex; flex-wrap: wrap; align-items: baseline; margin-bottom: 10px;">
+										<h5 style="margin-right: 5px; white-space: nowrap;">اسباب التعليق:</h5>
+										<p style="margin-right: 15px;">{{ reason }}</p>
+									  </div>
+
+
+									 
+
+									 
+									 
+                                    {% endfor %}
+									<div class="modal-footer">
+
+									<form method="post" action="{% url 'business_unit_account:reject_pending_request' task_id=givenTask.task_id %}">
+										{% csrf_token %}
+										<button type="button" class="btn btn-danger" id="rejectPending">رفض طلب التعليق</button>
+									</form>
+									<form method="post" action="{% url 'business_unit_account:accepte_pending_request' task_id=givenTask.task_id %}">
+										{% csrf_token %}
+										<button type="submit" class="btn btn-primary" id="alertConfirmPending">قبول طلب التعليق</button>
+									</form>
+								</div>
+								 </div>
+							</div>
+						</div>
+						<!--end of pendingReview alert-->
+
+						
+
+
+
+
+						  <!-- End of custome alert  -->
+
+						  
+						  
+
+						     
+
+                         <!--Start the top card with action buttons and summery info Task priority, task type, task requierd procedure-->
+                        <!-- ROW -->
+						<div class="main-proifle" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
+							<div class="row">
+								
+								
+								
+								
+								<div class="col-xl-7">
+									<div class="box-widget widget-user">
+										<div class="widget-user-image d-sm-flex">
+											<div class="ms-sm-4 mt-4">
+												<h1 class="pro-user-username mb-3 font-weight-semibold">{{program.topic}}</h1>
+												<div class="d-flex mb-2">
+													<div class="h5 mb-0 ms-3 mt-1">{{program.programtype}}</div>
+												</div>	
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								{% for flow in programflow %} 		
+										{% if  flow.status == 'تم قبول الطلب من قبل وحدة الاعمال' and flow.indicator == 'W' %}
+										<style>
+											#editbtn , #deleteForm{
+												display: none;
+											}
+										</style>
+										{% endif %}
+									{% endfor %}
+
+								{% if program.traniees_names %}
+								<style>
+									#deleteForm{
+										display: none;
+									}
+								</style>
+								{% endif %}
+
+								<!--starting the action block -->
+
+
+
+
+								
+
+								<!--<div class="col-xl-5 col-lg-7">
+									<div class="mt-4 mt-xl-0 d-flex justify-content-end flex-wrap">-->
+										<!--<div class=" col-lg-7">
+
+										
+
+											
+											
+										
+										{% if not givenTask.status == 'مسترجعة' %}
+										
+										{% endif %}
+										
+									
+										{% if givenTask.status == 'مسندة' or givenTask.status == 'KAi مرسله إلى موظفين ال ' and givenTask.faculty_initiation != user%}
+										
+
+										
+
+										{% endif %}
+										{% if givenTask.status == 'مسندة'  and givenTask.faculty_initiation != user%}
+										
+										
+										
+
+										{% endif %}
+
+										
+
+										{% if givenTask.faculty_initiation != user%}
+										{% if givenTask.status == 'مسندة' or givenTask.status == 'تم الرفض من قبل البعض' or givenTask.status == 'منجزة جزئياً، مرفوضة من البعض' or givenTask.status == 'منجزة جزئياً' %}
+									
+										
+
+										<a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#TaskCompletion12" >
+											
+											<i class="feather feather-fs-15 my-auto me-2"></i> إنجاز المهمة
+											
+										</a>
+
+
+										<a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#pendingRequest" style="margin-left: auto;">
+											<i class="feather feather-fs-15 my-auto me-2"></i> تعليق المهمة
+										  </a>
+
+										  <a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectionAlert">رفض المهمة</a>
+
+										  <a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#newprojectmodal">
+											<i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء مهمة فرعية
+										</a>
+
+
+										
+
+										
+										{% endif %}
+										{% endif %}
+
+										
+										
+									     {% if givenTask.faculty_initiation == user %}
+										 {% if not givenTask.status == 'مسترجعة' %}
+										 
+										 {% endif %}
+
+										 {% if  givenTask.status == 'مسترجعة' %}
+
+										
+							
+										{% endif %}
+										
+
+
+										<a href="{% url 'business_unit_account:editTask' task_id=givenTask.task_id %}" class="btn btn-primary me-3">
+											<i class="feather feather-fs-15 my-auto me-2"></i> تعديل
+										   </a>
+										   {% if not givenTask.status == 'منجزة' and not givenTask.status == 'منجزة جزئياً' and not givenTask.status == 'مرفوضة من البعض' and not givenTask.status == 'مسترجعة'%}
+										   
+									
+										<a href="{% url 'business_unit_account:retrieve_task' task_id=givenTask.task_id %}" class="btn btn-danger me-2">إسترجاع المهمة</a>
+										{% endif %}
+
+										{% endif %}
+										
+
+
+										<a href="{% url 'business_unit_account:tasks' %}" class="btn btn-primary me-3">رجوع</a>
+										{% if givenTask.faculty_initiation == user %}
+										{% if givenTask.status == 'مرفوضة' or givenTask.status == 'تم الرفض من قبل البعض' or givenTask.status == 'منجزة جزئياً، مرفوضة من البعض' %}
+										<a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#Reassigning ">تم الرفض من قبل بعض الأعضاء (إطلاع على التفاصيل )</a>
+              
+    
+
+
+
+										{% endif %}
+										{% if givenTask.pending_status == 'طلب تعليق المهمة' %}
+										<a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#pendingReview ">هناك طلبات تعليق المهمة من قبل بعض الأعضاء (إطلاع على التفاصيل )</a>
+
+										{% endif %}
+										{% endif %}
+
+
+
+										
+										
+
+										
+									</div>-->
+
+									<div class=" col-lg-7">
+
+										
+
+											
+											
+										
+										{% if not givenTask.status == 'مسترجعة' %}
+										
+										{% endif %}
+										
+									
+										{% if givenTask.status == 'مسندة' or givenTask.status == 'KAi مرسله إلى موظفين ال ' and givenTask.faculty_initiation != user%}
+										
+
+										
+
+										{% endif %}
+										{% if givenTask.status == 'مسندة'  and givenTask.faculty_initiation != user%}
+										
+										
+										
+
+										{% endif %}
+
+										
+
+										{% if givenTask.faculty_initiation != user%}
+										{% if givenTask.status == 'مسندة' or givenTask.status == 'تم الرفض من قبل البعض' or givenTask.status == 'منجزة جزئياً، مرفوضة من البعض' or givenTask.status == 'منجزة جزئياً' %}
+									
+										
+
+										<a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#TaskCompletion12" >
+											
+											<i class="feather feather-fs-15 my-auto me-2"></i> إنجاز المهمة
+											
+										</a>
+
+
+										<a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#pendingRequest" style="margin-left: auto;">
+											<i class="feather feather-fs-15 my-auto me-2"></i> تعليق المهمة
+										  </a>
+
+										  <a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectionAlert">رفض المهمة</a>
+
+										  <a href="" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#newprojectmodal">
+											<i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء مهمة فرعية
+										</a>
+
+
+										
+
+										
+										{% endif %}
+										{% endif %}
+
+										
+										
+									     {% if givenTask.faculty_initiation == user %}
+										 {% if not givenTask.status == 'مسترجعة' %}
+										 
+										 {% endif %}
+
+										 {% if  givenTask.status == 'مسترجعة' %}
+
+										
+							
+										{% endif %}
+										
+
+
+										<a href="{% url 'business_unit_account:editTask' task_id=givenTask.task_id %}" class="btn btn-primary me-3">
+											<i class="feather feather-fs-15 my-auto me-2"></i> تعديل
+										   </a>
+										   {% if not givenTask.status == 'منجزة' and not givenTask.status == 'منجزة جزئياً' and not givenTask.status == 'مرفوضة من البعض' and not givenTask.status == 'مسترجعة'%}
+										   
+									
+										<a href="{% url 'business_unit_account:retrieve_task' task_id=givenTask.task_id %}" class="btn btn-danger me-2">إسترجاع المهمة</a>
+										{% endif %}
+
+										{% endif %}
+										
+
+
+										<a href="{% url 'business_unit_account:tasks' %}" class="btn btn-primary me-3">رجوع</a>
+										{% if givenTask.faculty_initiation == user %}
+										{% if givenTask.status == 'مرفوضة' or givenTask.status == 'تم الرفض من قبل البعض' or givenTask.status == 'منجزة جزئياً، مرفوضة من البعض' %}
+										<a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#Reassigning ">تم الرفض من قبل بعض الأعضاء (إطلاع على التفاصيل )</a>
+              
+    
+
+
+
+										{% endif %}
+										{% if givenTask.pending_status == 'طلب تعليق المهمة' %}
+										<a href="" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#pendingReview "> طلبات تعليق المهمة (إطلاع على التفاصيل )</a>
+
+										{% endif %}
+										{% endif %}
+
+
+
+										
+										
+
+										
+									</div>
+
+									
+
+									
+
+									
+
+
+
+
+
+									<!---action block end-->
+									
+									<div class="mt-5">
+										<div class="main-profile-contact-list row">
+											<div class="media col-sm-4 p-0">
+												<div class="media-icon bg-primary me-3 mt-1">
+													<i class="las la-flag fs-20 text-white"></i> <!-- Icon for priority -->
+												</div>
+												<div class="media-body">
+													<span class="text-muted">أولوية المهمة</span>
+													<div class="font-weight-semibold fs-25">
+														{{givenTask.priority}}
+													</div>
+												</div>
+											</div>
+											<div class="media col-sm-4 p-0">
+												<div class="media-icon bg-primary me-3 mt-1">
+													<i class="las la-tasks fs-20 text-white"></i> <!-- Icon for task type -->
+												</div>
+												<div class="media-body">
+													<span class="text-muted">نوع المهمة</span>
+													<div class="font-weight-semibold fs-25">
+														{{givenTask.task_type}}
+													</div>
+												</div>
+											</div>
+											<div class="media col-sm-4 p-0">
+												<div class="media-icon bg-primary me-3 mt-1">
+													<i class="las la-clipboard-list fs-20 text-white"></i> <!-- Changed icon for necessary procedure -->
+												</div>
+												<div class="media-body">
+													<span class="text-muted">الإجراء المطلرب</span>
+													<div class="font-weight-semibold fs-25">
+														{{givenTask.necessary_procedure}}
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+									
+
+
+									
+
+									
+							
+							
+							
+							
+							
+								</div>
+							
+							<!--</div>-->
+
+
+
+							
+							<div class="profile-cover">
+								<div class="wideget-user-tab">
+									<div class="tab-menu-heading p-0">
+										<div class="tabs-menu1 px-3">
+											<ul class="nav" style="height: 45px;">
+												<li><a href="#tab-1" class="active" data-bs-toggle="tab">تفاصيل المهمة</a></li>
+				
+												<li><a href="#tab-4" data-bs-toggle="tab" class="">الخط الزمني</a></li>
+												<li><a href="#tab-2" data-bs-toggle="tab" class="">المهام الفرعية</a></li>
+												
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>	
+						</div>
+
+						
+
+
+                        <!-- END ROW -->
+						
+
+						<!--End the top card with action buttons and summery info Task priority, task type, task requierd procedure-->
+
+
+                        <!--Start of main tab task info -->
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-xl-12 col-lg-12 col-md-12">
+								<div class="border-0">
+									<div class="tab-content">
+
+										<!-- order info -->
+										<div class="tab-pane active" id="tab-1">
+											<div class="card">
+
+												{% if givenTask.faculty_initiation != user %}
+
+												<div class="card-body h5">
+													<h4 class="font-weight-semibold"> حالة المهمة بنسبة للمستخدم</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+															<p>
+																إذا قمت بإنجاز هذه المهمة، فستُعتبر المهمة منجزة. في حال لم يحدث ذلك، ستظل الخانة مُعلمة كـ "مسندة"</p>
+															{% if userAssignment > 0 %}
+														<p>مسندة</p>
+														{% else %}
+														{% if userAccompleshment > 0 %}
+														<p>منجزة</p>
+														{% endif %}{% endif %}
+														</div>
+													</div>
+												</div>
+												{% endif %}
+												 
+												<div class="card-body h5">
+													<h4 class="font-weight-semibold">إسم المهمة</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+														<p>{{givenTask.task_name}}</p>
+														</div>
+													</div>
+												</div>
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">مقدم الطلب</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+														{% if givenTask.faculty_initiation %}
+
+														{{ givenTask.faculty_initiation.first_name}} {{givenTask.faculty_initiation.last_name}}
+
+														{% else %}
+
+														{{givenTask.kai_initiation.first_name}} {{givenTask.kai_initiation.last_name}}
+
+														 {% endif %}
+														
+														
+														
+													</div>	
+												</div> 
+
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">التاريخ</h4>
+													<div class="main-profile-contact-list d-lg-flex">
+														<div class="font-weight-semibold"  style="color:#0084BD;">
+															<small class="text-muted">من </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															{{givenTask.start_date | date:"d-m-Y"}}
+															
+															<small class="text-muted">الى </small>
+															<i class="fa fa-calendar pb-3" style="margin-right: 5px;"></i>
+															 {{givenTask.end_date | date:"d-m-Y"}}
+														</div>
+													</div>
+												</div>
+												
+											
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">وصف المهمة</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+													  {{givenTask.task_description}}
+													</div>	
+												</div>
+												
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">حالة المهمة</h4>
+													<div class="font-weight-semibold" style="color:#0084BD;">
+														<i class="" style="margin-right: 5px;"></i>
+													{{givenTask.status}}
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">ملاحظات</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														{% if givenTask.notes %}
+														{{ givenTask.notes}}
+															
+														{% else %}
+															<P>لا يوجد ملاحظات</P>
+														{% endif %}
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">هذه المهمة مُسندة إلى</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														{% for FacultyMember in Faculty_user %}
+														{{ FacultyMember.first_name }} {{ FacultyMember.last_name }}
+														<br>
+														<br>
+													{% endfor %}
+												
+													{% for KAIMember in Kai_user %}
+														{{ KAIMember.first_name }} {{ KAIMember.last_name }}
+														<br>
+														<br>
+													{% endfor %}
+
+													
+													
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">مرفقات المهمة</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														{% if givenTask.attachment %}
+															<a href="" type="button" class="btn btn-outline-info" target="_blank">الإطلاع على الملف </a> 
+														{% else %}
+															<P>لا يوجد مرفقات</P>
+														{% endif %}
+													</div>	
+												</div>
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">إنجاز المهمة</h4>
+													{% if givenTask.full_accomplishment %}
+													<P>يجب إنجاز المهمة من جميع الأشخاص المسندة إليهم حتى يتم إنجازها</P>
+
+
+													{% else %}
+													<P>يجب إنجاز المهمة من شخص ١ على الأقل حتى يتم إنجازها</P>
+
+													{% endif %}
+												
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+													</div>
+												</div>
+
+												
+
+											{%if givenTask.is_main_task == False %}
+
+												<div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">هذه المهمة مهمة فرعية تابعة الى</h4>
+													<div class="font-weight-semibold"  style="color:#0084BD;">
+														
+															إسم المهمة: {{givenTask.main_task.task_name}}
+														
+													</div>	
+												</div>
+												{% endif %}
+
+
+											</div>
+										</div>
+										<!--Start of main tab task info -->
+
+
+										<!---إنتهاء تفاصيل المهمة-->
+
+
+
+
+
+										<!--Start of tab2 sub tasks hierarchy-->
+										<div class="tab-pane" id="tab-2">
+										
+									
+											
+												<!--<div class="row">-->
+													<!--{% for task, level in flat_hierarchy %}
+													<div class="tree-view" style="margin-left: {{ level|add:0 }}em;">
+													  <div class="task-box">
+														 إسم المهمة : {{ task.task_name }}<br>
+														 حالة المهمة: {{ task.status }}<br>
+														 منشأه من قبل : {{task.faculty_initiation.first_name}} {{task.faculty_initiation.last_name}} {{task.kai_initiation.first_name}} {{task.kai_initiation.last_name}}<br>
+														 مسندة إلى : {% for FacultyMember in Faculty_user %}
+														 {{ FacultyMember.first_name }} {{ FacultyMember.last_name }}
+														 <br>
+														 
+													 {% endfor %}
+												 
+													 {% for KAIMember in Kai_user %}
+														 {{ KAIMember.first_name }} {{ KAIMember.last_name }}
+														 <br>
+														
+													 {% endfor %}
+														  
+
+														
+													  </div>
+													</div>
+												  {% endfor %}-->
+											
+
+												 
+
+												 <!---- <div class="tree-container" style="background:opacity: 0.5;">
+													{% for task, level in flat_hierarchy %}
+														{% with "BDC3C7,1ABC9C,F4D03F,E67E22,ECF0F1,C0392B,F1C40F,7F8C8D,E74C3C,54C1B7,0084BD,E67E22,D35400,C0392B,9B59B6,8E44AD,3498DB,2ECC71,2BAF74,F1C40F,E74C3C,95A5A6"|split:"," as color_list %}
+															{% with color_list|length as list_length %}
+																{% with level|add:"0"|slice:":1"|join:""|add:"0" as color_index %}
+																	{% with color_list|get_list_item:color_index as background_color %}
+																		<div class="task-box" style="margin-left: {{ level|multiply:120 }}px; background-color: #{{ background_color }}">
+																			<div class="task-content">
+																				<strong>اسم المهمة:</strong> {{ task.task_name }}<br>
+																				<strong>حالة المهمة:</strong> {{ task.status }}<br>
+																				<strong>منشأة من قبل:</strong> {{ task.faculty_initiation.first_name }} {{ task.faculty_initiation.last_name }}{{ task.kai_initiation.first_name }} {{ task.kai_initiation.last_name }}<br>
+																				<strong>مسندة إلى:</strong>
+																				{% for FacultyMember in Faculty_user %}
+														{{ FacultyMember.first_name }} {{ FacultyMember.last_name }}
+														<br>
+														
+													{% endfor %}
+												
+													{% for KAIMember in Kai_user %}
+														{{ KAIMember.first_name }} {{ KAIMember.last_name }}
+														<br>
+														
+													{% endfor %}
+																			</div>
+																		</div>
+																	{% endwith %}
+																{% endwith %}
+															{% endwith %}
+														{% endwith %}
+													{% endfor %}
+												</div>	-->
+
+<!--Start of tab3 sub tasks hierarchy-->
+<div class="tab-pane" id="tab-3">
+	<div class="tree-container" >
+		
+		<ul id="tree2">
+			<ul>
+				{% for task, level in flat_hierarchy %}
+				{% with "75B8E4,9FCFF2,C9E7FF,92B7D7,A7C8E2,BDD9ED,D2EBF8,FFFFFF"|split:"," as color_list %}
+						{% with color_list|length as list_length %} 
+							{% with level|add:"0"|slice:":1"|join:""|add:"0" as color_index %}
+								{% with color_list|get_list_item:color_index as background_color %}
+									<ul>  
+										<li class="task-box" style="margin-left: {{ level|multiply:120 }}px; background-color: #{{ background_color }};">
+											<div class="task-content">
+												<strong>اسم المهمة:</strong> {{ task.task_name }}<br>
+												<strong>حالة المهمة:</strong> {{ task.status }}<br>
+												<strong>منشأة من قبل:</strong> {{ task.faculty_initiation.first_name }} {{ task.faculty_initiation.last_name }}{{ task.kai_initiation.first_name }} {{ task.kai_initiation.last_name }}<br>
+												<strong>مسندة إلى:</strong>
+												{% for FacultyMember in Faculty_user %}
+													{{ FacultyMember.first_name }} {{ FacultyMember.last_name }}<br>
+												{% endfor %}
+									
+												{% for KAIMember in Kai_user %}
+													{{ KAIMember.first_name }} {{ KAIMember.last_name }}<br>                                                             
+												{% endfor %}
+											</div>
+										</li>
+									</ul> 
+								{% endwith %}
+							{% endwith %}
+						{% endwith %}
+					{% endwith %}  
+				{% endfor %}
+			</ul>  
+		</ul> 
+
+	</div>  
+</div>
+<!--End of tab3 sub tasks hierarchy-->
+
+												
+												
+												
+
+											
+
+																		
+												
+										
+
+													
+													
+												<!--</div>-->	
+													
+											
+										</div>
+										<!--End of  of tab2 sub tasks hierarchy-->
+
+										<div class="tab-pane" id="tab-4" style="height: 2100px;">
+    <ul class="timelinestart pb-5">
+        {% for date, status in status_with_dates %}
+        <li class="timestart-label" style="position: relative; margin-left: -1px; list-style: none;">
+            <div style="position: relative; display: inline-block; margin-right: 10px;">
+                <!-- Making circles bigger by increasing the font-size -->
+                <i class="fa fa-circle" aria-hidden="true" style="color: blue; position: absolute; z-index: 1; font-size: 40px;"></i>
+                <i class="fa fa-circle" aria-hidden="true" style="color: pink; position: absolute; z-index: 2; font-size: 30px; right: 4px; top: 4px;"></i>
+                <i class="fa fa-circle" aria-hidden="true" style="color: red; position: absolute; z-index: 3; font-size: 20px; right: 8px; top: 9px;"></i>
+            </div>
+            <span class="bg-blue" style="position: relative; top: -3px; left: -40px;">{{ date }}</span>
+        </li>
+        <li>
+            <div class="timelinestart-item" style="background-color: white; padding: 10px; border-radius: 5px;">
+                <h3 class="timelinestart-header"><span>{{ status }}</span></h3>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+        
+											
+												<!--{% for date, status in status_with_dates %}
+													<li class="timestart-label"><span class="bg-blue">{{ date }}</span></li>
+													<li>
+														
+														<i class="fa fa-info-circle bg-primary"></i>  
+														<div class="timelinestart-item">
+															<h3 class="timelinestart-header"><span>{{ status }}</span></h3>
+														
+														</div>
+													</li>
+												{% endfor %}-->
+												
+												
+												
+											</ul>
+										</div>
+
+										
+
+										
+										
+										
+										<!-- order workflow ------------------------------------------------------------------>
+
+										
+										
+										
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+							
+     <!--********************************************مودل طلب الانشاء  *************************************************-->
+     <div class="modal fade"  id="newprojectmodal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="smartwizard-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">طلب إنشاء</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="modal-body">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">نوع المهمة<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" placeholder="نوع المهمة" name="tasktype">
+                            <span class="error-message" style="color: red;"></span>
+                          </div>
+                        </div>
+                      
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">إسم المهمة <span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" placeholder="اسم المهمة الأساسية" name="tasktopic" required>
+							<span class="error-message" style="color: red;"></span>
+                          </div>
+                        </div>  
+                      </div>
+                      
+                      <div class="form-group">
+                        <label class="form-label">وصف المهمة<span style="color: red;">*</span></label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="شرح المهمة الأساسية" name="taskdescription" required></textarea>
+                        <span class="error-message-subject" style="color: red;"></span>
+                      </div>
+                      
+                      <div class="form-group">
+						<label class="form-label">يجب إنهاء المهمة من قبل جميع الأطراف</label>
+						<input type="checkbox" name="isfull_accomplishment">
+						
+					   </div>  
+
+                      <div class="form-group">
+                        <label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+                        <div class="form-group">
+                          <label class="form-label"></label>
+                          <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+                          <span class="error-message-attachment" style="color: red;"></span>
+                          <div id="fileList" class="file-list"></div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ بداية المهمة <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="startdate_display" value="" disabled>
+                                 <input type="hidden" name="startdate" value="">
+                                <span class="error-message-startdate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ إنتهاء المهمة <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate"  required>
+                                <span class="error-message-enddate" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">الإجراء المطلوب<span style="color: red;">*</span></label>
+                            <select class="form-control" name="requiredprocedure" onchange="toggleInputBox(this)" style="appearance: none; background: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;12&quot; viewBox=&quot;0 0 140 120&quot;><polygon points=&quot;70,100 0,0 140,0&quot; style=&quot;fill:black;&quot;/></svg>') no-repeat right .75rem center; background-size: 14px 12px; padding-right: 2.5rem;">
+                              <option value="تنفيذ">تنفيذ</option>
+                              <option value="مراجعة">مراجعة</option>
+                              <option value="إبداء رأى">إبداء رأى</option>
+                              <option value="توقيع">توقيع</option>
+                              <option value="else">أخرى</option>
+                            </select>
+                            <span class="error-message-startdate" style="color: red;"></span>
+                          </div>
+                          <!-- Dynamic input box for "أخرى" option -->
+                          <div class="form-group" id="otherProcedureInput" style="display: none;">
+                            <label for="otherProcedure">الإجراء المطلوب<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="otherProcedure" name="otherProcedure" placeholder="يرجى تحديد الإجراء المطلوب">
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">أولوية المهمة<span style="color: red;">*</span></label>
+                            <select class="form-control" name="priority" style="appearance: none; background: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;12&quot; viewBox=&quot;0 0 140 120&quot;><polygon points=&quot;70,100 0,0 140,0&quot; style=&quot;fill:black;&quot;/></svg>') no-repeat right .75rem center; background-size: 14px 12px; padding-right: 2.5rem;">
+                              <option value="عادية">عادية</option>
+                              <option value="عاجلة">عاجلة</option>
+                            </select>
+                            <span class="error-message-priority" style="color: red;"></span>
+                          </div>
+                        </div>
+                      </div>
+                    
+
+                    <div class="form-group">
+                        <label class="form-label">إسناد المهمة إلى <span style="color: red;">*</span></label>
+                        <select class="form-control select2"  id="mySelect" name="assiningto" data-placeholder= "إسناد المهمة إلى " multiple required>
+                            {% for person in kaiBuHead %}
+                                <option value="a.{{ person.id }}">
+                                    {{ person.position }} في معهد الملك عبدالله للبحوث و الدراسات الإستشارية {{ person.first_name }} {{ person.last_name }}
+                                </option>
+                            {% endfor %}
+                            <option value="b.KAI_employees">
+                                موظفين معهد الملك عبدالله للبحوث والدراسات الإستشارية
+                            </option>
+                           
+                            
+                            {% for head in otherCollagesBUHeads %}
+                            {% for collage in allCollages %}
+                            {% if head.collageid.collageid == collage.collageid %}
+                                    <option value="c.{{ head.id }}">
+                                        رئيس وحدة الأعمال  {{ collage.name }} {{head.first_name }} {{ head.last_name }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for dean in collageDean%}
+                        <option value="d.{{dean.id}}">
+                            عميد الكلية {{dean.first_name}} {{dean.last_name}}
+                        </option>"
+                        {% endfor %}
+
+                        </select> 
+                        <span class="error-message-assiningto" style="color: red;"></span><br>
+
+                       
+                    </div>
+
+
+
+                    
+                    
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات</label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="ملاحظات" name="notes" ></textarea>
+                        
+                      </div>
+    
+                      
+                </div>
+                
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    
+  <!--********************************************نهاية مودل طلب الانشاء *************************************************-->
+
+  					
+     <!--********************************************مودل إعادة الإسناد  *************************************************-->
+     <div class="modal fade"  id="newprojectmodal2">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="smartwizard-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">إعادة الإسناد</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="modal-body">
+
+					<div class="form-group">
+                        <label class="form-label">إسناد المهمة إلى <span style="color: red;">*</span></label>
+                        <select class="form-control select2"  id="mySelect121" name="assiningto" data-placeholder= "إسناد المهمة إلى " multiple required>
+                            {% for person in kaiBuHead %}
+                                <option value="a.{{ person.id }}">
+                                    {{ person.position }} في معهد الملك عبدالله للبحوث و الدراسات الإستشارية {{ person.first_name }} {{ person.last_name }}
+                                </option>
+                            {% endfor %}
+                            <option value="b.KAI_employees">
+                                موظفين معهد الملك عبدالله للبحوث والدراسات الإستشارية
+                            </option>
+                           
+                            
+                            {% for head in otherCollagesBUHeads %}
+                            {% for collage in allCollages %}
+                            {% if head.collageid.collageid == collage.collageid %}
+                                    <option value="c.{{ head.id }}">
+                                        رئيس وحدة الأعمال  {{ collage.name }} {{head.first_name }} {{ head.last_name }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for dean in collageDean%}
+                        <option value="d.{{dean.id}}">
+                            عميد الكلية {{dean.first_name}} {{dean.last_name}}
+                        </option>"
+                        {% endfor %}
+
+                        </select> 
+                        <span class="error-message-assiningto" style="color: red;"></span><br>
+
+                       
+                    </div>
+
+
+
+
+					
+                           
+                </div>
+                
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إسناد</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    
+  <!--********************************************نهاية مودل إعادة الإسناد  *************************************************-->
+
+
+                        <!-- END ROW -->
+        {% endblock %}
+
+		
+{% block scripts %}
+        <script src="{% static 'assets/plugins/treeview/treeview.js'%}"></script>
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+        
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+		<!-- Include jQuery -->
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+		<!-- Include Bootstrap CSS -->
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Include Bootstrap Bundle with Popper (required for modals) -->
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.bundle.min.js"></script>
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+		
+		
+<script>
+	$(document).ready(function () {
+    var $select1 = $('#mySelect121').selectize(); // Ensure this corresponds to the correct ID
+    var $select = $('#mySelect2').selectize();
+
+    $('#openToAllCheckbox').change(function() {
+        var selectize = $select[0].selectize;
+
+        if ($(this).prop('checked')) {
+            selectize.clear(); // Clear selected options if checkbox is checked
+            selectize.disable(); // Disable the selectize control
+            document.querySelector('.error-message-instructor').innerText = '';
+        } else {
+            selectize.enable(); // Enable the selectize control
+        }
+    });
+
+	$('#mySelect2').on('change', function() {
+			validateInstructors();
+	});
+
+});
+
+</script>
+<script>
+	$(document).ready(function () {
+    var $select1 = $('#mySelect').selectize(); // Ensure this corresponds to the correct ID
+    var $select = $('#mySelect2').selectize();
+
+    $('#openToAllCheckbox').change(function() {
+        var selectize = $select[0].selectize;
+
+        if ($(this).prop('checked')) {
+            selectize.clear(); // Clear selected options if checkbox is checked
+            selectize.disable(); // Disable the selectize control
+            document.querySelector('.error-message-instructor').innerText = '';
+        } else {
+            selectize.enable(); // Enable the selectize control
+        }
+    });
+
+	$('#mySelect2').on('change', function() {
+			validateInstructors();
+	});
+
+});
+
+</script>
+<script>
+// ***************************************************
+
+function validateInstructors() {
+        var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
+        var selectedCount = $('#mySelect2 option:selected').length;
+		num_ofinstructors = num_ofinstructors -1
+
+        if (selectedCount !== num_ofinstructors) {
+            $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+        } else {
+            $('.error-message-instructor').text('');
+        }
+    }
+</script>
+<script>
+ function validateInstructorsCount() {
+        var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
+        var selectedCount = $('#mySelect2 option:selected').length;
+        var openToAllCheckboxChecked = $('#openToAllCheckbox').is(':checked');
+		num_ofinstructors = num_ofinstructors -1
+
+        if (openToAllCheckboxChecked || selectedCount === num_ofinstructors) {
+            return true;
+        } else {
+            $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
+            return false;
+        }
+    }
+</script>
+<script>
+	document.getElementById('selectTrainersForm').addEventListener('submit', function(e) {
+		var checkboxes = document.querySelectorAll('input[name="trainer_selection"]:checked');
+		var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
+		var programleader = document.getElementById('programleader').value;
+		var errorMessage = document.querySelector('.error-message-trainer_selection');
+		
+
+		if (programleader){
+			num_ofinstructors = num_ofinstructors -1;
+		}
+
+		if(num_ofinstructors === 0){
+			num_ofinstructors = 1;
+		}	
+
+		if (checkboxes.length !== num_ofinstructors) {
+			e.preventDefault();
+			errorMessage.textContent = 'الرجاء تحديد المدربين ' + num_ofinstructors + ' بالضبط للبرنامج.';
+		} else {
+			errorMessage.textContent = '';
+		}
+	});
+</script>
+
+<script>$(document).ready(function() {
+    var form = $('#selectTrainersForm');
+    var confirmSelectTeam = false;
+
+    form.on('submit', function(e) {
+        e.preventDefault();
+
+        var isFormValid = validateInstructorsCount();
+        console.log('Form validation result:', isFormValid);
+
+        if (isFormValid && !confirmSelectTeam) {
+            console.log('Showing modal');
+            $('#customAlertSelectTeam').modal('show');
+        } else if (isFormValid && confirmSelectTeam) {
+            console.log('Submitting form');
+            form.off('submit');
+            form.submit();
+        }
+    });
+
+    $('#alertSelectTeam').click(function() {
+        console.log('Confirm button clicked');
+        confirmSelectTeam = true;
+        form.submit();
+    });
+
+    function validateInstructorsCount() {
+        var checkboxes = $('input[name="trainer_selection"]:checked');
+        var num_ofinstructors = parseInt($('#num_ofinstructors').val());
+        var programleader = $('#programleader').val();
+        var errorMessage = $('.error-message-trainer_selection');
+
+        if (programleader){
+            num_ofinstructors = num_ofinstructors - 1;
+        }
+
+        if(num_ofinstructors === 0){
+            num_ofinstructors = 1;
+        }   
+
+        if (checkboxes.length !== num_ofinstructors) {
+            errorMessage.text('الرجاء تحديد المدربين ' + num_ofinstructors + ' بالضبط للبرنامج.');
+            return false;
+        } else {
+            errorMessage.text('');
+            return true;
+        }
+    }
+});</script>
+
+
+
+<script>
+    $(document).ready(function() {
+        var form = $('#fromrelses');
+        var confirmRelease = false;
+
+        form.on('submit', function(e) {
+            e.preventDefault();
+
+            var isFormValid = validateForm();
+            console.log('Form validation result:', isFormValid); // Changed to console.log()
+
+            if (isFormValid && !confirmRelease) {
+                console.log('Showing modal'); // Changed to console.log()
+                $('#customAlertReleaseProgram').modal('show');
+            } else if (isFormValid && confirmRelease) {
+                console.log('Submitting form'); // Changed to console.log()
+                form.off('submit');
+                form.submit();
+            }
+        });
+
+        $('#alertReleaseProgram').click(function() {
+            console.log('Confirm button clicked'); // Changed to console.log()
+            confirmRelease = true;
+            form.submit();
+        });
+    });
+
+    function validateForm() {
+        var lastenrollmentdateElement = document.querySelector('input[name="lastenrollmentdate"]');
+        var startdateElement = document.getElementById('startdate'); 
+		var descriptionElement = document.querySelector('textarea[name="description"]');
+		var description_englishElement = document.querySelector('textarea[name="description_english"]');
+        var locationElement = document.querySelector('input[name="location"]');
+        var topicElement = document.querySelector('input[name="topic_english"]');
+        var lastenrollmentdate = new Date(lastenrollmentdateElement.value);
+        var startDate = new Date(startdateElement.value); 
+
+        if (lastenrollmentdate >= startDate) {
+            console.log('Last enrollment date is not before start date'); // Changed to console.log()
+            return false;
+        }
+
+        if (locationElement.value.length < 5 || /^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
+            console.log('Invalid location'); // Changed to console.log()
+            return false;
+        }
+
+        if (topicElement.value.length < 5 || /^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+            console.log('Invalid topic'); // Changed to console.log()
+            return false;
+        }
+
+        if (descriptionElement.value.length < 5 || description_englishElement.value.length < 5 || /^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_englishElement.value.trim())) {
+            console.log('Invalid description'); // Changed to console.log()
+            return false;
+        }
+
+        console.log('Form is valid'); // Changed to console.log()
+        return true;
+    }
+</script>
+
+
+
+<script>
+	$(document).ready(function() {
+
+		$('input[name="lastenrollmentdate"]').on('blur', function() {
+			var startDate = $('#startdate').val(); 
+			var lastenrollmentdate = $(this).val();
+
+			if (lastenrollmentdate === '') {
+				$(this).removeClass('is-invalid');
+				$(this).siblings('.error-message-lastenrollmentdate').text('');
+			} else {
+				startDate = new Date(startDate);
+				lastenrollmentdate = new Date(lastenrollmentdate);
+
+				if (lastenrollmentdate >= startDate) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-lastenrollmentdate').text('يجب ان يكون اخر يوم تسجيل قبل تاريخ البدء');
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-lastenrollmentdate').text('');
+				}
+			}	
+		});
+
+
+		$('input[name="topic_english"]').on('blur', function() {
+			var topic = $(this).val();
+			if (topic.length < 5) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-topic_english').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-topic_english').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+			}else {
+			$(this).removeClass('is-invalid');
+			$(this).siblings('.error-message-topic_english').text('');
+			}
+			});
+
+		
+		$('input[name="location"]').on('blur', function() {
+			var topic = $(this).val();
+			if (topic.length < 5) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-location').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+				$(this).addClass('is-invalid');
+				$(this).siblings('.error-message-location').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+			}else {
+			$(this).removeClass('is-invalid');
+			$(this).siblings('.error-message-location').text('');
+			}
+			});
+
+		
+		$('textarea[name="description"]').on('blur', function() {
+				var topic = $(this).val();
+				if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description').text('يجب أن يكون على الأقل خمسة أحرف');
+				}else if (/^\d+$/.test(topic.trim())) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-description').text('');
+				}
+			});
+
+		
+		$('textarea[name="description_english"]').on('blur', function() {
+				var topic = $(this).val();
+				if (topic.length < 5) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('يجب أن يكون على الأقل خمسة أحرف');
+				}else if (/^\d+$/.test(topic.trim())) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+				} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-description_english').text('');
+				}
+			});
+	});
+</script>
+
+<script>
+	function haspaid(register_id) {
+    var element = $('#haspaid_' + register_id);
+    var button = $('#haspaid_button' + register_id);
+    var attendURL =  "{% url 'business_unit_account:haspaid' register_id=0 %}".replace('0', register_id);
+
+		$.ajax({
+			url: attendURL,
+			type: 'GET',
+			success: function(response) { 
+				if (response.success_message !== undefined) {
+					if (response.success_message === true) {
+						element.html('<p>تم الدفع</p>');
+						button.html('<div style="margin-right: 10px;"><a type="button" class="btn btn-danger me-2" onclick="haspaid(' + register_id + ')">'+
+							'لم يدفع <i style="width:30px;" class="fa fa-window-close text-nowrap"></i>'+
+							'</a> </div>');   
+					} else {
+						element.html('<p>لم يتم الدفع</p>');
+						button.html('<div style="margin-right: 10px;"><a type="button" class="btn btn-outline-info me-2" onclick="haspaid(' + register_id + ')">'+
+							'دفع <i style="width:30px;" class="fa fa-check-square text-nowrap"></i>'+
+							'</a> </div>');   
+					}
+				} else {
+					console.log('Response message not received');
+				}
+			},
+			error: function(error) {
+				console.error('Error occurred:', error);
+			}
+		});
+	}
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize flatpickr for date inputs
+        flatpickr('.flatpickr[data-input][data-date]', {
+            dateFormat: "d-m-Y",
+            minDate: "today",
+        });
+
+        // Initialize flatpickr for time inputs
+        flatpickr('.flatpickr[data-input][data-time]', {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+        });
+    });
+</script>
+
+
+<script> 
+    $(function() {
+          $(document).ready(function () {
+            var todaysDate = new Date();
+            var year = todaysDate.getFullYear();
+            var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+            var day = ("0" + todaysDate.getDate()).slice(-2);
+            var maxDate = (year +"-"+ month +"-"+ day);
+            $('.date').attr('min',maxDate);
+          });
+        });``
+</script>
+
+<!-- delete program -->
+<script>
+var deleteConfirmed = false;
+    
+    $('#customDeleteProgram').on('show.bs.modal', function() {
+     
+    })
+    
+    $('#alertConfirmDelete').click(function() {
+		deleteConfirmed = true;  // Set formSubmitted to true when confirmed
+      $('#deleteForm').submit();
+    });
+    
+    $('#deleteForm').on('submit', function(e) {
+      if(!deleteConfirmed) {
+        e.preventDefault();
+        $('#customDeleteProgram').modal('show');
+      }
+    });
+
+</script>
+
+
+<!-- confirmAcceptance from bu -->
+<script>
+	function customAlert(message) {
+    console.log('customAlert called');
+    $('#alertMessage').text(message);
+    $('#customAlert').modal('show');
+}
+
+let formShouldSubmit = false;
+
+function confirmAcceptance(event) {
+    console.log('confirmAcceptance called');
+    
+    if(!formShouldSubmit) {
+        event.preventDefault();
+        customAlert('هل أنت متأكد من قبول الطلب؟');
+    }
+}
+
+$(document).ready(function() {
+    $('#alertConfirm').on('click', function() {
+        console.log('confirm button clicked');
+        $('#customAlert').modal('hide');
+        formShouldSubmit = true;
+        document.getElementById('acceptForm').submit();
+    });
+
+    $('#acceptForm').on('submit', confirmAcceptance);
+});
+</script>
+
+<!-- confirmRejection from bu -->
+<script>
+	// Define the customAlert function
+	function customAlert(message) {
+		// Update the alert message
+		document.getElementById('alertMessage').innerText = message;
+		// Show the custom alert modal
+		var customAlertModal = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlertModal.show();
+	}
+	
+	function confirmRejection() {
+		// Show the rejection reason modal
+		var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+		rejectionReasonModal.show();
+	}
+	
+	// Event listener for the confirm button in the custom alert modal
+	document.getElementById('alertConfirm').addEventListener('click', function() {
+		var customAlertModal = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlertModal.hide();
+	});
+	
+	// Event listener for the confirm button of the rejection reason modal
+	document.getElementById('rejectionReasonConfirm').addEventListener('click', function() {
+		var rejectionReason = document.getElementById('rejectionReasonInput').value;
+		if (rejectionReason.length > 5 && /\D/.test(rejectionReason)) {
+			var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
+			rejectionReasonModal.hide();
+			document.getElementById('rejectionReason').value = rejectionReason;
+			document.getElementById('rejectionForm').submit();
+		}
+	});
+	</script>
+
+<!-- 3 -->
+<script>
+	function showCustomConfirmModal(message, callback) {
+		// Insert the message into the modal
+		$('#alertPlaceholder').text(message);
+	
+		// Show the modal
+		$('#rejectionReasonModal').modal('show');
+	
+		// Bind a one-time event listener to the confirm button
+		$('#rejectionReasonConfirm').one('click', function() {
+			// Hide the modal
+			$('#rejectionReasonModal').modal('hide');
+	
+			// Call the callback function
+			callback(true);
+		});
+	}
+</script>
+
+
+<!-- send to kai -->
+<script>
+    var formSubmitted = false;
+    
+    $('#customAlertsendtokai').on('show.bs.modal', function() {
+     
+    })
+    
+    $('#alertConfirmSendToKai').click(function() {
+      formSubmitted = true;  // Set formSubmitted to true when confirmed
+      $('#myForm').submit();
+    });
+    
+    $('#myForm').on('submit', function(e) {
+      if(!formSubmitted) {
+        e.preventDefault();
+        $('#customAlertsendtokai').modal('show');
+      }
+    });
+</script>
+
+
+<script>
+	// Get the button and attach a click event listener
+	const taskCompletionBtn = document.getElementById('taskCompletionBtn');
+	taskCompletionBtn.addEventListener('click', handleTaskCompletion);
+  
+	function handleTaskCompletion() {
+	  // Check the condition for not completed subtasks
+	  if (givenTask.NotCompletedSubTasks.count() == 0) {
+		// Update the message in the modal
+		document.getElementById('alertMessage').textContent = 'هل أنت متأكد من إنجاز المهمة؟';
+  
+		// Show the modal
+		const customAlert = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlert.show();
+  
+		// Add the necessary input fields
+		const modalBody = document.querySelector('#customAlert .modal-body');
+		modalBody.innerHTML += `
+		  <div class="form-group">
+			<label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+			<div class="form-group">
+			  <label class="form-label"></label>
+			  <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+			  <span class="error-message-attachment" style="color: red;"></span>
+			  <div id="fileList" class="file-list"></div>
+			</div>
+		  </div>
+		  <div class="form-group">
+			<label class="form-label">خطاب الانجاز <span style="color: red;">*</span></label>    
+			<textarea class="form-control" rows="4" cols="105" placeholder="" name="taskdescription" required></textarea>
+			<span class="error-message-subject" style="color: red;"></span>
+		  </div>
+		`;
+  
+		// Add event listener to the confirm button
+		const alertConfirmBtn = document.getElementById('alertConfirm');
+		alertConfirmBtn.addEventListener('click', handleTaskConfirmation);
+	  } else {
+		// Update the message in the modal
+		document.getElementById('alertMessage').textContent = 'يوجد مهام فرعية غير منجزة لهذه المهمة. هل أنت متأكد من إنجازها؟';
+  
+		// Show the modal
+		const customAlert = new bootstrap.Modal(document.getElementById('customAlert'));
+		customAlert.show();
+  
+		// Add event listener to the confirm button
+		const alertConfirmBtn = document.getElementById('alertConfirm');
+		alertConfirmBtn.addEventListener('click', handleSubtaskConfirmation);
+	  }
+	}
+  
+	function handleTaskConfirmation() {
+	  // Call the specified method
+	  // {% url 'business_unit_account:retrieve_task' task_id=givenTask.task_id %}
+	}
+  
+	function handleSubtaskConfirmation() {
+	  // Call the specified method
+	  // {% url 'business_unit_account:retrieve_task' task_id=givenTask.task_id %}
+	}
+  </script>
+
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var form = document.querySelector('form'); // Assuming there is only one form element
+		var rejectionTextArea = document.querySelector('textarea[name="rejection_reasons"]');
+		var alertMessage = document.getElementById('alertMessage');
+
+		// Listen for the form's submit event
+		form.addEventListener('submit', function(event) {
+			if (rejectionTextArea.value.trim().length < 5) {
+				// Prevent the form from submitting
+				event.preventDefault();
+				// Show error message
+				alertMessage.textContent = 'يجب ذكر سبب الرفض يجب ادخال 5 احرف على الاقل';
+				alertMessage.style.color = 'red';
+			}
+		});
+
+		// Optional: Clear error message when the user starts typing.
+		rejectionTextArea.addEventListener('input', function() {
+			if (rejectionTextArea.value.trim().length >= 5) {
+				alertMessage.textContent = 'الرجاء كتابة سبب رفض المهمة';
+				alertMessage.style.color = 'initial'; // Or whatever your default color is
+			}
+		});
+	});
+</script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function(event) { 
+			// Get the confirm button and add a click event listener
+			var confirmButton = document.getElementById('alertConfirmPending');
+			confirmButton.addEventListener('click', function(e) {
+				// Prevent the default form submission
+				e.preventDefault();
+		
+				// Get the value of the textarea
+				var reasons = document.querySelector('textarea[name="pending_reasons"]').value.trim();
+		
+				// Check if the reasons are empty or less than 5 characters
+				if(reasons === '') {
+					alert('الرجاء كتابة أسباب طلب تعليق المهمة');
+				} else if(reasons.length < 5) {
+					alert('يجب أن تكون الأسباب على الأقل 5 أحرف');
+				} else {
+					// If validation passes, submit the form
+					e.target.closest('form').submit();
+				}
+			});
+		
+			// Optional: Clear the error message when the modal is closed
+			var cancelButton = document.querySelector('.btn-danger[data-bs-dismiss="modal"]');
+			cancelButton.addEventListener('click', function() {
+				// Clear any previous error message
+				var errorMessageElement = document.getElementById('alertMessagePending');
+				errorMessageElement.textContent = 'الرجاء كتابة أسبب طلب تعليق المهمة';
+			});
+		});
+		</script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	  var modal = document.getElementById('TaskCompletion12');
+	  
+	  // Listen for the 'shown.bs.modal' event on the modal
+	  modal.addEventListener('shown.bs.modal', function() {
+		// The modal is now open, and the DOM is accessible
+		var form = modal.querySelector('form');
+		
+		if (form) {
+		  var taskDescription = form.querySelector('textarea[name="taskdescription"]');
+		  var attachment = form.querySelector('input[name="attachment"]');
+		  var errorMessagetaskDescription = form.querySelector('.error-message-subject');
+		  var errorAttachment = form.querySelectorAll('.error-message-attachment');
+		  
+		  form.addEventListener('submit', function(event) {
+			var textAreaValue = taskDescription.value.trim();
+			var fileValue = attachment && attachment.files.length;
+			var isTextareaValid = textAreaValue.length >= 5;
+			var isFileValid = fileValue > 0;
+	
+			// Clear any existing error messages
+			if (errorMessagetaskDescription) {
+			  errorMessagetaskDescription.innerText = '';
+			}
+			errorAttachment.forEach(function(errorElement) {
+			  errorElement.innerText = '';
+			});
+	
+			// Only show an error if both conditions are not met
+			if (!isTextareaValid && !isFileValid) {
+			  event.preventDefault(); // Prevent form submission
+			  if (errorMessagetaskDescription) {
+				errorMessagetaskDescription.innerText = 'يجب إدخال خطاب المهمة بحد أدنى 5 أحرف أو رفع ملف.';
+			  }
+			  errorAttachment.forEach(function(errorElement, index) {
+				if (index === 0) { // Assuming the first error message is for the primary attachment
+				  errorElement.innerText = 'يجب إدخال خطاب المهمة بحد أدنى 5 أحرف أو رفع الخطاب في خطاب المهمة';
+				}
+			  });
+			}
+		  });
+		}
+	  });
+	});
+	</script>
+
+
+<script>
+  jQuery(document).ready(function($) {
+    $('body').addClass('rtl');
+    $('body').removeClass('ltr');
+    $("html[lang=en]").attr("dir", "rtl");
+  });
+</script>
+<script>
+	function toggleChildren(containerId) {
+    var container = document.getElementById(containerId);
+    if (container) {
+        container.style.display = container.style.display === "none" ? "block" : "none";
+    }
+}
+</script>
+
+<script>
+	// Assuming you have a flatpickr instance attached to the '.flatpickr' selector
+	// Set the date input to today's date in the format of YYYY-MM-DD
+	document.addEventListener('DOMContentLoaded', function() {
+	  var today = new Date().toISOString().split('T')[0];
+	  
+	  // Set the displayed but disabled date field
+	  document.querySelector('input[name="startdate_display"]').value = today;
+	  
+	  // Also update the hidden field which will be submitted with the form
+	  document.querySelector('input[name="startdate"]').value = today;
+	});
+  </script>
+  <script>
+	function toggleInputBox(selectElement) {
+	  var inputBox = document.getElementById('otherProcedureInput');
+	  if (selectElement.value === 'else') {
+		inputBox.style.display = 'block';
+	  } else {
+		inputBox.style.display = 'none';
+	  }
+	}
+	</script>
+
+<script>
+	$(document).ready(function () {
+		var selectize = $('#mySelect_assigningto').selectize()[0].selectize; // Initialize selectize for your select input
+
+		$('#no-assignment').change(function() { // Ensure 'openToAllCheckbox' is the correct ID for your checkbox
+			if ($(this).prop('checked')) {
+				selectize.clear(); // Clear selected options if checkbox is checked
+				selectize.disable(); // Disable the selectize control
+				document.querySelector('.error-message-instructor').innerText = '';
+			} else {
+				selectize.enable(); // Enable the selectize control
+			}
+		});
+
+		$('#mySelect_assigningto').on('change', function() {
+			// Assuming you have a function called validateInstructors
+			validateInstructors();
+		});
+	});
+</script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var form = document.getElementById('reassignForm');
+		form.addEventListener('submit', function(event) {
+			var select = document.getElementById('mySelect_assigningto');
+			var checkbox = document.getElementById('no-assignment');
+			var errorMessage = document.getElementById('error-message');
+			var hasSelectedOption = select.selectedOptions.length > 0;
+	
+			// Check if any option is selected (hasSelectedOption) or if the checkbox is checked
+			if (!hasSelectedOption && !checkbox.checked) {
+				// Prevent form submission
+				event.preventDefault();
+				// Show error message
+				errorMessage.style.display = 'block';
+			} else {
+				// Hide the error message and allow form submission
+				errorMessage.style.display = 'none';
+			}
+		});
+	});
+	</script>
+
+
+
+
+
+{% endblock %}

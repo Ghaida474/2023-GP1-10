@@ -140,6 +140,7 @@
                 var email = document.querySelector('input[name="email"]');
                 var phonenumber = document.querySelector('input[name="phonenumber"]');
                 var result2 = document.getElementById('result2');
+                var result = document.getElementById('result');
                 
                 var arabicPattern = /^[\u0600-\u06FF\s]+$/;
                 var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
@@ -171,6 +172,12 @@
                     console.log('in checkEmail check');
                     return false;
                 }
+
+                console.log('result: ', result.value); 
+                if (result.value.trim() === 'true') {
+                    console.log('in checkPosition check');
+                    return false;
+                }
             }
         </script>
 
@@ -181,7 +188,7 @@
             var result = $('#result');
             var attendURL =  "{% url 'admin_account:checkposition' %}";
             
-            if (position == "رئيس المعهد"){
+            if (position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله'){
                 $.ajax({
                 url: attendURL,
                 type: 'GET',
@@ -189,7 +196,7 @@
                     if (response.success_message !== undefined) {
                         if (response.success_message === true) {
                             console.log('here inside position true ')
-                            element.text('يوجد رئيس معهد في النظام');
+                            element.text('يوجد رئيس قسم وحدات الأعمال بمعهد الملك عبدالله في النظام');
                             result.val('true');
                         } else {
                             element.text('');
@@ -222,6 +229,33 @@
                     <!-- END PAGE HEADER -->
 
                     <!-- ROW -->
+                        <div class="modal" tabindex="-1" id="deletekai">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                    </div>
+                                    {% if kaiexists %}
+                                        <div class="modal-body">
+                                            <p> لا يمكنك الحذف الا بتعيين رئيس وحدة اعمال آخر</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="modal-body">
+                                            <p >هل أنت متأكد من حذف الموظف/المنسوب</p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                                            <a href="{% url 'admin_account:deletekai' id=editkai.id %}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
 						<div class="row">
 							<div class="col-xl-12 col-md-12 col-lg-12">
 								<div class="card">
@@ -295,8 +329,8 @@
                                                         <input  type="hidden" id="result" name="result" value="false">
                                                         <select  class="form-control select2" data-placeholder="اختر" id="positionSelect" name="position" onchange="checkposition()" required>
                                                             <option value="">اختر</option>
-                                                            <option value="موظف في المعهد" {% if editkai.position == "موظف في المعهد" %} selected {% endif %}>موظف في المعهد</option>
-                                                            <option value="رئيس المعهد" {% if editkai.position == "رئيس المعهد" %} selected {% endif %}>رئيس المعهد</option>
+                                                            <option value='رئيس قسم وحدات الأعمال بمعهد الملك عبدالله' {% if editkai.position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله' %} selected {% endif %}>رئيس قسم وحدات الأعمال بمعهد الملك عبدالله</option>
+                                                            <option value='موظف بقسم وحدات الأعمال بمعهد الملك عبدالله' {% if editkai.position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله' %} selected {% endif %}>موظف بقسم وحدات الأعمال بمعهد الملك عبدالله</option>
                                                         </select>
                                                         <span class="error-message-position" style="color: red;"></span>
                                                     </div>
@@ -314,6 +348,7 @@
                                    
                                         <div class="card-footer text-end">
                                             <button type="submit" name="addkai" class="btn btn-primary btn-lg projectnotify">تعديل</button>
+                                            <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deletekai" >حذف</button>
                                             <a  href="{% url 'admin_account:kaiList' %}" class="btn btn-primary btn-lg">رجوع</a>
                                         </div>
                                     </form>

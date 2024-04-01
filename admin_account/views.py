@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password, check_password
-from app.models import Admin, FacultyStaff ,Collage,Kaibuemployee,Trainingprogram
+from app.models import Admin, FacultyStaff ,Collage,Kaibuemployee,Trainingprogram,Project, Task ,TaskToUser
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 import string
@@ -19,6 +19,7 @@ import ssl
 import certifi
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from django.db import connection
 
 
 @login_required
@@ -47,11 +48,17 @@ def addFaculty (request):
       rank = request.POST.get('rank')
       empNum = request.POST.get('empNum')
       isbu = request.POST.get('isbu')
+      assistant = request.POST.get('assistant')
 
       if isbu:
           isbu=True
       else:
           isbu=False
+
+      if assistant:
+          assistant=True
+      else:
+          assistant=False
 
       random_password = generate_random_password()
       print(random_password)
@@ -79,6 +86,7 @@ def addFaculty (request):
             major = deparment,
             collageid = getcollage,
             is_buhead = isbu, 
+            bu_assistant = assistant,
             username = username[0],
             department_field = deparment,
             rank = rank,
@@ -90,11 +98,11 @@ def addFaculty (request):
       new_faculty.save()
       print('new_faculty',new_faculty)
 
-      send_email_to_new_user(request , email , password)
+      send_email_to_new_user(request , email , password , new_faculty.is_buhead )
 
       firstname = new_faculty.first_name + ' '+ new_faculty.last_name
       lastname = ' | ' + new_faculty.position
-      if new_faculty.isbu:
+      if new_faculty.is_buhead:
         name = "رئيس وحدة الاعمال في "+ getcollage.name
         lastname = ' | ' + name
           
@@ -195,15 +203,54 @@ def addCollage (request):
             buphonenumber = request.POST.get('buphonenumber')
             domain = request.POST.getlist('domains[]')
             departments =  request.POST.getlist('departments[]')
-            # userid =
             domain.append("اخرى")
+
+            if nofemalestudents:
+                nofemalestudents = int(nofemalestudents) 
+            else:
+                nofemalestudents = None
+            
+            if nomalestudents:
+                nomalestudents = int(nomalestudents) 
+            else:
+                nomalestudents = None
+            
+            if nofaculty:
+                nofaculty = nofaculty
+            else:
+                nofaculty = None
+            
+            if nostaff:
+                nostaff = nostaff
+            else:
+                nostaff = None
+
+            nostudents = 0
+            if nomalestudents and nofemalestudents:
+                nostudents = int(nofemalestudents) + int(nomalestudents)
+            elif nomalestudents:
+                nostudents = int(nomalestudents)
+            elif nofemalestudents:
+                nostudents = int(nofemalestudents)
+            else:
+                nostudents = None
+                
+            if nodisk:
+                nodisk = nodisk
+            else:
+                nodisk = None
+            
+            if nobuilding:
+                nobuilding = nobuilding
+            else:
+                nobuilding = None
 
             new_collage = Collage(
                 name = name,
                 adminemail = request.user,
                 nofaculty = nofaculty,
                 nostaff = nostaff,
-                nostudents = nofemalestudents + nomalestudents,
+                nostudents = nostudents,
                 nofemalestudents = nofemalestudents,
                 nomalestudents = nomalestudents,
                 buemail = buemail,
@@ -213,6 +260,8 @@ def addCollage (request):
                 nobuilding = nobuilding,
                 nodisk = nodisk,
                 nofloor = nofloor ,
+                new_user = True,
+                last_update = timezone.now(),
             )
             new_collage.save()
             print('new_collage',new_collage)
@@ -244,6 +293,13 @@ def collageList (request):
 def editfaculty (request , id ):
     collage = Collage.objects.all()
     nationalities = getnationalities()
+    facultyexists = (
+    Trainingprogram.objects.filter(instructorid__contains=[id]).exists() or
+    Project.objects.filter(Teamid__contains=[id]).exists()
+    )
+    getcollage = FacultyStaff.objects.get(id=id)
+    buexists = FacultyStaff.objects.filter(id=id, is_buhead=True, collageid=getcollage.collageid).exists()
+    print('buexists',buexists)
     try:
         editfaculty = FacultyStaff.objects.get(id=id)
         if request.method == 'POST':
@@ -261,15 +317,25 @@ def editfaculty (request , id ):
             rank = request.POST.get('rank')
             empNum = request.POST.get('empNum')
             isbu = request.POST.get('isbu')
+            assistant = request.POST.get('assistant')
+            
+            if editfaculty.is_buhead is False and isbu:
+                send_email_to_new_BU(request , editfaculty.email)
 
             if isbu:
                 isbu=True
             else:
                 isbu=False
 
+            if assistant:
+                assistant=True
+            else:
+                assistant=False
+
             username = email.split('@')
             getcollage = Collage.objects.get(collageid=collageid)
-      
+            oldussername = editfaculty.username
+            
             editfaculty.first_name = firstName
             editfaculty.last_name = lastName
             editfaculty.email = email
@@ -282,21 +348,28 @@ def editfaculty (request , id ):
             editfaculty.major = deparment
             collageid = getcollage
             editfaculty.is_buhead = isbu
+            editfaculty.bu_assistant = assistant
             editfaculty.username = username[0]
             editfaculty.department_field = deparment
             editfaculty.rank = rank
             editfaculty.first_nameeng = firstNameENG
             editfaculty.last_nameeng = lastNameENG
             editfaculty.save()
+            facultyUpdateapi(request , editfaculty , oldussername)
             print('editfaculty',editfaculty)
             return redirect('admin_account:facultyList')
     except Exception as e:
         print('Error occurred:', e)
-    return render(request, 'admin/editfaculty.html' ,{'editfaculty':editfaculty , 'nationalities':nationalities , 'collage':collage} )
+    return render(request, 'admin/editfaculty.html' ,{ 'buexists':buexists, 'facultyexists':facultyexists, 'editfaculty':editfaculty , 'nationalities':nationalities , 'collage':collage} )
 
 @login_required
 def editkai (request , id ):
     nationalities = getnationalities()
+    kai = Kaibuemployee.objects.get(id=id)
+    kaiexists = (Task.objects.filter(kai_initiation = kai).exists() or
+                 Task.objects.filter(kai_ids__contains=[kai.id]).exists() or
+                 TaskToUser.objects.filter(kai_user= kai).exists() 
+                 )
     try:
         editkai = Kaibuemployee.objects.get(id=id)
         if request.method == 'POST':
@@ -309,6 +382,7 @@ def editkai (request , id ):
             position = request.POST.get('position')
             empNum = request.POST.get('empNum')      
             username = email.split('@')
+            oldussername = editkai.username
 
             editkai.first_name = firstName
             editkai.last_name = lastName
@@ -321,12 +395,101 @@ def editkai (request , id ):
             editkai.position = position
             editkai.username = username[0]
             editkai.save()
+            kaiUpdateapi(request , editkai , oldussername)
             print('editkai',editkai)
             return redirect('admin_account:kaiList')
     except Exception as e:
         print('Error occurred:', e)
-    return render(request, 'admin/editkai.html' ,{'editkai':editkai , 'nationalities':nationalities} )
+    return render(request, 'admin/editkai.html' ,{'kaiexists':kaiexists ,'editkai':editkai , 'nationalities':nationalities} )
 
+def facultyUpdateapi(request , user , oldussername):
+    # 1
+    print('oldussername' , oldussername)
+    print('user.username' , user.username)
+    url = "https://api.chatengine.io/users/"
+    payload={}
+    headers = {
+    'PRIVATE-KEY':'499cc31a-d338-455c-8e1c-7ea6e54afc38'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    print('first *******************************************')
+    # print(response.text)
+    if response.status_code == 200:
+        user_data = response.json()
+        user_id = None
+        
+        for user_info in user_data:
+            print('user_info.get("username")' , user_info.get("username"))
+            if user_info.get("username") == oldussername:
+                user_id = user_info.get("id")
+                break
+        
+        if user_id is not None:
+            print('user_id' , user_id)
+            username = user.email.split('@')
+            getcollage = Collage.objects.get(collageid= user.collageid.collageid)
+            firstname = user.first_name + ' '+ user.last_name
+            lastname = ' | ' + user.position
+            if user.is_buhead:
+                name = "رئيس وحدة الاعمال في "+ getcollage.name
+                lastname = ' | ' + name
+            # 2
+            url = f"https://api.chatengine.io/users/{user_id}/"
+            payload = {"username":username[0] ,
+                       "email": user.email ,
+                        "first_name":firstname ,
+                        "last_name":lastname,
+                        "custom_json": {"high_score": 3000},
+                        "is_online": True}
+            headers = {
+            'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'
+            }
+            response = requests.request("PATCH", url, headers=headers, data=payload)
+            print('secound *******************************************')
+            print(response.text)
+        else:
+            return HttpResponse("User ID not found.")
+    else:
+        return HttpResponse("Failed to fetch user data from API.")
+
+def kaiUpdateapi(request , user , oldussername):
+    url = "https://api.chatengine.io/users/"
+    payload={}
+    headers = {
+    'PRIVATE-KEY':'499cc31a-d338-455c-8e1c-7ea6e54afc38'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        user_data = response.json()
+        user_id = None
+        
+        for user_info in user_data:
+            if user_info.get("username") == oldussername:
+                user_id = user_info.get("id")
+                break
+        
+        if user_id is not None:
+            username = user.email.split('@')
+            firstname = user.first_name + ' '+ user.last_name
+            lastname = ' | ' + user.position
+            
+            url = f"https://api.chatengine.io/users/{user_id}/"
+            payload = {"username":username[0] ,
+                       "email": user.email ,
+                        "first_name":firstname ,
+                        "last_name":lastname,
+                        "custom_json": {"high_score": 3000},
+                        "is_online": True}
+            headers = {
+            'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'
+            }
+            response = requests.request("PATCH", url, headers=headers, data=payload)
+            print(response.text)
+        else:
+            return HttpResponse("User ID not found.")
+    else:
+        return HttpResponse("Failed to fetch user data from API.")
+    
 @login_required
 def editcollage (request , id ):
     try:
@@ -347,20 +510,53 @@ def editcollage (request , id ):
             buphonenumber = request.POST.get('buphonenumber')
             domain = request.POST.getlist('domains[]')
 
+            if nofemalestudents:
+                editcollage.nofemalestudents = int(nofemalestudents) 
+            else:
+                editcollage.nofemalestudents = None
+            
+            if nomalestudents:
+                editcollage.nomalestudents = int(nomalestudents) 
+            else:
+                editcollage.nomalestudents = None
+            
+            if nofaculty:
+                editcollage.nofaculty = nofaculty
+            else:
+                editcollage.nofaculty = None
+            
+            if nostaff:
+                editcollage.nostaff = nostaff
+            else:
+                editcollage.nostaff = None
+
+            if nomalestudents and nofemalestudents:
+                editcollage.nostudents = int(nofemalestudents) + int(nomalestudents)
+            elif nomalestudents:
+                editcollage.nostudents = int(nomalestudents)
+            elif nofemalestudents:
+                editcollage.nostudents = int(nofemalestudents)
+            else:
+                editcollage.nostudents = None
+                
+            if nodisk:
+                editcollage.nodisk = nodisk
+            else:
+                editcollage.nodisk = None
+            
+            if nobuilding:
+                editcollage.nobuilding = nobuilding
+            else:
+                editcollage.nobuilding = None
+
             editcollage.name = name
             editcollage.adminemail = request.user
-            editcollage.nofaculty = nofaculty
-            editcollage.nostaff = nostaff
-            editcollage.nostudents = nofemalestudents + nomalestudents
-            editcollage.nofemalestudents = nofemalestudents
-            editcollage.nomalestudents = nomalestudents
             editcollage.buemail = buemail
             editcollage.buphonenumber = buphonenumber
             editcollage.departments = departments
             editcollage.domain = domain
             editcollage.nofloor = nofloor
-            editcollage.nodisk = nodisk
-            editcollage.nobuilding = nobuilding
+            editcollage.last_update = timezone.now()
             editcollage.save()
             print('editcollage', editcollage)
             return redirect('admin_account:collageList')
@@ -368,7 +564,6 @@ def editcollage (request , id ):
     except Exception as e:
         print('Error occurred:', e)
     return render(request, 'admin/editcollage.html' ,{'editcollage':editcollage , 'facultyexists':facultyexists} )
-
 
 @login_required
 def deletecollage (request , id ):
@@ -378,15 +573,50 @@ def deletecollage (request , id ):
 
 @login_required
 def deletefaculty (request , id ):
-    faculty = FacultyStaff.objects.get(collageid=id)
-    faculty.delete()
-    return redirect('admin_account:facultyList')
+    try:
+            getusername = FacultyStaff.objects.get(id = id)
+            deletefromApi(request , getusername.username)
+            with connection.cursor() as cursor:
+                 cursor.execute('DELETE FROM public."Faculty_Staff" WHERE id = %s', [id])           
+            return redirect('admin_account:facultyList')
+    except Exception as e:
+            return HttpResponse(f"Error deleting record: {e}")
 
 @login_required
 def deletekai (request , id ):
-    kai = Kaibuemployee.objects.get(collageid=id)
-    kai.delete()
-    return redirect('admin_account:kaiList')
+    try:
+            getusername = Kaibuemployee.objects.get(id = id)
+            deletefromApi(request , getusername.username)
+            with connection.cursor() as cursor:
+                 cursor.execute('DELETE FROM public."KAIBUEmployee" WHERE id = %s', [id])           
+            return redirect('admin_account:kaiList')
+    except Exception as e:
+            return HttpResponse(f"Error deleting record: {e}")
+
+def deletefromApi(request , username):
+    url = "https://api.chatengine.io/users/"
+    payload={}
+    headers = {
+    'PRIVATE-KEY':'499cc31a-d338-455c-8e1c-7ea6e54afc38'
+    }
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == 200:
+        user_data = response.json()
+        user_id = None
+        
+        for user_info in user_data:
+            if user_info.get("username") == username:
+                user_id = user_info.get("id")
+                break
+        
+        if user_id is not None:
+            url = f"https://api.chatengine.io/users/{user_id}/"
+            payload={}
+            headers = {
+            'PRIVATE-KEY': '499cc31a-d338-455c-8e1c-7ea6e54afc38'
+            }
+            response = requests.request("DELETE", url, headers=headers, data=payload)
+            print(response.text)
 
 @login_required
 def checkdepartment(request , department):
@@ -408,12 +638,21 @@ def checkdomain(request , domain):
         pass  
     return JsonResponse({'success_message': False})
 
-
 @login_required
 def checkBU(request, collage_id):
     try:
         checkifBU = FacultyStaff.objects.get(collageid=collage_id, is_buhead=True)
         if checkifBU:
+            return JsonResponse({'success_message': True})
+    except FacultyStaff.DoesNotExist:
+        pass  
+    return JsonResponse({'success_message': False})
+
+@login_required
+def checkAssistant(request, collage_id):
+    try:
+        checkifAssistant = FacultyStaff.objects.get(collageid=collage_id, bu_assistant=True)
+        if checkifAssistant:
             return JsonResponse({'success_message': True})
     except FacultyStaff.DoesNotExist:
         pass  
@@ -439,7 +678,7 @@ def checkEmail(request, email):
 @login_required
 def checkposition(request):
     try:
-        checkifposition = Kaibuemployee.objects.filter(position = "رئيس المعهد").exists()
+        checkifposition = Kaibuemployee.objects.filter(position = 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله').exists()
         if checkifposition:
             return JsonResponse({'success_message': True})
     except Kaibuemployee.DoesNotExist:
@@ -456,9 +695,41 @@ def generate_random_password(length=12):
     return password
 
 @login_required
-def send_email_to_new_user(request, email, password):
+def send_email_to_new_user(request, email, password , is_buhead = None):
+    body2 = ''
+    if is_buhead:
+        faculty = FacultyStaff.objects.get(email= email)
+        collage = Collage.objects.get(collageid = faculty.collageid.collageid)
+        bupassword = generate_random_password()
+        collage.password = bupassword
+        collage.userid = faculty.id
+        collage.password = make_password(collage.password)
+        collage.save()
 
-    # Subject in Arabic
+        body2 = '''\
+            <html>
+            <body>
+            <p align="right" dir="rtl">السلام عليكم،</p>
+
+            <p align="right" dir="rtl">لقد تم تسجيلك في نظام بوابة الاعمال، لتسهيل تشغيل الاعمال في وحدات الاعمال في كليات جامعه الملك سعود  بإمكانك التسجيل عبر النظام بايميلك التابع للجامعه و كلمة المرور التالية:</p>
+
+            <p align="right" dir="rtl">حسابك الشخصي:</p>
+            <p align="right" dir="rtl">الايميل: {email}</p>
+            <p align="right" dir="rtl">كلمة المرور: {password}</p>
+
+            <p align="right" dir="rtl">حسابك كرئيس وحدة الاعمال:</p>
+            <p align="right" dir="rtl">الايميل: {email2}</p>
+            <p align="right" dir="rtl">كلمة المرور: {password2}</p>
+
+            <p align="right" dir="rtl">عبر : ......</p>
+
+            <p align="right" dir="rtl">شكراً لك،<br>فريق الدعم الخاص ببوابة الاعمال</p>
+            
+
+            </body>
+            </html>
+            '''.format(email=email, password=password , email2=collage.buemail , password2=bupassword)
+
     subject = 'مرحباً بك في بوابة الاعمال'
 
     body = '''\
@@ -480,8 +751,11 @@ def send_email_to_new_user(request, email, password):
     </html>
     '''.format(email=email, password=password)
 
+ 
     # Create MIMEText object with body and charset
     body_mime = MIMEText(body, 'html', 'utf-8')
+    if is_buhead:
+        body_mime = MIMEText(body2, 'html', 'utf-8')
 
     myemail = "442200922@student.ksu.edu.sa"
     # Construct email with headers and body
@@ -510,6 +784,72 @@ def send_email_to_new_user(request, email, password):
     print("correctly entered the function")
 
     return HttpResponse("Password reset email sent.")
+
+@login_required
+def send_email_to_new_BU(request, email):
+   
+        faculty = FacultyStaff.objects.get(email= email)
+        collage = Collage.objects.get(collageid = faculty.collageid.collageid)
+        bupassword = generate_random_password()
+        collage.password = bupassword
+        collage.new_user = True
+        collage.userid = faculty.id
+        collage.password = make_password(collage.password)
+        collage.save()
+
+        subject = 'مرحباً بك في بوابة الاعمال'
+
+        body = '''\
+        <html>
+        <body>
+        <p align="right" dir="rtl">السلام عليكم،</p>
+
+        <p align="right" dir="rtl">لقد تم تعيينك رئيس وحدة الاعمال في نظام بوابة الاعمال، لتسهيل تشغيل الاعمال في وحدات الاعمال في كليات جامعه الملك سعود.</p>
+
+        <p align="right" dir="rtl"> حسابك كرئيس وحدة الاعمال: </p>
+        <p align="right" dir="rtl">الايميل: {email}</p>
+        <p align="right" dir="rtl">كلمة المرور: {password}</p>
+
+        <p align="right" dir="rtl">عبر : ......</p>
+
+        <p align="right" dir="rtl">شكراً لك،<br>فريق الدعم الخاص ببوابة الاعمال</p>
+        
+
+        </body>
+        </html>
+        '''.format(email=collage.buemail, password=bupassword)
+
+    
+        # Create MIMEText object with body and charset
+        body_mime = MIMEText(body, 'html', 'utf-8')
+
+        myemail = "442200922@student.ksu.edu.sa"
+        # Construct email with headers and body
+        email_msg = MIMEMultipart()
+        email_msg['Subject'] = subject
+        email_msg['From'] = settings.EMAIL_HOST_USER
+        email_msg['To'] = myemail
+        email_msg.attach(body_mime)
+
+        # Create the SSL context
+        context = ssl.create_default_context(cafile=certifi.where())
+
+        # Create connection
+        connection = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        connection.starttls(context=context)
+
+        # Login
+        connection.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+
+        # Send email
+        connection.sendmail(settings.EMAIL_HOST_USER, [myemail], email_msg.as_string())
+
+        # Close connection
+        connection.quit()
+
+        print("correctly entered the function")
+
+        return HttpResponse("Password reset email sent.")
 
 def getnationalities():
     nationalitiesList = {

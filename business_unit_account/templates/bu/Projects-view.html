@@ -105,8 +105,6 @@
 							</div>
 						  </div>
 
-						
-
 						  <div class="modal" tabindex="-1" id="customAlertSelectTeam">
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -142,9 +140,78 @@
 								</div>
 							</div>
 						  </div>
-						<!-- end alerts -->
+						  
+						  <div class="modal" tabindex="-1" id="ConfirmKAIAcceptance">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+									</div>
+										<div class="modal-body">
+											<p>هل انت/ي متأكد من ان تم التعميد من معهد الملك عبدالله للبحوث و الاستشارات</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											<a href="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid  ConfirmKAI='true'%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+										</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal" tabindex="-1" id="ConfirmKAIRejection">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+									</div>
+										<div class="modal-body">
+											<p>هل انت/ي متأكد من ان لم يتم التعميد من معهد الملك عبدالله للبحوث و الاستشارات</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											<a href="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid  ConfirmKAI='false'%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+										</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="modal" tabindex="-1" id="SubmittoKAI">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+									</div>
+										<div class="modal-body">
+											<p> هل انت/ي متأكد من ان تم تسليم المشروع الى معهد الملك عبدالله للبحوث و الاستشارات من خلال مهام</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											<a href="{% url 'business_unit_account:SubmittedtoKAI' program_id=program.programid%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+										</div>
+								</div>
+							</div>
+						</div>
 
+						<div class="modal" tabindex="-1" id="ConfirmDONEproject">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+									</div>
+										<div class="modal-body">
+											<p> هل انت/ي متأكد من ان تم انتهاء المشروع ؟</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											<a href="{% url 'business_unit_account:ConfirmDONEproject' program_id=program.programid%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+										</div>
+								</div>
+							</div>
+						</div>
+						
+						  <!-- end alerts -->
 
+						  
                         <!-- ROW -->
 						<div class="main-proifle" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">
 							<div class="row">
@@ -168,15 +235,24 @@
 										<a href="{% url 'business_unit_account:edit_project' value_to_edit=program.programid %}" id="editbtn" class="btn btn-primary me-2">تعديل</a>
 										
 										{% for flow in programflow %} 
-											{% if flow.status == " تم بدء العمل على المشروع " and flow.indicator == 'T' %}
+											{% if flow.status == "تم بدء العمل على المشروع" and flow.indicator == 'T' %}
 											<style>
 												#deleteForm{
 													display: none;
 												}
 											</style>
 											{% endif %}
+
+											{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' %}
+											<style>
+												#editbtn{
+													display: none;
+												}
+											</style>
+											{% endif %}
 										{% endfor %}
 
+											
 										<form id="deleteForm" method="POST" action="{% url 'business_unit_account:delete_project' value_to_delete=program.programid %}">
 											{% csrf_token %}
 											<input type="hidden" name="update_status" value="delete">
@@ -184,7 +260,7 @@
 										</form>
 
 										{% for flow in programflow %} 
-											{% if flow.status == " تم بدء العمل على المشروع " and flow.indicator == 'T' %}
+											{% if flow.status == "تم بدء العمل على المشروع" and flow.indicator == 'T' %}
 											<a href="{% url 'business_unit_account:groupchat'  program_id=program.programid%}" id="roombtn" class="btn btn-primary me-2">مجموعة العمل</a>
 											{% endif %}
 										{% endfor %}
@@ -486,15 +562,16 @@
 																			{% for instructor in program.instructor_names %} 
 																					{% if program.programleader == instructor.1 %}
 																					<div class="wrapper ms-3">
-																						<p class="mb-0 mt-1 text-dark font-weight-semibold"> رئيس الفريق :  {{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
+																						<p class="mb-0 mt-1 text-dark font-weight-semibold"> <span style="color:#0084BD;">رئيس الفريق : </span>  {{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
 																					</div>
 																					{% endif %}
 																				{% endfor %}
-																				{% for instructor in program.instructor_names %} 
-																					{% if program.programleader != instructor.1 %}
-																					<div class="wrapper ms-3">
-																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
-																					</div>
+
+																				{% for team in TeamAcceptance %} 
+																					{% if program.programleader != team.instructor.id %}
+																						<div class="wrapper ms-3">
+																							<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ team.instructor.first_name }} {{ team.instructor.last_name }} | <small><a href="mailto:{{ team.instructor.email }}">{{ team.instructor.email }}</a></small></p>
+																						</div>
 																					{% endif %}
 																				{% endfor %}
 																		</div>
@@ -502,6 +579,30 @@
 																</li>
 																{% endif %} 
 															{% endfor %} 
+
+														{% for flow in programflow %} 	
+															{% if flow.status ==  'تم فرز الطلبات واختيار فريق العمل' and flow.indicator == 'T' %}
+																{% for Requested in id_status_dates %} 
+																	{% if Requested.status == 'في انتظار قبول العضو' %}
+																		<li>
+																			<i class="fa fa-ellipsis-h bg-warning"></i> 
+																			<div class="timelinestart-item" >
+																				<span class="time">{{Requested.date}}</span>
+																				<h3 class="timelinestart-header"><span>{{Requested.status}}</span></h3>
+																				<div class="timelinestart-body">
+																					
+																						<div class="wrapper ms-3">
+																							<p class="mb-0 mt-1 text-dark font-weight-semibold">{{Requested.instructor.first_name}} {{Requested.instructor.last_name}} | <small><a href="mailto:{{Requested.instructor.email}}">{{Requested.instructor.email}}</a></small></p>
+																						</div>
+																					
+																				</div>
+																			</div>
+																		</li>
+																	{% endif %}
+																{% endfor %} 
+															{% endif %}
+														{% endfor %}
+
 													<!-- or  -->
 													{% for flow in programflow %} 
 													{% if flow.status == "تم قبول الطلب من قبل جميع الفريق" and flow.indicator == 'T' %}
@@ -541,17 +642,19 @@
 																			{% for instructor in program.instructor_names %} 
 																				{% if program.programleader == instructor.1 %}
 																				<div class="wrapper ms-3">
-																					<p class="mb-0 mt-1 text-dark font-weight-semibold"> رئيس الفريق :  {{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold"> <span style="color:#0084BD;">رئيس الفريق : </span> {{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
 																				</div>
 																				{% endif %}
 																			{% endfor %}
-																			{% for instructor in program.instructor_names %} 
-																				{% if program.programleader != instructor.1 %}
-																				<div class="wrapper ms-3">
-																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ instructor.0 }} | <small><a href="mailto:{{ instructor.3 }}">{{ instructor.3 }}</a></small></p>
-																				</div>
+
+																			{% for team in TeamAcceptance %} 
+																				{% if program.programleader != team.instructor.id %}
+																					<div class="wrapper ms-3">
+																						<p class="mb-0 mt-1 text-dark font-weight-semibold">{{ team.instructor.first_name }} {{ team.instructor.last_name }} | <small><a href="mailto:{{ team.instructor.email }}">{{ team.instructor.email }}</a></small></p>
+																					</div>
 																				{% endif %}
 																			{% endfor %}
+
 																		</div>
 																	{% endif %}
 																</div>
@@ -561,7 +664,7 @@
 												{% endfor %}
 													<!-- or (if team is incremented) -->
 													{% for flow in programflow  %} 
-													{% if   flow.status ==  'تم ارسال الطلب إلى الفريق' and flow.indicator == 'T'  %}
+													{% if   flow.status ==  'تم ارسال الطلب إلى الفريق' and flow.indicator == 'T' or  flow.status ==  'تم فرز الطلبات واختيار فريق العمل' and flow.indicator == 'T' %}
 														{% if  program.num_ofTeam > numofreq  and IdStatusDateRejection == 0 %}
 															{% for _ in "x"|ljust:newinstructors %}
 															<li>
@@ -579,9 +682,11 @@
 																						<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار عضو" required >
 																							<option value="" disabled selected>مدرب آخر</option>
 																							{% for faculty_member in faculty_members %}
-																							<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.Teamid %} disabled {% endif %}>
-																								{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
-																							</option>
+																								{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																									<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.Teamid %} disabled {% endif %} >
+																										{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																									</option> 
+																								{% endif %}  
 																							{% endfor %}
 																						</select>
 																					</div>
@@ -628,9 +733,11 @@
 																					<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار عضو" required >
 																						<option value="" disabled selected>مدرب آخر</option>
 																						{% for faculty_member in faculty_members %}
-																						<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.Teamid %} disabled {% endif %}>
-																							{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
-																						</option>
+																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.Teamid %} disabled {% endif %} >
+																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																								</option> 
+																							{% endif %}  
 																						{% endfor %}
 																					</select>
 																				</div>
@@ -649,104 +756,95 @@
 													<!-- ------------------------------------------------------------------------------------------------------------>
 													<!-- or (room here) -->
 													{% for flow in programflow %} 	
-															{% if flow.status == " تم بدء العمل على المشروع "  and flow.indicator == 'T' %}
+															{% if flow.status == "تم بدء العمل على المشروع"  and flow.indicator == 'T' %}
 																<li>
-																	<i class="fa fa-check-square bg-warning"></i> 
+																	<i class="fa fa-check-square bg-success"></i> 
 																	<div class="timelinestart-item">
 																		<span class="time">{{flow.date}}</span>
 																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
 																		<div class="timelinestart-body" >
-																			<div class="wrapper ms-3" >
-																				<ul class="inline-list" style=" margin-top: 20px; margin-right: 55px;">
-																					<hr style="border-color: #007bff; border-width: 2px;  margin-bottom:-10px; width: 800px;">
-																						<li class="primary" class="custom-list-item">
-																							<div class="milestone"></div>
-																							<a class="font-weight-semibold fs-15 ms-3">{{program.QuestionDeadline}}</a>
-																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3 " style="font-weight:bolder;">آخر تاريخ لاستلام الأسئلة </p>
-																						</li>
-																						
-																						<li class="primary" class="custom-list-item">
-																							<div class="milestone"></div>
-																							<a class="font-weight-semibold fs-15 ms-3">{{program.enddate}}</a>
-																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;"> تاريخ تسليم الفريق </p>
-																						</li>
-																						
-																						<li class="primary" class="custom-list-item">
-																							<div class="milestone"></div>
-																							<a class="font-weight-semibold fs-15 ms-3">{{program.ProposalSubmissionDeadline}}</a>
-																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للمعهد</p>
-																						</li>
-																						
-																						<li class="primary" class="custom-list-item">
-																							<div class="milestone"></div>
-																							<a class="font-weight-semibold fs-15 ms-3">{{program.EtimadDeadline}}</a>
-																							<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للجهة</p>
-																						</li> 
-																				</ul>																						
-																			</div> 
+																			{% if not program.isSubmittedtoKAI %}
+																				<div class="wrapper ms-3" style="margin-bottom:90px;  margin: 0;">
+																					<div style=" display: inline-block; vertical-align: top; margin-right: 850px;">
+																						<button type="button"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#SubmittoKAI" >تم تسليم المشروع</button>
+																					</div> 
+																					<ul class="inline-list" style=" margin-right: 40px; margin-top: -40px;">
+																						<hr style="border-color: #007bff; border-width: 2px;  margin-bottom:-10px; width: 750px;">
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.QuestionDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3 " style="font-weight:bolder;">آخر تاريخ لاستلام الأسئلة </p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.enddate}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;"> تاريخ تسليم الفريق </p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.ProposalSubmissionDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للمعهد</p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.EtimadDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للجهة</p>
+																							</li> 
+																					</ul>																						
+																				</div> 
+																			{% else %}
+																				<div class="wrapper ms-3">
+																					<ul class="inline-list" style=" margin-right: 60px; margin-top:10px;">
+																						<hr style="border-color: #007bff; border-width: 2px;  margin-bottom:-10px; width: 850px;">
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.QuestionDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3 " style="font-weight:bolder;">آخر تاريخ لاستلام الأسئلة </p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.enddate}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;"> تاريخ تسليم الفريق </p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.ProposalSubmissionDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للمعهد</p>
+																							</li>
+																							
+																							<li class="primary" class="custom-list-item">
+																								<div class="milestone"></div>
+																								<a class="font-weight-semibold fs-15 ms-3">{{program.EtimadDeadline}}</a>
+																								<p class="mb-0 pb-0 text-muted pt-1 fs-11 ms-3" style="font-weight:bolder;">تاريخ تسليم المشروع للجهة</p>
+																							</li> 
+																					</ul>																						
+																				</div> 
+																			{% endif %}
 																		</div> 
+																	</div>
 																</li>	
 															{% endif %}
 														{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 6 -->
-														{% for flow in programflow %} 	
-															{% if flow.status == "آخر تاريخ لتسليم المشروع للمراجعة من قبل المعهد"  and flow.indicator == 'T' %}
-																<li>
-																	<i class="fa fa-ellipsis-h bg-warning"></i> 
-																	<div class="timelinestart-item">
-																		<span class="time">{{flow.date}}</span>
-																		<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-																	</div> 
-																</li>	
-															{% endif %}
-														{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 7 -->
-														{% if program.status == "تسليم المشروع للمعهد للمراجعة" %}
-														<li>
-															<i class="fa fa-ellipsis-h bg-warning"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div> 
-														</li>
-														{% endif %}					
 													<!-- ------------------------------------------------------------------------------------------------------------>
 													<!-- 8 -->
 													{% for flow in programflow %} 	
 														{% if flow.status == "المراجعة من قبل المعهد" and flow.indicator == 'T' %}
 														<li>
-															<i class="fa fa-chevron-circle-up bg-primary"></i> 
+															<i class="fa fa-chevron-circle-up bg-warning"></i> 
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div>
-														</li>
-														{% endif %}
-													{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 9 -->
-													{% for flow in programflow %} 	
-														{% if flow.status == "التاريخ المتوقع للرد على المشروع" and flow.indicator == 'T' %}
-														<li>
-															<i class="fa fa-chevron-circle-down bg-primary"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
-															</div>
-														</li>
-														{% endif %}
-													{% endfor %}
-													<!-- ------------------------------------------------------------------------------------------------------------>
-													<!-- 10 -->
-													{% for flow in programflow %} 	
-														{% if flow.status == "حالة المشروع بعد الرد" and flow.indicator == 'C' %}
-														<li>
-															<i class="fa fa-check-square bg-primary"></i> 
-															<div class="timelinestart-item">
-																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																<h3 class="timelinestart-header"><span> تتم {{flow.status}}</span></h3>
+																{% if program.isAccepted is None  %}
+																	<div style=" display: inline-block; vertical-align: top; margin-top: 10px; margin-right: 350px;">
+																		<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIAcceptance" >تم التعميد على المشروع</button>
+																		<button type="button" style=" margin-bottom: 10px;"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIRejection" >لم يتم التعميد على المشروع</button>
+																	</div> 
+																{% endif %}
 															</div>
 														</li>
 														{% endif %}
@@ -754,20 +852,68 @@
 													<!-- ------------------------------------------------------------------------------------------------------------>
 													<!-- 11 -->
 													{% for flow in programflow %} 	
-														{% if flow.status == 'إنتهاء البرنامج' and flow.indicator == 'T' %}
+														{% if flow.status == 'حالة المشروع بعد الرد' and flow.indicator == 'T' %}
 														<li>
-															<i class="fa fa-check-square bg-success"></i> 
+															{% if program.isAccepted  %} <i class="fa fa-check-square bg-success"></i> {% else %} <i class="fa fa-check-square bg-danger"></i> {% endif %}	
+
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
-																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																<h3 class="timelinestart-header"><span> {{flow.status}} : </span> {% if program.isAccepted  %}	تم تعميد المشروع {% else %}	لم يتم تعميد المشروع{% endif %}</h3>
+																
+																{% for flow in programflow %} 	
+																	{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'W' %}
+																		{% if program.isAccepted and program.isAccepted is not None  %}
+																			<div class="timelinestart-body" >
+																				<div class="wrapper ms-3">
+																					<div style="margin-right: 900px;">
+																						<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmDONEproject" >انتهاء المشروع</button>
+																					</div> 
+																				</div>
+																			</div>
+																		{% endif %}
+																	{% endif %}
+																{% endfor %} 
 															</div>
 														</li>
 														{% endif %}
 													{% endfor %} 
 													<!-- ---------------------------------------------------------------------------------------------------------->
-													<li>
-														<i class="fa fa-clock-o bg-primary pb-3"></i>
-													</li>
+													{% for flow in programflow %} 	
+														{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' and program.isAccepted is not None and not program.isAccepted %}
+															<li>
+																<i class="fa fa-ellipsis-h bg-danger"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>انتهاء المشروع</span></h3>
+																</div>
+															</li>
+															<li>
+																<i class="fa fa-lock bg-blue pb-3"></i>
+															</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ---------------------------------------------------------------------------------------------------------->
+													<!-- or -->
+													{% for flow in programflow %} 	
+														{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' and program.isAccepted  and program.isAccepted is not None %}
+															<li>
+																<i class="fa fa-check-square bg-primary"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>انتهاء المشروع</span></h3>
+																</div>
+															</li>
+															<li>
+																<i class="fa fa-lock bg-blue pb-3"></i>
+															</li>
+														{% endif %}
+													{% endfor %}
+													<!-- ---------------------------------------------------------------------------------------------------------->
+													{% if program.isAccepted is None %}
+														<li>
+															<i class="fa fa-clock-o bg-primary pb-3"></i>
+														</li>
+													{% endif %}
 											</ul>
 										</div>
 									</div>

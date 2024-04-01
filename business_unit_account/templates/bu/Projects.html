@@ -31,10 +31,11 @@
         <div class="tab-menu-heading hremp-tabs p-0 ">
             <div class="tabs-menu1" >
                 <!-- Tabs -->
-                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
+                <ul class="nav panel-tabs" style=" margin-right: 200px;" >
                     <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">المشاريع</a></li>
-                    <!-- <li><a href="#tab2" data-bs-toggle="tab">المشاريع الحالية</a></li> -->
-                    <li><a href="#tab3" data-bs-toggle="tab">المشاريع المنتهية</a></li>
+                    <li><a href="#tab2" data-bs-toggle="tab">المشاريع قيد العمل</a></li> 
+                    <li><a href="#tab3" data-bs-toggle="tab">المشاريع تم التعميد عليها</a></li>
+                    <li><a href="#tab4" data-bs-toggle="tab">المشاريع لم تم التعميد عليها</a></li>
                 </ul>
             </div>
         </div>
@@ -46,12 +47,11 @@
                             <div class="tab-pane active" id="tab1">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">	
-
 										<div class="table-vcenter">
-                                            <table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">	
+                                            <table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="basic-datatable">	
 												<thead>
                                                     
-                                                    <div class="row mt-2">
+                                               <!-- <div class="row mt-2">
                                                         <div style="margin-right: 748px; height: 40px;">
                                                             <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
                                                             <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
@@ -64,8 +64,8 @@
                                                                     <option value="إكمال المشروع">يتم العمل عليه</option>
                                                                     <option value="إنهاء المشروع">مكتمل</option>
                                                             </select>
-                                                        </div>
-                                                    </div>
+                                                        </div> 
+                                                    </div>-->
 													<tr>
 														<th class="border-bottom-0">إسم المشروع</th>
 														<th class="border-bottom-0">نوع المشروع</th>
@@ -74,9 +74,8 @@
 														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
-
 												<tbody>
-													{% for program in bu_programs %}
+													{% for program in all_projects %}
                                                             <tr>
                                                                 <td>
                                                                     <div class="me-3 mt-0 mt-sm-2 d-block">
@@ -105,74 +104,134 @@
                                 </div> 
                             </div>
                 
-                            <!-- <div class="tab-pane" id="tab2">
+                            <div class="tab-pane" id="tab2">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  
 										<div class="table-vcenter">
                                             <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
 												<thead>
-                                                    <div class="row mt-2">
-                                                        <div  style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                    <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
-                                                                    <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>     
-                                                            </select>
-                                                        </div>
-                                                    </div>
 													<tr>
-														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">نوع المشروع</th>
 														<th class="border-bottom-0">تاريخ الإنشاء </th>
-														<th class="border-bottom-0">حالة الطلب</th>
-                                                        <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+														<th class="border-bottom-0">حالة المشروع</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
-                                                
+
 												<tbody>
-													
-													<tr>
-                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+													{% for program in started_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
                                                     </tr>      
+												  {% endfor %}    
 												</tbody>
 											</table>
 										</div> 
 									</div>  
 							    </div> 
-						    </div> -->
+						    </div> 
 
                             <div class="tab-pane" id="tab3">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  
 										<div class="table-vcenter">
-                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
+                                            <table class="table table-bordered text-nowrap border-bottom" id="example2" >
 												<thead>
-                                                    <div class="row mt-2">
-                                                        <div  style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
-                                                                <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>      
-                                                            </select>
-                                                        </div>
-                                                    </div>
 													<tr>
-														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">نوع المشروع</th>
 														<th class="border-bottom-0">تاريخ الإنشاء </th>
-														<th class="border-bottom-0">حالة الطلب</th>
-                                                        <th class="border-bottom-0">الإطلاع على التفاصيل</th>
+														<th class="border-bottom-0">حالة المشروع</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
-                                                
+
 												<tbody>
-										
-													<tr>
-                                                        <td colspan="7">لا يوجد مشاريع </td>
+													{% for program in Accepted_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
                                                     </tr>      
-										
+												  {% endfor %}    
+												</tbody>
+											</table>
+										</div> 
+									</div>  
+							    </div> 
+						    </div> 
+                        
+                            <div class="tab-pane" id="tab4">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">  
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable" >
+												<thead>
+													<tr>
+														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">نوع المشروع</th>
+														<th class="border-bottom-0">تاريخ الإنشاء </th>
+														<th class="border-bottom-0">حالة المشروع</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for program in notAccepted_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
+                                                    </tr>      
+												  {% endfor %}    
 												</tbody>
 											</table>
 										</div> 
@@ -267,10 +326,12 @@
                             <div class="form-group">
                                 <label class="form-label">الفريق <span style="color: red;">*</span></label>
                                 <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار الفريق" multiple required>
-                                    {% for faculty_member in faculty %}   
-                                     <option value= "{{faculty_member.id}}" >
-                                         {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
-                                    </option> 
+                                    {% for faculty_member in faculty %}  
+                                        {% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+                                            <option value= "{{faculty_member.id}}" >
+                                                {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+                                            </option> 
+                                        {% endif %}
                                     {% endfor %}
                                 </select> 
                                 <span class="error-message-instructor" style="color: red;"></span><br>
@@ -403,14 +464,21 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
           <!-- INTERNAL DATA TABLES  -->
-          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/js/datatables.js'%}"></script>
-          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/jszip.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+		<script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+		<script src="{% static 'assets/js/datatables.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+        <script src="{% static 'assets/js/client/client-list.js'%}"></script>
 
 
 
@@ -464,7 +532,6 @@
                });
           </script>
     
-
             <script>
                 jQuery(document).ready(function ($) {
                             // Initialize Selectize on #mySelect
@@ -515,7 +582,6 @@
                 var durationElement = document.querySelector('input[name="duration"]');
                 var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
                 var subjectElement = document.querySelector('textarea[name="subject"]');
-
                 var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
                 var enddate = new Date(document.querySelector('input[name="enddate"]').value);
                 var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
@@ -524,21 +590,21 @@
 
 
                 // Check topic 1
-                if (topicElement.value.length < 5) {
+                if (topicElement.value.length < 3) {
                     return false;
                 } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
                     return false;
                 } 
 
                 // Check domain 2
-                if (domainElement.value.length < 5) {
+                if (domainElement.value.length < 3) {
                     return false;
                 } else if (/^\d+$/.test(domainElement.value.trim()) || /^[0-9]/.test(domainElement.value.trim())) {
                     return false;
                 } 
 
                 // Check company 3
-                if (companyElement.value.length < 5) {
+                if (companyElement.value.length < 3) {
                     return false;
                 } else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
                     return false;
@@ -568,7 +634,7 @@
                 }
             
                 // Check subject 7
-                if (subjectElement.value.length < 5) {
+                if (subjectElement.value.length < 3) {
                     return false;
                 } else if (/^\d+$/.test(subjectElement.value.trim())) {
                     return false;
@@ -623,9 +689,9 @@
         // 1
           $('input[name="topic"]').on('blur', function() {
               var topic = $(this).val();
-              if (topic.length < 5) {
+              if (topic.length < 3) {
                   $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+                  $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
               }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                   $(this).addClass('is-invalid');
                   $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -637,9 +703,9 @@
         // 2 
           $('input[name="CompanyName"]').on('blur', function() {
               var topic = $(this).val();
-              if (topic.length < 5) {
+              if (topic.length < 3) {
                   $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-CompanyName').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+                  $(this).siblings('.error-message-CompanyName').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
               }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                   $(this).addClass('is-invalid');
                   $(this).siblings('.error-message-CompanyName').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -651,9 +717,9 @@
         // 3
           $('input[name="domain"]').on('blur', function() {
               var topic = $(this).val();
-              if (topic.length < 5) {
+              if (topic.length < 3) {
                   $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+                  $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
               }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                   $(this).addClass('is-invalid');
                   $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -662,6 +728,7 @@
               $(this).siblings('.error-message-domain').text('');
               }
           }); 
+
         // 4
         //   $('input[name="price"]').on('blur', function() {
         //       var topic = $(this).val();
@@ -698,9 +765,9 @@
         // 7
           $('textarea[name="subject"]').on('blur', function() {
               var topic = $(this).val();
-              if (topic.length < 5) {
+              if (topic.length < 3) {
                   $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+                  $(this).siblings('.error-message-subject').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
               }else if (/^\d+$/.test(topic.trim())) {
                   $(this).addClass('is-invalid');
                   $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 

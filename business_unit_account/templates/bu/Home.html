@@ -172,10 +172,28 @@
 									</div>
 								</div>
 							<!-- END ROW -->
-        {% endblock %}
+							{% if messages %}
+							<div style="display: none;" id="successMessages">
+								{% for message in messages %}
+									{{ message }}
+								{% endfor %}
+							</div>
+							{% endif %}
+		
+							<script>
+							window.onload = function() {
+								var successMessages = document.getElementById('successMessages');
+								if (successMessages) {
+									var messages = "تم تغيير كلمة المرور بنجاح.";
+									alert(messages);
+								}
+							};
+							</script>
+	{% endblock %}
 
 		
     {% block scripts %}
+					
 		<!-- INTERNAL PEITY CHART JS -->
 		<script src="{% static 'assets/plugins/peitychart/jquery.peity.min.js'%}"></script>
 		<script src="{% static 'assets/plugins/peitychart/peitychart.init.js'%}"></script>

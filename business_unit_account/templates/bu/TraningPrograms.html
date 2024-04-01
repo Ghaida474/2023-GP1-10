@@ -16,6 +16,7 @@
 
 </style>
 {% endblock %}
+
 {% block content %}
 
     <div class="page-header d-lg-flex d-block">
@@ -26,7 +27,7 @@
             <div class="page-rightheader ms-md-auto">
                 <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
                     <div class="btn-list">
-                        <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newprojectmodal"><i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء </a>
+                        <a  href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newprojectmodal"><i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء </a>
                     </div>
                 </div>
             </div>
@@ -35,30 +36,47 @@
    
  
     
-        <div class="tab-menu-heading hremp-tabs p-0 ">
-            <div class="tabs-menu1" >
-                <!-- Tabs -->
-                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
-                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">البرامج التدريبية</a></li>
-                    <li><a href="#tab2" data-bs-toggle="tab">طلبات هيئة التدريس</a></li>
-                </ul>
-            </div>
+    <div class="tab-menu-heading hremp-tabs p-0">
+        <div class="tabs-menu1">
+            <!-- Tabs -->
+            <ul class="nav panel-tabs" style="margin-right: 400px;">
+                <li class="ms-4 position-relative">
+                    <a href="#tab1" class="active" data-bs-toggle="tab">
+                        البرامج التدريبية
+                    </a>
+                    {% if notifications_in_combined_programs.count > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_combined_programs.count }}
+                        </span>
+                    {% endif %}
+                </li>
+                <li class="position-relative">
+                    <a href="#tab2" data-bs-toggle="tab">
+                        الطلبات
+                    </a>
+                    {% if notifications_in_faculty_or_staff_programs.count > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ faculty_or_staff_program_ids.count }}
+                        </span>
+                    {% endif %}
+                </li>
+            </ul>
         </div>
+    </div>
 
                  
-                    <div class="panel-body tabs-menu-body hremp-tabs1 p-0">
+                    <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
                         <div class="tab-content">
-                           
+                            
+                
                             <div class="tab-pane active" id="tab1">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">	
-
 										<div class="table-vcenter">
-											<table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">	
 												<thead>
-                            
                                                     <div class="row mt-2">
-                                                        <div style="margin-right:753px; height: 40px;">
+                                                        <div style="margin-right: 755px; height: 40px;">
                                                             <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
                                                             <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
                                                                 <option value="all">جميع الحالات</option>           
@@ -73,8 +91,8 @@
                                                             </select>
                                                         </div>
                                                     </div>
-													
-                                                    <tr>
+													<tr>
+                                                        <th></th>
 														<th class="border-bottom-0">إسم البرنامج</th>
 														<th class="border-bottom-0">نوع البرنامج</th>
 														<th class="border-bottom-0">موضوع البرنامج</th>
@@ -87,6 +105,11 @@
 												<tbody>
 													{% for program in bu_programs %}
                                                             <tr>
+                                                                <td>
+                                                                    {% if program.programid in combined_program_ids %}
+                                                                    <i class="feather feather-bell text-nowrap"></i>
+                                                                 {% endif %}
+                                                                </td>
                                                                 <td>
                                                                     <div class="me-3 mt-0 mt-sm-2 d-block">
                                                                         <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
@@ -132,6 +155,7 @@
                                                         </div>
                                                     </div>
 													<tr>
+                                                        <th></th>
 														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم البرنامج</th>
 														<th class="border-bottom-0">نوع البرنامج</th>
@@ -145,6 +169,12 @@
 												<tbody>
 													{% for program in faculty_or_staff_programs %}
 													<tr>
+                                                        <td>
+                                                            {% if program.programid in faculty_or_staff_program_ids %}
+                                                                    <i class="feather feather-bell text-nowrap"></i>
+                                                                 {% endif %}
+                                                            
+                                                        </td>
                                                         
 														<td>{{ program.Requestername }}</td>
 														<td>
@@ -174,6 +204,8 @@
 									</div>  
 							    </div> 
 						    </div>
+                              
+                        
                         </div>
                     </div>
                 
@@ -294,11 +326,13 @@
                             
                             <div class="form-group">
                                 <label class="form-label">المدربين <span style="color: red;">*</span></label>
-                                <select class="form-control select2"  id="mySelect" class="test" name="instructor" data-placeholder= "اختار المدرب" multiple required>
+                                <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار المدرب" multiple required>
                                     {% for faculty_member in faculty %}   
-                                     <option value= "{{faculty_member.id}}" >
-                                         {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
-                                    </option> 
+                                        {% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+                                            <option value= "{{faculty_member.id}}" >
+                                                {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+                                            </option> 
+                                        {% endif %}
                                     {% endfor %}
                                 </select> 
                                 <span class="error-message-instructor" style="color: red;"></span><br>
@@ -426,7 +460,7 @@
 
 		<!-- INTERNAL MULTIPLE SELECT JS -->
 		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script> 
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
 
         <!-- THEME COLOR JS -->
 		<script src="{% static 'assets/js/themeColors.js'%}"></script>
@@ -435,7 +469,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
-        
           <!-- INTERNAL DATA TABLES  -->
           <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
           <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
@@ -445,294 +478,293 @@
           <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
           <script src="{% static 'assets/js/datatables.js'%}"></script>
           <script src="{% static 'assets/js/client/client-list.js'%}"></script>
-
           
           <script>
-            $(document).ready(function () {
-                  // Set minimum and maximum time values (8:00 AM and 10:00 PM)
-                  var minTime = '08:00';
-                  var maxTime = '22:00';
-  
-                  // Set the min and max attributes for the time inputs
-                  $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
-              });
-          </script>
+          $(document).ready(function () {
+                // Set minimum and maximum time values (8:00 AM and 10:00 PM)
+                var minTime = '08:00';
+                var maxTime = '22:00';
 
-  <!-- filter -->
-  <script>
-    $(document).ready(function() {
-         $('#status_filter').change(function() {
-             var selectedDepartment = $(this).val();
+                // Set the min and max attributes for the time inputs
+                $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
+            });
+        </script>
 
-             if (selectedDepartment.includes("-")) {
-                 var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
-                 var firstValue = values[0].trim(); // First value after splitting
-                 var secondValue = values[1].trim(); // Second value after splitting
-                 
-                 $('tbody tr').hide();
-                 // Show rows matching either the first or second value
-                 $('tbody tr').filter(function() {
-                     var status = $(this).find('td:nth-child(5)').text().trim();
-                     return status === firstValue || status === secondValue;
-                 }).show();
-             } else if (selectedDepartment === 'all') {
-                 // Show all rows if 'all' is selected
-                 $('tbody tr').show();
-             } else {
-                 // Hide all rows
-                 $('tbody tr').hide();
-                 // Show only rows with the selected status
-                 $('tbody tr').filter(function() {
-                     return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
-                 }).show();
-             }
-         });
-     });
-</script>
-
-<script>
-    $(document).ready(function() {
-         $('#status_filter2').change(function() {
-             var selectedDepartment = $(this).val();
-             if (selectedDepartment === 'all') {
-                 // Show all rows if 'all' is selected
-                 $('tbody tr').show();
-             } else {
-                 // Hide all rows
-                 $('tbody tr').hide();
-                 // Show only rows with the selected status
-                 $('tbody tr').filter(function() {
-                     return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
-                 }).show();
-             }
-         });
-     });
- </script>
         
-    
-<script>
-    jQuery(document).ready(function ($) {
-        // Initialize Selectize on #mySelect
-        var $select = $('#mySelect').selectize();
-    
-        // Event listener for the checkbox change
-        $('#openToAllCheckbox').change(function() {
-            // Retrieve the selectize instance
-            var selectize = $('#mySelect')[0].selectize;
-    
-            // Clear selected options if checkbox is checked
-            if ($(this).prop('checked')) {
-                selectize.clear();
-                selectize.disable(); // Disable the selectize control
-                $('.error-message-instructor').text(''); // Clear error message
-            } else {
-                selectize.enable(); // Enable the selectize control
-            }
-        });
-    
-        // Event listener for changes in #num_ofinstructors and #mySelect
-        $('#num_ofinstructors, #mySelect').on('change', function() {
-            validateInstructors();
-        });
-    
-        // Validation function for instructors
-        function validateInstructors() {
-            var num_ofinstructors = parseInt($('#num_ofinstructors').val());
-            var selectedCount = $('#mySelect').val().length;
-            
-            if (selectedCount !== num_ofinstructors) {
-                $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
-            } else {
-                $('.error-message-instructor').text('');
-            }
-        }
-    });
-</script>
-    
+          <script>
+           $(document).ready(function() {
+                $('#status_filter').change(function() {
+                    var selectedDepartment = $(this).val();
 
-<script>
+                    if (selectedDepartment.includes("-")) {
+                        var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
+                        var firstValue = values[0].trim(); // First value after splitting
+                        var secondValue = values[1].trim(); // Second value after splitting
+                        
+                        $('tbody tr').hide();
+                        // Show rows matching either the first or second value
+                        $('tbody tr').filter(function() {
+                            var status = $(this).find('td:nth-child(5)').text().trim();
+                            return status === firstValue || status === secondValue;
+                        }).show();
+                    } else if (selectedDepartment === 'all') {
+                        // Show all rows if 'all' is selected
+                        $('tbody tr').show();
+                    } else {
+                        // Hide all rows
+                        $('tbody tr').hide();
+                        // Show only rows with the selected status
+                        $('tbody tr').filter(function() {
+                            return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
+                        }).show();
+                    }
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                 $('#status_filter2').change(function() {
+                     var selectedDepartment = $(this).val();
+                     if (selectedDepartment === 'all') {
+                         // Show all rows if 'all' is selected
+                         $('tbody tr').show();
+                     } else {
+                         // Hide all rows
+                         $('tbody tr').hide();
+                         // Show only rows with the selected status
+                         $('tbody tr').filter(function() {
+                             return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
+                         }).show();
+                     }
+                 });
+             });
+         </script>
+        
+        <script>
+            $(document).ready(function () {
+
+                var $select = $('#mySelect').selectize();
+
+                $('#openToAllCheckbox').change(function() {
+                    var selectize = $select[0].selectize;
+
+                    if ($(this).prop('checked')) {
+                        selectize.clear(); // Clear selected options if checkbox is checked
+                        selectize.disable(); // Disable the selectize control
+                        document.querySelector('.error-message-instructor').innerText = '';
+                    } else {
+                        selectize.enable(); // Enable the selectize control
+                    }
+                });
+            });
+
+            // ***************************************************
+            $(document).ready(function() {
+                $('#num_ofinstructors').on('change', function() {
+                    validateInstructors();
+                });
+
+                $('#mySelect').on('change', function() {
+                    validateInstructors();
+                });
+            });
+
+            function validateInstructors() {
+                    var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
+                    var selectedInstructors = document.getElementById('mySelect').options;
+                    var selectedCount = selectedInstructors.length;
+                    if (selectedCount !== num_ofinstructors) {
+                        document.querySelector('.error-message-instructor').innerText = 'يرجى اختيار عدد المدربين المطلوب';
+                        return;
+                    } else {
+                        document.querySelector('.error-message-instructor').innerText = '';
+                    }
+                }
+
+// ***************************************************
     // Function to validate the form on submission
-function validateForm() {
-    // Retrieve form elements
-    var topicElement = document.querySelector('input[name="topic"]');
-    var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
-    var priceElement = document.querySelector('input[name="price"]');
-    var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
-    var startDateElement = document.querySelector('input[name="startdate"]');
-    var endDateElement = document.querySelector('input[name="enddate"]');
-    var startTimeElement = document.querySelector('input[name="starttime"]');
-    var endTimeElement = document.querySelector('input[name="endtime"]');
-    var subjectElement = document.querySelector('textarea[name="subject"]');
-    var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-    var selectElement = document.getElementById("options");
-    var selectdomain = document.getElementById("domain");
-    var otherdomainElement = document.querySelector('input[name="otherdomain"]');
-    var otherTextElement = document.querySelector('input[name="otherText"]');
+    function validateForm() {
+        // Retrieve form elements
+        var topicElement = document.querySelector('input[name="topic"]');
+        var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
+        var priceElement = document.querySelector('input[name="price"]');
+        var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
+        var startDateElement = document.querySelector('input[name="startdate"]');
+        var endDateElement = document.querySelector('input[name="enddate"]');
+        var startTimeElement = document.querySelector('input[name="starttime"]');
+        var endTimeElement = document.querySelector('input[name="endtime"]');
+        var subjectElement = document.querySelector('textarea[name="subject"]');
+        var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+        var selectElement = document.getElementById("options");
+        var selectdomain = document.getElementById("domain");
+        var otherdomainElement = document.querySelector('input[name="otherdomain"]');
+        var otherTextElement = document.querySelector('input[name="otherText"]');
 
-     // select other reqtype
-     if (selectElement.value === "other") {
-        if (otherTextElement.value.length < 5) {
+        // select other reqtype
+        if (selectElement.value === "other") {
+            if (otherTextElement.value.length < 3) {
+                return false;
+            } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
+                return false;
+            } 
+        }   
+
+        //select  other domain
+        if (selectdomain.value === "اخرى") {
+            if (otherdomainElement.value.length < 3) {
+                return false;
+            } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
+                return false;
+            } 
+        }   
+        
+        // Check topic
+        if (topicElement.value.length < 3) {
             return false;
-        } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
+        } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
             return false;
         } 
-    }   
 
-    //select  other domain
-    if (selectdomain.value === "اخرى") {
-        if (otherdomainElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
+        // Check numoftrainee
+        var numoftrainee = parseInt(numoftraineeElement.value);
+        if (isNaN(numoftrainee) || numoftrainee < 1) {
             return false;
         } 
-    }   
-    
-    // Check topic
-    if (topicElement.value.length < 5) {
-        return false;
-    } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-        return false;
-    } 
 
-    // Check numoftrainee
-    var numoftrainee = parseInt(numoftraineeElement.value);
-    if (isNaN(numoftrainee) || numoftrainee < 1) {
-        return false;
-    } 
+        // check num_ofinstructorsElement
+        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+        if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+            return false;
+        } 
 
-    // check num_ofinstructorsElement
-    var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-    if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
-        return false;
-    } 
+        // Check price
+        var price = parseFloat(priceElement.value);
+        if (isNaN(price) || price < 0) {
+            return false;
+        } 
 
-    // Check price
-    var price = parseFloat(priceElement.value);
-    if (isNaN(price) || price < 0) {
-        return false;
-    } 
+        // check pricefortrainee
+        var pricefortrainee = parseFloat(pricefortraineeElement.value);
+        if (isNaN(pricefortrainee) || pricefortrainee < 0) {
+            return false;
+        } 
 
-    // check pricefortrainee
-    var pricefortrainee = parseFloat(pricefortraineeElement.value);
-    if (isNaN(pricefortrainee) || pricefortrainee < 0) {
-        return false;
-    } 
+        // Check start date and end date
+        var startDate = new Date(startDateElement.value);
+        var endDate = new Date(endDateElement.value);
 
-    // Check start date and end date
-    var startDate = new Date(startDateElement.value);
-    var endDate = new Date(endDateElement.value);
+        if (startDate > endDate) {
+            return false; 
+        } 
 
-    if (startDate > endDate) {
-        return false; 
-    } 
+        // Check start time and end time
+        var startTimeParts = startTimeElement.value.split(':');
+        var endTimeParts = endTimeElement.value.split(':');
+        var startHour = parseInt(startTimeParts[0]);
+        var startMinute = parseInt(startTimeParts[1]);
+        var endHour = parseInt(endTimeParts[0]);
+        var endMinute = parseInt(endTimeParts[1]);
 
-    // Check start time and end time
-    var startTimeParts = startTimeElement.value.split(':');
-    var endTimeParts = endTimeElement.value.split(':');
-    var startHour = parseInt(startTimeParts[0]);
-    var startMinute = parseInt(startTimeParts[1]);
-    var endHour = parseInt(endTimeParts[0]);
-    var endMinute = parseInt(endTimeParts[1]);
+        if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+            return false;
+        } 
 
-    if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-        return false;
-    } 
+        // Check subject
+        if (subjectElement.value.length < 3) {
+            return false;
+        } else if (/^\d+$/.test(subjectElement.value.trim())) {
+            return false;
+        }
 
-    // Check subject
-    if (subjectElement.value.length < 5) {
-        return false;
-    } else if (/^\d+$/.test(subjectElement.value.trim())) {
-        return false;
+        if (!validateInstructorsCount()) {
+            console.log("Instructors count validation failed");
+            return false;
+        }
+        
+        // Skip validation if the file input is empty
+        if (!fileInput.files.length) {
+            errorMessage.textContent = '';
+            return true; // No validation needed for an empty file input
+        }
+
+        var fileInput = document.querySelector('input[name="attachment"]');
+        var errorMessage = document.querySelector('.error-message-attachment');
+
+        var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
+        var filePath = fileInput.value.toLowerCase();
+
+        var isValidExtension = allowedExtensions.some(function (extension) {
+            return filePath.endsWith(extension);
+        });
+
+        if (!isValidExtension) {
+            errorMessage.textContent = 'يجب أن يكون الملف بامتداد  .pdf , .pptx , .doc , .docx , .xlsx ';
+            fileInput.value = '';
+            return false;
+        } else {
+            errorMessage.textContent = '';
+        }
+
+    return true;
+
     }
 
-    if (!validateInstructorsCount()) {
-        console.log("Instructors count validation failed");
-        return false;
+
+    function validateInstructorsCount() {
+        var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+        var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+        var selectedInstructors = document.getElementById('mySelect').options;
+        var selectedCount = selectedInstructors.length;
+
+        var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
+        if(openToAllCheckboxElement.checked){
+            return true;
+        }
+
+        return selectedCount === num_ofinstructors;
     }
-    
-    // Skip validation if the file input is empty
-    if (!fileInput.files.length) {
-        errorMessage.textContent = '';
-        return true; // No validation needed for an empty file input
-    }
-
-    var fileInput = document.querySelector('input[name="attachment"]');
-    var errorMessage = document.querySelector('.error-message-attachment');
-
-    var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
-    var filePath = fileInput.value.toLowerCase();
-
-    var isValidExtension = allowedExtensions.some(function (extension) {
-        return filePath.endsWith(extension);
-    });
-
-    if (!isValidExtension) {
-        errorMessage.textContent = 'يجب أن يكون الملف بامتداد  .pdf , .pptx , .doc , .docx , .xlsx ';
-        fileInput.value = '';
-        return false;
-    } else {
-        errorMessage.textContent = '';
-    }
-
-return true;
-
-}
-
-
-function validateInstructorsCount() {
-    var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-    var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-    var selectedInstructors = document.getElementById('mySelect').options;
-    var selectedCount = selectedInstructors.length;
-
-    var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
-    if(openToAllCheckboxElement.checked){
-        return true;
-    }
-
-    return selectedCount === num_ofinstructors;
-}
 
 // **************************** select other order
-function toggleOtherInput() {
-    var selectElement = document.getElementById("options");
-    var otherInput = document.getElementById("otherInput");
-    var otherText = document.getElementById("otherText");
+    function toggleOtherInput() {
+        var selectElement = document.getElementById("options");
+        var otherInput = document.getElementById("otherInput");
+        var otherText = document.getElementById("otherText");
 
-    if (selectElement.value === "other") {
-        otherInput.style.display = "block";
-        otherText.setAttribute("required", "required");
-    } else {
-        otherInput.style.display = "none"; 
-        otherText.removeAttribute("required");
+        if (selectElement.value === "other") {
+            otherInput.style.display = "block";
+            otherText.setAttribute("required", "required");
+        } else {
+            otherInput.style.display = "none"; 
+            otherText.removeAttribute("required");
+        }
     }
-}
 
 // **************************** select other domain
-function toggleOtherdomain() {
-    var selectElement = document.getElementById("domain");
-    var otherInput = document.getElementById("other-domain");
-    var otherdomain = document.getElementById("otherdomain");
+    function toggleOtherdomain() {
+        var selectElement = document.getElementById("domain");
+        var otherInput = document.getElementById("other-domain");
+        var otherdomain = document.getElementById("otherdomain");
 
-    if (selectElement.value === "اخرى") {
-        otherInput.style.display = "block";
-        otherdomain.setAttribute("required", "required"); 
-    } else {
-        otherInput.style.display = "none"; 
-        otherdomain.removeAttribute("required");
+        if (selectElement.value === "اخرى") {
+            otherInput.style.display = "block";
+            otherdomain.setAttribute("required", "required"); 
+        } else {
+            otherInput.style.display = "none"; 
+            otherdomain.removeAttribute("required");
+        }
     }
-}
 
-</script>
+    </script>
 <!-- **************************** AJAX -->
-<script>  
+<script>
+    
     $(document).ready(function() {
        
         $('input[name="topic"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
                 $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+                $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -882,9 +914,9 @@ function toggleOtherdomain() {
 
         $('textarea[name="subject"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
                 $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+                $(this).siblings('.error-message-subject').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
@@ -896,9 +928,9 @@ function toggleOtherdomain() {
         
         $('input[name="otherText"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
             $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+            $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -910,9 +942,9 @@ function toggleOtherdomain() {
         
         $('input[name="otherdomain"]').on('blur', function() {
             var topic = $(this).val();
-            if (topic.length < 5) {
+            if (topic.length < 3) {
             $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+            $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
             }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
                 $(this).addClass('is-invalid');
                 $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 

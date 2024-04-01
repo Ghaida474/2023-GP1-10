@@ -87,7 +87,7 @@
 										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
 										<p id="alertPlaceholder"></p> 
 										<br><br><p>الرجاء كتابة سبب الرفض:</p>
-										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 5 أحرف ولا يحتوي فقط على أرقام.</p>
+										<p style="color: red;">الرجاء التأكد من أن سبب الرفض اكثر من 3 أحرف ولا يحتوي فقط على أرقام.</p>
 										<input id="rejectionReasonInput" type="text" class="form-control">
 									</div>
 									<div class="modal-footer justify-content-end align-items-start">
@@ -96,7 +96,7 @@
 									</div>
 								</div>
 							</div>
-						  </div>
+						</div>
 
 						<div class="modal" tabindex="-1" id="customAlertReleaseProgram">
 							<div class="modal-dialog">
@@ -114,8 +114,7 @@
 									</div>
 								</div>
 							</div>
-						  
-						</div>
+						  </div>
 
 						  <div class="modal" tabindex="-1" id="customAlertSelectTeam">
 							<div class="modal-dialog">
@@ -224,7 +223,6 @@
 												{% if program.status == 'تم نشر البرنامج '%}
 												<li><a href="#tab-2" data-bs-toggle="tab" class="">المتدربين</a></li>
 												<li><a href="#tab-3" data-bs-toggle="tab" class="">المدربين</a></li>
-												<li><a href="#tab-5" data-bs-toggle="tab" class="">ارفاق الشهادات</a></li>
 												{% endif %}
 												<li><a href="#tab-4" data-bs-toggle="tab" class="">تفاصيل حالة الطلب</a></li>
 												{% if program.status == "في انتظار قبول وحدة الأعمال" %}
@@ -456,79 +454,6 @@
 												</div>
 											</div>
 										</div> 
-										
-										
-										<div class="tab-pane" id="tab-5">
-											<div class="card p-5">
-												<div class="row">	
-													<div class="card-body">
-														<div class="col-xl-12 col-md-12 col-lg-12">	
-															<div class="table-vcenter">
-															<table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">
-																
-																<thead>
-																	<tr>
-																		<th class="border-bottom-0">عدد المتدرب#</th>
-																		<th class="border-bottom-0">اسم المتدرب</th>
-																		<th class="border-bottom-0">حالة التسجيل</th>
-																		<th class="border-bottom-0">ارفاق الشهادة</th>
-																		<th class="border-bottom-0">الاطلاع على الشهادة</th>
-																	</tr>
-																</thead>
-				
-																<tbody>
-																	{% for traniees in program.traniees_paid %} 
-																	<tr>
-																		<td >{{ forloop.counter }}</td>
-																		<td>{{traniees.0}}</td>
-																		<td>
-																			{% if  traniees.1%}
-																			تسجيل مؤكد
-																			{% endif %}
-																		</td>
-																		<td >
-																			<form id="certifications_form_{{ traniees.2 }}" method="post" enctype="multipart/form-data" onsubmit="submitForm(event, '{{ program.programid }}', '{{ traniees.2 }}' , '{{ traniees.4 }}');">
-																				{% csrf_token %}
-																				<div style="display: flex; align-items: center;">
-																					<input class="form-control fileInput" style="height: 40px; flex: 1; margin-right: 5px; width: 150px;" type="file" name="attachment" accept=".pdf, .pptx, .doc , .docx , .xlsx">
-																					<button type="submit" class="btn btn-outline-info" style="height: 40px; margin-right: 5px;">رفع</button>
-																				</div>		
-																			</form>
-																			<p style="color: green; margin-right: 80px;" id="certifications_result_{{ traniees.2 }}"></p>
-																		</td>
-
-																		<td id="certifications_td_{{ traniees.2 }}">
-																			{% if traniees.3 %}
-																			<div class="d-flex" style="margin-right: 25px;">
-																				<a href="{% url 'kai_staff:view_certifications' register_id=traniees.4 %}" type="button" target="_blank" class="btn btn-outline-info me-2">
-																					<i style="width:20px;" class="feather feather-eye text-nowrap"></i>
-																				</a> 
-																				<a  type="button" class="btn btn-outline-danger" onclick="handleDelete( event , '{{ traniees.2 }}', '{{ traniees.4 }}')">
-																					<i style="width:20px;" class="feather feather-trash text-nowrap"></i>
-																				</a> 
-																			</div>
-																			{% else %}
-																			<div class="d-flex" style="margin-right: 50px; height: 16px;">
-																			<p>لا توجد شهادة مرفقة</p>
-																			</div>
-																			{% endif %} 
-																		</td>						
-																	</tr>
-																	{% empty %}
-																	<tr>
-																		<td colspan="5">لا يوجد متدربين مسجلين</td>
-																	</tr>    
-																  {% endfor %}
-																</tbody>
-															</table>
-															</div>
-														</div>
-													</div>		
-												</div>
-											</div>
-										</div>
-										
-										
 										<!-- order workflow ------------------------------------------------------------------>
 										<div class="tab-pane" id="tab-4" style="height: 2100px;">
 											<ul class="timelinestart pb-5" >
@@ -574,11 +499,13 @@
 																					<input hidden name="num_ofinstructors2" name="num_ofinstructors2" value="{{program.num_ofinstructors}}">
 																					<label>الرجاء اختيار  مدرب/ ين و عددهم : {{ program.num_ofinstructors|add:"-1" }} <span style="color: red;">*</span></label>
 																					<select class="form-control select2"  id="mySelect2" name="instructor" data-placeholder= "اختار المدرب" multiple required>
-																						{% for faculty_member in faculty_members %}   
-																						 <option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
-																							 {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
-																						</option> 
-																						{% endfor %}
+																						{% for faculty_member in faculty_members %} 
+																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
+																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																								</option> 
+																							{% endif %}  
+																						{% endfor %}  
 																					</select> 
 																					<span class="error-message-instructor" style="color: red;"></span><br>
 																					<input type="checkbox" id="openToAllCheckbox" name="openToAllCheckbox" value ='open_to_all_memebers'>
@@ -777,15 +704,17 @@
 																						<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
 																							<option value="" disabled selected>مدرب آخر</option>
 																							{% for faculty_member in faculty_members %}
-																							<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.instructorid %} disabled {% endif %}>
-																								{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
-																							</option>
+																								{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																									<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
+																										{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																									</option> 
+																								{% endif %}  
 																							{% endfor %}
 																						</select>
 																					</div>
 																					<div class="col-6">
 																						<input type="hidden" name="update_status" value="change_faculty">
-																						<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 160px; margin-right: 5px;">رسل طلب إلى مدرب اخر</button>
+																						<button type="submit" class="btn btn-outline-info confirm-submit" style="width: 160px; margin-right: 5px;">ارسل طلب إلى مدرب اخر</button>
 																					</div>
 																				</div>
 																			</div>        
@@ -826,9 +755,11 @@
 																					<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
 																						<option value="" disabled selected>مدرب آخر</option>
 																						{% for faculty_member in faculty_members %}
-																						<option value="{{ faculty_member.id }}" {% if faculty_member.id in program.instructorid %} disabled {% endif %}>
-																							{{ faculty_member.first_name }} {{ faculty_member.last_name }} | <small>{{ faculty_member.major }}</small>
-																						</option>
+																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
+																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
+																								</option> 
+																							{% endif %}  
 																						{% endfor %}
 																					</select>
 																				</div>
@@ -1137,9 +1068,11 @@
 	});
 
 });
-</script>
 
+</script>
 <script>
+// ***************************************************
+
 function validateInstructors() {
         var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
         var selectedCount = $('#mySelect2 option:selected').length;
@@ -1152,7 +1085,6 @@ function validateInstructors() {
         }
     }
 </script>
-
 <script>
  function validateInstructorsCount() {
         var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
@@ -1168,7 +1100,6 @@ function validateInstructors() {
         }
     }
 </script>
-
 <script>
 	document.getElementById('selectTrainersForm').addEventListener('submit', function(e) {
 		var checkboxes = document.querySelectorAll('input[name="trainer_selection"]:checked');
@@ -1177,7 +1108,7 @@ function validateInstructors() {
 		var errorMessage = document.querySelector('.error-message-trainer_selection');
 		
 
-		if (programleader !== 'None'){
+		if (programleader){
 			num_ofinstructors = num_ofinstructors -1;
 		}
 
@@ -1195,25 +1126,25 @@ function validateInstructors() {
 </script>
 
 <script>
- 
- $(document).ready(function() {
-    var form = $('#selectTrainersForm');
-    var confirmSelectTeam = false;
 
-    form.on('submit', function(e) {
-        e.preventDefault();
+	$(document).ready(function() {
+		var form = $('#selectTrainersForm');
+		var confirmSelectTeam = false;
 
-        var isFormValid = validateInstructorsCount();
-        console.log('Form validation result:', isFormValid);
+		form.on('submit', function(e) {
+			e.preventDefault();
 
-        if (isFormValid && !confirmSelectTeam) {
-            console.log('Showing modal');
-            $('#customAlertSelectTeam').modal('show');
-        } else if (isFormValid && confirmSelectTeam) {
-            console.log('Submitting form');
-            form.off('submit');
-            form.submit();
-        }
+			var isFormValid = validateInstructorsCount();
+			console.log('Form validation result:', isFormValid);
+
+			if (isFormValid && !confirmSelectTeam) {
+				console.log('Showing modal');
+				$('#customAlertSelectTeam').modal('show');
+			} else if (isFormValid && confirmSelectTeam) {
+				console.log('Submitting form');
+				form.off('submit');
+				form.submit();
+			}
     });
 
     $('#alertSelectTeam').click(function() {
@@ -1244,69 +1175,8 @@ function validateInstructors() {
             return true;
         }
     }
-});</script>
-
-<!--<script>
-	function validateForm() {
-		// Retrieve form elements
-		var lastenrollmentdateElement = document.querySelector('input[name="lastenrollmentdate"]');
-		var startdateElement = document.getElementById('startdate'); 
-		var descriptionElement = document.querySelector('input[name="description"]');
-		var description_englishElement = document.querySelector('input[name="description_english"]');
-		var locationElement = document.querySelector('input[name="location"]');
-		var topicElement = document.querySelector('input[name="topic_english"]');
-		var lastenrollmentdate = new Date(lastenrollmentdateElement.value);
-		var startDate = new Date(startdateElement.value); 
-
-		// Check if last enrollment date is before start date
-		if (lastenrollmentdate >= startDate) {
-			return false;
-		}
-
-		// Check topic
-		if (locationElement.value.length < 5) {
-			return false;
-		} else if (/^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
-			return false;
-		} 
-		
-		// Check topic
-		if (topicElement.value.length < 5) {
-			return false;
-		} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-			return false;
-		} 
-		
-		// Check descriptionElement
-		if (descriptionElement.value.length < 5 || description_english.value.length < 5) {
-			return false;
-		} else if (/^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_english.value.trim())) {
-			return false;
-		}
-
-		var confirmrelease = false;
-    
-        $('#customAlertReleaseProgram').on('show.bs.modal', function() {
-     
-       })
-    
-       $('#alertConfirmDelete').click(function() {
-		confirmrelease = true;
-		return true;  // Set formSubmitted to true when confirmed
-       $('#fromrelses').submit();
-       });
-    
-       $('#fromrelses').on('submit', function(e) {
-      if(!confirmrelease) {
-        e.preventDefault();
-        $('#alertReleaseProgram').modal('show');
-      }
-      });
-	  return false;
-
-					
-	}
-</script>-->
+});
+</script>
 
 <script>
     $(document).ready(function() {
@@ -1351,17 +1221,17 @@ function validateInstructors() {
             return false;
         }
 
-        if (locationElement.value.length < 5 || /^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
+        if (locationElement.value.length < 3 || /^\d+$/.test(locationElement.value.trim()) || /^[0-9]/.test(locationElement.value.trim())) {
             console.log('Invalid location'); // Changed to console.log()
             return false;
         }
 
-        if (topicElement.value.length < 5 || /^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+        if (topicElement.value.length < 3 || /^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
             console.log('Invalid topic'); // Changed to console.log()
             return false;
         }
 
-        if (descriptionElement.value.length < 5 || description_englishElement.value.length < 5 || /^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_englishElement.value.trim())) {
+        if (descriptionElement.value.length < 3 || description_englishElement.value.length < 3 || /^\d+$/.test(descriptionElement.value.trim()) || /^\d+$/.test(description_englishElement.value.trim())) {
             console.log('Invalid description'); // Changed to console.log()
             return false;
         }
@@ -1371,65 +1241,7 @@ function validateInstructors() {
     }
 </script>
 
-<script>
-			
-	function submitForm(event, programId, traineeId, register_id) {
-		event.preventDefault();
-		var fileInput = document.querySelector('input[name="attachment"]');																
-		if (!fileInput.files.length) {
-			return false; 
-		}
-		var formData = new FormData($('#certifications_form_' + traineeId)[0]);
 
-		$.ajax({
-			url: '/kai-staff/kaistaff-home/traningprogram/TraningProgram-view/' + programId + '/save-certifications/' + traineeId + '/',
-			type: 'POST',
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function(response) {
-				// $('#certifications_result_' + traineeId).html(response.success_message + ' <i class="fa fa-check-square" data-bs-toggle="tooltip" title="fa fa-check-square"></i>');
-				refreshOtherElement(traineeId, register_id);
-			},
-			error: function(error) {
-				console.error('Error occurred:', error);
-			}
-		});
-	}
-
-	function handleDelete(event, traineeId, register_id) {
-		var element = $('#certifications_td_' + traineeId);
-		var csrfToken = $('[name=csrfmiddlewaretoken]').val();
-		var deleteURL = "{% url 'kai_staff:delete_certifications' register_id=0 %}".replace('0', register_id);
-
-		$.ajax({
-			url: deleteURL,
-			type: 'POST',
-			headers: {
-				'X-CSRFToken': csrfToken
-			},
-			success: function(response) {
-				element.html('<div class="d-flex" style="margin-right: 50px; height: 16px;"><p>لا توجد شهادة مرفقة</p></div>');
-			},
-			error: function(error) {
-				console.error('Error occurred:', error);
-			}
-		});
-	}
-
-	function refreshOtherElement(traineeId, registerId) {
-		var element = $('#certifications_td_' + traineeId);
-		var viewUrl = '{% url "kai_staff:view_certifications" register_id=0 %}'.replace('0', registerId);
-		var deleteUrl = '{% url "kai_staff:delete_certifications" register_id=0 %}'.replace('0', registerId);
-
-		element.html('<div class="d-flex" style="margin-right: 25px;">' +
-			'<a href="' + viewUrl + '" type="button" target="_blank" class="btn btn-outline-info me-2">' +
-			'<i style="width:20px;" class="feather feather-eye text-nowrap"></i></a>' +
-			'<a type="button" class="btn btn-outline-danger" onclick="handleDelete(event , ' + traineeId + ',' + registerId + ')">' +
-			'<i style="width:20px;" class="feather feather-trash text-nowrap"></i></a></div>');
-	}
-
-</script>
 
 <script>
 	$(document).ready(function() {
@@ -1458,9 +1270,9 @@ function validateInstructors() {
 
 		$('input[name="topic_english"]').on('blur', function() {
 			var topic = $(this).val();
-			if (topic.length < 5) {
+			if (topic.length < 3) {
 				$(this).addClass('is-invalid');
-				$(this).siblings('.error-message-topic_english').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+				$(this).siblings('.error-message-topic_english').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 				$(this).addClass('is-invalid');
 				$(this).siblings('.error-message-topic_english').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -1473,9 +1285,9 @@ function validateInstructors() {
 		
 		$('input[name="location"]').on('blur', function() {
 			var topic = $(this).val();
-			if (topic.length < 5) {
+			if (topic.length < 3) {
 				$(this).addClass('is-invalid');
-				$(this).siblings('.error-message-location').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+				$(this).siblings('.error-message-location').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 			}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 				$(this).addClass('is-invalid');
 				$(this).siblings('.error-message-location').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -1488,9 +1300,9 @@ function validateInstructors() {
 		
 		$('textarea[name="description"]').on('blur', function() {
 				var topic = $(this).val();
-				if (topic.length < 5) {
+				if (topic.length < 3) {
 					$(this).addClass('is-invalid');
-					$(this).siblings('.error-message-description').text('يجب أن يكون على الأقل خمسة أحرف');
+					$(this).siblings('.error-message-description').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 				}else if (/^\d+$/.test(topic.trim())) {
 					$(this).addClass('is-invalid');
 					$(this).siblings('.error-message-description').text('لا يمكن أن يكون جميع الحروف أرقام'); 
@@ -1503,9 +1315,9 @@ function validateInstructors() {
 		
 		$('textarea[name="description_english"]').on('blur', function() {
 				var topic = $(this).val();
-				if (topic.length < 5) {
+				if (topic.length < 3) {
 					$(this).addClass('is-invalid');
-					$(this).siblings('.error-message-description_english').text('يجب أن يكون على الأقل خمسة أحرف');
+					$(this).siblings('.error-message-description_english').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 				}else if (/^\d+$/.test(topic.trim())) {
 					$(this).addClass('is-invalid');
 					$(this).siblings('.error-message-description_english').text('لا يمكن أن يكون جميع الحروف أرقام'); 
@@ -1662,14 +1474,14 @@ $(document).ready(function() {
 	// Event listener for the confirm button of the rejection reason modal
 	document.getElementById('rejectionReasonConfirm').addEventListener('click', function() {
 		var rejectionReason = document.getElementById('rejectionReasonInput').value;
-		if (rejectionReason.length > 5 && /\D/.test(rejectionReason)) {
+		if (rejectionReason.length > 3 && /\D/.test(rejectionReason)) {
 			var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
 			rejectionReasonModal.hide();
 			document.getElementById('rejectionReason').value = rejectionReason;
 			document.getElementById('rejectionForm').submit();
 		}
 	});
-	</script>
+</script>
 
 <!-- 3 -->
 <script>

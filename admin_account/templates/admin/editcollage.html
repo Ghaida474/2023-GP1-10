@@ -55,8 +55,8 @@
                     });
                 
                     $('input[name="nofaculty"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofaculty').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -66,8 +66,8 @@
                     });
 
                     $('input[name="nofaculty2"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofaculty2').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -77,8 +77,8 @@
                     });
 
                     $('input[name="disknum"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-disknum').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -88,8 +88,8 @@
                     });
 
                     $('input[name="buildingnum"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-buildingnum').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -99,8 +99,8 @@
                     });
 
                     $('input[name="nofemalestudents"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nofemalestudents').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -110,8 +110,8 @@
                     });
 
                     $('input[name="nomalestudents"]').on('blur', function() {
-                        var topic = $(this).val();
-                        if (topic < 1) {
+                        var topic = $(this).val().trim(); 
+                        if (topic !== "" && (isNaN(topic) || topic < 1)) {
                         $(this).addClass('is-invalid');
                         $(this).siblings('.error-message-nomalestudents').text('يجب ملئ الحقل برقم صحيح');
                         } else {
@@ -199,38 +199,38 @@
                             return false;
                         } 
 
-                        var numOFfaculty= parseInt(nofaculty.value);
-                        if (isNaN(numOFfaculty) || numOFfaculty < 1) {
+                        var numOFfaculty = parseInt(nofaculty.value);
+                        if ( nofaculty.value.trim() !== "" && (isNaN(numOFfaculty) || numOFfaculty < 1)) {
                             console.log('in numOFfaculty check');
                             return false;
-                        } 
+                        }
 
                         var numOFfaculty2 = parseInt(nofaculty2.value);
-                        if (isNaN(numOFfaculty2) || numOFfaculty2 < 1) {
+                        if (nofaculty2.value.trim() !== "" && (isNaN(numOFfaculty2) || numOFfaculty2 < 1)) {
                             console.log('in numOFfaculty2 check');
                             return false;
-                        } 
+                        }
 
-                        var numOFfemalestudents= parseInt(nofemalestudents.value);
-                        if (isNaN(numOFfemalestudents) || numOFfemalestudents < 1) {
+                        var numOFfemalestudents = parseInt(nofemalestudents.value);
+                        if (buildingnum.value.trim() !== "" && (isNaN(numOFfemalestudents) || numOFfemalestudents < 1)) {
                             console.log('in numOFfemalestudents check');
                             return false;
-                        } 
+                        }
 
-                        var numOFmalestudents= parseInt(nomalestudents.value);
-                        if (isNaN(numOFmalestudents) || numOFmalestudents < 1) {
+                        var numOFmalestudents = parseInt(nomalestudents.value);
+                        if (nomalestudents.value.trim() !== "" && (isNaN(numOFmalestudents) || numOFmalestudents < 1)) {
                             console.log('in numOFmalestudents check');
                             return false;
-                        } 
+                        }
 
                         var diskNum = parseInt(disknum.value);
-                        if (isNaN(diskNum) || diskNum < 1) {
+                        if ( disknum.value.trim() !== "" && (isNaN(diskNum) || diskNum < 1 )) {
                             console.log('in diskNum check');
                             return false;
                         } 
 
                         var buildingNum = parseInt(buildingnum.value);
-                        if (isNaN(buildingNum) || buildingNum < 1) {
+                        if ( buildingnum.value.trim() !== "" && (isNaN(buildingNum) || buildingNum < 1) ) {
                             console.log('in buildingnum check');
                             return false;
                         } 
@@ -239,7 +239,7 @@
                         domains.forEach(function(domain) {
                             var topic = domain.value.trim();
                             console.log('in domain loop validation :', topic);
-                            if (topic.length < 2 || numberPattern.test(topic) || !arabicPattern.test(topic)) {
+                            if (topic.value.trim() !== "" || topic.length < 2 || numberPattern.test(topic) || !arabicPattern.test(topic)) {
                                 console.log('domain validation failed:', topic);
                                 isDomainsValid = false;
                             }
@@ -280,13 +280,13 @@
                                 if (response.success_message !== undefined) {
                                     if (response.success_message === true) {
                                         console.log('here inside true')
-                                        $('.department-modal-body').html('<p>لا يمكن الحذف لوجود موظفين/منسوبي مسجلين في القسم</p>');
-                                        $('.department-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
+                                        $('.modal-body').html('<p>لا يمكن الحذف لوجود موظفين/منسوبي مسجلين في القسم</p>');
+                                        $('.modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
                                     } else {
                                         console.log('here inside false');
                                         $('#bottom_value').val(buttom);
-                                        $('.department-modal-body').html('<p>هل أنت متأكد من حذف القسم</p>');
-                                        $('.department-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDepartmentField()">تأكيد</button>');
+                                        $('.modal-body').html('<p>هل أنت متأكد من حذف القسم</p>');
+                                        $('.modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDepartmentField()">تأكيد</button>');
                                     }
                                 } else {
                                     console.log('Response message not received');
@@ -338,7 +338,6 @@
                         addButton.style.display = 'block';
                     }
 
-           
                     function checkdomain( buttom , domain){
                         var attendURL =  "{% url 'admin_account:checkdomain' domain='placeholder' %}".replace('placeholder', domain);
                         $.ajax({
@@ -348,13 +347,13 @@
                                 if (response.success_message !== undefined) {
                                     if (response.success_message === true) {
                                         console.log('here inside true')
-                                        $('.domain-modal-body').html('<p>لا يمكن الحذف لوجود برامج تدريبية مسجلة في المجال</p>');
-                                        $('.domain-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
+                                        $('.modal-body').html('<p>لا يمكن الحذف لوجود برامج تدريبية مسجلة في المجال</p>');
+                                        $('.modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">رجوع</button>');
                                     } else {
                                         console.log('here inside false');
                                         $('#bottom_value2').val(buttom);
-                                        $('.domain-modal-body').html('<p>هل أنت متأكد من حذف المجال</p>');
-                                        $('.domain-modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDomainField()">تأكيد</button>');
+                                        $('.modal-body').html('<p>هل أنت متأكد من حذف المجال</p>');
+                                        $('.modal-footer').html('<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button><button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="removeDomainField()">تأكيد</button>');
                                     }
                                 } else {
                                     console.log('Response message not received');
@@ -443,10 +442,10 @@
                                     <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
                                 </div>
                                 <div class="modal-body">
-                                    <div class="department-modal-body"></div>
+                                    
                                 </div>
                                 <div class="modal-footer">
-                                    <div class="department-modal-footer"></div>
+                                  
                                 </div>
                             </div>
                         </div>
@@ -459,10 +458,10 @@
                                     <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
                                 </div>
                                 <div class="modal-body">
-                                    <div class="domain-modal-body"></div>
+                                   
                                 </div>
                                 <div class="modal-footer">
-                                    <div class="domain-modal-footer"></div>
+                                   
                                 </div>
                             </div>
                         </div>
@@ -472,6 +471,9 @@
                     <div class="page-header d-xl-flex d-block" >
                         <div class="page-leftheader">
                             <div class="page-title">تعديل معلومات الكلية</div>
+                        </div>
+                        <div class="page-rightheader ms-md-auto">
+                            <div>اخر تعديل بتاريخ : {{editcollage.last_update}}</div>
                         </div>
                     </div>
                     <!-- END PAGE HEADER -->
@@ -580,7 +582,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <div class="department-inputs">
-                                                                <label class="form-label">التخصصات <span style="color: red;">*</span></label>
+                                                                <label class="form-label">الاقسام<span style="color: red;">*</span></label>
                                                                 <div id="departmentFields">
                                                                     {% for department in editcollage.departments %}
                                                                     <div class="row department-row">
@@ -628,7 +630,7 @@
                                                 </div>
                                    
                                                 <div class="card-footer text-end">
-                                                    <button type="submit" name="addcollage" class="btn btn-primary btn-lg projectnotify">حفظ</button>
+                                                    <button type="submit" name="addcollage" class="btn btn-primary btn-lg projectnotify">تعديل</button>
                                                     <button type="button" name="deletecollage" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deletecollage" >حذف</button>
                                                     <a  href="{% url 'admin_account:collageList' %}" class="btn btn-primary btn-lg">رجوع</a>
                                                 </div>

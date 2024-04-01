@@ -2,48 +2,36 @@
 {% load static %}
 
 {% block styles %}
-<style>
-    #otherInput {
-        display: none; 
-    }
-    #other-domain{
-        display: none;
-    }
-    body {
-        
-        overflow-x: hidden;
-    }
 
-</style>
 {% endblock %}
 
 {% block content %}
 
-    <div class="page-header d-lg-flex d-block">
-        <div class="page-leftheader">
-            <div class="page-title"> المشاريع</div>
-        </div>
-        <div class="page-rightheader ms-md-auto">
-            <div class="page-rightheader ms-md-auto">
-                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-   
- 
-    
-        <div class="tab-menu-heading hremp-tabs p-0 ">
-            <div class="tabs-menu1" >
-                <!-- Tabs -->
-                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
-                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">المشاريع</a></li>
-                     <!-- <li><a href="#tab2" data-bs-toggle="tab">المشاريع الحالية</a></li>
-                    <li><a href="#tab3" data-bs-toggle="tab">المشاريع المنتهية</a></li>-->
-                </ul>
-            </div>
-        </div>
+                    <div class="page-header d-lg-flex d-block">
+                        <div class="page-leftheader">
+                            <div class="page-title"> المشاريع</div>
+                        </div>
+                        <div class="page-rightheader ms-md-auto">
+                            <div class="page-rightheader ms-md-auto">
+                                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                
+                    <div class="tab-menu-heading hremp-tabs p-0 ">
+                        <div class="tabs-menu1" >
+                            <ul class="nav panel-tabs" style=" margin-right: 290px;" >
+                                <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">طلبات المشاريع</a></li>
+                                <li><a href="#tab2" data-bs-toggle="tab">مشاريعي الحالية</a></li>
+                                <li><a href="#tab3" data-bs-toggle="tab">المشاريع المنتهية</a></li>
+                                <li><a href="#tab4" data-bs-toggle="tab">مشاريع تم رفضها</a></li>
+                            </ul>
+                        </div>
+                    </div>
 
                  
                     <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
@@ -55,7 +43,7 @@
 										<div class="table-vcenter">
                                             <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">	
 												<thead>
-                                                    <div class="row mt-2">
+                                                    <!-- <div class="row mt-2">
                                                         <div style="margin-right: 755px; height: 40px;">
                                                             <label for="status_filter" class="d-inline-block">تصفية حسب حالة الطلب </label>
                                                             <select name="status_filter" id="status_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
@@ -69,7 +57,7 @@
                                                                     <option value="إنهاء المشروع">مكتمل</option>
                                                             </select>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 													<tr>
 														<th class="border-bottom-0">إسم المشروع</th>
 														<th class="border-bottom-0">نوع المشروع</th>
@@ -109,22 +97,12 @@
                                 </div> 
                             </div>
                 
-                            <!-- <div class="tab-pane" id="tab2">
+                            <div class="tab-pane" id="tab2">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  
 										<div class="table-vcenter">
                                             <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
 												<thead>
-                                                    <div class="row mt-2">
-                                                        <div  style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                    <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
-                                                                    <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>     
-                                                            </select>
-                                                        </div>
-                                                    </div>
 													<tr>
 														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم المشروع</th>
@@ -135,10 +113,28 @@
 												</thead>
                                                 
 												<tbody>
-													
-													<tr>
-                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+													{% for program in accepted_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'faculty_staff_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع حالية</td>
                                                     </tr>      
+												  {% endfor %}    
 												</tbody>
 											</table>
 										</div> 
@@ -150,18 +146,8 @@
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  
 										<div class="table-vcenter">
-                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable" >
+                                            <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable" >
 												<thead>
-                                                    <div class="row mt-2">
-                                                        <div  style="margin-right: 755px; height: 40px;">
-                                                            <label for="status_filter2" class="d-inline-block">تصفية حسب حالة الطلب </label>
-                                                            <select name="status_filter2" id="status_filter2" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
-                                                                <option value="all">جميع الحالات</option>           
-                                                                <option value='انتظار قبول المعهد'>انتظار قبول المعهد</option>
-                                                                <option value="رفض من قبل المعهد">رفض من قبل المعهد</option>      
-                                                            </select>
-                                                        </div>
-                                                    </div>
 													<tr>
 														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم المشروع</th>
@@ -172,17 +158,71 @@
 												</thead>
                                                 
 												<tbody>
-										
-													<tr>
-                                                        <td colspan="7">لا يوجد طلبات حالية</td>
+													{% for program in fineshed_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                <td>
+                                                                    {{ program.status }}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'faculty_staff_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع حالية</td>
                                                     </tr>      
-										
+												  {% endfor %}    
 												</tbody>
 											</table>
 										</div> 
 									</div>  
 							    </div> 
-						    </div> --> 
+						    </div> 
+                        
+
+                            <div class="tab-pane" id="tab4">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">  
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="example2" >
+												<thead>
+													<tr>
+														<th class="border-bottom-0">إسم المشروع</th>
+														<th class="border-bottom-0">نوع المشروع</th>
+														<th class="border-bottom-0">تاريخ الإنشاء </th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for program in rejected_projects %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{program.programtype}}</td>
+                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
+                                                    </tr>      
+												  {% endfor %}    
+												</tbody>
+											</table>
+										</div> 
+									</div>  
+							    </div> 
+						    </div> 
                         
                         </div>
                     </div>
@@ -192,72 +232,79 @@
 
 
 {% block scripts %}
-		<!-- INTERNAL TIMEPICKER JS -->
+        <!-- INTERNAL TIMEPICKER JS -->
         <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
-		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
 
-		<!-- INTERNAL DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
-		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
-		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+        <!-- INTERNAL DATEPICKER JS -->
+        <script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+        <script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+        <script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
 
-		<!-- INTERNAL FILE-UPLOADS JS -->
-		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
         <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
         <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
         <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
         <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
 
-		<!-- INTERNAL FILE-UPLOADS JS -->
+        <!-- INTERNAL FILE-UPLOADS JS -->
         <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
-		<script src="{% static 'assets/js/filupload.js'%}"></script>
+        <script src="{% static 'assets/js/filupload.js'%}"></script>
 
-		<!-- INTERNAL SUMOSELECT JS -->
-		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
-        
-		<!-- INTERNAL INTLTELINPUT JS -->
-		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+        <!-- INTERNAL SUMOSELECT JS -->
+        <script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
 
-		<!-- INTERNAL JQUERY TRANSFER JS -->
-		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+        <!-- INTERNAL INTLTELINPUT JS -->
+        <script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+        <script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+        <script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
 
-		<!-- INTERNAL MULTI JS -->
-		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+        <!-- INTERNAL JQUERY TRANSFER JS -->
+        <script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
 
-		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+        <!-- INTERNAL MULTI JS -->
+        <script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
 
-		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
-		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
-		<script src="{% static 'assets/js/form-elements.js'%}"></script>
-		<script src="{% static 'assets/js/select2.js'%}"></script>
+        <!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+        <script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
 
-		<!-- INTERNAL MULTIPLE SELECT JS -->
-		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+        <!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+        <script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+        <script src="{% static 'assets/js/form-elements.js'%}"></script>
+        <script src="{% static 'assets/js/select2.js'%}"></script>
+
+        <!-- INTERNAL MULTIPLE SELECT JS -->
+        <script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+        <script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
 
         <!-- THEME COLOR JS -->
-		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+        <script src="{% static 'assets/js/themeColors.js'%}"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 
-          <!-- INTERNAL DATA TABLES  -->
-          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/js/datatables.js'%}"></script>
-          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+        <!-- INTERNAL DATA TABLES  -->
+        <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/jszip.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+        <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+        <script src="{% static 'assets/js/datatables.js'%}"></script>
+        <script src="{% static 'assets/js/select2.js'%}"></script>
+        <script src="{% static 'assets/js/client/client-list.js'%}"></script>
 
 
-          <script>
-            $(document).ready(function () {
+            <script>
+             $(document).ready(function () {
                   // Set minimum and maximum time values (8:00 AM and 10:00 PM)
                   var minTime = '08:00';
                   var maxTime = '22:00';
@@ -265,9 +312,8 @@
                   // Set the min and max attributes for the time inputs
                   $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
               });
-          </script>
+            </script>
   
-          
             <script>
              $(document).ready(function() {
                   $('#status_filter').change(function() {
@@ -297,8 +343,9 @@
                       }
                   });
               });
-          </script>
-          <script>
+            </script>
+          
+            <script>
               $(document).ready(function() {
                    $('#status_filter2').change(function() {
                        var selectedDepartment = $(this).val();
@@ -315,547 +362,56 @@
                        }
                    });
                });
-           </script>
+            </script>
           
-  <script>
-  $(document).ready(function () {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Initialize flatpickr for date inputs
+                    flatpickr('.flatpickr[data-input][data-date]', {
+                        dateFormat: "d-m-Y",
+                        minDate: "today",
+                    });
+            
+                    // Initialize flatpickr for time inputs
+                    flatpickr('.flatpickr[data-input][data-time]', {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "H:i",
+                    });
+                });
+                
+                $(function() {
+                        $(document).ready(function () {
+                        var todaysDate = new Date();
+                        var year = todaysDate.getFullYear();
+                        var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+                        var day = ("0" + todaysDate.getDate()).slice(-2);
+                        var maxDate = (year +"-"+ month +"-"+ day);
+                        $('.date').attr('min',maxDate);
+                        });
+                    });
+            </script>
   
-      var $select = $('#mySelect').selectize();
-  
-      $('#openToAllCheckbox').change(function() {
-          var selectize = $select[0].selectize;
-  
-          if ($(this).prop('checked')) {
-              selectize.clear(); // Clear selected options if checkbox is checked
-              selectize.disable(); // Disable the selectize control
-              document.querySelector('.error-message-instructor').innerText = '';
-          } else {
-              selectize.enable(); // Enable the selectize control
-          }
-      });
-  });
-  
-  // ***************************************************
-  $(document).ready(function() {
-      $('#num_ofinstructors').on('change', function() {
-          validateInstructors();
-      });
-  
-      $('#mySelect').on('change', function() {
-          validateInstructors();
-      });
-  });
-  
-  function validateInstructors() {
-          var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
-          var selectedInstructors = document.getElementById('mySelect').options;
-          var selectedCount = selectedInstructors.length;
-          if (selectedCount !== num_ofinstructors) {
-              document.querySelector('.error-message-instructor').innerText = 'يرجى اختيار عدد الفريق المطلوب';
-              return;
-          } else {
-              document.querySelector('.error-message-instructor').innerText = '';
-          }
-      }
-  
-  // ***************************************************
-      // Function to validate the form on submission
-  function validateForm() {
-      // Retrieve form elements
-      var topicElement = document.querySelector('input[name="topic"]');
-      var companyElement = document.querySelector('input[name="CompanyName"]');
-      //var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
-      var priceElement = document.querySelector('input[name="price"]');
-      var durationElement = document.querySelector('input[name="duration"]');
-      var durationTypeElement = document.querySelector('input[name="durationType"]');
-      //var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
-      //var startDateElement = document.querySelector('input[name="startdate"]');
-      var endDateElement = document.querySelector('input[name="enddate"]');
-      var proposalDateElement = document.querySelector('input[name="proposalSubmission"]');
-      var questionDateElement = document.querySelector('input[name="questionDate"]');
-      var companyDateElement = document.querySelector('input[name="companyDate"]');
-      var envelopeDateElement = document.querySelector('input[name="envelopeDate"]');
-      //var startTimeElement = document.querySelector('input[name="starttime"]');
-      //var endTimeElement = document.querySelector('input[name="endtime"]');
-      var subjectElement = document.querySelector('textarea[name="subject"]');
-      var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
-      //var selectElement = document.getElementById("options");
-      var selectdomain = document.getElementById("domain");
-      //var otherdomainElement = document.querySelector('input[name="otherdomain"]');
-      //var otherTextElement = document.querySelector('input[name="otherText"]');
-  
-       // select other reqtype
-       if (selectElement.value === "other") {
-          if (otherTextElement.value.length < 5) {
-              return false;
-          } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
-              return false;
-          } 
-      }   
-  
-      //select  other domain
-      if (selectdomain.value === "اخرى") {
-          if (otherdomainElement.value.length < 5) {
-              return false;
-          } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
-              return false;
-          } 
-      }   
-      
-      // Check topic
-      if (topicElement.value.length < 5) {
-          return false;
-      } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-          return false;
-      } 
-
-      if (companyElement.value.length < 5) {
-          return false;
-      } else if (/^\d+$/.test(companyElement.value.trim()) || /^[0-9]/.test(companyElement.value.trim())) {
-          return false;
-      } 
-  
-      // Check numoftrainee
-      var numoftrainee = parseInt(numoftraineeElement.value);
-      if (isNaN(numoftrainee) || numoftrainee < 1) {
-          return false;
-      } 
-  
-      // check num_ofinstructorsElement
-      var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-      if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
-          return false;
-      } 
-  
-      // Check price
-      var price = parseFloat(priceElement.value);
-      if (isNaN(price) || price < 0) {
-          return false;
-      } 
-  
-      // check pricefortrainee
-      var pricefortrainee = parseFloat(pricefortraineeElement.value);
-      if (isNaN(pricefortrainee) || pricefortrainee < 0) {
-          return false;
-      } 
-  
-      // Check start date and end date
-      //var startDate = new Date(startDateElement.value);
-      var endDate = new Date(endDateElement.value);
-      var envelopeDate = new Date(envelopeDateElement.value);
-      var companyDate = new Date(companyDateElement.value);
-      var questionDate = new Date(questionDateElement.value);
-      var proposalDate = new Date(proposalDateElement.value);
-  
-      /*if (startDate > endDate) {
-          return false; 
-      } */
-
-      if(envelopeDate > endDate || companyDate > endDate || questionDate > endDate || proposalDate > endDate) {
-        return false;
-      }
-  
-      // Check start time and end time
-      var startTimeParts = startTimeElement.value.split(':');
-      var endTimeParts = endTimeElement.value.split(':');
-      var startHour = parseInt(startTimeParts[0]);
-      var startMinute = parseInt(startTimeParts[1]);
-      var endHour = parseInt(endTimeParts[0]);
-      var endMinute = parseInt(endTimeParts[1]);
-  
-      if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-          return false;
-      } 
-  
-      // Check subject
-      if (subjectElement.value.length < 5) {
-          return false;
-      } else if (/^\d+$/.test(subjectElement.value.trim())) {
-          return false;
-      }
-  
-      if (!validateInstructorsCount()) {
-          console.log("Instructors count validation failed");
-          return false;
-      }
-          // Skip validation if the file input is empty
-          if (!fileInput.files.length) {
-          errorMessage.textContent = '';
-          return true; // No validation needed for an empty file input
-      }
-  
-      var fileInput = document.querySelector('input[name="attachment"]');
-      var errorMessage = document.querySelector('.error-message-attachment');
-  
-      var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
-  
-      for (var i = 0; i < fileInput.files.length; i++) {
-      var filePath = fileInput.files[i].name.toLowerCase();
-  
-      var isValidExtension = allowedExtensions.some(function (extension) {
-          return filePath.endsWith(extension);
-      });
-  
-      if (!isValidExtension) {
-          errorMessage.textContent = 'يجب أن يكون كل الملفات بامتداد .pdf, .pptx, .doc, .docx, .xlsx';
-          fileInput.value = ''; // Clear the file input
-          return false;
-      } else {
-          errorMessage.textContent = '';
-      }
-  }
-  
-  return true;
-  
-  }
-  
-  
-  function validateInstructorsCount() {
-      var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
-      var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-      var selectedInstructors = document.getElementById('mySelect').options;
-      var selectedCount = selectedInstructors.length;
-  
-      var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
-      if(openToAllCheckboxElement.checked){
-          return true;
-      }
-  
-      return selectedCount === num_ofinstructors;
-  }
-  
-  // **************************** select other order
-  function toggleOtherInput() {
-      var selectElement = document.getElementById("options");
-      var otherInput = document.getElementById("otherInput");
-      var otherText = document.getElementById("otherText");
-  
-      if (selectElement.value === "other") {
-          otherInput.style.display = "block";
-          otherText.setAttribute("required", "required");
-      } else {
-          otherInput.style.display = "none"; 
-          otherText.removeAttribute("required");
-      }
-  }
-  
-  // **************************** select other domain
-  function toggleOtherdomain() {
-      var selectElement = document.getElementById("domain");
-      var otherInput = document.getElementById("other-domain");
-      var otherdomain = document.getElementById("otherdomain");
-  
-      if (selectElement.value === "اخرى") {
-          otherInput.style.display = "block";
-          otherdomain.setAttribute("required", "required"); 
-      } else {
-          otherInput.style.display = "none"; 
-          otherdomain.removeAttribute("required");
-      }
-  }
-  
-  </script>
-  <!-- **************************** AJAX -->
-  <script>
-      
-      $(document).ready(function() {
-         
-          $('input[name="topic"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
-              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-              }else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-topic').text('');
-              }
-          });
-
-          $('input[name="CompanyName"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-company').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
-              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-company').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-              }else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-company').text('');
-              }
-          });
-
-          $('input[name="domain"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
-              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-              }else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-domain').text('');
-              }
-          });
-          
-  
-          $('input[name="price"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 0) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-price').text('');
-              }
-          });
-  
-          $('input[name="pricefortrainee"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 0) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-pricefortrainee').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-pricefortrainee').text('');
-              }
-          });
-         
-          $('input[name="numoftrainee"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 1) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-numoftrainee').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-numoftrainee').text('');
-              }
-          });
-  
-          $('input[name="num_ofteam"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 1) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-num_ofinstructors').text('');
-              }
-          });
-
-          $('input[name="duration"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic < 1) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-duration').text('يجب ملئ الحقل برقم صحيح');
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-duration').text('');
-              }
-          });
-  
-          /*$('input[name="startdate"]').on('blur', function() {
-              var startDate = $(this).val();
-              var endDate = $('input[name="enddate"]').val();
-  
-              if (startDate === '' || endDate === '') {
-                  $(this).removeClass('is-invalid');
-                  $(this).siblings('.error-message-startdate').text('');
-              } else {
-                  startDate = new Date(startDate);
-                  endDate = new Date(endDate);
-  
-                  if (startDate > endDate) {
-                      $(this).addClass('is-invalid');
-                      $(this).siblings('.error-message-startdate').text('يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء');
-                  } else {
-                      $(this).removeClass('is-invalid');
-                      $(this).siblings('.error-message-startdate').text('');
-                  }
-              }
-          });
-         
-          $('input[name="enddate"]').on('blur', function() {
-              var startDate = $('input[name="startdate"]').val();
-              var endDate = $(this).val();
-  
-              if (startDate === '' || endDate === '') {
-                  $(this).removeClass('is-invalid');
-                  $(this).siblings('.error-message-enddate').text('');
-              } else {
-                  startDate = new Date(startDate);
-                  endDate = new Date(endDate);
-  
-                  if (startDate > endDate) {
-                      $(this).addClass('is-invalid');
-                      $(this).siblings('.error-message-enddate').text('يجب أن يأتي تاريخ الانتهاء بعد تاريخ البدء');
-                  } else {
-                      $(this).removeClass('is-invalid');
-                      $(this).siblings('.error-message-enddate').text('');
-                  }
-              }
-          });*/
-  
-          $('input[name="starttime"]').on('blur', function() {
-              var startTime = $(this).val();
-              var endTime = $('input[name="endtime"]').val();
-  
-              if (startTime === '' || endTime === '') {
-                  $(this).removeClass('is-invalid');
-                  $(this).siblings('.error-message-starttime').text('');
-              } else {
-                  var startParts = startTime.split(':');
-                  var endParts = endTime.split(':');
-  
-                  var startHour = parseInt(startParts[0]);
-                  var startMinute = parseInt(startParts[1]);
-                  var endHour = parseInt(endParts[0]);
-                  var endMinute = parseInt(endParts[1]);
-  
-                  if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-                      $(this).addClass('is-invalid');
-                      $(this).siblings('.error-message-starttime').text('يجب أن يكون وقت البدء قبل وقت الانتهاء');
-                  } else {
-                      $(this).removeClass('is-invalid');
-                      $(this).siblings('.error-message-starttime').text('');
-                  }
-              }
-          });
-  
-          $('input[name="endtime"]').on('blur', function() {
-              var startTime = $('input[name="starttime"]').val();
-              var endTime = $(this).val();
-  
-              if (startTime === '' || endTime === '') {
-                  $(this).removeClass('is-invalid');
-                  $(this).siblings('.error-message-endtime').text('');
-              } else {
-                  var startParts = startTime.split(':');
-                  var endParts = endTime.split(':');
-  
-                  var startHour = parseInt(startParts[0]);
-                  var startMinute = parseInt(startParts[1]);
-                  var endHour = parseInt(endParts[0]);
-                  var endMinute = parseInt(endParts[1]);
-  
-                  if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-                      $(this).addClass('is-invalid');
-                      $(this).siblings('.error-message-endtime').text('يجب أن يأتي وقت الانتهاء بعد وقت البدء');
-                  } else {
-                      $(this).removeClass('is-invalid');
-                      $(this).siblings('.error-message-endtime').text('');
-                  }
-              }
-          });
-  
-          $('textarea[name="subject"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
-              }else if (/^\d+$/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
-              } else {
-                  $(this).removeClass('is-invalid');
-                  $(this).siblings('.error-message-subject').text('');
-              }
-          });
-          
-          $('input[name="otherText"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
-              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-other').text('');
-              }
-          });
-          
-          /*$('input[name="otherdomain"]').on('blur', function() {
-              var topic = $(this).val();
-              if (topic.length < 5) {
-              $(this).addClass('is-invalid');
-              $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
-              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                  $(this).addClass('is-invalid');
-                  $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-              } else {
-              $(this).removeClass('is-invalid');
-              $(this).siblings('.error-message-domain').text('');
-              }
-          });*/
-      });
-  </script>
-     
-  <script>
-      let dropdowns = document.querySelectorAll('.dropdown-button');
-      dropdowns.forEach(dropdown => {
-          dropdown.addEventListener('click', () => {
-              let content = dropdown.nextElementSibling;
-              content.style.display = content.style.display === 'none' ? 'block' : 'none';
-          });
-      });
-  </script>
-  
-  <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          // Initialize flatpickr for date inputs
-          flatpickr('.flatpickr[data-input][data-date]', {
-              dateFormat: "d-m-Y",
-              minDate: "today",
-          });
-  
-          // Initialize flatpickr for time inputs
-          flatpickr('.flatpickr[data-input][data-time]', {
-              enableTime: true,
-              noCalendar: true,
-              dateFormat: "H:i",
-          });
-      });
-      
-      $(function() {
-            $(document).ready(function () {
-              var todaysDate = new Date();
-              var year = todaysDate.getFullYear();
-              var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
-              var day = ("0" + todaysDate.getDate()).slice(-2);
-              var maxDate = (year +"-"+ month +"-"+ day);
-              $('.date').attr('min',maxDate);
+            <script>
+                $(document).ready(function () {
+                    flatpickr('.flatpickr', {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: 'H:i',
+                        minTime: '08:00',
+                        maxTime: '22:00',
+                        onClose: function (selectedDates, dateStr, instance) {
+                            if (dateStr < '08:00' || dateStr > '22:00') {
+                                instance.clear();
+                                $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
+                            } else {
+                                $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
+                            }
+                        }
+                    });
+            
             });
-          });
-  
-  </script>
-  
-  <script>
-      $(document).ready(function () {
-          flatpickr('.flatpickr', {
-              enableTime: true,
-              noCalendar: true,
-              dateFormat: 'H:i',
-              minTime: '08:00',
-              maxTime: '22:00',
-              onClose: function (selectedDates, dateStr, instance) {
-                  if (dateStr < '08:00' || dateStr > '22:00') {
-                      instance.clear();
-                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
-                  } else {
-                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
-                  }
-              }
-          });
-  
-  });
-  
-  </script>
+            </script>
   
   {% endblock %}
   

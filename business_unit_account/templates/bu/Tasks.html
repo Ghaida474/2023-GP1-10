@@ -1,0 +1,1262 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+{% load tz %}
+
+{% block styles %}
+<style>
+    #otherInput {
+        display: none; 
+    }
+    #other-domain{
+        display: none;
+    }
+    body {
+        
+        overflow-x: hidden;
+    }
+    #subtasks-form {
+    display: none;
+    }
+</style>
+
+<style>
+    .yellow-frame {
+    background-color: #fff3e0; /* Softer shade of yellow-orange */
+    border: 1px solid #ffdaa0; /* Softer orange for the border */
+    padding: 5px; /* Add some padding inside the box */
+    margin: 10px 0; /* Add some margin outside the box */
+    color: #333; /* Set the text color to dark grey for contrast */
+    font-weight: normal; /* Normal font weight for a softer appearance */
+    text-align: center; /* Center align the text */
+    border-radius: 3px; /* Optional: rounded corners for a softer look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: soft shadow for depth */
+    /* You can add more styling as needed */
+}
+.red-frame {
+    background-color: #ffe5e5; /* Soft red background */
+    border: 1px solid #ffcccc; /* Softer shade of red for the border */
+    padding: 5px; /* Padding inside the box */
+    margin: 10px 0; /* Margin outside the box */
+    color: #333; /* Dark grey text color for contrast */
+    font-weight: normal; /* Normal font weight for a less bold look */
+    text-align: center; /* Centered text */
+    border-radius: 5px; /* Rounded corners for a softer appearance */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    /* Additional styling can be added as needed */
+}
+  
+  </style>
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header d-lg-flex d-block">
+        <div class="page-leftheader">
+            <div class="page-title"> المهام</div>
+        </div>
+        <div class="page-rightheader ms-md-auto">
+            <div class="page-rightheader ms-md-auto">
+                <div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+                    <div class="btn-list">
+                        <a  href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newprojectmodal"><i class="feather feather-plus fs-15 my-auto me-2"></i>طلب إنشاء </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+ 
+    
+        <div class="tab-menu-heading hremp-tabs p-0 ">
+            <div class="tabs-menu1" >
+                <!-- Tabs -->
+                <ul class="nav panel-tabs" style=" margin-right: 400px;" >
+                    <!--<li><a href="#tab1" data-bs-toggle="tab" class="active">جميع المهام</a>
+                        {% if notifications_in_tasks.count > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_tasks.count }}
+                        </span>
+                    {% endif %}
+                    </li>-->
+                    <li style="position: relative;">
+                        <a href="#tab1" data-bs-toggle="tab" class="active">جميع المهام</a>
+                        {% if notifications_in_tasks.count > 0 %}
+                          <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_tasks.count }}
+                          </span>
+                        {% endif %}
+                      </li>
+                      <li style="position: relative;" class="ms-4">
+                        <a href="#tab2" data-bs-toggle="tab">المهام الواردة</a>
+                        
+                        {% if notifications_in_assigned_to_user_tasks > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_assigned_to_user_tasks }}
+                        </span>
+                        {% endif %}
+                    </li>
+                    
+                    <li style="position: relative;" class="ms-4"><a href="#tab3" data-bs-toggle="tab">المهام المسندة</a>
+                        {% if notifications_in_assigned_by_user_tasks > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_assigned_by_user_tasks }}
+                        </span>
+                        {% endif %}
+                    </li>
+                    
+                    <li  style="position: relative;" class="ms-4"><a href="#tab4" data-bs-toggle="tab">المهام المنتهية</a>
+                        {% if notifications_in_related_ended_user_tasks > 0 %}
+                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                            {{ notifications_in_related_ended_user_tasks }}
+                        </span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+                 
+         <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
+                        <div class="tab-content">
+                            
+                
+                            <div class="tab-pane active" id="tab1">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="basic-datatable">	
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div style="margin-right: 755px; height: 40px;">
+                                                            <!--buttons goes here-->
+                                                        </div>
+                                                    </div>
+													<tr>
+                                                        
+														<th class="border-bottom-0">مقدم الطلب</th>
+														<th class="border-bottom-0">إسم المهمة</th>
+														<th class="border-bottom-0">حالة المهمة</th>
+                                                        <th class="border-bottom-0">أولوية المهمة</th>
+														<th class="border-bottom-0">تاريخ إنتهاء المهمة</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for task in all_tasks_related_to_user %}
+                                                    <tr {% if task.task_id in  combined_tasks_ids %}style="background-color: rgba(0, 0, 128, 0.1);"{% endif %}>
+                                                               
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        {% if task.faculty_initiation %}
+
+                                                                        {{ task.faculty_initiation.first_name}} {{task.faculty_initiation.last_name}}
+   
+                                                                        {% else %}
+
+                                                                        {{task.kai_initiation.first_name}} {{task.kai_initiation.last_name}}
+    
+                                                                         {% endif %}
+                                                                        <h6 class="mb-1 fs-14">{{ Task.topic }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{task.task_name}}</td>
+                                                                <td >{{task.status}}</td>
+                                                                <td >{{task.priority}}</td>
+                                                               
+                                                                <td>
+                                                                    {% now "Y-m-d" as current_date %}
+                                                                    {% if task.pending_status == 'مهمة معلقة' and not task.status == 'مسترجعة'%}
+                                                                        <div class="yellow-frame">مهمة معلقة</div>
+                                                                    {% elif task.end_date < current_date and not task.status == 'مسترجعة' %}
+                                                                        <span class="red-frame">مهمة متأخرة</span>
+                                                                    {% else %}
+                                                                        {{ task.end_date|date:"M. d, Y" }}
+                                                                    {% endif %}
+                                                                </td>
+
+                                                                
+                                                              
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:task-detail' task_id=task.task_id %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+
+                            <div class="tab-pane " id="tab2">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">	
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div style="margin-right: 755px; height: 40px;">
+                                                            <!--buttons goes here-->
+                                                        </div>
+                                                    </div>
+													<tr>
+                                                        
+														<th class="border-bottom-0">مقدم الطلب</th>
+														<th class="border-bottom-0">إسم المهمة</th>
+														<th class="border-bottom-0">حالة المهمة</th>
+                                                        <th class="border-bottom-0">أولوية المهمة</th>
+														<th class="border-bottom-0">تاريخ إنتهاء المهمة</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for task in allTasksAssignedToUser %}
+                                                    <tr {% if task.task_id in  combined_tasks_ids %}style="background-color: rgba(0, 0, 128, 0.1);"{% endif %}>
+                                                               
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        {% if task.faculty_initiation %}
+
+                                                                        {{ task.faculty_initiation.first_name}} {{task.faculty_initiation.last_name}}
+   
+                                                                        {% else %}
+
+                                                                        {{task.kai_initiation.first_name}} {{task.kai_initiation.last_name}}
+    
+                                                                         {% endif %}
+                                                                        <h6 class="mb-1 fs-14">{{ Task.topic }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{task.task_name}}</td>
+                                                                <td >{{task.status}}</td>
+                                                                <td >{{task.priority}}</td>
+                                                                {% if givenTask.pending_status == 'مهمة معلقة' %}
+                                                                <td>givenTask.pending_status</td>
+
+                                                                {% else %}
+
+
+                                                                <td>
+                                                                    {% now "Y-m-d" as current_date %}
+                                                                    {% if task.pending_status == 'مهمة معلقة' and not task.status == 'مسترجعة'%}
+                                                                        <div class="yellow-frame">مهمة معلقة</div>
+                                                                    {% elif task.end_date < current_date and not task.status == 'مسترجعة' %}
+                                                                        <span class="red-frame">مهمة متأخرة</span>
+                                                                    {% else %}
+                                                                        {{ task.end_date|date:"M. d, Y" }}
+                                                                    {% endif %}
+                                                                </td>
+                                                                {% endif %}
+                                                              
+
+                                                                
+
+                                                                
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:task-detail' task_id=task.task_id %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+                
+                            <!--tab3-->
+                            <div class="tab-pane" id="tab3">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="example2">	
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div style="margin-right: 755px; height: 40px;">
+                                                            <!--buttons goes here-->
+                                                        </div>
+                                                    </div>
+													<tr>
+                                                        
+														<th class="border-bottom-0">مقدم الطلب</th>
+														<th class="border-bottom-0">إسم المهمة</th>
+														<th class="border-bottom-0">حالة المهمة</th>
+                                                        <th class="border-bottom-0">أولوية المهمة</th>
+														<th class="border-bottom-0">تاريخ إنتهاء المهمة</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for task in allTasksAssignedByUser %}
+                                                    <tr {% if task.task_id in  combined_tasks_ids %}style="background-color: rgba(0, 0, 128, 0.1);"{% endif %}>
+                                                                
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        {% if task.faculty_initiation %}
+
+                                                                        {{ task.faculty_initiation.first_name}} {{task.faculty_initiation.last_name}}
+   
+                                                                        {% else %}
+
+                                                                        {{task.kai_initiation.first_name}} {{task.kai_initiation.last_name}}
+    
+                                                                         {% endif %}
+                                                                        <h6 class="mb-1 fs-14">{{ Task.topic }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{task.task_name}}</td>
+                                                                <td >{{task.status}}</td>
+                                                                <td >{{task.priority}}</td>
+                                                                {% if givenTask.pending_status == 'مهمة معلقة' %}
+                                                                <td>givenTask.pending_status</td>
+
+                                                                {% else %}
+
+
+                                                                <td>
+                                                                    {% now "Y-m-d" as current_date %}
+                                                                    {% if task.pending_status == 'مهمة معلقة' and not task.status == 'مسترجعة'%}
+                                                                        <div class="yellow-frame">مهمة معلقة</div>
+                                                                    {% elif task.end_date < current_date and not task.status == 'مسترجعة' %}
+                                                                        <span class="red-frame">مهمة متأخرة</span>
+                                                                    {% else %}
+                                                                        {{ task.end_date|date:"M. d, Y" }}
+                                                                    {% endif %}
+                                                                </td>
+                                                                {% endif %}
+                                                              
+                                                               
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:task-detail' task_id=task.task_id %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+                
+                            <!--tab4-->
+                            <div class="tab-pane" id="tab4">
+                                <div class="card-body">
+                                    <div class="col-xl-12 col-md-12 col-lg-12">	
+										<div class="table-vcenter">
+                                            <table class="table table-bordered text-nowrap border-bottom" id="delete-datatable">	
+												<thead>
+                                                    <div class="row mt-2">
+                                                        <div style="margin-right: 755px; height: 40px;">
+                                                            <!--buttons goes here-->
+                                                        </div>
+                                                    </div>
+													<tr>
+                                                       
+														<th class="border-bottom-0">مقدم الطلب</th>
+														<th class="border-bottom-0">إسم المهمة</th>
+														<th class="border-bottom-0">حالة المهمة</th>
+                                                        <th class="border-bottom-0">أولوية المهمة</th>
+														<th class="border-bottom-0">تاريخ إنتهاء المهمة</th>
+														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
+													</tr>
+												</thead>
+
+												<tbody>
+													{% for task in all_tasks_related_to_user_that_ended %}
+                                                    <tr {% if task.task_id in  combined_tasks_ids %}style="background-color: rgba(0, 0, 128, 0.1);"{% endif %}>
+                                                                
+                                                                <td>
+                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                        {% if task.faculty_initiation %}
+
+                                                                        {{ task.faculty_initiation.first_name}} {{task.faculty_initiation.last_name}}
+   
+                                                                        {% else %}
+
+                                                                        {{task.kai_initiation.first_name}} {{task.kai_initiation.last_name}}
+    
+                                                                         {% endif %}
+                                                                        <h6 class="mb-1 fs-14">{{ Task.topic }}</h6>
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{task.task_name}}</td>
+                                                                <td >{{task.status}}</td>
+                                                                <td >{{task.priority}}</td>
+                                                                {% if givenTask.pending_status == 'مهمة معلقة' %}
+                                                                <td>givenTask.pending_status</td>
+
+                                                                {% else %}
+
+
+                                                                <td>
+                                                                    {% now "Y-m-d" as current_date %}
+                                                                    {% if task.pending_status == 'مهمة معلقة' and not task.status == 'مسترجعة'%}
+                                                                        <div class="yellow-frame">مهمة معلقة</div>
+                                                                    {% elif task.end_date < current_date and not task.status == 'مسترجعة' %}
+                                                                        <span class="red-frame">مهمة متأخرة</span>
+                                                                    {% else %}
+                                                                        {{ task.end_date|date:"M. d, Y" }}
+                                                                    {% endif %}
+                                                                </td>
+                                                                {% endif %}
+                                                              
+                                                                
+                                                                <td>
+                                                                    <input type="hidden" name="update_status" value="accept">
+                                                                    <a href="{% url 'business_unit_account:task-detail' task_id=task.task_id %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                </td> 
+                                                            </tr>
+													{% empty %}
+													<tr >
+                                                        <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
+                                                    </tr>      
+												  {% endfor %}
+												</tbody>
+                                            </table>
+										</div>
+                                    </div>
+                                </div> 
+                            </div>
+                 
+                        
+                        </div>
+                    </div>
+                        
+                
+						
+		
+     <!--********************************************مودل طلب الانشاء  *************************************************-->
+     <div class="modal fade"  id="newprojectmodal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="smartwizard-3">
+                <div class="modal-header">
+                    <h5 class="modal-title">طلب إنشاء</h5>
+                    <button  class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="border: none;">
+                        <span aria-hidden="true"> × </span>
+                    </button>
+                </div>
+                <form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                <div class="modal-body">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">نوع المهمة<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" placeholder="نوع المهمة" name="tasktype">
+                            <span class="error-message" style="color: red;"></span>
+                          </div>
+                        </div>
+                      
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">إسم المهمة <span style="color: red;">*</span></label>
+                            <input class="form-control" placeholder="اسم المهمة الأساسية" name="tasktopic" required>
+                            <span class="error-message-topic" style="color: red;"></span>
+                          </div>
+                        </div>  
+                      </div>
+                      
+                      <div class="form-group">
+                        <label class="form-label">وصف المهمة<span style="color: red;">*</span></label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="شرح المهمة الأساسية" name="taskdescription" required></textarea>
+                        <span class="error-message-subject" style="color: red;"></span>
+                      </div>
+                      
+                      <div class="form-group">
+                       <label class="form-label">يجب إنهاء المهمة من قبل جميع الأطراف</label>
+                       <input type="checkbox" name="isfull_accomplishment">
+                       
+                      </div> 
+
+                      <div class="form-group">
+                        <label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+                        <div class="form-group">
+                          <label class="form-label"></label>
+                          <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+                          <span class="error-message-attachment" style="color: red;"></span>
+                          <div id="fileList" class="file-list"></div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ بداية المهمة <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="startdate_display" value="" disabled>
+                                <input type="hidden" name="startdate" value="">
+                                <span class="error-message-startdate" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">تاريخ إنتهاء المهمة <span style="color: red;">*</span></label>
+                                <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate"  required>
+                                <span class="error-message-enddate" style="color: red;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">الإجراء المطلوب<span style="color: red;">*</span></label>
+                            <select class="form-control" name="requiredprocedure" onchange="toggleInputBox(this)" style="appearance: none; background: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;12&quot; viewBox=&quot;0 0 140 120&quot;><polygon points=&quot;70,100 0,0 140,0&quot; style=&quot;fill:black;&quot;/></svg>') no-repeat right .75rem center; background-size: 14px 12px; padding-right: 2.5rem;">
+                              <option value="تنفيذ">تنفيذ</option>
+                              <option value="مراجعة">مراجعة</option>
+                              <option value="إبداء رأى">إبداء رأى</option>
+                              <option value="توقيع">توقيع</option>
+                              <option value="else">أخرى</option>
+                            </select>
+                            <span class="error-message-startdate" style="color: red;"></span>
+                          </div>
+                          <!-- Dynamic input box for "أخرى" option -->
+                          <div class="form-group" id="otherProcedureInput" style="display: none;">
+                            <label for="otherProcedure">الإجراء المطلوب<span style="color: red;">*</span></label>
+                            <input type="text" class="form-control" id="otherProcedure" name="otherProcedure" placeholder="يرجى تحديد الإجراء المطلوب">
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-label">أولوية المهمة<span style="color: red;">*</span></label>
+                            <select class="form-control" name="priority" style="appearance: none; background: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;12&quot; viewBox=&quot;0 0 140 120&quot;><polygon points=&quot;70,100 0,0 140,0&quot; style=&quot;fill:black;&quot;/></svg>') no-repeat right .75rem center; background-size: 14px 12px; padding-right: 2.5rem;">
+                              <option value="عادية">عادية</option>
+                              <option value="عاجلة">عاجلة</option>
+                            </select>
+                            <span class="error-message-priority" style="color: red;"></span>
+                          </div>
+                        </div>
+                      </div>
+
+                    
+
+                    <div class="form-group">
+                        <label class="form-label">إسناد المهمة إلى <span style="color: red;">*</span></label>
+                        <select class="form-control select2"  id="mySelect" name="assiningto" data-placeholder= "إسناد المهمة إلى " multiple required>
+                            {% for person in kaiBuHead %}
+                                <option value="a.{{ person.id }}">
+                                    {{ person.position }} في معهد الملك عبدالله للبحوث و الدراسات الإستشارية {{ person.first_name }} {{ person.last_name }}
+                                </option>
+                            {% endfor %}
+                            <!--<option value="b.KAI_employees">
+                               جميع موظفين معهد الملك عبدالله للبحوث والدراسات الإستشارية
+                            </option>-->
+                           
+                            
+                            {% for head in otherCollagesBUHeads %}
+                            {% for collage in allCollages %}
+                            {% if head.collageid.collageid == collage.collageid %}
+                                    <option value="c.{{ head.id }}">
+                                        رئيس وحدة الأعمال  {{ collage.name }} {{head.first_name }} {{ head.last_name }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        {% for dean in collageDean%}
+                        <option value="d.{{dean.id}}">
+                            عميد الكلية {{dean.first_name}} {{dean.last_name}}
+                        </option>"
+                        {% endfor %}
+
+                        </select> 
+                        <span class="error-message-assiningto" style="color: red;"></span><br>
+
+                       
+                    </div>
+
+
+
+                    
+                    
+
+                    <div class="form-group">
+                        <label class="form-label">ملاحظات</label>    
+                        <textarea class="form-control" rows="4" cols="105" placeholder="ملاحظات" name="notes" ></textarea>
+                        
+                      </div>
+    
+                    
+                        
+                    
+                      
+                </div>
+                
+                <div class="modal-footer">
+                    <button  name="submit" class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
+                    <button  class="btn btn-primary projectnotify">إرسال الطلب</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    
+  <!--********************************************نهاية مودل طلب الانشاء *************************************************-->
+  
+    
+{% endblock %}
+
+
+
+{% block scripts %}
+		<!-- INTERNAL TIMEPICKER JS -->
+        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+		<!-- INTERNAL DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+		<!-- INTERNAL FILE-UPLOADS JS -->
+        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+		<script src="{% static 'assets/js/filupload.js'%}"></script>
+
+		<!-- INTERNAL SUMOSELECT JS -->
+		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+        
+		<!-- INTERNAL INTLTELINPUT JS -->
+		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+		<!-- INTERNAL JQUERY TRANSFER JS -->
+		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+		<!-- INTERNAL MULTI JS -->
+		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+		<script src="{% static 'assets/js/form-elements.js'%}"></script>
+		<script src="{% static 'assets/js/select2.js'%}"></script>
+
+		<!-- INTERNAL MULTIPLE SELECT JS -->
+		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+        <!-- THEME COLOR JS -->
+		<script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+          <!-- INTERNAL DATA TABLES  -->
+          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/jszip.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/pdfmake/pdfmake.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/pdfmake/vfs_fonts.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
+          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
+          <script src="{% static 'assets/js/datatables.js'%}"></script>
+          <script src="{% static 'assets/js/select2.js'%}"></script>
+          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
+          
+          <script>
+            $(document).ready(function () {
+                  // Set minimum and maximum time values (8:00 AM and 10:00 PM)
+                  var minTime = '08:00';
+                  var maxTime = '22:00';
+  
+                  // Set the min and max attributes for the time inputs
+                  $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
+              });
+          </script>
+  
+          
+            <script>
+             $(document).ready(function() {
+                  $('#status_filter').change(function() {
+                      var selectedDepartment = $(this).val();
+  
+                      if (selectedDepartment.includes("-")) {
+                          var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
+                          var firstValue = values[0].trim(); // First value after splitting
+                          var secondValue = values[1].trim(); // Second value after splitting
+                          
+                          $('tbody tr').hide();
+                          // Show rows matching either the first or second value
+                          $('tbody tr').filter(function() {
+                              var status = $(this).find('td:nth-child(5)').text().trim();
+                              return status === firstValue || status === secondValue;
+                          }).show();
+                      } else if (selectedDepartment === 'all') {
+                          // Show all rows if 'all' is selected
+                          $('tbody tr').show();
+                      } else {
+                          // Hide all rows
+                          $('tbody tr').hide();
+                          // Show only rows with the selected status
+                          $('tbody tr').filter(function() {
+                              return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
+                          }).show();
+                      }
+                  });
+              });
+          </script>
+          <script>
+              $(document).ready(function() {
+                   $('#status_filter2').change(function() {
+                       var selectedDepartment = $(this).val();
+                       if (selectedDepartment === 'all') {
+                           // Show all rows if 'all' is selected
+                           $('tbody tr').show();
+                       } else {
+                           // Hide all rows
+                           $('tbody tr').hide();
+                           // Show only rows with the selected status
+                           $('tbody tr').filter(function() {
+                               return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
+                           }).show();
+                       }
+                   });
+               });
+           </script>
+          
+  <script>
+  $(document).ready(function () {
+  
+      var $select = $('#mySelect').selectize();
+});
+  
+  // ***************************************************
+  $(document).ready(function() {
+      $('#num_ofinstructors').on('change', function() {
+          validateInstructors();
+      });
+  
+      $('#mySelect').on('change', function() {
+          validateInstructors();
+      });
+  });
+  
+  function validateInstructors() {
+          var num_ofinstructors = parseInt(document.getElementById('num_ofinstructors').value);
+          var selectedInstructors = document.getElementById('mySelect').options;
+          var selectedCount = selectedInstructors.length;
+          if (selectedCount !== num_ofinstructors) {
+              document.querySelector('.error-message-instructor').innerText = 'يرجى اختيار عدد المدربين المطلوب';
+              return;
+          } else {
+              document.querySelector('.error-message-instructor').innerText = '';
+          }
+      }
+  
+  // ***************************************************
+      // Function to validate the form on submission
+  function validateForm() {
+      // Retrieve form elements
+      var topicElement = document.querySelector('input[name="topic"]');
+      var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
+      var priceElement = document.querySelector('input[name="price"]');
+      var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
+      var startDateElement = document.querySelector('input[name="startdate"]');
+      var endDateElement = document.querySelector('input[name="enddate"]');
+      var startTimeElement = document.querySelector('input[name="starttime"]');
+      var endTimeElement = document.querySelector('input[name="endtime"]');
+      var subjectElement = document.querySelector('textarea[name="subject"]');
+      var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+      var selectElement = document.getElementById("options");
+      var selectdomain = document.getElementById("domain");
+      var otherdomainElement = document.querySelector('input[name="otherdomain"]');
+      var otherTextElement = document.querySelector('input[name="otherText"]');
+  
+       // select other reqtype
+       if (selectElement.value === "other") {
+          if (otherTextElement.value.length < 5) {
+              return false;
+          } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
+              return false;
+          } 
+      }   
+  
+      //select  other domain
+      if (selectdomain.value === "اخرى") {
+          if (otherdomainElement.value.length < 5) {
+              return false;
+          } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
+              return false;
+          } 
+      }   
+      
+      // Check topic
+      if (topicElement.value.length < 5) {
+          return false;
+      } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
+          return false;
+      } 
+  
+      // Check numoftrainee
+      var numoftrainee = parseInt(numoftraineeElement.value);
+      if (isNaN(numoftrainee) || numoftrainee < 1) {
+          return false;
+      } 
+  
+      // check num_ofinstructorsElement
+      var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+      if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
+          return false;
+      } 
+  
+      // Check price
+      var price = parseFloat(priceElement.value);
+      if (isNaN(price) || price < 0) {
+          return false;
+      } 
+  
+      // check pricefortrainee
+      var pricefortrainee = parseFloat(pricefortraineeElement.value);
+      if (isNaN(pricefortrainee) || pricefortrainee < 0) {
+          return false;
+      } 
+  
+      // Check start date and end date
+      var startDate = new Date(startDateElement.value);
+      var endDate = new Date(endDateElement.value);
+  
+      if (startDate > endDate) {
+          return false; 
+      } 
+  
+      // Check start time and end time
+      var startTimeParts = startTimeElement.value.split(':');
+      var endTimeParts = endTimeElement.value.split(':');
+      var startHour = parseInt(startTimeParts[0]);
+      var startMinute = parseInt(startTimeParts[1]);
+      var endHour = parseInt(endTimeParts[0]);
+      var endMinute = parseInt(endTimeParts[1]);
+  
+      if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+          return false;
+      } 
+  
+      // Check subject
+      if (subjectElement.value.length < 5) {
+          return false;
+      } else if (/^\d+$/.test(subjectElement.value.trim())) {
+          return false;
+      }
+  
+      if (!validateInstructorsCount()) {
+          console.log("Instructors count validation failed");
+          return false;
+      }
+      
+      // Skip validation if the file input is empty
+      if (!fileInput.files.length) {
+          errorMessage.textContent = '';
+          return true; // No validation needed for an empty file input
+      }
+  
+      var fileInput = document.querySelector('input[name="attachment"]');
+      var errorMessage = document.querySelector('.error-message-attachment');
+  
+      var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
+      var filePath = fileInput.value.toLowerCase();
+  
+      var isValidExtension = allowedExtensions.some(function (extension) {
+          return filePath.endsWith(extension);
+      });
+  
+      if (!isValidExtension) {
+          errorMessage.textContent = 'يجب أن يكون الملف بامتداد  .pdf , .pptx , .doc , .docx , .xlsx ';
+          fileInput.value = '';
+          return false;
+      } else {
+          errorMessage.textContent = '';
+      }
+  
+  return true;
+  
+  }
+  
+  
+  function validateInstructorsCount() {
+      var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
+      var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
+      var selectedInstructors = document.getElementById('mySelect').options;
+      var selectedCount = selectedInstructors.length;
+  
+      var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
+      if(openToAllCheckboxElement.checked){
+          return true;
+      }
+  
+      return selectedCount === num_ofinstructors;
+  }
+  
+  // **************************** select other order
+  function toggleOtherInput() {
+      var selectElement = document.getElementById("options");
+      var otherInput = document.getElementById("otherInput");
+      var otherText = document.getElementById("otherText");
+  
+      if (selectElement.value === "other") {
+          otherInput.style.display = "block";
+          otherText.setAttribute("required", "required");
+      } else {
+          otherInput.style.display = "none"; 
+          otherText.removeAttribute("required");
+      }
+  }
+  
+  // **************************** select other domain
+  function toggleOtherdomain() {
+      var selectElement = document.getElementById("domain");
+      var otherInput = document.getElementById("other-domain");
+      var otherdomain = document.getElementById("otherdomain");
+  
+      if (selectElement.value === "اخرى") {
+          otherInput.style.display = "block";
+          otherdomain.setAttribute("required", "required"); 
+      } else {
+          otherInput.style.display = "none"; 
+          otherdomain.removeAttribute("required");
+      }
+  }
+  
+  </script>
+  <!-- **************************** AJAX -->
+  <script>
+      
+      $(document).ready(function() {
+         
+          $('input[name="topic"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              }else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-topic').text('');
+              }
+          });
+          
+  
+          $('input[name="price"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 0) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-price').text('');
+              }
+          });
+  
+          $('input[name="pricefortrainee"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 0) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-pricefortrainee').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-pricefortrainee').text('');
+              }
+          });
+         
+          $('input[name="numoftrainee"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 1) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-numoftrainee').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-numoftrainee').text('');
+              }
+          });
+  
+          $('input[name="num_ofinstructors"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic < 1) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-num_ofinstructors').text('');
+              }
+          });
+  
+          $('input[name="startdate"]').on('blur', function() {
+              var startDate = $(this).val();
+              var endDate = $('input[name="enddate"]').val();
+  
+              if (startDate === '' || endDate === '') {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-startdate').text('');
+              } else {
+                  startDate = new Date(startDate);
+                  endDate = new Date(endDate);
+  
+                  if (startDate > endDate) {
+                      $(this).addClass('is-invalid');
+                      $(this).siblings('.error-message-startdate').text('يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء');
+                  } else {
+                      $(this).removeClass('is-invalid');
+                      $(this).siblings('.error-message-startdate').text('');
+                  }
+              }
+          });
+         
+          $('input[name="enddate"]').on('blur', function() {
+              var startDate = $('input[name="startdate"]').val();
+              var endDate = $(this).val();
+  
+              if (startDate === '' || endDate === '') {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-enddate').text('');
+              } else {
+                  startDate = new Date(startDate);
+                  endDate = new Date(endDate);
+  
+                  if (startDate > endDate) {
+                      $(this).addClass('is-invalid');
+                      $(this).siblings('.error-message-enddate').text('يجب أن يأتي تاريخ الانتهاء بعد تاريخ البدء');
+                  } else {
+                      $(this).removeClass('is-invalid');
+                      $(this).siblings('.error-message-enddate').text('');
+                  }
+              }
+          });
+  
+          $('input[name="starttime"]').on('blur', function() {
+              var startTime = $(this).val();
+              var endTime = $('input[name="endtime"]').val();
+  
+              if (startTime === '' || endTime === '') {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-starttime').text('');
+              } else {
+                  var startParts = startTime.split(':');
+                  var endParts = endTime.split(':');
+  
+                  var startHour = parseInt(startParts[0]);
+                  var startMinute = parseInt(startParts[1]);
+                  var endHour = parseInt(endParts[0]);
+                  var endMinute = parseInt(endParts[1]);
+  
+                  if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+                      $(this).addClass('is-invalid');
+                      $(this).siblings('.error-message-starttime').text('يجب أن يكون وقت البدء قبل وقت الانتهاء');
+                  } else {
+                      $(this).removeClass('is-invalid');
+                      $(this).siblings('.error-message-starttime').text('');
+                  }
+              }
+          });
+  
+          $('input[name="endtime"]').on('blur', function() {
+              var startTime = $('input[name="starttime"]').val();
+              var endTime = $(this).val();
+  
+              if (startTime === '' || endTime === '') {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-endtime').text('');
+              } else {
+                  var startParts = startTime.split(':');
+                  var endParts = endTime.split(':');
+  
+                  var startHour = parseInt(startParts[0]);
+                  var startMinute = parseInt(startParts[1]);
+                  var endHour = parseInt(endParts[0]);
+                  var endMinute = parseInt(endParts[1]);
+  
+                  if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+                      $(this).addClass('is-invalid');
+                      $(this).siblings('.error-message-endtime').text('يجب أن يأتي وقت الانتهاء بعد وقت البدء');
+                  } else {
+                      $(this).removeClass('is-invalid');
+                      $(this).siblings('.error-message-endtime').text('');
+                  }
+              }
+          });
+  
+          $('textarea[name="subject"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+              }else if (/^\d+$/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
+              } else {
+                  $(this).removeClass('is-invalid');
+                  $(this).siblings('.error-message-subject').text('');
+              }
+          });
+          
+          $('input[name="otherText"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-other').text('');
+              }
+          });
+          
+          $('input[name="otherdomain"]').on('blur', function() {
+              var topic = $(this).val();
+              if (topic.length < 5) {
+              $(this).addClass('is-invalid');
+              $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+              }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
+                  $(this).addClass('is-invalid');
+                  $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
+              } else {
+              $(this).removeClass('is-invalid');
+              $(this).siblings('.error-message-domain').text('');
+              }
+          });
+      });
+  </script>
+     
+  <script>
+      let dropdowns = document.querySelectorAll('.dropdown-button');
+      dropdowns.forEach(dropdown => {
+          dropdown.addEventListener('click', () => {
+              let content = dropdown.nextElementSibling;
+              content.style.display = content.style.display === 'none' ? 'block' : 'none';
+          });
+      });
+  </script>
+  
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          // Initialize flatpickr for date inputs
+          flatpickr('.flatpickr[data-input][data-date]', {
+              dateFormat: "d-m-Y",
+              minDate: "today",
+          });
+  
+          // Initialize flatpickr for time inputs
+          flatpickr('.flatpickr[data-input][data-time]', {
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: "H:i",
+          });
+      });
+      
+      $(function() {
+            $(document).ready(function () {
+              var todaysDate = new Date();
+              var year = todaysDate.getFullYear();
+              var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+              var day = ("0" + todaysDate.getDate()).slice(-2);
+              var maxDate = (year +"-"+ month +"-"+ day);
+              $('.date').attr('min',maxDate);
+            });
+          });
+  
+  </script>
+  
+  <script>
+      $(document).ready(function () {
+          flatpickr('.flatpickr', {
+              enableTime: true,
+              noCalendar: true,
+              dateFormat: 'H:i',
+              minTime: '08:00',
+              maxTime: '22:00',
+              onClose: function (selectedDates, dateStr, instance) {
+                  if (dateStr < '08:00' || dateStr > '22:00') {
+                      instance.clear();
+                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
+                  } else {
+                      $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
+                  }
+              }
+          });
+  
+  });
+  
+  </script>
+
+<script>
+    // Assuming you have a flatpickr instance attached to the '.flatpickr' selector
+    // Set the date input to today's date in the format of YYYY-MM-DD
+    document.addEventListener('DOMContentLoaded', function() {
+      var today = new Date().toISOString().split('T')[0];
+      
+      // Set the displayed but disabled date field
+      document.querySelector('input[name="startdate_display"]').value = today;
+      
+      // Also update the hidden field which will be submitted with the form
+      document.querySelector('input[name="startdate"]').value = today;
+    });
+  </script>
+
+<script>
+    function toggleInputBox(selectElement) {
+      var inputBox = document.getElementById('otherProcedureInput');
+      if (selectElement.value === 'else') {
+        inputBox.style.display = 'block';
+      } else {
+        inputBox.style.display = 'none';
+      }
+    }
+    </script>
+
+    <script>
+        $('.nav-link').click(function(){
+  var tabId = $(this).attr('href');
+  
+  $(tabId).addClass('active').siblings().removeClass('active');
+})
+    </script>
+  
+
+  
+          
+
+
+
+
+    
+
+{% endblock %}

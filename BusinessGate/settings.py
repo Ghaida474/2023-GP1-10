@@ -96,6 +96,7 @@ AUTHENTICATION_BACKENDS = [
     'app.auth_backends.KaibuemployeeAuthBackend',
     'app.auth_backends.FacultyStaffAuthBackend',
     'app.auth_backends.AdminAuthBackend',
+    'app.auth_backends.buAuthBackend',
 ]
 
 AUTH_USER_MODEL = 'app.Kaibuemployee' 

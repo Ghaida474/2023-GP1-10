@@ -1,89 +1,196 @@
 {% load static %}
-			<div class="sidebar sidebar-right sidebar-animate">
-				<div class="card-header border-bottom pb-5">
-					<h4 class="card-title">Notifications </h4>
-					<div class="card-options">
-						<a  href="javascript:void(0);" class="btn btn-sm btn-icon btn-light  text-primary"  data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right"><i class="feather feather-x"></i> </a>
-					</div>
-				</div>
-				<div class="">
-					<div class="list-group-item  align-items-center border-0">
-						<div class="d-flex">
-							<span class="avatar avatar-lg brround me-3 bg-pink-transparent"><span class="feather feather-shopping-cart"></span></span>
-							<div class="mt-1">
-								<a  href="javascript:void(0);" class="font-weight-semibold fs-16">Liam <span class="text-muted font-weight-normal">Sent Message</span></a>
-								<span class="clearfix"></span>
-								<span class="text-muted fs-13 ms-auto"><i class="mdi mdi-clock text-muted me-1"></i>30 mins ago</span>
-							</div>
-							<div class="ms-auto">
-								<a href="" class="me-0 option-dots" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<span class="feather feather-more-horizontal"></span>
-								</a>
-								<ul class="dropdown-menu dropdown-menu-end" role="menu">
-									<li><a  href="javascript:void(0);"><i class="feather feather-eye me-2"></i>View</a></li>
-									<li><a  href="javascript:void(0);"><i class="feather feather-trash-2 me-2"></i>Remove</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="list-group-item  align-items-center  border-bottom">
-						<div class="d-flex">
-							<span class="avatar avatar-lg brround me-3 bg-pink-transparent"><span class="feather feather-shopping-cart"></span></span>
-							<div class="mt-1">
-								<a  href="javascript:void(0);" class="font-weight-semibold fs-16">Paul<span class="text-muted font-weight-normal"> commented on you post</span></a>
-								<span class="clearfix"></span>
-								<span class="text-muted fs-13 ms-auto"><i class="mdi mdi-clock text-muted me-1"></i>1 hour ago</span>
-							</div>
-							<div class="ms-auto">
-								<a href="" class="me-0 option-dots" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<span class="feather feather-more-horizontal"></span>
-								</a>
-								<ul class="dropdown-menu dropdown-menu-end" role="menu">
-									<li><a  href="javascript:void(0);"><i class="feather feather-eye me-2"></i>View</a></li>
-									<li><a  href="javascript:void(0);"><i class="feather feather-trash-2 me-2"></i>Remove</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="list-group-item  align-items-center  border-bottom">
-						<div class="d-flex">
-							<span class="avatar avatar-lg brround me-3 bg-pink-transparent"><span class="feather feather-shopping-cart"></span></span>
-							<div class="mt-1">
-								<a  href="javascript:void(0);" class="font-weight-semibold fs-16">James<span class="text-muted font-weight-normal"> Order Placed</span></a>
-								<span class="clearfix"></span>
-								<span class="text-muted fs-13 ms-auto"><i class="mdi mdi-clock text-muted me-1"></i>1 day ago</span>
-							</div>
-							<div class="ms-auto">
-								<a href="" class="me-0 option-dots" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<span class="feather feather-more-horizontal"></span>
-								</a>
-								<ul class="dropdown-menu dropdown-menu-end" role="menu">
-									<li><a  href="javascript:void(0);"><i class="feather feather-eye me-2"></i>View</a></li>
-									<li><a  href="javascript:void(0);"><i class="feather feather-trash-2 me-2"></i>Remove</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="list-group-item  align-items-center  border-bottom">
-						<div class="d-flex">
-							<span class="avatar avatar-lg brround me-3 bg-pink-transparent"><span class="feather feather-shopping-cart"></span>
-								<span class="avatar-status bg-green"></span>
-							</span>
-							<div class="mt-1">
-								<a  href="javascript:void(0);" class="font-weight-semibold fs-16">Diane<span class="text-muted font-weight-normal"> New Message Received</span></a>
-								<span class="clearfix"></span>
-								<span class="text-muted fs-13 ms-auto"><i class="mdi mdi-clock text-muted me-1"></i>1 day ago</span>
-							</div>
-							<div class="ms-auto">
-								<a href="" class="me-0 option-dots" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<span class="feather feather-more-horizontal"></span>
-								</a>
-								<ul class="dropdown-menu dropdown-menu-end" role="menu">
-									<li><a  href="javascript:void(0);"><i class="feather feather-eye me-2"></i>View</a></li>
-									<li><a  href="javascript:void(0);"><i class="feather feather-trash-2 me-2"></i>Remove</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+<div class="sidebar sidebar-right sidebar-animate">
+    <div class="card-header border-bottom pb-5">
+        <h4 class="card-title">الإشعارات</h4>
+        <div class="card-options">
+            <a  href="javascript:window.location.href=window.location.href" class="btn btn-sm btn-icon btn-light  text-primary"  data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right"><i class="feather feather-x"></i> </a>
+        </div>
+    </div>
+    <!--"javascript:void(0);"-->
+    
+    
+    {% for notification in all_notifications_that_needs_to_be_shown %}
+    <div class="list-group-item align-items-center border-0">
+        <div class="d-flex">
+            <span class="avatar avatar-lg brround me-3 bg-pink-transparent">
+                <span class=""></span>
+            </span>
+            <div class="mt-1">
+                <a href="javascript:void(0);" class="font-weight-semibold fs-16">{{ notification.notification_message }}</a>
+                <span class="clearfix"></span>
+                <span class="text-muted fs-13 ms-auto">
+                    <i class="mdi mdi-clock text-muted me-1"></i>{{ notification.TimeOfCreation }}
+                </span>
+            </div>
+            <!--<div class="ms-auto">
+                <button class="btn delete-notification" data-id="{{ notification.id }}"><i class="feather feather-x"></i></button>
+            </div>-->
+            <div class="ms-auto">
+                <a href="{% url 'kai_staff:Delete_notification' notification_id=notification.id %}">
+                <button class="btn delete-notification" data-id="{{ notification.id }}"><i class="feather feather-x"></i></button>
+            </a>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="list-group-item align-items-center border-0">
+        <div class="d-flex justify-content-center">
+            <span class="text-muted fs-16">لا يوجد اشعارات</span>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+$(document).ready(function() {
+    $('.delete-notification').on('click', function() {
+        var notificationId = $(this).data('id');
+        $.ajax({
+            url: '/delete-notification/',
+            type: 'POST',
+            data: {'notification_id': notificationId},
+            success: function(response) {
+                if (response.success) {
+                    // Remove the deleted notification from the UI
+                    $('[data-id="' + notificationId + '"]').closest('.list-group-item').remove();
+                } else {
+                    alert('Failed to delete notification.');
+                }
+            }
+        });
+    });
+});
+</script>
+
+<script>
+  // Function to update notification counts
+  function updateNotificationCounts() {
+    fetch('/business-unit-home/read_notification', {
+      method: 'GET', // The method is GET for retrieving information
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest', // For Django to recognize it as an AJAX request
+        'Content-Type': 'application/json', // The type of data we're expecting to receive
+        // If using CSRF and POST requests, you'd need to add the 'X-CSRFToken' header
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error
+        throw new Error('Network response was not ok: ' + response.statusText);
+      }
+      // Parse the JSON response
+      return response.json();
+    })
+    .then(data => {
+      // Assuming 'data' contains the notification counts keyed by the names used in your Django view
+      // Update the HTML elements with the new counts
+      document.getElementById('notifications-in-programs-count').textContent = data.notifications_in_programs_count;
+      document.getElementById('notifications-in-tasks-count').textContent = data.notifications_in_tasks_count;
+      document.getElementById('all-notifications-count').textContent = data.all_notifications_count;
+    })
+    .catch(error => {
+      // If there's an error, log it to the console
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
+  // Call the function to update notification counts when the page loads
+  updateNotificationCounts();
+</script>
+
+
+<script>
+    // Function to delete a notification and update counts
+    function deleteNotification(notificationId) {
+      fetch(`/business-unit-home/Delete_notification/${notificationId}`, {
+        method: 'GET', // The method is GET for deleting a notification
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest', // For Django to recognize it as an AJAX request
+          'Content-Type': 'application/json', // The type of data we're expecting to receive
+          // CSRF header is not necessary for GET requests, only for POST requests
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          // If the response is not OK, throw an error
+          throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        // Parse the JSON response
+        return response.json();
+      })
+      .then(data => {
+        // Assuming 'data' contains the updated notification counts
+        // Update the HTML elements with the new counts
+        document.getElementById('notifications-in-programs-count').textContent = data.notifications_in_programs_count.length;
+        document.getElementById('notifications-in-tasks-count').textContent = data.notifications_in_tasks_count.length;
+        document.getElementById('all-notifications-count').textContent = data.all_notifications_that_needs_to_be_shown.length;
+        document.getElementById('all-notifications-that-needs-to-be-shown-count').textContent = data.all_notifications_that_needs_to_be_shown_count;
+        // Additional logic to remove the notification from the UI may be required here
+      })
+      .catch(error => {
+        // If there's an error, log it to the console
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+    }
+  
+    // Event listener for delete notification buttons
+    document.querySelectorAll('.delete-notification').forEach(button => {
+      button.addEventListener('click', function() {
+        var notificationId = this.getAttribute('data-id');
+        deleteNotification(notificationId);
+      });
+    });
+  
+    // Call the function to update notification counts when the page loads
+    updateNotificationCounts();
+  </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add event listener to the delete button
+      var deleteButtons = document.querySelectorAll('.delete-notification');
+      deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var notificationId = this.getAttribute('data-id');
+          deleteNotification(notificationId);
+        });
+      });
+    });
+  
+    function deleteNotification(notificationId) {
+      // Make the fetch request to the Django URL
+      fetch(`/business-unit-home/Delete_notification/${notificationId}`, {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Assuming 'data' contains the updated notification counts
+        document.getElementById('notifications-in-programs-count').textContent = data.notifications_in_programs_count;
+        document.getElementById('notifications-in-tasks-count').textContent = data.notifications_in_tasks_count;
+        document.getElementById('all-notifications-count').textContent = data.all_notifications_count;
+        document.getElementById('all-notifications-that-needs-to-be-shown-count').textContent = data.all_notifications_that_needs_to_be_shown_count;
+        // Remove the notification element from the DOM or update the page accordingly
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+    }
+
+  </script>
+
+<script>
+  $(document).ready(function() {
+      $('.delete-notification').click(function() {
+          $(this).closest('.list-group-item').hide();
+      });
+  });
+</script>

@@ -40,9 +40,11 @@ class Collage(models.Model):
     buphonenumber = models.CharField(db_column='BUphoneNumber', max_length=-1)  # Field name made lowercase.
     password = models.CharField(max_length=-1, blank=True, null=True)
     domain = models.TextField(blank=True, null=True)  # This field type is a guess.
-    nobuilding = models.IntegerField(db_column='Nobuilding', blank=True, null=True) 
+    nobuilding = models.IntegerField(db_column='Nobuilding', blank=True, null=True)  # Field name made lowercase.
     nofloor = models.CharField(max_length=-1, blank=True, null=True)
-    nodisk = models.IntegerField(db_column='Nodisk', blank=True, null=True) 
+    nodisk = models.IntegerField(db_column='Nodisk', blank=True, null=True)  # Field name made lowercase.
+    last_update = models.DateTimeField(blank=True, null=True)
+    new_user = models.BooleanField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -82,6 +84,8 @@ class FacultyStaff(models.Model):
     first_nameeng = models.CharField(db_column='first_nameEng', max_length=-1, blank=True, null=True)  # Field name made lowercase.
     last_nameeng = models.CharField(db_column='last_nameEng', max_length=-1, blank=True, null=True)  # Field name made lowercase.
     bu_assistant = models.BooleanField(blank=True, null=True)
+    new_user = models.BooleanField(blank=True, null=True)
+    sendnotificationbyemail = models.BooleanField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -90,7 +94,7 @@ class FacultyStaff(models.Model):
 
 class Files(models.Model):
     file_id = models.IntegerField(primary_key=True)
-    task = models.ForeignKey('Task', models.DO_NOTHING, db_column='task_ID', blank=True, null=True)  # Field name made lowercase.
+    task_id = models.IntegerField(db_column='task_ID', blank=True, null=True)  # Field name made lowercase.
     training_program = models.ForeignKey('Trainingprogram', models.DO_NOTHING, db_column='training_program', blank=True, null=True)
     attachment = models.BinaryField(db_column='Attachment', blank=True, null=True)  # Field name made lowercase.
     attachment_name = models.CharField(db_column='Attachment_name', max_length=-1, blank=True, null=True)  # Field name made lowercase.
@@ -118,6 +122,9 @@ class Kaibuemployee(models.Model):
     position = models.CharField(db_column='Position', max_length=-1)  # Field name made lowercase.
     is_staff = models.BooleanField()
     username = models.CharField(max_length=-1, blank=True, null=True)
+    new_user = models.BooleanField(blank=True, null=True)
+    sendnotificationbyemail = models.BooleanField(blank=True, null=True)
+    iid_departmenthead = models.BooleanField()
 
     class Meta:
         managed = False
@@ -357,8 +364,30 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+class Notification(models.Model):
+    id = models.IntegerField()
+    faculty_target_id = models.IntegerField(blank=True, null=True)
+    kai_target_id = models.IntegerField(blank=True, null=True)
+    training_program_id = models.IntegerField(blank=True, null=True)
+    task_id = models.IntegerField(blank=True, null=True)
+    notificationmessage = models.TextField(blank=True, null=True)
+    timeofcreation = models.DateTimeField(blank=True, null=True)
+    isread = models.BooleanField(blank=True, null=True)
+    isopened = models.BooleanField(blank=True, null=True)
+    needtobeopened = models.BooleanField(db_column='needtobeOpened')  # Field name made lowercase.
+    function_indicator = models.IntegerField(blank=True, null=True)
+    faculty_staff_ids = models.TextField(blank=True, null=True)  # This field type is a guess.
+    kai_ids = models.TextField(blank=True, null=True)  # This field type is a guess.
+    target_indicator = models.IntegerField(blank=True, null=True)
+    needtobeshown = models.BooleanField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'notification'
+
+
 class Task(models.Model):
-    task_id = models.AutoField(primary_key=True)
+    task_id = models.IntegerField()
     task_name = models.TextField(blank=True, null=True)
     task_type = models.TextField(blank=True, null=True)
     task_description = models.TextField(blank=True, null=True)
@@ -368,12 +397,23 @@ class Task(models.Model):
     notes = models.TextField(blank=True, null=True)
     necessary_procedure = models.TextField(blank=True, null=True)
     priority = models.TextField(blank=True, null=True)
-    faculty_initation = models.ForeignKey(FacultyStaff, models.DO_NOTHING, db_column='faculty_initation', blank=True, null=True)
-    kai_initiation = models.ForeignKey(Kaibuemployee, models.DO_NOTHING, db_column='kai_initiation', blank=True, null=True)
+    faculty_initiation_id = models.IntegerField(blank=True, null=True)
+    kai_initiation_id = models.IntegerField(blank=True, null=True)
     faculty_ids = models.TextField(blank=True, null=True)  # This field type is a guess.
     kai_ids = models.TextField(blank=True, null=True)  # This field type is a guess.
     status = models.TextField(blank=True, null=True)
-    main_task = models.ForeignKey('self', models.DO_NOTHING, db_column='main_task', blank=True, null=True)
+    main_task_id = models.IntegerField(blank=True, null=True)
+    statusarray = models.TextField(blank=True, null=True)  # This field type is a guess.
+    datearray = models.TextField(blank=True, null=True)  # This field type is a guess.
+    is_main_task = models.BooleanField(blank=True, null=True)
+    attacment = models.BinaryField(blank=True, null=True)
+    countrejection = models.IntegerField(blank=True, null=True)
+    toall = models.BooleanField(blank=True, null=True)
+    fullaccomplishment = models.BooleanField(blank=True, null=True)
+    retrivaldate = models.DateField(blank=True, null=True)
+    pending_status = models.TextField(blank=True, null=True)
+    pending_reasons = models.TextField(blank=True, null=True)  # This field type is a guess.
+    pending_rquestids = models.TextField(blank=True, null=True)  # This field type is a guess.
 
     class Meta:
         managed = False
@@ -381,10 +421,15 @@ class Task(models.Model):
 
 
 class TaskToUser(models.Model):
+    id = models.IntegerField()
     status = models.TextField(blank=True, null=True)
-    kai_user = models.ForeignKey(Kaibuemployee, models.DO_NOTHING, db_column='kai_user', blank=True, null=True)
-    faculty_user = models.ForeignKey(FacultyStaff, models.DO_NOTHING, db_column='faculty_user', blank=True, null=True)
-    main_task = models.ForeignKey(Task, models.DO_NOTHING, db_column='main_task', blank=True, null=True)
+    kai_user = models.IntegerField(blank=True, null=True)
+    faculty_user = models.IntegerField(blank=True, null=True)
+    main_task = models.IntegerField(blank=True, null=True)
+    attachment = models.BinaryField(blank=True, null=True)
+    addedtext = models.TextField(blank=True, null=True)
+    addeddate = models.DateField(blank=True, null=True)
+    date_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False

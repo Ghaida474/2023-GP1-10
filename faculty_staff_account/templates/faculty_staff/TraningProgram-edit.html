@@ -209,7 +209,7 @@
 							</div>    
 							<div class="font-weight-semibold"  style="color:#0084BD;">
 								{% if program.attachment %}
-									<a href="{% url 'business_unit_account:view_programfile' program.programid %}"  type="button" class="btn btn-outline-info" target="_blank">الإطلاع على الحقيبة التعليمية</a> 
+									<a href="{% url 'faculty_staff_account:view_programfile' program.programid %}"  type="button" class="btn btn-outline-info" target="_blank">الإطلاع على الحقيبة التعليمية</a> 
 								{% else %}
 									<P>لا يوجد حقيبة تعليمية مرفقة</P>
 								{% endif %}
@@ -337,7 +337,7 @@
 		
 			 // select other reqtype
 			 if (selectElement.value === "other") {
-				if (otherTextElement.value.length < 5) {
+				if (otherTextElement.value.length < 3) {
 					return false;
 				} else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
 					return false;
@@ -346,7 +346,7 @@
 		
 			//select  other domain
 			if (selectdomain.value === "اخرى") {
-				if (otherdomainElement.value.length < 5) {
+				if (otherdomainElement.value.length < 3) {
 					return false;
 				} else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
 					return false;
@@ -354,7 +354,7 @@
 			}   
 		
 			// Check topic
-			if (topicElement.value.length < 5) {
+			if (topicElement.value.length < 3) {
 				return false;
 			} else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
 				return false;
@@ -400,7 +400,7 @@
 			} 
 		
 			// Check subject
-			if (subjectElement.value.length < 5) {
+			if (subjectElement.value.length < 3) {
 				return false;
 			} else if (/^\d+$/.test(subjectElement.value.trim())) {
 				return false;
@@ -472,9 +472,9 @@
 			   
 				$('input[name="topic"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
+						$(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -624,9 +624,9 @@
 		
 				$('textarea[name="subject"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 						$(this).addClass('is-invalid');
-						$(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
+						$(this).siblings('.error-message-subject').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
@@ -638,9 +638,9 @@
 				
 				$('input[name="otherText"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 					$(this).addClass('is-invalid');
-					$(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+					$(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
@@ -652,9 +652,9 @@
 				
 				$('input[name="otherdomain"]').on('blur', function() {
 					var topic = $(this).val();
-					if (topic.length < 5) {
+					if (topic.length < 3) {
 					$(this).addClass('is-invalid');
-					$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
+					$(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون ثلاثة حروف فأكثر');
 					}else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
 						$(this).addClass('is-invalid');
 						$(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 

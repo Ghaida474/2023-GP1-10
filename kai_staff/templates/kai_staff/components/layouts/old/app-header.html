@@ -1,0 +1,73 @@
+{% load static %}     
+				<div class="app-header header sticky" >
+					<div class="container-fluid main-container" id="headerhor">
+						<div class="d-flex">
+							<a class="header-brand" href="{% url 'kai_staff:kaistaff-home'%}">
+								<img src="" class="header-brand-img desktop-lgo" alt="Business Gate">
+								<img src="" class="header-brand-img dark-logo" alt="Business Gate">
+								<img src="" class="header-brand-img mobile-logo" alt="Business Gate">
+								<img src="" class="header-brand-img darkmobile-logo" alt="Business Gate">
+							</a>
+							<div class="app-sidebar__toggle" data-bs-toggle="sidebar">
+								<a class="open-toggle"  href="javascript:void(0);">
+									<i class="feather feather-menu"></i>
+								</a>
+								<a class="close-toggle"  href="javascript:void(0);">
+									<i class="feather feather-x"></i>
+								</a>
+							</div>
+							
+							<div class="d-flex order-lg-2 my-auto ms-auto">
+								
+								<button class="navbar-toggler nav-link icon navresponsive-toggler vertical-icon ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
+									<i class="fe fe-more-vertical header-icons navbar-toggler-icon"></i>
+								</button>
+								
+								<div class="mb-0 navbar navbar-expand-lg navbar-nav-right responsive-navbar navbar-dark p-0">
+									<div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+										<div class="d-flex ms-auto">
+											
+											<!-- full screen -->
+											<div class="dropdown header-fullscreen">
+												<a class="nav-link icon full-screen-link">
+													<i class="feather feather-maximize fullscreen-button fullscreen header-icons"></i>
+													<i class="feather feather-minimize fullscreen-button exit-fullscreen header-icons"></i>
+												</a>
+											</div>
+											<!-- noti -->
+											<!-- <div class="dropdown header-notify">
+												<a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+													<i class="feather feather-bell header-icon"></i>
+													<span class="bg-dot"></span>
+												</a>
+											</div> -->
+											<!-- profile -->
+											<div class="dropdown profile-dropdown">
+												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
+													<span>
+														<i class="feather fa fa-user header-icon"></i>
+													</span>
+												</a>
+												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
+													<a class="dropdown-item d-flex" href="{% url 'kai_staff:profile'%}">
+														<i class="feather feather-user me-3 fs-16 my-auto"></i>
+														<div class="mt-1">حسابي التعريفي</div>
+													</a>
+													<!-- <a class="dropdown-item d-flex" href="#">
+														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
+														<div class="mt-1">Messages</div>
+													</a> -->
+													<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
+														<i class="feather feather-power me-3 fs-16 my-auto"></i>
+														<div class="mt-1">تسجيل الخروج</div>
+													</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							
+							</div>
+						</div>
+					</div>
+				</div>
