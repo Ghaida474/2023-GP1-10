@@ -50,7 +50,13 @@ To run this project, follow these steps:
    - On Unix or MacOS use the following command: source venv/bin/activate
    - On Windows use the following command:.\venv\Scripts\activate
 5. Install Dependencies
-   - pip install -r requirements.txt
+   - 5.1 pip install -r requirements.txt
+   - 5.2 cd react-chat
+   - 5.3 npx create-react-app ce-quick-start
+   - 5.4 cd ce-quick-start
+   - 5.5 npm install react-chat-engine
+   - 5.6 npm install react-chat-engine-pretty
+   - 5.6 npm run build
 6. Apply migrations
    - python manage.py makemigrations
    - python manage.py migrate
