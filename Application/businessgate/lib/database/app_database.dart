@@ -468,7 +468,7 @@ class AppDatabase {
         if (hasReg == false || hasReg == null) {
           stat = "register";
         } else 
-        if (hasReg == true && hasP == false) {
+        if (hasReg == true) {
           stat = "cancel";
         }else
         if (hasReg == true && hasP == true && hasAT == true ) {
