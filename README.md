@@ -50,25 +50,26 @@ To run this project, follow these steps:
    - On Unix or MacOS use the following command: source venv/bin/activate
    - On Windows use the following command:.\venv\Scripts\activate
 5. Install Dependencies
-   - 5.1 pip install -r requirements.txt
-   - 5.2 cd react-chat
-   - 5.3 npx create-react-app ce-quick-start
-   - 5.4 cd ce-quick-start
-   - 5.5 npm install react-chat-engine
-   - 5.6 npm install react-chat-engine-pretty
-   - 5.6 npm run build
+   - pip install -r requirements.txt
+   - cd react-chat
+   - npx create-react-app ce-quick-start
+   - cd ce-quick-start
+   - npm install react-chat-engine
+   - npm install react-chat-engine-pretty
+   - npm run build
 6. Apply migrations
+   - cd 2023-GP1-10
    - python manage.py makemigrations
    - python manage.py migrate
-7. run redis server
+8. run redis server
     - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(2) run command: brew services start redis
-8. Run the Celery Worker
+9. Run the Celery Worker
     - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(3) run command:
       celery -A BusinessGate worker --loglevel=info
-9. Run the Celery Beat
+10. Run the Celery Beat
     - in separate Terminal or Command prompt window  then the one used for the project let refer to it terminal(4) run command:
   celery -A BusinessGate beat -l info
-10. Run the Django Development Server
+11. Run the Django Development Server
     - from the original Terminal window run this command: python manage.py runserver
 
 
