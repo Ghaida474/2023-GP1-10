@@ -1,13 +1,37 @@
   {% load static %}   
   <style>
-.slide:hover{
-	background-color: #0084BD !important;
-}
+	li.slide:hover {
+		background-color: #0084BD !important;
+		color: #fff !important;
+	}
 
-.slide:hover .sidemenu_icon{
-	color: #fff !important;
-}
+	.slide:hover .sidemenu_icon , .side-menu__label:hover {
+		color: #fff !important;
+	}
 
+	.slide-item:hover{
+		background-color: #fff !important;
+		color: #0084BD !important;
+	}
+
+	.side-menu__item {
+        color: #0084BD;
+    }
+
+    .side-menu__item:hover,
+    .slide.active > .side-menu__item {
+		color: #fff !important;
+    }
+
+    .side-menu__item:hover .sidemenu_icon,
+    .slide.active > .side-menu__item .sidemenu_icon {
+        color: #fff !important;
+    }
+
+    .slide:hover .side-menu__label,
+    .slide.active > .side-menu__item .side-menu__label  {
+        color: #fff !important;
+    }
   </style>        
 				<div class="sticky">
 					<aside class="app-sidebar">
@@ -25,7 +49,7 @@
 									<div class="dropdown user-pro-body text-center">
 										<div class="user-info" style="color:#0084BD;">
 											<h5 class=" mb-2" >{{user.first_name}} {{user.last_name}}</h5>
-											<span class="text-muted app-sidebar__user-name text-sm" >{{user.position}}</span>
+											<span class="text-muted app-sidebar__user-name text-sm" >رئيس وحدة الاعمال</span>
 										</div>
 									</div>
 								</div>
@@ -46,13 +70,18 @@
 										</a>
 									</li>
 									<!-- ********************** -->
-									
 									<li class="slide">
+										<a href="{% url 'business_unit_account:calendar' %}" class="side-menu__item" style="color:#0084BD;">
+											<i class="feather fa fa-calendar  sidemenu_icon" style="color:#0084BD;"></i>
+												<span class="side-menu__label"> التقويم </span>
+										</a>
+									</li>
+									<!-- ********************** -->							<li class="slide">
 										<a href="{% url 'business_unit_account:traning-program' %}" class="side-menu__item" style="color:#0084BD;">
 											<i class="feather fa fa-ravelry sidemenu_icon" style="color:#0084BD;"></i>
 											<span class="side-menu__label">البرامج التدريبية</span>
 											{% if notifications_in_programs.count > 0 %}
-												<span class="badge badge-pill" style="background-color:red;">{{ notifications_in_programs.count }}</span>
+												<span class="badge badge-pill" style="background-color:red; color: white;">{{ notifications_in_programs.count }}</span>
 											{% endif %}
 										</a>
 									</li>
@@ -62,7 +91,7 @@
 											<i class="feather fa fa-check  sidemenu_icon" style="color:#0084BD;"></i>
 											<span class="side-menu__label">المهام</span>
 											{% if notifications_in_tasks.count > 0 %}
-												<span class="badge badge-pill" style="background-color:red;">{{ notifications_in_tasks.count }}</span>
+												<span class="badge badge-pill" style="background-color:red; color: white; ">{{ notifications_in_tasks.count }}</span>
 											{% endif %}
 										</a>
 									</li>
@@ -71,24 +100,33 @@
 										<a href="{% url 'business_unit_account:projects' %}" class="side-menu__item" style="color:#0084BD;">
 											 <i class="feather fa fa-opera   sidemenu_icon" style="color:#0084BD;"></i>
 											  <span class="side-menu__label">المشاريع</span>
+											  {% if notifications_in_projects.count > 0 %}
+												<span class="badge badge-pill" style="background-color:red; color: white;">{{ notifications_in_projects.count }}</span>
+											  {% endif %}
 										 </a>
 							         </li> 
-									 <!-- ********************** -->
-									 <li class="slide">
-										<a href="#" class="side-menu__item" style="color:#0084BD;">
-											<i class="feather fa fa-bar-chart sidemenu_icon" style="color:#0084BD;"></i>
-											<span class="side-menu__label">لوحة الإحصائيات</span>
-										</a>
-									</li>
-									 <!-- ********************** -->
-									 <li class="slide">
-										<a href="{% url 'business_unit_account:callsDashboard' %}" class="side-menu__item" style="color:#0084BD;">
+								<!-- ********************** -->
+									<li class="slide ">
+										<a class="side-menu__item" data-bs-toggle="slide" id="try" >
 											<i class="feather fa fa-comments  sidemenu_icon" style="color:#0084BD;"></i>
-											<span class="side-menu__label"> التواصل </span>
+											<span class="side-menu__label" style="color:#0084BD;"> التواصل</span><i class="angle fa fa-angle-right"></i>
 										</a>
+										<ul class="slide-menu">
+											<li><a href="{% url 'business_unit_account:videocall' %}"class="slide-item" >مكالمة جديدة</a></li>
+											<li><a href="{% url 'business_unit_account:joinroom' %}" class="slide-item">الإنضمام الى مكالمة</a></li>
+											<li><a href="{% url 'business_unit_account:chat' %}"class="slide-item">المحادثات</a></li>				
+										</ul>
 									</li>
+								<!-- ********************** --> 
 								</ul>
 							</div>
 						</div>
 					</aside>
 				</div>
+
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		
+				
+					
+				
+				

@@ -188,7 +188,6 @@
             var result2 = document.getElementById('result2');
             var result2 = document.getElementById('result3');
             var checkbox = $('input[name="isbu"]');
-            var checkbox2 = $('input[name="assistant"]');
             
             var arabicPattern = /^[\u0600-\u06FF\s]+$/;
             var englishPattern = /^[a-zA-Z\s]+$/;
@@ -242,16 +241,6 @@
                 return false;
             }
 
-            if (!checkbox2.is(':checked')) {
-                result3.val('false');
-            }
-        
-            console.log('result3: ', result3.value); 
-            if (result3.value.trim() === 'true') {
-                console.log('in assistant check');
-                return false;
-            }
-
         return true;
         
         }
@@ -286,37 +275,6 @@
                 }
             }); 
          }
-        </script>
-
-        <script>
-        function checkAssistant(){
-            var collageid = parseInt(document.getElementById('collageSelect').value);
-            var element = $('.error-message-assistant');
-            var result = $('#result3');
-            var attendURL =  "{% url 'admin_account:checkAssistant' collage_id=0 %}".replace('0', collageid);
-
-            $.ajax({
-                url: attendURL,
-                type: 'GET',
-                success: function(response) { 
-                    if (response.success_message !== undefined) {
-                        if (response.success_message === true) {
-                            console.log('here inside true ')
-                            element.text('يوجد مساعد رئيس وحدة اعمال في الكلية المختارة');
-                            result.val('true');
-                        } else {
-                            element.text('');
-                            result.val('false');
-                        }
-                    } else {
-                        console.log('Response message not received');
-                    }
-                },
-                error: function(error) {
-                    console.error('Error occurred:', error);
-                }
-            }); 
-        }
         </script>
     
         <script>
@@ -584,22 +542,6 @@
                                                         <span class="error-message-isbu" style="color: red;"></span>
                                                 </div>   
                                                 
-                                                <div class="col-md-6">
-                                                    {% if editfaculty.bu_assistant %}
-                                                        <div class="form-group" style="margin-top: 35px;">
-                                                            <input  type="checkbox" id="assistant" name="assistant" style="display: inline;  margin-right: 10px;" checked>
-                                                            <label  style="display: inline-block;">تعيين مساعد رئيس وحدة الاعمال</label>
-                                                        </div>
-                                                    {% else %}
-                                                        <div class="form-group" style="margin-top: 35px;">
-                                                            <input  type="hidden" id="result3" name="result3" value="false">
-                                                            <input  type="checkbox" id="assistant" name="assistant" style="display: inline;  margin-right: 10px;" onclick="checkAssistant()">
-                                                            <label  style="display: inline-block;">تعيين مساعد رئيس وحدة الاعمال</label>
-                                                        </div>
-                                                    {% endif %}
-                                                    <span class="error-message-assistant" style="color: red;"></span>
-                                                </div>    
-                                           
                                             </div>
                                        
                                         </div> 

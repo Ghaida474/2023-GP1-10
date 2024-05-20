@@ -3,47 +3,119 @@
     {% block styles %}
     {% endblock %}
         {% block content %}
-							<!-- PAGE-HEADER -->
-							<div class="page-header d-xl-flex d-block">
-								<div class="page-leftheader">
-									<div class="page-title"><span class="font-weight-normal text-muted ms-2">لوحة القيادة</span></div>
-								</div>
-								<div class="page-rightheader ms-md-auto">
-									<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
-										<div class="d-flex">
-											
-											<div class="header-datepicker me-3">
-												<div class="input-group" style="width: 200px;">
-													<div class="input-group-prepend">
-														<div class="input-group-text" >
-															<i class="feather feather-calendar"></i>
-														</div>
-													</div>
-													<p id="date" class="form-control fc-datepicker"></p>
-												</div>
-											</div>
-											
-											<div class="header-datepicker me-3" style="border-radius:20px;">
-												<div class="input-group" style="width: 140px;">
-													<div class="input-group-prepend">
-														<div class="input-group-text">
-															<i class="feather feather-clock"></i>
-														</div>
-													</div>
-													<p  type="text" id="time" class="form-control input-small" ></p>
-												</div>
-											</div>
+									<!-- PAGE-HEADER -->
+							
 
+									<div class="page-header d-xl-flex d-block">
+										<div class="page-leftheader">
+											<div class="page-title"><span class="font-weight-normal text-muted ms-2">لوحة القيادة</span></div>
+										</div>
+										<div class="page-rightheader ms-md-auto">
+											<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
+												<div class="d-flex">
+													
+													<div class="header-datepicker me-3">
+														<div class="input-group" style="width: 200px;">
+															<div class="input-group-prepend">
+																<div class="input-group-text" >
+																	<i class="feather feather-calendar"></i>
+																</div>
+															</div>
+															<p id="date" class="form-control fc-datepicker"></p>
+														</div>
+													</div>
+													
+													<div class="header-datepicker me-3" style="border-radius:20px;">
+														<div class="input-group" style="width: 140px;">
+															<div class="input-group-prepend">
+																<div class="input-group-text">
+																	<i class="feather feather-clock"></i>
+																</div>
+															</div>
+															<p  type="text" id="time" class="form-control input-small" ></p>
+														</div>
+													</div>
+													
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-							<!-- PAGE-HEADER END -->
-
-							<!-- ROW -->
-							<h2>To be continued...</h2>
-								
-							<!-- END ROW -->
+									<!-- PAGE-HEADER END -->
+		
+									<!-- ROW -->
+											<div class="row">
+												<div class="col-xl-4 col-lg-4 col-md-12">
+													<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; background-color: aliceblue; margin-right: 200px; margin-top: 70px;">
+														<div class="card-body">
+															<div class="row">
+																<div class="col-8">
+																	<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold"> المشاريع تم العمل عليها</span>
+																		<h3 class="mb-0 mt-1 mb-2">{{workedOnProjects}}</h3>
+																	</div>
+																</div>
+																<div class="col-4">
+																	<div class="icon1 bg-primary my-auto  float-end"> <i class="feather  fa fa-opera"></i> </i></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+		
+												<div class="col-xl-4 col-lg-4 col-md-12" >
+													<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD;  background-color: aliceblue; margin-right: 200px; margin-top: 70px;">
+														<div class="card-body">
+															<div class="row">
+																<div class="col-8">
+																	<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">المشاريع تم الرفض عليها </span>
+																		<h3 class="mb-0">{{RejectedProjects}}</h3>	
+																	</div>
+																</div>
+																<div class="col-4">
+																	<div class="icon1 bg-red my-auto  float-end"> <i class="feather  fa fa-opera"></i> </div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+									<!-- END ROW -->
+									<!-- ROW -->
+											<div class="row">
+												<div class="col-xl-4 col-lg-4 col-md-12">
+													<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; background-color: aliceblue; margin-right: 200px; margin-top: 70px;">
+														<div class="card-body">
+															<div class="row">
+																<div class="col-8">
+																	<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold"> البرامج التدريبية تم العمل عليها</span>
+																		<h3 class="mb-0 mt-1 mb-2">{{workedOnTrainingprogram}}</h3>
+																	</div>
+																</div>
+																<div class="col-4">
+																	<div class="icon1 bg-primary my-auto  float-end"> <i class="feather fa fa-ravelry"></i> </div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+		
+												<div class="col-xl-4 col-lg-4 col-md-12" >
+													<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD;  background-color: aliceblue; margin-right: 200px; margin-top: 70px;">
+														<div class="card-body">
+															<div class="row">
+																<div class="col-8">
+																	<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">البرامج التدريبية تم الرفض عليها </span>
+																		<h3 class="mb-0">{{RejectedTrainingprogram}}</h3>	
+																	</div>
+																</div>
+																<div class="col-4">
+																	<div class="icon1 bg-red my-auto  float-end"> <i class="feather fa fa-ravelry"></i> </div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+									<!-- END ROW -->
         {% endblock %}
 
 		

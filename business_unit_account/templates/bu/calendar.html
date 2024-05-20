@@ -1,0 +1,54 @@
+{% extends 'bu/components/base.html' %}
+{% load static %}
+
+
+
+        {% block content %}
+				
+
+						<!-- ROW -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										<div id="calendar" class="position-sticky"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+                        <!-- END ROW -->
+        {% endblock %}
+
+	
+		<!-- /MODAL -->
+
+	{% block scripts %}
+<!-- INTERNAL FULL-CALENDAR JS -->
+<script src="{% static 'assets/plugins/fullcalendar/fullcalendar.min.js' %}"></script>
+<script src="{% static 'assets/plugins/fullcalendar/locales/ar.js' %}"></script> <!-- Include the Arabic locale -->
+<script src="{% static 'assets/js/app-calendar.js' %}"></script>
+
+    <!-- THEME COLOR JS -->
+    <script src="{% static 'assets/js/themeColors.js'%}"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var tasks = {{ tasks|safe }}; // Assuming tasks is a list of dictionaries
+			console.log("Type of tasks:", typeof tasks);
+			console.log("Contents of tasks:", tasks);
+	
+			var calendarEl = document.getElementById('calendar');
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				events: tasks,
+				locale: 'ar', 
+				direction: 'rtl', 
+				buttonText: {
+                today: 'اليوم' // Set the text for the "Today" button to Arabic
+            }
+			});
+			calendar.render();
+		});
+	</script>
+	
+{% endblock %}
+

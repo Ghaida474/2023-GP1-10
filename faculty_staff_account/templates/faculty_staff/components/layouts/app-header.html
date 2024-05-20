@@ -1,4 +1,29 @@
 {% load static %}     
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+
+				<div class="modal" tabindex="-1" id="emailNotificationAlert">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<img src="{% static 'assets/images/brand/logowithname.png' %}" class="img-fluid" style="max-width: 100px; float: right;">
+							</div>
+							<form method="post" action="{% url 'faculty_staff_account:email_notification_settings' %}">
+								{% csrf_token %}
+								<div class="modal-body">
+									<p id="alertMessageT3">هل تريد أن يصل لك الإشعارات على إيميل وحدة الأعمال؟</p><br>
+									<label for="emailYes"> <input type="radio" id="emailYes" name="emailNotif" value="yes" {% if user.sendNotificationByEmail %}checked{% endif %}> نعم</label><br>
+									<label for="emailNo"> <input type="radio" id="emailNo" name="emailNotif" value="no" {% if not user.sendNotificationByEmail %}checked{% endif %}> لا</label>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+									<button type="submit" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+						
+
 				<div class="app-header header sticky" >
 					<div class="container-fluid main-container" id="headerhor">
 						<div class="d-flex">
@@ -34,13 +59,15 @@
 													<i class="feather feather-minimize fullscreen-button exit-fullscreen header-icons"></i>
 												</a>
 											</div>
+											
 											<!-- noti -->
-											<!-- <div class="dropdown header-notify">
-												<a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+											<div class="dropdown header-notify">
+												<a id="read-notification" href="{% url 'faculty_staff_account:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
 													<i class="feather feather-bell header-icon"></i>
-													<span class="bg-dot"></span>
+													<span class="badge bg-danger" style="margin-top:-8px; width: 20px;">{{all_notifications_that_needs_to_be_shown_count }}</span>
 												</a>
-											</div> -->
+											</div>
+
 											<!-- profile -->
 											<div class="dropdown profile-dropdown">
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
@@ -53,10 +80,12 @@
 														<i class="feather feather-user me-3 fs-16 my-auto"></i>
 														<div class="mt-1">حسابي التعريفي</div>
 													</a>
-													<!-- <a class="dropdown-item d-flex" href="#">
+												
+													<a class="dropdown-item d-flex" href="" data-bs-toggle="modal" data-bs-target="#emailNotificationAlert">
 														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
-														<div class="mt-1">Messages</div>
-													</a> -->
+														<div class="mt-1">إستقبال الإشعارات</div>
+													</a>
+
 													<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
 														<i class="feather feather-power me-3 fs-16 my-auto"></i>
 														<div class="mt-1">تسجيل الخروج</div>
@@ -71,3 +100,10 @@
 						</div>
 					</div>
 				</div>
+				<script>
+					$(document).ready(function() {
+						$('#read-notification').on('click', function(event) {
+							location.reload(true); 
+						});
+					});
+				</script>

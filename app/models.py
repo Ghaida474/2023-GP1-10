@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser , Group, Permission , UserManager
 from django.utils.translation import gettext as _
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 class Admin(AbstractUser):
     email = models.CharField(primary_key=True, max_length=130)
@@ -57,7 +58,8 @@ class Collage(models.Model):
     nofloor = models.CharField( blank=True, null=True , max_length=130)
     nodisk = models.IntegerField(db_column='Nodisk', blank=True, null=True) 
     last_update = models.DateTimeField(blank=True, null=True)
-    new_user = models.BooleanField(blank=True, null=True)
+    new_user = models.BooleanField(default=True , blank=True, null=True)
+    sendNotificationByEmail = models.BooleanField(default=False)
 
     class Meta:
         managed = False
@@ -95,9 +97,9 @@ class FacultyStaff(AbstractUser):
     rank = models.CharField(blank=True, null=True, max_length=130)
     first_nameeng = models.CharField(db_column='first_nameEng', blank=True, null=True, max_length=130)  # Field name made lowercase.
     last_nameeng = models.CharField(db_column='last_nameEng', blank=True, null=True, max_length=130) 
-    bu_assistant = models.BooleanField(blank=True, null=True)
-    new_user = models.BooleanField(blank=True, null=True)
-    sendnotificationbyemail = models.BooleanField(default=False, db_column='sendnotificationbyemail')
+    # bu_assistant = models.BooleanField(blank=True, null=True)
+    new_user = models.BooleanField( default=True,blank=True, null=True)
+    sendNotificationByEmail = models.BooleanField(default=False, db_column='sendNotificationByEmail')
 
     groups = models.ManyToManyField(
         Group,
@@ -141,9 +143,10 @@ class Kaibuemployee(AbstractUser):
     position = models.CharField(db_column='Position', max_length=130) 
     is_staff = models.BooleanField(blank=True, null=True)
     username = models.CharField(max_length=150, unique=True)
-    new_user = models.BooleanField(blank=True, null=True)
-    id_departmenthead = models.BooleanField(default=False, null=False , db_column= 'iid_departmenthead')
-    sendnotificationbyemail = models.BooleanField(default=False, db_column='sendnotificationbyemail')
+    new_user = models.BooleanField(default=True,blank=True, null=True)
+    is_department_head = models.BooleanField(default=False, null=False , db_column= 'is_department_head')
+    sendNotificationByEmail = models.BooleanField(default=False, db_column='sendNotificationByEmail')
+    department = models.CharField(max_length=255, blank=True, null=True)
     
 
     groups = models.ManyToManyField(
@@ -210,8 +213,8 @@ INITIATED_BY_CHOICES = [
 class Trainingprogram(models.Model):
     Descriptionofrequirements = models.CharField(max_length=130 , db_column='Descriptionofrequirements')
     totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  
-    taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  
-    kaipercentage = models.FloatField(db_column='KAIPercentage', blank=True, null=True)  
+    taxpercentage = models.FloatField(default=0.15 ,db_column='TaxPercentage', blank=True, null=True)  
+    kaipercentage = models.FloatField(default=0.15 ,db_column='KAIPercentage', blank=True, null=True)  
     programtype = models.CharField(db_column='programType', max_length=130)  
     startdate = models.DateField(db_column='startDate')  
     enddate = models.DateField(db_column='endDate')  
@@ -247,6 +250,7 @@ class Trainingprogram(models.Model):
     isonline = models.BooleanField(db_column='isOnline', blank=True, null=True) 
     location_field = models.CharField(db_column='location ', max_length=130, blank=True, null=True) 
     topic_english = models.CharField(max_length=130, blank=True, null=True)
+ 
   
     class Meta:
         managed = False
@@ -291,7 +295,7 @@ class Files(models.Model) :
 
 
 class Task(models.Model):
-    task_id = models.AutoField(primary_key=True)
+    task_id = models.AutoField(db_column='task_id', primary_key=True)
     task_name = models.TextField()
     task_type = models.TextField()
     task_description = models.TextField(max_length=1000)
@@ -342,14 +346,15 @@ class TaskToUser(models.Model):
         managed = False
         db_table = 'task_to_user'
 
-from django.db import models
 
 class Notification(models.Model):
-    id = models.AutoField(primary_key=True)
-    faculty_target = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE, db_column='faculty_target_id', null=True)
+    id = models.AutoField( db_column='id' , primary_key=True)
+    faculty_target = models.ForeignKey('FacultyStaff',  on_delete=models.CASCADE, db_column='faculty_target_id', related_name='faculty_notifications', null=True)
+    bu_target = models.ForeignKey('FacultyStaff', on_delete=models.CASCADE, db_column='bu_target_id', related_name='bu_notifications',null=True)
     kaitarget = models.ForeignKey('Kaibuemployee', on_delete=models.CASCADE, db_column='kai_target_id')
     training_program = models.ForeignKey('Trainingprogram', on_delete=models.CASCADE, db_column='training_program_id')
     taskid = models.ForeignKey('Task', on_delete=models.CASCADE, db_column='task_id')
+    project = models.ForeignKey('Project', null=True, on_delete=models.CASCADE, db_column='project_id')
     notification_message = models.TextField(db_column='notificationmessage')
     TimeOfCreation = models.DateTimeField(auto_now_add=True, db_column='timeofcreation')
     isread = models.BooleanField(default=False, db_column='isread')
@@ -358,37 +363,42 @@ class Notification(models.Model):
     function_indicator = models.IntegerField(null=True, blank=True)
     faculty_staff_ids = ArrayField(models.IntegerField(), blank=True, null=True)
     kai_ids = ArrayField(models.IntegerField(), blank=True, null=True)
-    target_indicator = models.IntegerField(null=True, blank=True)
     need_to_be_shown = models.BooleanField(default=False, db_column='needtobeshown')
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.TimeOfCreation = timezone.now()
+        super(Notification, self).save(*args, **kwargs)
+    
     class Meta:
         db_table = 'notification'
 
 
 class Project(models.Model):
     Name = models.CharField(db_column='Name', max_length=130)
-    totalcost = models.FloatField(db_column='TotalCost', blank=True, null=True)  
-    taxpercentage = models.FloatField(db_column='TaxPercentage', blank=True, null=True)  
-    kaipercentage = models.FloatField(db_column='KAIPercentage', blank=True, null=True) 
-    acceptanceStatus = models.CharField(db_column='acceptanceStatus',  max_length=130) 
+    totalcost = models.FloatField(default=0.0 ,db_column='TotalCost', blank=True, null=True)  
+    taxpercentage = models.FloatField( default=0.15 ,db_column='TaxPercentage', blank=True, null=True)  
+    kaipercentage = models.FloatField( default=0.15 ,db_column='KAIPercentage', blank=True, null=True) 
+    # acceptanceStatus = models.CharField(db_column='acceptanceStatus',  max_length=130) 
     programtype = models.CharField(db_column='programType', max_length=130) 
     collageid = models.IntegerField(db_column='Collage')
     programleader = models.IntegerField(db_column='LeaderID',blank=True, null=True)  
-    startdate = models.DateField(db_column='startDate')  
+    # startdate = models.DateField(db_column='startDate')  
     enddate = models.DateField(db_column='TeamEndDate') 
     status = models.CharField(db_column='programStatus', max_length=130, blank=True, null=True)
     CompanyName = models.CharField(db_column='companyName',  max_length=130)
     OfferingDate = models.DateField(db_column='offeringDate')
-    AcceptanceDeadline = models.DateField(db_column='AcceptanceDeadline')
+    # AcceptanceDeadline = models.DateField(db_column='AcceptanceDeadline')
     QuestionDeadline = models.DateField(db_column='QuestionDeadline') 
     EtimadDeadline = models.DateField(db_column='EtimadDeadline')  
     ProposalSubmissionDeadline = models.DateField(db_column='ProposalSubmissionDeadline') 
     contractDuration = models.IntegerField(db_column='contractDuration')
-    EnvelopeOpening =  models.DateField(db_column='EnvelopeOpening')
+    # EnvelopeOpening =  models.DateField(db_column='EnvelopeOpening')
     rejectionresons = models.CharField(db_column='RejectionReason',max_length=500, blank=True, null=True)
-    TechnicalProposalStatus = models.CharField(db_column='TechnicalProposalStatus', max_length=130, blank=True, null=True)
-    FinancialProposalStatus = models.CharField(db_column='FinancialProposalStatus', max_length=130, blank=True, null=True)
+    # TechnicalProposalStatus = models.CharField(db_column='TechnicalProposalStatus', max_length=130, blank=True, null=True)
+    # FinancialProposalStatus = models.CharField(db_column='FinancialProposalStatus', max_length=130, blank=True, null=True)
     programid = models.AutoField(db_column='programID', primary_key=True) 
-    isteamfound = models.BooleanField(db_column='isTeamFound',blank=True, null=True)
+    # isteamfound = models.BooleanField(db_column='isTeamFound',blank=True, null=True)
     isSubmittedtoKAI = models.BooleanField(db_column='isSubmittedtoKAI',blank=True, null=True) 
     isAccepted = models.BooleanField(db_column='isAccepted',blank=True, null=True) 
     Teamid = ArrayField(models.IntegerField(), default=list, blank=True, null=True , db_column='teamID')
@@ -398,7 +408,7 @@ class Project(models.Model):
     description = models.CharField(db_column='descrription', max_length=200)
     chatgroup_id = models.CharField(db_column='chatgroup_id', max_length=200)
     chat_access_key = models.CharField(db_column='chat_access_key', max_length=200)
-    
+  
     class Meta:
         managed = False
         db_table = 'Project'

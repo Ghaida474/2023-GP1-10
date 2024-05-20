@@ -1,13 +1,38 @@
-{% load static %}     
+{% load static %}   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+				<div class="modal" tabindex="-1" id="emailNotificationAlert">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<img src="{% static 'assets/images/brand/logowithname.png' %}" class="img-fluid" style="max-width: 100px; float: right;">
+							</div>
+							<form method="post" action="{% url 'kai_staff:email_notification_settings' %}">
+								{% csrf_token %}
+								<div class="modal-body">
+									<p id="alertMessageT3">هل تريد أن يصل لك الإشعارات على إيميل وحدة الأعمال؟</p><br>
+									<label for="emailYes"> <input type="radio" id="emailYes" name="emailNotif" value="yes" {% if user.sendNotificationByEmail %}checked{% endif %}> نعم</label><br>
+									<label for="emailNo"> <input type="radio" id="emailNo" name="emailNotif" value="no" {% if not user.sendNotificationByEmail %}checked{% endif %}> لا</label>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+									<button type="submit" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>  
+
 				<div class="app-header header sticky" >
 					<div class="container-fluid main-container" id="headerhor">
 						<div class="d-flex">
-							<a class="header-brand" href="{% url 'kai_staff:kaistaff-home'%}">
+							
+							<a class="header-brand" href="index">
 								<img src="" class="header-brand-img desktop-lgo" alt="Business Gate">
 								<img src="" class="header-brand-img dark-logo" alt="Business Gate">
 								<img src="" class="header-brand-img mobile-logo" alt="Business Gate">
 								<img src="" class="header-brand-img darkmobile-logo" alt="Business Gate">
 							</a>
+							
 							<div class="app-sidebar__toggle" data-bs-toggle="sidebar">
 								<a class="open-toggle"  href="javascript:void(0);">
 									<i class="feather feather-menu"></i>
@@ -27,54 +52,70 @@
 									<div class="collapse navbar-collapse" id="navbarSupportedContent-4">
 										<div class="d-flex ms-auto">
 											
-											<!-- full screen -->
+											<!-- 1 -->
 											<div class="dropdown header-fullscreen">
 												<a class="nav-link icon full-screen-link">
 													<i class="feather feather-maximize fullscreen-button fullscreen header-icons"></i>
 													<i class="feather feather-minimize fullscreen-button exit-fullscreen header-icons"></i>
 												</a>
 											</div>
-											<!-- noti -->
-											<!-- <div class="dropdown header-notify">
-												<a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
-													<i class="feather feather-bell header-icon"></i>
-													<span class="bg-dot"></span>
-												</a>
-											</div> -->
+											
+											<!-- 2 -->
 											<div class="dropdown header-notify">
-												<span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
 												<a id="read-notification" href="{% url 'kai_staff:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
 													<i class="feather feather-bell header-icon"></i>
-													<span class="bg-dot"></span>
+													<span class="badge bg-danger" style="margin-top:-8px; width: 20px;">{{all_notifications_needs_to_be_shown_count }}</span>
 												</a>
 											</div>
-											<!-- profile -->
+									
+										
+											<!-- 3 -->
 											<div class="dropdown profile-dropdown">
+												
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
 													<span>
 														<i class="feather fa fa-user header-icon"></i>
 													</span>
 												</a>
-												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
-													<a class="dropdown-item d-flex" href="{% url 'kai_staff:profile'%}">
-														<i class="feather feather-user me-3 fs-16 my-auto"></i>
-														<div class="mt-1">حسابي التعريفي</div>
-													</a>
-													<!-- <a class="dropdown-item d-flex" href="#">
-														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
-														<div class="mt-1">Messages</div>
-													</a> -->
-													<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
-														<i class="feather feather-power me-3 fs-16 my-auto"></i>
-														<div class="mt-1">تسجيل الخروج</div>
-													</a>
+												
+												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">												
+
+														<a class="dropdown-item d-flex" href="{% url 'kai_staff:profile'%}">
+															<i class="feather feather-user me-3 fs-16 my-auto"></i>
+															<div class="mt-1">حسابي التعريفي</div>
+														</a>
+
+														<a class="dropdown-item d-flex" href="" data-bs-toggle="modal" data-bs-target="#emailNotificationAlert">
+															<i class="feather feather-mail me-3 fs-16 my-auto"></i>
+															<div class="mt-1">إستقبال الإشعارات</div>
+														</a>
+
+														<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
+															<i class="feather feather-power me-3 fs-16 my-auto"></i>
+															<div class="mt-1">تسجيل الخروج</div>
+														</a>
+												
 												</div>
+											
 											</div>
+										
 										</div>
 									</div>
 								</div>
 							
 							</div>
+						
+						
 						</div>
 					</div>
 				</div>
+			
+				
+				<script>
+					$(document).ready(function() {
+						$('#read-notification').on('click', function(event) {
+							location.reload(true); 
+						});
+					});
+				</script>
+				

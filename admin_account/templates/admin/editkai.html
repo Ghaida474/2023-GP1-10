@@ -141,6 +141,7 @@
                 var phonenumber = document.querySelector('input[name="phonenumber"]');
                 var result2 = document.getElementById('result2');
                 var result = document.getElementById('result');
+                var result3 = document.getElementById('result3');
                 
                 var arabicPattern = /^[\u0600-\u06FF\s]+$/;
                 var emailPattern = /^[^@\s]+@ksu\.edu\.sa$/; 
@@ -178,6 +179,12 @@
                     console.log('in checkPosition check');
                     return false;
                 }
+
+                console.log('result3: ', result3.value); 
+                if (result3.value.trim() === 'true') {
+                    console.log('in Dean check');
+                    return false;
+                }
             }
         </script>
 
@@ -186,9 +193,10 @@
             var position = document.getElementById('positionSelect').value;
             var element = $('.error-message-position');
             var result = $('#result');
-            var attendURL =  "{% url 'admin_account:checkposition' %}";
+            var result3 = $('#result3');
             
             if (position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله'){
+                var attendURL =  "{% url 'admin_account:checkposition' %}";
                 $.ajax({
                 url: attendURL,
                 type: 'GET',
@@ -210,9 +218,37 @@
                     console.error('Error occurred:', error);
                 }
             }); 
-            }else{
+            } else{
                 element.text('');
                 result.val('false');
+            }
+            
+            if (position =='عميد معهد الملك عبدالله'){
+                var attendURL =  "{% url 'admin_account:checkDean' %}";
+                $.ajax({
+                url: attendURL,
+                type: 'GET',
+                success: function(response) { 
+                    if (response.success_message !== undefined) {
+                        if (response.success_message === true) {
+                            console.log('here inside checkDean true ')
+                            element.text('يوجد رئيس قسم وحدات الأعمال بمعهد الملك عبدالله في النظام');
+                            result3.val('true');
+                        } else {
+                            element.text('');
+                            result3.val('false');
+                        }
+                    } else {
+                        console.log('Response message not received');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error occurred:', error);
+                }
+            }); 
+            } else{
+                element.text('');
+                result3.val('false');
             }
         
         }
@@ -327,8 +363,10 @@
                                                     <div class="form-group">
                                                         <label class="form-label"> المسمى الوظيفي<span class="text-red">*</span></label>
                                                         <input  type="hidden" id="result" name="result" value="false">
+                                                        <input  type="hidden" id="result3" name="result3" value="false">
                                                         <select  class="form-control select2" data-placeholder="اختر" id="positionSelect" name="position" onchange="checkposition()" required>
                                                             <option value="">اختر</option>
+                                                            <option value= 'عميد معهد الملك عبدالله'  {% if editkai.position == 'عميد معهد الملك عبدالله' %} selected {% endif %}>عميد معهد الملك عبدالله</option>
                                                             <option value='رئيس قسم وحدات الأعمال بمعهد الملك عبدالله' {% if editkai.position == 'رئيس قسم وحدات الأعمال بمعهد الملك عبدالله' %} selected {% endif %}>رئيس قسم وحدات الأعمال بمعهد الملك عبدالله</option>
                                                             <option value='موظف بقسم وحدات الأعمال بمعهد الملك عبدالله' {% if editkai.position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله' %} selected {% endif %}>موظف بقسم وحدات الأعمال بمعهد الملك عبدالله</option>
                                                         </select>

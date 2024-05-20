@@ -65,9 +65,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'BusinessGate.urls'
+
+TIME_ZONE = 'Asia/Riyadh'
+USE_TZ = True
+
 
 TEMPLATES = [
     {
@@ -106,16 +111,26 @@ AUTH_USER_MODEL = 'app.Admin'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'bg',
         'NAME': 'businessgate',
-        # 'NAME': 'BusinessGate',
         'USER': 'postgres',
         'PASSWORD': 'BusinessGateDeveloperTeamAccess',
         'HOST': 'localhost',
         'PORT': '5432',
+    }
+}'''
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd324plu2jn6hit',
+        'USER': 'u9tlnmrpkgdnpu',
+        'PASSWORD': 'p2dc0a66af0dcc0c859f489b4e0417da7fda0184651b1e88b257203b2ee15568e',
+        'HOST': 'c6sfjnr30ch74e.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com',  
+        'PORT': '5432',  
     }
 }
 
@@ -162,10 +177,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATIC_DIR,
-#os.path.join(BASE_DIR, 'reactApp-chat/build/static')
 STATICFILES_DIRS = [STATIC_DIR, os.path.join(BASE_DIR, 'react-chat/ce-quick-start/build/static')]
-#print(STATIC_DIR) 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # STATIC_URL = '/static/'

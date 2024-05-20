@@ -46,11 +46,59 @@
 
         {% block content %}
 						<!-- PAGE HEADER -->
-                        <div class="page-header d-lg-flex d-block">
+                        <div class="page-header d-lg-flex d-block" style="margin-top: -30px;">
 						</div>
 						<!-- END PAGE HEADER -->
 
 						<!-- model -->
+
+						<div class="modal" tabindex="-1" id="acceptForm">
+                            <div class="modal-dialog">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                    <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                    <p>تأكيد</p>
+                                    </div>
+									{% for id_status_date in id_status_dates %}
+										{% if id_status_date.status == "في انتظار قبول العضو" and id_status_date.instructor.id == userid  %} 
+											<form method="post" action="{% url 'faculty_staff_account:accept-project' id_status_date.id %}">
+												{% csrf_token %}
+												<div class="modal-body">
+													<p> هل انت متاكد من قبول الطلب وما يترتب عليه من التزامات للمشاركة في البرنامج؟  </p> 
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+													<button type="submit" class="btn btn-primary">تأكيد</button>
+												</div>
+											</form>
+										{% endif %}
+									{% endfor %}
+                                 </div>
+                            </div>
+                        </div>
+
+						<div class="modal" tabindex="-1" id="applyProject">
+                            <div class="modal-dialog" >
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                         <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                         <p>تأكيد</p>
+                                    </div>
+                                    <form method="post" action="{% url 'faculty_staff_account:apply_for_project' program.programid %}">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                             <p>  هل أنت متأكد من التقديم على البرنامج وقبول ما يترتب عليه من التزامات للمشاركة في البرنامج في حال أخترت في فريق البرنامج؟  </p>   
+                                        </div>
+
+                                        <div class="modal-footer">
+                                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                                             <button type="submit" class="btn btn-primary" >تأكيد</button>
+                                        </div>
+                                	</form>
+                            	</div>
+                        	</div>
+						</div>
+
 
 						<div class="modal" tabindex="-1" id="customAlert">
 							<div class="modal-dialog">
@@ -64,7 +112,7 @@
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
-										<button type="button" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+										<button type="submit" class="btn btn-primary" id="alertConfirm">تأكيد</button>
 									</div>
 							  	</div>
 							</div>
@@ -156,30 +204,29 @@
 												{% for id_status_date in id_status_dates %}
 													{% if id_status_date.status == "في انتظار قبول العضو" and id_status_date.instructor.id == userid  %} 
 														<div class="button-container" style="display: flex; margin-top: -42px; margin-right: 700px;">
-															<form method="POST" action="{% url 'faculty_staff_account:accept-project' id_status_date.id %}" id="acceptForm" style="margin-right:8px;">
-																{% csrf_token %}
-																<input type="hidden" name="update_status" value="accept">
-																<button type="button" class="btn btn-outline-info" style="width:180px;" onclick="confirmAcceptance();">قبول الطلب</button>
-															</form>
+															
+															<div style="margin-right:8px;">
+																<button type="button" data-bs-toggle="modal" data-bs-target="#acceptForm" class="btn btn-outline-info"  style="width: 180px;" > قبول الطلب  </button>
+															</div>
+															
 															<form method="POST" action="{% url 'faculty_staff_account:reject_project' id_status_date.id %}" id="rejectionForm" style="margin-right: 5px;">
 																{% csrf_token %}
 																<input type="hidden" name="update_status" value="reject">
-																<button type="submit" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
+																<button type="button" class="btn btn-outline-danger" id="rejectButton" style="width:180px;" onclick="confirmRejection();">رفض الطلب</button>
 																<div class="form-group reject-reason" style="display: none;" id="rejectReasonDiv">
 																	<label for="rejectionReason">الرجاء كتابة سبب الرفض</label>
 																	<textarea class="form-control" id="rejectionReason" name="rejectionReason" rows="3"></textarea>
 																</div>
 															</form>
+
 														</div>
 													{% endif %}
 												{% endfor %}
 											
 											{% if program.status == 'فتح الفرصة للجميع' and  isfacultyinarray %}
-											<form method="POST" action="{% url 'faculty_staff_account:apply_for_project' program.programid %}" id="applyForm" style=" margin-top: -42px; margin-right: 950px;">
-												{% csrf_token %}
-												<input type="hidden" name="update_status" value="apply">
-												<button type="button" class="btn btn-outline-info" onclick="confirmApply();">التقديم على المشروع</button>
-											</form>
+												<div style=" margin-top: -42px; margin-right: 950px;" >
+													<button type="button" data-bs-toggle="modal" data-bs-target="#applyProject" class="btn btn-outline-info"> التقديم على المشروع </button>
+												</div>
 											{% endif %}
 											
 											</ul>
@@ -449,12 +496,7 @@
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
 																<h3 class="timelinestart-header"><span> تتم {{flow.status}}</span></h3>
-																{% if program.isAccepted is None  %}
-																	<div style=" display: inline-block; vertical-align: top; margin-top: 10px; margin-right: 350px;">
-																		<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIAcceptance" >تم التعميد على المشروع</button>
-																		<button type="button" style=" margin-bottom: 10px;"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIRejection" >لم يتم التعميد على المشروع</button>
-																	</div> 
-																{% endif %}
+																
 															</div>
 														</li>
 														{% endif %}
@@ -469,20 +511,14 @@
 															<div class="timelinestart-item">
 																<span class="time">{{flow.date}}</span>
 																<h3 class="timelinestart-header"><span> {{flow.status}} : </span> {% if program.isAccepted  %}	تم تعميد المشروع {% else %}	لم يتم تعميد المشروع{% endif %}</h3>
-																
-																{% for flow in programflow %} 	
-																	{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'W' %}
-																		{% if program.isAccepted and program.isAccepted is not None  %}
-																			<div class="timelinestart-body" >
-																				<div class="wrapper ms-3">
-																					<div style="margin-right: 900px;">
-																						<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmDONEproject" >انتهاء المشروع</button>
-																					</div> 
-																				</div>
-																			</div>
-																		{% endif %}
-																	{% endif %}
-																{% endfor %} 
+																{% if not program.isAccepted  %}
+																<div class="timelinestart-body" >
+																	<div class="wrapper ms-3">
+																		<p style="font-weight: bold;">سبب الرفض:</p>
+																		<p style="font-weight: bold;">{{program.rejectionresons}}</p>
+																	</div>
+																</div>
+																{% endif %}
 															</div>
 														</li>
 														{% endif %}

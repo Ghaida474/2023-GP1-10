@@ -6,6 +6,7 @@ app_name = 'faculty_staff_account'
 urlpatterns = [ 
 # 8
     path('faculty-staff-home/', views.faculty_staff_home, name='faculty_staff_home'),
+    path('faculty-staff-home/calendar',views.calendar,name='calendar'),
     path('faculty-staff-home/change_new_user_password', views.change_new_user_password, name='change_new_user_password'),
     path('faculty-staff-home/profile', views.profile_view, name='profile'),
     path('faculty-staff-home/edit-profile', views.editprofile_view, name='edit-profile'),
@@ -36,11 +37,16 @@ urlpatterns = [
    
 # 4
     path('faculty-staff-home/chat', views.chat, name='chat'),
-    path('faculty-staff-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
     path('faculty-staff-home/videocall', views.videocall, name='videocall'),
     path('faculty-staff-home/joinroom', views.joinroom, name='joinroom'),
     path('faculty-staff-home/projects/groupchat/<int:program_id>/', views.groupchat_view, name='groupchat'),
+    path('faculty-staff-home/joinroom_notification', views.joinroom_notification, name='joinroom_notification'), 
     path('faculty-staff-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
+
+# 5
+    path('faculty-staff-home/read_notification', views.update_notifications_ajax, name='read_notification'),
+    path('faculty-staff-home/Delete_notification/<int:notification_id>', views.update_notifications_ajax_Delete, name='Delete_notification'),
+    path('faculty-staff-home/email_notification_settings', views.email_notification_settings, name='email_notification_settings'),
 
 ]
     

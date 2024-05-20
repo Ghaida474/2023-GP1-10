@@ -1,14 +1,40 @@
 {% load static %}   
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  
+
+				<div class="modal" tabindex="-1" id="emailNotificationAlert">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<img src="{% static 'assets/images/brand/logowithname.png' %}" class="img-fluid" style="max-width: 100px; float: right;">
+							</div>
+							<form method="post" action="{% url 'business_unit_account:email_notification_settings' %}">
+								{% csrf_token %}
+								<div class="modal-body">
+									<p id="alertMessageT3">هل تريد أن يصل لك الإشعارات على إيميل وحدة الأعمال؟</p><br>
+									<label for="emailYes"> <input type="radio" id="emailYes" name="emailNotif" value="yes" {% if collage.sendNotificationByEmail %}checked{% endif %}> نعم</label><br>
+									<label for="emailNo"> <input type="radio" id="emailNo" name="emailNotif" value="no" {% if not collage.sendNotificationByEmail %}checked{% endif %}> لا</label>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+									<button type="submit" class="btn btn-primary" id="alertConfirm">تأكيد</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+						
+
 				<div class="app-header header sticky" >
 					<div class="container-fluid main-container" id="headerhor">
 						<div class="d-flex">
-							<a class="header-brand" href="index">
+							
+							<a class="header-brand" href="">
 								<img src="" class="header-brand-img desktop-lgo" alt="Business Gate">
 								<img src="" class="header-brand-img dark-logo" alt="Business Gate">
 								<img src="" class="header-brand-img mobile-logo" alt="Business Gate">
 								<img src="" class="header-brand-img darkmobile-logo" alt="Business Gate">
 							</a>
+							
 							<div class="app-sidebar__toggle" data-bs-toggle="sidebar">
 								<a class="open-toggle"  href="javascript:void(0);">
 									<i class="feather feather-menu"></i>
@@ -36,68 +62,63 @@
 												</a>
 											</div>
 											
-
-											<!-- noti -->
-                                            <!--<div class="dropdown header-notify">
-                                                <span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
-                                                <a class="nav-link icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
-                                                    <i class="feather feather-bell header-icon"></i>
-                                                    <span class="bg-dot"></span>
-                                                </a>
-                                            </div>-->
+											<!-- 2 -->
 											<div class="dropdown header-notify">
-											<span class="badge bg-danger">{{all_notifications_that_needs_to_be_shown_count }}</span>
-											<a id="read-notification" href="{% url 'business_unit_account:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
-												<i class="feather feather-bell header-icon"></i>
-												<span class="bg-dot"></span>
-											</a>
-										</div>
-											<!-- profile -->
+												<a id="read-notification" href="{% url 'business_unit_account:read_notification' %}" class="nav-link icon" id="bell-icon" data-bs-toggle="sidebar-right" data-bs-target=".sidebar-right">
+													<i class="feather feather-bell header-icon"></i>
+													<span class="badge bg-danger" style="margin-top:-8px; width: 20px;">{{all_notifications_that_needs_to_be_shown_count }}</span>
+												</a>
+											</div>
+									
+										
+											<!-- 3 -->
 											<div class="dropdown profile-dropdown">
+												
 												<a  href="javascript:void(0);" class="nav-link icon" class="nav-link pe-1 ps-0 leading-none" data-bs-toggle="dropdown">
 													<span>
 														<i class="feather fa fa-user header-icon"></i>
 													</span>
 												</a>
+												
 												<div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow animated">
-													{% if user.is_buhead %}
-														<a class="dropdown-item d-flex" href="{% url 'business_unit_account:change-password'%}">
-															<i class="feather feather-lock me-3 fs-16 my-auto"></i>
-															<div class="mt-1">تغيير كلمة المرور</div>
-														</a>
-													{% else %}
-														<a class="dropdown-item d-flex" href="{% url 'business_unit_account:profile'%}">
-															<i class="feather feather-user me-3 fs-16 my-auto"></i>
-															<div class="mt-1">حسابي التعريفي</div>
-														</a>
-													{% endif %}
-													<!-- <a class="dropdown-item d-flex" href="#">
+													
+
+													<a class="dropdown-item d-flex" href="{% url 'business_unit_account:change-password'%}">
+														<i class="feather feather-lock me-3 fs-16 my-auto"></i>
+														<div class="mt-1">تغيير كلمة المرور</div>
+													</a>
+
+													<a class="dropdown-item d-flex" href="" data-bs-toggle="modal" data-bs-target="#emailNotificationAlert">
 														<i class="feather feather-mail me-3 fs-16 my-auto"></i>
-														<div class="mt-1">Messages</div>
-													</a> -->
+														<div class="mt-1">إستقبال الإشعارات</div>
+													</a>
+													
 													<a class="dropdown-item d-flex" href="{% url 'app:logout' %}">
 														<i class="feather feather-power me-3 fs-16 my-auto"></i>
 														<div class="mt-1">تسجيل الخروج</div>
 													</a>
+												
 												</div>
+											
 											</div>
+										
 										</div>
 									</div>
 								</div>
 							
 							</div>
+						
+						
 						</div>
 					</div>
 				</div>
-				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			
+				
 				<script>
 					$(document).ready(function() {
 						$('#read-notification').on('click', function(event) {
-							// Perform the default action for the link (go to the URL specified in href).
-							
-							// After the default action, reload the current page.
-							location.reload(true); // 'true' forces a hard reload from the server
+							location.reload(true); 
 						});
 					});
-					</script>
+				</script>
 				

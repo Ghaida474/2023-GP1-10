@@ -98,7 +98,7 @@ def notify_task_due_dates():
                 )
                 new_notification.save()
 
-                if instructor.sendnotificationbyemail:
+                if instructor.sendNotificationByEmail:
                     send_custom_email(None, instructor.email, 'تذكير بإنجاز المهمة', status_message_notfy)
 
             # Notify faculty staff
@@ -113,7 +113,7 @@ def notify_task_due_dates():
                 )
                 new_notification.save()
 
-                if instructor.sendnotificationbyemail:
+                if instructor.sendNotificationByEmail:
                     send_custom_email(None, instructor.email, 'تذكير بإنجاز المهمة', status_message_notfy)
 
     logger.info("Notification Task done")
@@ -149,7 +149,7 @@ def send_project_reminders():
                 )
 
                 new_notification.save()
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, 'تذكير بتسليم المشروع', status_message_notfy)
 
 
@@ -164,7 +164,7 @@ def send_project_reminders():
                 )
                 new_notification.save()
 
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, 'تذكير بتسليم المشروع', status_message_notfy)
 
 
@@ -180,7 +180,7 @@ def send_project_reminders():
                 )
 
                 new_notification.save()
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, 'تذكير بتسليم المشروع', status_message_notfy)
 
   
@@ -195,7 +195,7 @@ def send_project_reminders():
                 )
                 new_notification.save()
 
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, 'تذكير بتسليم المشروع', status_message_notfy)
 
                         
@@ -218,7 +218,7 @@ def send_project_reminders():
 
                 )
                 new_notification.save()
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' تذكير بموعد استقبال الأسئلة   ', status_message_notfy)
 
             
@@ -235,7 +235,7 @@ def send_project_reminders():
                 )
                 new_notification.save()
 
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' تذكير بموعد استقبال الأسئلة   ', status_message_notfy)
 
 
@@ -259,7 +259,7 @@ def send_project_reminders():
 
                 )
                 new_notification.save()
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' اخر يوم لإسقبال العرض لمشروع  ', status_message_notfy)
 
             
@@ -276,7 +276,7 @@ def send_project_reminders():
                 )
                 new_notification.save()
 
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' اخر يوم لإسقبال العرض لمشروع  ', status_message_notfy)
 
 
@@ -298,7 +298,7 @@ def send_project_reminders():
 
                 )
                 new_notification.save()
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' اخر يوم لإسقبال العرض لمشروع  ', status_message_notfy)
 
             
@@ -315,7 +315,7 @@ def send_project_reminders():
                 )
                 new_notification.save()
 
-                if id.sendnotificationbyemail:
+                if id.sendNotificationByEmail:
                     send_custom_email(None, id.email, ' اخر يوم لإسقبال العرض لمشروع  ', status_message_notfy)
     logger.info("Notification Project done")
     return 'Notification task Project successfully'

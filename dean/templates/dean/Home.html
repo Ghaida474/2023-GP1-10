@@ -99,37 +99,80 @@
 										</div>	
 								</div>
 							</div>
-								
-							<!-- *********************************************************** -->
-								<div class="col-xl-4 col-md-12 col-lg-6">
-									<div class="card" style=" width:1005px; height: 434px; box-shadow:1px 1px 2px 1px #0084BD; margin-right:55px; box-shadow: inset; background-color: aliceblue;">
-										<div class="card-header border-0">
-											<h4 class="card-title">المشاريع</h4>
-											<!-- <div class="card-options">
-												<div class="dropdown"> <a  href="javascript:void(0);" class="btn btn-outline-light" data-bs-toggle="dropdown" aria-expanded="false"> Week <i class="feather feather-chevron-down"></i> </a>
-													<ul class="dropdown-menu dropdown-menu-end" role="menu">
-														<li><a  href="javascript:void(0);">Monthly</a></li>
-														<li><a  href="javascript:void(0);">Yearly</a></li>
-														<li><a  href="javascript:void(0);">Weekly</a></li>
-													</ul>
+						</div>
+							
+							<div class="row">
+								<div class="col-xl-9 col-md-12 col-lg-12">
+									<div class="row">
+										<div class="col-xl-4 col-lg-4 col-md-12">
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:50px; box-shadow: inset; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">عدد المشاريع المنفذة للوحدة من بدايتها</span>
+																<h3 class="mb-0 mt-1 mb-2">{{project_count}}</h3>
+															</div>
+														</div>
+													</div>
 												</div>
-											</div> -->
-										</div>
-										<div class="card-body">
-											<div class="mt-5">
-												<canvas id="sales-summary" class=""></canvas>
 											</div>
-											<div class="sales-chart mt-4 row text-center">
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-primary me-2 my-auto"></span>قيد العمل</div>
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-secondary me-2 my-auto"></span>قيد الإنتظار</div>
-												<div class="d-flex my-auto col-sm-4 mx-auto text-center justify-content-center"><span class="dot-label bg-light4  me-2 my-auto"></span>مكتمل</div>
+										</div>
+	
+										<div class="col-xl-4 col-lg-4 col-md-12" >
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:120px; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">عدد البرامج التدريبية المنفذة للوحدة من بدايتها</span>
+																<h3 class="mb-0">{{program_count}}</h3>	
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+	
+										<div class="col-xl-4 col-lg-4 col-md-12" >
+											<div class="card"  style=" box-shadow:1px 1px 2px 1px #0084BD; width:288px; height: 108px; margin-right:190px; background-color: aliceblue;">
+												<div class="card-body">
+													<div class="row">
+														<div class="col-8">
+															<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">الارباح للوحدة من بدايتها</span>
+																<h3 class="mb-0 mt-1 mb-2">{{ projectAndprogram_cost }}</h3>	
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+								
+							<div class="card" style=" width:690px; height: 450px; box-shadow:1px 1px 2px 1px #0084BD; margin-right: 30px; box-shadow: inset; background-color: aliceblue;">
+								<div class="card-header border-0">
+									<h4 class="card-title">الأرباح للوحده من بدايتها</h4>
+									<br><br>
+								</div>
+										<div class="card-body">
+											<canvas id="revenue" width="400" height="150"></canvas>
+										</div>
+									</div>
+						
+	
+									<div class="col-xl-4 col-md-12 col-lg-6">
+										<div class="card" style="margin-right:30px; width:320px; height:400px; box-shadow: inset;box-shadow:1px 1px 2px 1px #0084BD; background-color: aliceblue;">
+											<div class="card-header border-0">
+												<h4 class="card-title">نسبة الأرباح للوحدة من بدايتها</h4>
+											</div>
+											<div class="card-body">
+												<canvas id="pie-chart" width="220" height="175"></canvas>
 											</div>
 										</div>
 									</div>
-								</div>
-								
-								
-							<!-- END ROW -->
+					</div>
         {% endblock %}
 
 		
@@ -176,4 +219,86 @@
 			document.getElementById("date").innerHTML = d.toLocaleDateString('ar', dateOptions);
 			document.getElementById("time").innerHTML = d.toLocaleTimeString('ar', timeOptions);
 		</script>
+
+<script>
+	// Get data from the context passed by the view
+	var projectRevenue = "{{ project_cost }}";
+	var programRevenue = "{{ program_cost }}";
+
+	var ctx = document.getElementById('revenue').getContext('2d');
+	var revenueChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+			labels: ['جميع ارباح المشاريع', 'جميع ارباح البرامج التدريبية'],
+			datasets: [{
+				label:'',
+				data: [projectRevenue, programRevenue],
+				backgroundColor: [
+					'#5969ff', 
+					'#ff407b',
+				],
+				borderColor: [
+					'#5969ff',
+					'#ff407b',
+				],
+				borderWidth: 1
+			}],
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			},
+			legend: {
+                    display: false
+                }
+		}
+	});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+	// Get data from the context passed by the view
+	var projectRevenue = parseFloat("{{ project_cost }}");
+	var programRevenue = parseFloat("{{ program_cost }}");
+
+	// Calculate the total revenue and percentages
+	var total = projectRevenue + programRevenue;
+	var projectPercentage = Math.round((projectRevenue / total) * 100);
+	var programPercentage = Math.round((programRevenue / total) * 100);
+//'المشاريع',' البرامج التدريبية 
+	var ctx = document.getElementById('pie-chart').getContext('2d');
+	var revenuePieChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			labels: ['المشاريع',' البرامج التدريبية '],
+			datasets: [{
+				
+				backgroundColor: [
+					"#5969ff",
+					"#ff407b",
+				],
+				data: [projectRevenue, programRevenue]
+			}]
+		},
+		options: {
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, data) {
+						var dataset = data.datasets[tooltipItem.datasetIndex];
+						var currentValue = dataset.data[tooltipItem.index];
+						var total = dataset.data.reduce((accumulator, currentValue) => accumulator + currentValue);
+						var percentage = Math.round((currentValue / total) * 100);
+						return data.labels[tooltipItem.index] + ': ' + percentage + '%';
+					}
+				}
+			}
+		}
+	});
+</script>
+
     {% endblock %}

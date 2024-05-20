@@ -9,28 +9,25 @@
     <!--"javascript:void(0);"-->
     
     
-    {% for notification in all_notifications_that_needs_to_be_shown %}
-    <div class="list-group-item align-items-center border-0">
+    {% for notification in all_notifications_needs_to_be_shown %}
+    <div class="list-group-item align-items-center border-0" style="color:#0c4a83;">
         <div class="d-flex">
-            <span class="avatar avatar-lg brround me-3 bg-pink-transparent">
-                <span class=""></span>
-            </span>
-            <div class="mt-1">
-                <a href="javascript:void(0);" class="font-weight-semibold fs-16">{{ notification.notification_message }}</a>
+            
+          <div class="mt-1"><i class="feather feather-bell header-icon"></i>
+            <a  class="font-weight-semibold">{{ notification.notification_message }}</a>
                 <span class="clearfix"></span>
-                <span class="text-muted fs-13 ms-auto">
+                <!-- <span class="text-muted fs-13 ms-auto">
                     <i class="mdi mdi-clock text-muted me-1"></i>{{ notification.TimeOfCreation }}
-                </span>
+                </span> -->
             </div>
-            <!--<div class="ms-auto">
-                <button class="btn delete-notification" data-id="{{ notification.id }}"><i class="feather feather-x"></i></button>
-            </div>-->
+           
             <div class="ms-auto">
                 <a href="{% url 'kai_staff:Delete_notification' notification_id=notification.id %}">
                 <button class="btn delete-notification" data-id="{{ notification.id }}"><i class="feather feather-x"></i></button>
             </a>
             </div>
         </div>
+        <hr style="color:#0c4a83 ;">
     </div>
 {% empty %}
     <div class="list-group-item align-items-center border-0">

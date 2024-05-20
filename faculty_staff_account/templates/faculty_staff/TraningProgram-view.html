@@ -19,11 +19,59 @@
 
         {% block content %}
 						<!-- PAGE HEADER -->
-                        <div class="page-header d-lg-flex d-block">
+                        <div class="page-header d-lg-flex d-block" style="margin-top: -30px;">
 						</div>
 						<!-- END PAGE HEADER -->
 
 						<!-- alert code starts here -->
+
+						<div class="modal" tabindex="-1" id="applyProject">
+                            <div class="modal-dialog" >
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                         <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                         <p>تأكيد</p>
+                                    </div>
+                                    <form method="post" action="{% url 'faculty_staff_account:apply_for_traningprogram' program.programid %}">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                             <p>  هل أنت متأكد من التقديم على البرنامج وقبول ما يترتب عليه من التزامات للمشاركة في البرنامج في حال أخترت في فريق البرنامج؟  </p>   
+                                        </div>
+
+                                        <div class="modal-footer">
+                                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                                             <button type="submit" class="btn btn-primary" >تأكيد</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+   						<div class="modal" tabindex="-1" id="acceptForm">
+                            <div class="modal-dialog">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                    <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+                                    <p>تأكيد</p>
+                                    </div>
+                                  	{% for id_status_date in id_status_dates %}
+                                        {% if id_status_date.status == "في انتظار قبول المدرب"  and  id_status_date.instructor.id == userid %}
+                                            <form method="post" action="{% url 'faculty_staff_account:accept-program' id_status_date.id %}">
+                                                {% csrf_token %}
+                                                <div class="modal-body">
+                                                    <p> هل انت متاكد من قبول الطلب وما يترتب عليه من التزامات للمشاركة في البرنامج؟  </p> 
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="submit" class="btn btn-primary">تأكيد</button>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    {% endfor %}
+                                 </div>
+                            </div>
+                        </div>
 						
 						<div class="modal" tabindex="-1" id="customAlert">
 							<div class="modal-dialog">
@@ -186,11 +234,12 @@
 													{% if id_status_date.status == "في انتظار قبول المدرب" %}
 														{% if id_status_date.instructor.id == userid %}
 														<div class="button-container" style="display: flex; margin-top: -42px; margin-right: 700px;">
-															<form method="POST" action="{% url 'faculty_staff_account:accept-program' id_status_date.id %}" id="acceptForm" style="margin-right:8px;">
-																{% csrf_token %}
-																<input type="hidden" name="update_status" value="accept">
-																<button type="button" class="btn btn-outline-info" style="width:180px;" onclick="confirmAcceptance();">قبول الطلب</button>
-															</form>
+															
+															<div style="margin-right:8px;">
+                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#acceptForm" class="btn btn-outline-info"  style="width: 180px;" > قبول الطلب  </button>
+                                                            </div>
+
+															
 															<form method="POST" action="{% url 'faculty_staff_account:reject_program' id_status_date.id %}" id="rejectionForm" style="margin-right: 5px;">
 																{% csrf_token %}
 																<input type="hidden" name="update_status" value="reject">
@@ -205,12 +254,10 @@
 													{% endif %}
 												{% endfor %}
 												{% if program.status == 'فتح الفرصة للجميع' and  isfacultyinarray %}
-												<form method="POST" action="{% url 'faculty_staff_account:apply_for_traningprogram' program.programid %}" id="applyForm" style=" margin-top: -42px; margin-right: 950px;">
-													{% csrf_token %}
-													<input type="hidden" name="update_status" value="apply">
-													<button type="button" class="btn btn-outline-info" onclick="confirmApply();">التقديم على البرنامج</button>
-												</form>
-												{% endif %}
+                                                <div style=" margin-top: -42px; margin-right: 950px;" >
+                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#applyProject" class="btn btn-outline-info"> التقديم على البرنامج </button>
+                                                </div>
+                                            {% endif %}
 											</ul>
 										</div>
 									</div>
@@ -419,7 +466,51 @@
 														</li>
 												{% endif %}
 												<!-- ---------------------------------------------------------------------------- -->
+												{% for flow in programflow %} 	
+														{% if flow.status ==  'فتح التقديم لتقديم البرنامج لأعضاء هيئة التدريس ' %}
+															{% if flow.indicator == 'T' %}
+															<li>
+																<i class="fa fa-ellipsis-h bg-warning"></i> 
+																<div class="timelinestart-item">
+																	<span class="time">{{flow.date}}</span>
+																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+																</div>
+															</li>
+															{% endif %}
+														{% endif %}
+													{% endfor %}
+												<!-- ---------------------------------------------------------------------------- -->
+													{% if applicationidcount > 0 %} 
+														{% if program.status == 'فتح الفرصة للجميع' %}
+															<li>
+																<i class="fa fa-check-square bg-warning"></i> 
+																<div class="timelinestart-item">
+																	<span class="time"></span>
+																	<h3 class="timelinestart-header"><span>المقدمون</span></h3>
+																	<div class="timelinestart-body">
+																		{% for application in id_status_dates %}
+																			{% if application.status == 'participationRequest' %}
+																				<h6>{{ application.instructor.first_name }} {{ application.instructor.last_name }}</h6>
+																				{% endif %}
+																		{% endfor %}
+																	</div>
+																</div>
+															</li>
+														{% endif %}
+													{% endif %}
+												<!-- ---------------------------------------------------------------------------- -->
 												<!-- 2 -->
+												{% for flow in programflow %} 		
+												  	{% if flow.status == 'انتظار قبول الطلب من قبل وحدة الاعمال' and flow.indicator == 'C' %}
+														<li>
+															<i class="fa feather-clock bg-warning"></i> 
+															<div class="timelinestart-item">
+																<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
+															</div>
+														</li>
+													{% endif %}
+												{% endfor %} 	
+
 												{% for flow in programflow %} 		
 												  	{% if flow.status == 'تم قبول الطلب من قبل وحدة الأعمال' and flow.indicator == 'T' %}
 														<li class="timestart-label"><span class="bg-blue">{{flow.date}}</span></li>
@@ -432,7 +523,6 @@
 													{% endif %}
 												{% endfor %} 	
 												<!-- or -->
-												
 												<!-- ---------------------------------------------------------------------------- -->
 													<!-- 3 - wiating -->
 													{% for flow in programflow %} 	
@@ -458,7 +548,7 @@
 													<!-- ---------------------------------------------------------------------------- -->
 													<!-- 4  -->
 													{% for status in id_status_dates %} 
-														{% if status.status == 'تم قبول الطلب من قبل المدرب' %}
+														{% if status.status == 'تم قبول الطلب من قبل المدرب'  %}
 																<li>
 																	<i class="fa fa-user bg-success"></i>
 																	<div class="timelinestart-item">

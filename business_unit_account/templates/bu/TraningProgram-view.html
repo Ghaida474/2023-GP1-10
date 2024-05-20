@@ -1,30 +1,53 @@
 {% extends 'bu/components/base.html' %}
 {% load static %}
 
-    {% block styles %}
-	<style>
-		#customAlert .modal-content {
-		background-color: #F5FBFF;
-		}
-		#rejectionReasonModal .modal-content {
-		  background-color: #F5FBFF;
-		}
-		#customAlert .modal-content,
-		#rejectionReasonModal .modal-content {
-		 background-color: #F5FBFF;
-		}
+		{% block styles %}
+			<style>
+				#customAlert .modal-content {
+				background-color: #F5FBFF;
+				}
+				#rejectionReasonModal .modal-content {
+				background-color: #F5FBFF;
+				}
+				#customAlert .modal-content,
+				#rejectionReasonModal .modal-content {
+				background-color: #F5FBFF;
+				}
 
 
-	</style>
-    {% endblock %}
+			</style>
+		{% endblock %}
 
         {% block content %}
 						<!-- PAGE HEADER -->
-                        <div class="page-header d-lg-flex d-block">
+                        <div class="page-header d-lg-flex d-block"  style="margin-top: -30px;" >
 						</div>
 						<!-- END PAGE HEADER -->
 
 						<!-- alerts -->
+
+						<div class="modal" tabindex="-1" id="acceptprogram">
+							<div class="modal-dialog">
+								 <div class="modal-content">
+									<div class="modal-header">
+										 <img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
+										 <p>تأكيد</p>
+									</div>
+									<form method="post" action="{% url 'business_unit_account:accepte_facultyprogram' program.programid %}">
+										{% csrf_token %}
+										<div class="modal-body">
+											 <p>    هل أنت متأكد من قبول الطلب؟  </p>
+											
+										</div>
+
+										<div class="modal-footer">
+											 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
+											 <button type="submit" class="btn btn-primary" id="alertConfirmPending">تأكيد</button>
+										</div>
+									</form>
+								 </div>
+							</div>
+						</div>
 
 						<div class="modal" tabindex="-1" id="customDeleteProgram">
 							<div class="modal-dialog">
@@ -181,6 +204,12 @@
 											<button type="submit" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#customDeleteProgram" onclick="return confirmdelete(); ">حذف</button>
 										</form>
 										
+										{% for flow in programflow %} 	
+											{% if flow.status == 'تم نشر البرنامج ' and flow.indicator == 'T' %}
+												<a href="{% url 'business_unit_account:report' program_id=program.programid %}" class="btn btn-primary me-2">التقرير</a>
+											{% endif %}
+										{% endfor %}
+
 										<a href="{% url 'business_unit_account:traning-program' %}" class="btn btn-primary">رجوع</a>
 									</div>
 									
@@ -230,11 +259,11 @@
 													<div class="main-profile-contact-list d-lg-flex">
 														<div class="font-weight-semibold" style="color:#0084BD;">
 															<div class="button-container" style="display: flex; margin-top: -50px; margin-right:700px;">
-																<form method="POST" action="{% url 'business_unit_account:accepte_facultyprogram' program.programid %}" id="acceptForm"  style="margin-top:-15px;">
-																	{% csrf_token %}
+																<div  style="margin-top:-15px;">
+																	
 																	<input type="hidden" name="update_status" value="accept">
-																	<button type="submit" class="btn btn-outline-info"  style="width: 180px;" onclick="return confirmAcceptance();">قبول الطلب</button>
-																</form>
+																	<button type="button" data-bs-toggle="modal" data-bs-target="#acceptprogram" class="btn btn-outline-info"  style="width: 180px;" >قبول الطلب</button>
+																</div>
 																<form method="POST" action="{% url 'business_unit_account:rejecte_facultyprogram' program.programid %}"  id="rejectionForm">
 																	{% csrf_token %}
 																	<input type="hidden" name="update_status" value="reject">
@@ -500,7 +529,7 @@
 																					<label>الرجاء اختيار  مدرب/ ين و عددهم : {{ program.num_ofinstructors|add:"-1" }} <span style="color: red;">*</span></label>
 																					<select class="form-control select2"  id="mySelect2" name="instructor" data-placeholder= "اختار المدرب" multiple required>
 																						{% for faculty_member in faculty_members %} 
-																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																							{% if not faculty_member.is_buhead %}
 																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
 																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
 																								</option> 
@@ -575,9 +604,11 @@
 																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
 																	<div class="timelinestart-body">
 																		{% for instructor in id_status_dates %} 
+																			{% if instructor.status != 'تم رفض الطلب من قبل المدرب' %}
 																			<div class="wrapper ms-3">
 																				<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
 																			</div>
+																			{% endif %} 
 																		{% endfor %} 
 																	</div>
 																</div>
@@ -704,7 +735,7 @@
 																						<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
 																							<option value="" disabled selected>مدرب آخر</option>
 																							{% for faculty_member in faculty_members %}
-																								{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																								{% if not faculty_member.is_buhead  %}
 																									<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
 																										{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
 																									</option> 
@@ -727,7 +758,7 @@
 														{% endif %} 
 													{% endfor %}	
 													<!-- or -->
-													{% if IdStatusDateRejection > 0 and program.num_ofinstructors != IdStatusDateAccept %}
+													{% if  program.num_ofinstructors != numofreq %}
 														{% for IdStatusDateRejectionValues in IdStatusDateRejectionValues %}
 														<li id="deleteflow_{{IdStatusDateRejectionValues.instructor.id}}">
 															<i class="fa fa-user bg-danger"></i>
@@ -755,7 +786,7 @@
 																					<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار المدرب" required >
 																						<option value="" disabled selected>مدرب آخر</option>
 																						{% for faculty_member in faculty_members %}
-																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																							{% if not faculty_member.is_buhead  %}
 																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.instructorid %} disabled {% endif %} >
 																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
 																								</option> 
@@ -1085,7 +1116,7 @@ function validateInstructors() {
         }
     }
 </script>
-<script>
+<!-- <script>
  function validateInstructorsCount() {
         var num_ofinstructors = parseInt($('input[name="num_ofinstructors2"]').val());
         var selectedCount = $('#mySelect2 option:selected').length;
@@ -1099,7 +1130,7 @@ function validateInstructors() {
             return false;
         }
     }
-</script>
+</script> -->
 <script>
 	document.getElementById('selectTrainersForm').addEventListener('submit', function(e) {
 		var checkboxes = document.querySelectorAll('input[name="trainer_selection"]:checked');
@@ -1107,10 +1138,9 @@ function validateInstructors() {
 		var programleader = document.getElementById('programleader').value;
 		var errorMessage = document.querySelector('.error-message-trainer_selection');
 		
-
-		if (programleader){
-			num_ofinstructors = num_ofinstructors -1;
-		}
+		if (programleader === null && programleader === undefined ){
+            num_ofinstructors = num_ofinstructors - 1;
+        }
 
 		if(num_ofinstructors === 0){
 			num_ofinstructors = 1;
@@ -1158,8 +1188,8 @@ function validateInstructors() {
         var num_ofinstructors = parseInt($('#num_ofinstructors').val());
         var programleader = $('#programleader').val();
         var errorMessage = $('.error-message-trainer_selection');
-
-        if (programleader){
+	
+        if (programleader === null && programleader === undefined ){
             num_ofinstructors = num_ofinstructors - 1;
         }
 
@@ -1474,7 +1504,7 @@ $(document).ready(function() {
 	// Event listener for the confirm button of the rejection reason modal
 	document.getElementById('rejectionReasonConfirm').addEventListener('click', function() {
 		var rejectionReason = document.getElementById('rejectionReasonInput').value;
-		if (rejectionReason.length > 3 && /\D/.test(rejectionReason)) {
+		if (rejectionReason.length > 2 && /\D/.test(rejectionReason)) {
 			var rejectionReasonModal = new bootstrap.Modal(document.getElementById('rejectionReasonModal'));
 			rejectionReasonModal.hide();
 			document.getElementById('rejectionReason').value = rejectionReason;

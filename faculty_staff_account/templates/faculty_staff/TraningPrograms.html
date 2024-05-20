@@ -43,26 +43,29 @@
                     <a href="#tab1" class="active" data-bs-toggle="tab">
                         البرامج التدريبية
                     </a>
-                    {% if notifications_in_combined_programs.count > 0 %}
+                    {% if combined_program_ids.count > 0 %}
                         <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                            {{ notifications_in_combined_programs.count }}
+                            {{ combined_program_ids.count }}
                         </span>
                     {% endif %}
                 </li>
+                
                 <li class="position-relative">
                     <a href="#tab2" data-bs-toggle="tab">
                         طلباتي
                     </a>
-                    {% if notifications_in_faculty_or_staff_programs.count > 0 %}
+                    {% if faculty_or_staff_programs_ids.count > 0 %}
                         <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                            {{ faculty_or_staff_program_ids.count }}
+                            {{ faculty_or_staff_programs_ids.count }}
                         </span>
                     {% endif %}
                 </li>
+               
                 <li><a href="#tab4" data-bs-toggle="tab">البرامج تم رفضها</a></li>
             </ul>
         </div>
     </div>
+
 
         <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
             <div class="tab-content">
@@ -90,7 +93,7 @@
                                             </div>
                                         </div>
                                         <tr>
-                                            <th></th>
+                                      
                                             <th class="border-bottom-0">إسم البرنامج</th>
                                             <th class="border-bottom-0">نوع البرنامج</th>
                                             <th class="border-bottom-0">موضوع البرنامج</th>
@@ -101,30 +104,26 @@
                                     </thead>
                                     <tbody>
                                         {% for program in combined_programs %}
-                                        <tr>
-                                            <td>
-                                                {% if program.programid in combined_program_ids %}
-                                                <i class="feather feather-bell text-nowrap"></i>
-                                             {% endif %}
-                                            </td>
-                                            <td>
-                                                <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                    <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
-                                                </div>
-                                            </td>
-                                            <td>{{program.programtype}}</td>
-                                            <td >{{program.program_domain}}</td>
-                                            <td>{{program.dataoffacultyproposal}}</td>
-                                            <td>{{ program.status }}</td>
-                                            <td>
-                                                <input type="hidden" name="update_status" value="accept">
-                                                <a href="{% url 'faculty_staff_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                            </td>	
-                                        </tr>
+                                            <tr {% if program.programid in combined_program_ids %} style="background-color:rgba(61, 138, 190, 0.1);"{% endif %} >
+                                        
+                                                <td>
+                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                        <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                    </div>
+                                                </td>
+                                                <td>{{program.programtype}}</td>
+                                                <td >{{program.program_domain}}</td>
+                                                <td>{{program.dataoffacultyproposal}}</td>
+                                                <td>{{ program.status }}</td>
+                                                <td>
+                                                    <input type="hidden" name="update_status" value="accept">
+                                                    <a href="{% url 'faculty_staff_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                </td>	
+                                            </tr>
                                         {% empty %}
-                                        <tr>
-                                            <td colspan="7">لا يوجد طلبات حالية</td>
-                                        </tr>      
+                                            <tr>
+                                                <td colspan="7">لا يوجد طلبات حالية</td>
+                                            </tr>      
                                       {% endfor %}
                                     </tbody>
                                 </table>
@@ -171,7 +170,7 @@
                                     </thead>
                                     <tbody>
                                         {% for program in faculty_or_staff_programs %}
-                                        <tr>
+                                        <tr {% if program.programid in faculty_or_staff_programs_ids %} style="background-color: rgba(61, 138, 190, 0.1);"{% endif %}>
                                             <td>{{ user.first_name}} {{ user.last_name}}</td>
                                             <td>
                                                 <div class="me-3 mt-0 mt-sm-2 d-block">

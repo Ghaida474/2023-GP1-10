@@ -110,8 +110,9 @@
 									<div class="tabs-menu1" >
 										<!-- Tabs -->
 										<ul class="nav panel-tabs" style=" margin-right: 210px;" >
-											<li class="ms-4" ><a href="#tab5" class="active"  data-bs-toggle="tab">المعلومات الأكاديمية</a></li>
-											<li><a href="#tab6" data-bs-toggle="tab">المشاريع</a></li>
+											<li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">المعلومات الأكاديمية</a></li>
+											<li><a href="#tab2" data-bs-toggle="tab">المشاريع</a></li>
+											<li><a href="#tab3" data-bs-toggle="tab">البرامج التدريبية</a></li>
 										</ul>
 									</div>
 								</div>
@@ -119,7 +120,7 @@
 								<div class="panel-body tabs-menu-body hremp-tabs1 p-0" style="width: 630px; margin-right: 200px;">
 									<div class="tab-content">
 										
-										<div class="tab-pane active" id="tab5">
+										<div class="tab-pane active" id="tab1">
 											<div class="card-body">
 												<div class="row">
 													
@@ -130,14 +131,22 @@
 																	<div class="col-8">
 																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">وضع العمل</span>
 																			<p class="text-muted">
-																				{{faculty_member.workstatus|title}}
+																				{% if workstatus %}
+																					{{faculty_member.workstatus}}
+																				{% else %}
+																					ليس على رأس العمل
+																				{% endif %}
 																			</p>
 																		</div>
 																	</div>
 																	<div class="col-8">
 																		<div class="mt-0 text-start"> <span class="fs-14 font-weight-semibold">الجهة المعار لها</span>
 																			<p class="text-muted">
-																				{{faculty_member.assignedorganization|title}}
+																				{% if  assignedorganization %}
+																					{{faculty_member.assignedorganization}}
+																				{% else %}
+																					ليس معار
+																				{% endif %}
 																			</p>
 																		</div>
 																	</div>
@@ -220,7 +229,7 @@
 																						{% if user.cv %}
 																						 <a href="{% url 'business_unit_account:view_file' faculty_member.id %}" style="color: #0084BD;" target="_blank">الإطلاع على السيرة الذاتية</a> 
 																						{% else %}
-																						لم يتم تحميل السيرة الذاتية
+																						  لا يوجد السيرة الذاتية مرفقه 
 																						{% endif %}
 																					</td>																																																									
 																				
@@ -236,10 +245,56 @@
 										</div>
 										
 										
-										<div class="tab-pane" id="tab6" >
+										<div class="tab-pane" id="tab2" >
 											<div class="card-body">
 												<div class="row">
-													<h1>to be continued....</h1>
+													<div class="col-xl-4 col-lg-4 col-md-12">
+														{% for project in projects %}
+														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+															<div class="card-body" style="width: 300px;">
+																<div class="row">
+																	<div class="col-8">
+																		<div class="mt-0 text-start">
+																			<span class="fs-14 font-weight-semibold">اسم المشروع</span>
+																			<p >{{project.Name}}</p>
+																			<span class="fs-14 font-weight-semibold">نوع المشروع</span>
+																			<p >{{project.programtype}}</p>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														{% empty %}
+														<span class="fs-14 font-weight-semibold">لا يوجد</span>
+													</div>
+													{% endfor %}
+												</div>	
+											</div>
+										</div>
+										
+										<div class="tab-pane" id="tab3" >
+											<div class="card-body">
+												<div class="row">
+													<div class="col-xl-4 col-lg-4 col-md-12">
+														{% for program in programs %}
+														<div class="card" style=" box-shadow:1px 1px 1px 1px #0084BD; background-color: #F5FBFF; ">
+															<div class="card-body" style="width: 300px;">
+																<div class="row">
+																	<div class="col-8">
+																		<div class="mt-0 text-start">
+																			<span class="fs-14 font-weight-semibold">اسم البرنامج</span>
+																			<p >{{program.topic}}</p>
+																			<span class="fs-14 font-weight-semibold">نوع البرنامج</span>
+																			<p >{{program.programtype}}</p>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															{% empty %}
+														<span class="fs-14 font-weight-semibold">لا يوجد</span>
+														</div>
+														{% endfor %}
+													</div>
 												</div>	
 											</div>
 										</div>

@@ -27,7 +27,18 @@
 											<table class="table  table-vcenter text-nowrap table-bordered border-bottom" id="client-list">
 												
 												<thead>
-												<div class="row mt-2">
+													<div class="row mt-2">
+														<div class="" style="margin-right: 898px; margin-bottom: 29px; height: 40px;">
+															<label for="department_filter" class="d-inline-block">تصفية حسب القسم </label>
+															<select name="department_filter" id="department_filter" class="form-control" class=" text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
+																<option value="all">جميع الأقسام</option>
+																{% for department in departments %}
+																	<option value="{{ department }}">{{ department }}</option>
+																{% endfor %}
+															</select>
+														</div>
+													</div>
+												<!-- <div class="row mt-2">
 													<div class="" style="margin-right: 802px; height: 40px;">
 														<label for="department_filter" class="d-inline-block">تصفية حسب القسم </label>
 														<select name="department_filter" id="department_filter" class="form-select text-center d-inline-block" style="width: 182px; font-size: 14px; height: 36px; color: gray; font:#0084BD;">
@@ -37,7 +48,7 @@
 															{% endfor %}
 														</select>
 													</div>
-												</div>
+												</div> -->
 												<th class="border-bottom-0">الرتبة</th>
 												<th class="border-bottom-0">الإسم الكامل</th>
 												<th class="border-bottom-0">البريد الإلكتروني</th>
@@ -52,7 +63,11 @@
 											<tr>
 														<td>
 															<div class="me-3 mt-0 mt-sm-2 d-block">
+															{% if faculty_member.position == 'عميد الكلية'  or  faculty_member.position == 'موظف في الكلية' %}
+																<h6 class="mb-1 fs-14">{{ faculty_member.position }} </h6>
+															{% else %}
 																<h6 class="mb-1 fs-14">{{ faculty_member.rank }} </h6>
+															{% endif %}
 															</div>
 														</td>
 														<td>
@@ -63,10 +78,16 @@
 														<td >{{faculty_member.email}}</td>
 														<td>{{faculty_member.department_field|title}}</td>
 														<td>{{faculty_member.major|title}}</td>
-														<td>{{faculty_member.specialization|title}}</td>		
-														<td >
+														<td>
+															{% if faculty_member.specialization %}
+																{{faculty_member.specialization}}
+															{% else %}
+																لا يوجد
+															{% endif %}
+														</td>		
+														<td>
 															<div class="d-flex" >
-																<a href="{% url 'dean_account:faculty-view' faculty_id=faculty_member.id %}" style="width:50px; margin-right: 35px;" class="action-btns1" data-bs-toggle="tooltip"  title="View"><i style="width:20px;"class="feather feather-eye text-primary"></i></a>
+																<a href="{% url 'dean_account:faculty-view' faculty_id=faculty_member.id %}" type="button" class="btn btn-outline-info" data-bs-toggle="tooltip" ><i style="width:20px;"class="feather feather-eye  text-nowrap"></i></a>
 															</div>
 														</td>
 													</tr>

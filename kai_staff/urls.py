@@ -19,12 +19,12 @@ urlpatterns = [
 
     path('kaistaff-home/traningprogram/rejecte_program/<int:id>/', views.rejecte_program, name='rejecte_program'),
     path('kaistaff-home/chat', views.chat, name='chat'),
-    path('kaistaff-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
     path('kaistaff-home/videocall', views.videocall, name='videocall'),
     path('kaistaff-home/joinroom', views.joinroom, name='joinroom'),
     path('kaistaff-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
 
     path('kaistaff-home/tasks', views.task_view, name='tasks'),
+    path('kaistaff-home/tasks/task_details/<int:task_id>/<int:file_id>/', views.view_tasktfile, name='view_tasktfile'),
     path('kaistaff-home/tasks/<int:task_id>/', views.task_details, name='task-detail'),
     path('kaistaff-home/tasks/task_details/<int:task_id>/retrieve/', views.retrieve_task, name='retrieve_task'),
     path('kaistaff-home/tasks/task_details/<int:task_id>/reject/', views.reject_task, name='reject_task'),
@@ -34,6 +34,8 @@ urlpatterns = [
     path('kaistaff-home/tasks/task_details/<int:task_id>/reject_pending_request/', views.reject_pending_request, name='reject_pending_request'),
     path('kaistaff-home/tasks/task_details/<int:task_id>/editTask/', views.editTask, name='editTask'),
     path('kaistaff-home/tasks/task_details/<int:task_id>/send_to_new_Instructor/', views.send_to_new_Instructor, name='send_to_new_Instructor'),
+
+    path('kaistaff-home/email_notification_settings', views.email_notification_settings, name='email_notification_settings'),
     path('kaistaff-home/read_notification', views.update_notifications_ajax, name='read_notification'),
     path('kaistaff-home/Delete_notification/<int:notification_id>', views.update_notifications_ajax_Delete, name='Delete_notification'),
 

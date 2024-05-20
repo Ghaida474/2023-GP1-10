@@ -2,7 +2,11 @@
 {% load static %}
 
 {% block styles %}
-
+<style>
+    body {  
+        overflow-x: hidden;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -20,13 +24,28 @@
                         </div>
                     </div>
                 
-                
-                
+                 
                     <div class="tab-menu-heading hremp-tabs p-0 ">
                         <div class="tabs-menu1" >
                             <ul class="nav panel-tabs" style=" margin-right: 290px;" >
-                                <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">طلبات المشاريع</a></li>
-                                <li><a href="#tab2" data-bs-toggle="tab">مشاريعي الحالية</a></li>
+                                <li class="ms-4" >
+                                    <a href="#tab1" class="active"  data-bs-toggle="tab">
+                                    طلبات المشاريع
+                                    </a>
+                                    {% if combined_program_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute; margin-top: -50px; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ combined_program_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                                <li>
+                                    <a href="#tab2" data-bs-toggle="tab">مشاريعي الحالية</a>
+                                    {% if accepted_projects_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute;  margin-top: -50px;  background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ accepted_projects_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
                                 <li><a href="#tab3" data-bs-toggle="tab">المشاريع المنتهية</a></li>
                                 <li><a href="#tab4" data-bs-toggle="tab">مشاريع تم رفضها</a></li>
                             </ul>
@@ -69,7 +88,7 @@
 
 												<tbody>
 													{% for program in combined_programs %}
-                                                            <tr>
+                                                        <tr {% if program.programid in combined_program_ids %} style="background-color: rgba(61, 138, 190, 0.1);"{% endif %} >
                                                                 <td>
                                                                     <div class="me-3 mt-0 mt-sm-2 d-block">
                                                                         <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
@@ -114,7 +133,7 @@
                                                 
 												<tbody>
 													{% for program in accepted_projects %}
-                                                            <tr>
+                                                    <tr {% if program.programid in accepted_projects_ids %} style="background-color: rgba(61, 138, 190, 0.1);"{% endif %} >
                                                                 <td>
                                                                     <div class="me-3 mt-0 mt-sm-2 d-block">
                                                                         <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
@@ -187,7 +206,6 @@
 							    </div> 
 						    </div> 
                         
-
                             <div class="tab-pane" id="tab4">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  

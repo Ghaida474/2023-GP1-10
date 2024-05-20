@@ -21,7 +21,7 @@
 
     <div class="page-header d-lg-flex d-block">
         <div class="page-leftheader">
-            <div class="page-title"> البرامج التدربية</div>
+            <div class="page-title"> البرامج التدربية </div>
         </div>
         <div class="page-rightheader ms-md-auto">
             <div class="page-rightheader ms-md-auto">
@@ -40,16 +40,18 @@
         <div class="tabs-menu1">
             <!-- Tabs -->
             <ul class="nav panel-tabs" style="margin-right: 400px;">
+                
                 <li class="ms-4 position-relative">
                     <a href="#tab1" class="active" data-bs-toggle="tab">
                         البرامج التدريبية
                     </a>
-                    {% if notifications_in_combined_programs.count > 0 %}
+                    {% if notifications_in_programs_diff > 0 %}
                         <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
-                            {{ notifications_in_combined_programs.count }}
+                            {{ notifications_in_programs_diff }}
                         </span>
                     {% endif %}
                 </li>
+                
                 <li class="position-relative">
                     <a href="#tab2" data-bs-toggle="tab">
                         الطلبات
@@ -60,6 +62,7 @@
                         </span>
                     {% endif %}
                 </li>
+           
             </ul>
         </div>
     </div>
@@ -68,7 +71,6 @@
                     <div class="panel-body tabs-menu-body hremp-tabs1 p-0" >
                         <div class="tab-content">
                             
-                
                             <div class="tab-pane active" id="tab1">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">	
@@ -92,46 +94,69 @@
                                                         </div>
                                                     </div>
 													<tr>
-                                                        <th></th>
 														<th class="border-bottom-0">إسم البرنامج</th>
 														<th class="border-bottom-0">نوع البرنامج</th>
 														<th class="border-bottom-0">موضوع البرنامج</th>
 														<th class="border-bottom-0">تاريخ الإنشاء </th>
-														<th class="border-bottom-0">حالة الطلب</th>
+														<th class="border-bottom-0">حالة الطلب </th>
 														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
+                                            {% if bu_programs %}
+                                                {% if combined_program_ids %}
+												    <tbody>
+													    {% for program in bu_programs %}
+                                                            {% if program.programid in combined_program_ids %}
+                                                                <tr style="background-color: rgba(61, 138, 190, 0.1);">
+                                                                    
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td >{{program.program_domain}}</td>
+                                                                    <td>{{program.dataoffacultyproposal | date:"M. d, Y"}}</td>
+                                                                    <td>
+                                                                        {{ program.status }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </tbody>
+                                                {% endif %}
+                                               
+                                                {% if combined_program_noNotification %}
+												    <tbody>
+													    {% for program in combined_program_noNotification %}
+                                                                <tr > 
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td >{{program.program_domain}}</td>
+                                                                    <td>{{program.dataoffacultyproposal | date:"M. d, Y"}}</td>
+                                                                    <td>{{ program.status }}</td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                {% endif %}
 
-												<tbody>
-													{% for program in bu_programs %}
-                                                            <tr>
-                                                                <td>
-                                                                    {% if program.programid in combined_program_ids %}
-                                                                    <i class="feather feather-bell text-nowrap"></i>
-                                                                 {% endif %}
-                                                                </td>
-                                                                <td>
-                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                                        <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{{program.programtype}}</td>
-                                                                <td >{{program.program_domain}}</td>
-                                                                <td>{{program.dataoffacultyproposal | date:"M. d, Y"}}</td>
-                                                                <td>
-                                                                    {{ program.status }}
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" name="update_status" value="accept">
-                                                                    <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                                </td> 
-                                                            </tr>
-													{% empty %}
+											{% else %}
 													<tr >
                                                         <td colspan="7" style="margin-right: 60px;">لا يوجد طلبات حالية</td>
                                                     </tr>      
-												  {% endfor %}
-												</tbody>
+											{% endif %}
                                             </table>
 										</div>
                                     </div>
@@ -155,7 +180,7 @@
                                                         </div>
                                                     </div>
 													<tr>
-                                                        <th></th>
+                                                        
 														<th class="border-bottom-0">مقدم الطلب</th> 
 														<th class="border-bottom-0">إسم البرنامج</th>
 														<th class="border-bottom-0">نوع البرنامج</th>
@@ -165,47 +190,72 @@
                                                         <th class="border-bottom-0">الإطلاع على التفاصيل</th>
 													</tr>
 												</thead>
-                                                
-												<tbody>
-													{% for program in faculty_or_staff_programs %}
-													<tr>
-                                                        <td>
-                                                            {% if program.programid in faculty_or_staff_program_ids %}
-                                                                    <i class="feather feather-bell text-nowrap"></i>
-                                                                 {% endif %}
-                                                            
-                                                        </td>
-                                                        
-														<td>{{ program.Requestername }}</td>
-														<td>
-															<div class="me-3 mt-0 mt-sm-2 d-block">
-																<h6 class="mb-1 fs-14">{{ program.topic }}</h6>
-															</div>
-														</td>
-														<td>{{program.programtype}}</td>
-														<td >{{program.program_domain}}</td>
-														<td>{{program.dataoffacultyproposal}}</td>
-														<td>
-                                                           {{ program.status }}
-                                                        </td>
-                                                        <td>
-															<input type="hidden" name="update_status" value="accept">
-															<a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 40px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                        </td> 
-													</tr>
-													{% empty %}
+                                                {% if faculty_or_staff_programs %}
+                                                    {% if faculty_or_staff_program_ids %}
+                                                        <tbody>
+                                                            {% for program in faculty_or_staff_programs %}
+                                                                {% if program.programid in faculty_or_staff_program_ids %}
+                                                                <tr style="background-color: rgba(61, 138, 190, 0.1);">
+                                                                    
+                                                                    <td>{{ program.Requestername }}</td>
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td >{{program.program_domain}}</td>
+                                                                    <td>{{program.dataoffacultyproposal}}</td>
+                                                                    <td>
+                                                                    {{ program.status }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 40px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    {% endif %}
+
+                                                    {% if faculty_or_staff_program_ids_noNotification %}
+                                                        <tbody>
+                                                            {% for program in faculty_or_staff_program_ids_noNotification %}
+                                                                <tr >
+                                                                    
+                                                                    <td>{{ program.Requestername }}</td>
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.topic }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td >{{program.program_domain}}</td>
+                                                                    <td>{{program.dataoffacultyproposal}}</td>
+                                                                    <td>
+                                                                    {{ program.status }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:program_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 40px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    {% endif %}
+
+												{% else %}
 													<tr>
                                                         <td colspan="7">لا يوجد طلبات حالية</td>
                                                     </tr>      
-												  {% endfor %}
-												</tbody>
+											    {% endif %}
 											</table>
 										</div> 
 									</div>  
 							    </div> 
 						    </div>
-                              
-                        
+                               
                         </div>
                     </div>
                 
@@ -258,7 +308,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">المجال</label>
+                                <label class="form-label"> المجال <span style="color: red;">*</span></label>
                                 <select class="form-control custom-select select2" data-placeholder="اختار المجال" id="domain" name="domain" onchange="toggleOtherdomain()" required>
                                     <option label="اختار المجال" disabled selected></option>
                                     {% for i in domain %}
@@ -300,7 +350,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">سعر المدرب<span style="color: red;">*</span></label>
-                                <input class="form-control" placeholder="السعر" type="number" name="price" required>
+                                <input class="form-control" placeholder="السعر" type="number" name="price" required  >
                                 <span class="error-message-price" style="color: red;"></span>
                             </div>
                         </div>
@@ -328,7 +378,7 @@
                                 <label class="form-label">المدربين <span style="color: red;">*</span></label>
                                 <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار المدرب" multiple required>
                                     {% for faculty_member in faculty %}   
-                                        {% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+                                        {% if not faculty_member.is_buhead %}
                                             <option value= "{{faculty_member.id}}" >
                                                 {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
                                             </option> 

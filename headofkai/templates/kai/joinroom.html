@@ -1,4 +1,8 @@
+{% extends 'kai/components/base.html' %}
+
 {% load static %}
+  
+{% block content %}
 <!DOCTYPE html>
 <!---Coding By CoderGirl | www.codinglabweb.com--->
 <html lang="en">
@@ -8,16 +12,102 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!--<title>Login & Registration Form | CoderGirl</title>-->
   <!---Custom CSS File--->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+/* Resetting default margin and padding */
+/* Resetting default margin and padding */
+/* Resetting default margin and padding */
+/* Resetting default margin and padding */
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Setting background color and font styles */
+body {
+    /* Light gray background color */
+    font-family: Arial, sans-serif;
+}
+
+/* Centering the container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Making the container fill the viewport height */
+}
+
+/* Styling the join room form */
+.join-room-form {
+    width: 400px;
+    padding: 40px; /* Increased padding for more space */
+    background-color: #e6eff8; /* Light gray background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    
+}
+
+/* Styling the header */
+.join-room-form header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333; /* Darker text color */
+}
+
+/* Styling the form inputs */
+.join-room-form input[type="text"] {
+    width: 100%;
+    padding: 15px; /* Increased padding for bigger size */
+    margin-bottom: 20px;
+    border: 1px solid  #deebf6;
+    border-radius: 5px;
+    font-size: 18px; /* Increased font size */
+    transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.join-room-form input[type="text"]:focus {
+    border-color: #0e5cb0; /* Change border color on focus */
+}
+
+/* Styling the submit button */
+.join-room-form input[type="submit"] {
+    width: 100%;
+    padding: 20px; /* Increased padding for bigger size */
+    background-color: #0e5cb0;
+    color: rgb(213, 230, 243);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.join-room-form input[type="submit"]:hover {
+    background-color: #0c4a83; /* Darker blue on hover */
+}
+
+/* Centering the messages */
+.join-room-form center {
+    margin-top: 0px;
+}
+
+
+/* Adjusting button position */
+.btn-primary {
+    position: absolute;
+    top: 70px; /* Adjust as needed */
+    left: 30px; /* Adjust as needed */
+}
+
+</style>
 </head>
 <body>
   <div class="container">
-    <div class="login form">
-      <header>Join Room</header>
+    <div class="join-room-form" style="top: 50px ;">
+      <header style="color: #0c4a83; font-weight: bold;">الانضمام الى مكالمة جماعية</header>
       <form action="{% url 'head-kai-account:joinroom' %}" method="POST">
         {% csrf_token %}
-        <input type="text" placeholder="Enter room ID" name="roomID">
-        <input type="submit" class="button" value="Join">
+        <input type="text" placeholder="ادخل رمز المكالمة" name="roomID">
+        <input type="submit" class="button" value="انضم">
         <center>
           {% if success %}
           <p style="color: green;"><b>{{ success }}</b></p>
@@ -31,3 +121,4 @@
   </div>
 </body>
 </html>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from . import views
 
 app_name = 'business_unit_account'
@@ -7,6 +8,8 @@ urlpatterns = [
 
 # 7
     path('business-unit-home/', views.business_unit_home, name='business_unit_home'),
+    path('business-unit-home/calendar',views.calendar,name='calendar'),
+    
     path('business-unit-home/change_new_user_password', views.change_new_user_password, name='change_new_user_password'),
     path('business-unit-home/profile', views.profile_view, name='profile'),
     path('business-unit-home/edit-profile', views.editprofile_view, name='edit-profile'),
@@ -19,12 +22,13 @@ urlpatterns = [
     path('business-unit-home/faculty-list', views.facultylist_view, name='faculty-list'),
     path('business-unit-home/faculty-list/faculty-view/<int:faculty_id>/', views.facultyinfo_view, name='faculty-view'),
 # 4
-    path('business-unit-home/callsDashboard', views.callsDashboard, name='callsDashboard'),
     path('business-unit-home/videocall', views.videocall, name='videocall'),
     path('business-unit-home/joinroom', views.joinroom, name='joinroom'),
     path('business-unit-home/chat', views.chat, name='chat'), 
     path('business-unit-home/projects/groupchat/<int:program_id>/', views.groupchat_view, name='groupchat'),
     path('business-unit-home/chat/<str:direct_username>', views.createDirect, name='createDirect'),
+    path('business-unit-home/joinroom_notification', views.joinroom_notification, name='joinroom_notification'),  
+    path('business-unit-home/report/<int:program_id>/', views.report, name='report'),
 # 16
     path('business-unit-home/traningprogram', views.traningprogram_view, name='traning-program'),
     path('business-unit-home/edit_program/<int:value_to_edit>/', views.edit_program, name='edit_program'),
@@ -58,6 +62,7 @@ urlpatterns = [
     path('business-unit-home/projects/deleteWaittingMember/<int:id>/', views.deleteWaittingMember, name='deleteWaittingMember'),
 
     path('business-unit-home/tasks', views.task_view, name='tasks'),
+    path('business-unit-home/tasks/task_details/<int:task_id>/<int:file_id>/', views.view_tasktfile, name='view_tasktfile'),
     path('business-unit-home/tasks/<int:task_id>/', views.task_details, name='task-detail'),
     path('business-unit-home/tasks/task_details/<int:task_id>/retrieve/', views.retrieve_task, name='retrieve_task'),
     path('business-unit-home/tasks/task_details/<int:task_id>/reject/', views.reject_task, name='reject_task'),
@@ -69,6 +74,11 @@ urlpatterns = [
     path('business-unit-home/tasks/task_details/<int:task_id>/send_to_new_Instructor/', views.send_to_new_Instructor, name='send_to_new_Instructor'),
 
 
+    path('business-unit-home/email_notification_settings', views.email_notification_settings, name='email_notification_settings'),
     path('business-unit-home/read_notification', views.update_notifications_ajax, name='read_notification'),
     path('business-unit-home/Delete_notification/<int:notification_id>', views.update_notifications_ajax_Delete, name='Delete_notification'),
+
+    path('business-unit-home/report/<int:program_id>/', views.report, name='report'),
+    path('business-unit-home/report2/<int:program_id>/', views.report2, name='report2'),
 ]
+urlpatterns += staticfiles_urlpatterns()

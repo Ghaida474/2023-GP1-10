@@ -1,51 +1,51 @@
 {% extends 'bu/components/base.html' %}
 {% load static %}
 
-    {% block styles %}
-	<style>
-		#customAlert .modal-content {
-		background-color: #F5FBFF;
-		}
-		#rejectionReasonModal .modal-content {
-		  background-color: #F5FBFF;
-		}
-		#customAlert .modal-content,
-		#rejectionReasonModal .modal-content {
-		 background-color: #F5FBFF;
-		}
+		{% block styles %}
+			<style>
+				#customAlert .modal-content {
+				background-color: #F5FBFF;
+				}
+				#rejectionReasonModal .modal-content {
+				background-color: #F5FBFF;
+				}
+				#customAlert .modal-content,
+				#rejectionReasonModal .modal-content {
+				background-color: #F5FBFF;
+				}
 
-		.inline-list {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
+				.inline-list {
+					list-style: none;
+					padding: 0;
+					margin: 0;
+				}
 
-		.inline-list li {
-			margin-right: 10px;
-		
-		}
+				.inline-list li {
+					margin-right: 10px;
+				
+				}
 
-		.custom-list-item {
-			display: flex;
-			align-items: center;
-			margin-bottom: 20px;
-		}
+				.custom-list-item {
+					display: flex;
+					align-items: center;
+					margin-bottom: 20px;
+				}
 
-		.milestone {
-			width: 16px;
-			height: 16px;
-			border-radius: 50%;
-			background-color: #007bff;
-			margin-right: 40px;
-		
-		}
+				.milestone {
+					width: 16px;
+					height: 16px;
+					border-radius: 50%;
+					background-color: #007bff;
+					margin-right: 40px;
+				
+				}
 
-	</style>
-    {% endblock %}
+			</style>
+		{% endblock %}
 
         {% block content %}
 						<!-- PAGE HEADER -->
-                        <div class="page-header d-lg-flex d-block">
+                        <div class="page-header d-lg-flex d-block"  style="margin-top: -30px;" >
 						</div>
 						<!-- END PAGE HEADER -->
 
@@ -152,7 +152,7 @@
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
-											<a href="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid  ConfirmKAI='true'%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+											<a href="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid  ConfirmKAI='true'  %}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
 										</div>
 								</div>
 							</div>
@@ -164,13 +164,18 @@
 									<div class="modal-header">
 										<img src="{% static 'assets/images/brand/logowithname.png'%}" class="img-fluid" style="max-width: 100px; float: right;">
 									</div>
+									<form method="POST" action="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid ConfirmKAI='false' %}" id="rejectionForm">
+										{% csrf_token %}
 										<div class="modal-body">
 											<p>هل انت/ي متأكد من ان لم يتم التعميد من معهد الملك عبدالله للبحوث و الاستشارات</p>
+											<input type="text" class="form-control" placeholder="سبب عدم التعميد"  name="rejectReasonInput" id="rejectReasonInput"  required>
+											<span style="color: red;" class="error-message-reject"> </span>
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-danger" data-bs-dismiss="modal">إلغاء</button>
-											<a href="{% url 'business_unit_account:ConfirmKAI' program_id=program.programid  ConfirmKAI='false'%}" class="btn btn-primary" id="alertConfirmDelete">تأكيد</a>
+											<button type="submit" class="btn btn-primary" id="alertConfirmDelete">تأكيد</button>
 										</div>
+									</form>
 								</div>
 							</div>
 						</div>
@@ -243,13 +248,7 @@
 											</style>
 											{% endif %}
 
-											{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'T' %}
-											<style>
-												#editbtn{
-													display: none;
-												}
-											</style>
-											{% endif %}
+											
 										{% endfor %}
 
 											
@@ -259,9 +258,16 @@
 											<button type="submit" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#customDeleteProgram" onclick="return confirmdelete(); ">حذف</button>
 										</form>
 
+
+										{% for flow in programflow %} 
+											{% if flow.status == 'الانتهاء من المشروع' and flow.indicator == 'T' %}
+												<a href="{% url 'business_unit_account:report2' program_id=program.programid %}" class="btn btn-primary me-2">التقرير</a>
+											{% endif %}
+										{% endfor %}
+
 										{% for flow in programflow %} 
 											{% if flow.status == "تم بدء العمل على المشروع" and flow.indicator == 'T' %}
-											<a href="{% url 'business_unit_account:groupchat'  program_id=program.programid%}" id="roombtn" class="btn btn-primary me-2">مجموعة العمل</a>
+												<a href="{% url 'business_unit_account:groupchat'  program_id=program.programid%}" id="roombtn" class="btn btn-primary me-2">مجموعة العمل</a>
 											{% endif %}
 										{% endfor %}
 								
@@ -334,13 +340,15 @@
 													</div>	
 												</div>
 												
-												<!-- <div class="card-body border-top h5">
-													<h4 class="font-weight-semibold">تكلفة المشروع</h4>
+												{% if program.isAccepted and program.totalcost %}	
+												 <div class="card-body border-top h5">
+													<h4 class="font-weight-semibold">قيمة المشروع</h4>
 													<div class="font-weight-semibold" style="color:#0084BD;">
 														<i class="" style="margin-right: 5px;"></i>
 														{{program.totalcost}}ر.س
 													</div>	
-												</div> -->
+												</div>
+												{% endif %}
 
 												<div class="card-body border-top h5">
 													<h4 class="font-weight-semibold">مدة العقد</h4>
@@ -451,9 +459,11 @@
 																	<h3 class="timelinestart-header"><span>{{flow.status}}</span></h3>
 																	<div class="timelinestart-body">
 																		{% for instructor in id_status_dates %} 
-																			<div class="wrapper ms-3">
-																				<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
-																			</div>
+																			{% if instructor.status != 'تم رفض الطلب من قبل العضو' %}
+																				<div class="wrapper ms-3">
+																					<p class="mb-0 mt-1 text-dark font-weight-semibold">{{instructor.instructor.first_name}} {{instructor.instructor.last_name}} | <small><a href="mailto:{{instructor.instructor.email}}">{{instructor.instructor.email}}</a></small></p>
+																				</div>
+																			{% endif %} 
 																		{% endfor %} 
 																	</div>
 																</div>
@@ -682,7 +692,7 @@
 																						<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار عضو" required >
 																							<option value="" disabled selected>مدرب آخر</option>
 																							{% for faculty_member in faculty_members %}
-																								{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																								{% if not faculty_member.is_buhead %}
 																									<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.Teamid %} disabled {% endif %} >
 																										{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
 																									</option> 
@@ -705,7 +715,7 @@
 														{% endif %} 
 													{% endfor %}	
 													<!-- or (if someone rejected) -->
-													{% if IdStatusDateRejection > 0 and program.num_ofTeam != IdStatusDateAccept %}
+													{% if program.num_ofTeam != numofreq %}
 														{% for IdStatusDateRejectionValues in IdStatusDateRejectionValues %}
 														<li id="deleteflow_{{IdStatusDateRejectionValues.instructor.id}}">
 															<i class="fa fa-user bg-danger"></i>
@@ -733,7 +743,7 @@
 																					<select class="form-control select2" id="mySelect" name="instructor" data-placeholder="اختار عضو" required >
 																						<option value="" disabled selected>مدرب آخر</option>
 																						{% for faculty_member in faculty_members %}
-																							{% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+																							{% if not faculty_member.is_buhead %}
 																								<option value= "{{faculty_member.id}}" {% if faculty_member.id in program.Teamid %} disabled {% endif %} >
 																									{{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
 																								</option> 
@@ -842,7 +852,7 @@
 																{% if program.isAccepted is None  %}
 																	<div style=" display: inline-block; vertical-align: top; margin-top: 10px; margin-right: 350px;">
 																		<button type="button" style=" margin-bottom: 10px; margin-left:8px ;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIAcceptance" >تم التعميد على المشروع</button>
-																		<button type="button" style=" margin-bottom: 10px;"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIRejection" >لم يتم التعميد على المشروع</button>
+																		<button type="button" style=" margin-bottom: 10px;"  class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ConfirmKAIRejection" >لم يتم التعميد على المشروع</button> 
 																	</div> 
 																{% endif %}
 															</div>
@@ -860,6 +870,15 @@
 																<span class="time">{{flow.date}}</span>
 																<h3 class="timelinestart-header"><span> {{flow.status}} : </span> {% if program.isAccepted  %}	تم تعميد المشروع {% else %}	لم يتم تعميد المشروع{% endif %}</h3>
 																
+																{% if not program.isAccepted  %}
+																<div class="timelinestart-body" >
+																	<div class="wrapper ms-3">
+																		<p style="font-weight: bold;">سبب الرفض:</p>
+																		<p style="font-weight: bold;">{{program.rejectionresons}}</p>
+																	</div>
+																</div>
+																{% endif %}
+
 																{% for flow in programflow %} 	
 																	{% if flow.status == "الانتهاء من المشروع" and flow.indicator == 'W' %}
 																		{% if program.isAccepted and program.isAccepted is not None  %}
@@ -1003,30 +1022,15 @@
 						});
 					});
 			// ***************************************************
-			// $(document).ready(function () {
-			// 	var mySelect = $('#mySelect');
-			
-			// 	mySelect.on('change', function () {
-			// 		var selectedValues = $(this).val();
-			
-			// 		// Check if '-1' is among the selected values
-			// 		if (selectedValues && selectedValues.includes('-1')) {
-			// 			// If '-1' is selected, clear all other selections
-			// 			mySelect.val('-1');
-			// 		}
-			
-			// 		// Refresh Select2 to update the UI
-			// 		mySelect.trigger('change.select2');
-			// 	});
-			
-			// 	// Initialize Select2
-			// 	mySelect.select2({
-			// 		placeholder: 'اختار المدرب',
-			// 		allowClear: true, // Allows clearing the selection
-			// 	});
-			// });
-		
-			</script>
+
+			document.getElementById('rejectionForm').onsubmit = function(event) {
+				var rejectReason = document.getElementById("rejectReasonInput").value;
+				if (rejectReason.length < 3) {
+					document.querySelector('.error-message-reject').textContent = 'يجب كتابة سبب عدم الاعتماد وأن يكون أكثر من ثلاثة أحرف';
+					event.preventDefault();
+				}
+			};
+		</script>
 
 
 <script>

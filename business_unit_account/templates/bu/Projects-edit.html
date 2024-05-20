@@ -34,14 +34,14 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label class="form-label">اسم المشروع  <span style="color: red;">*</span></label>
-										<input class="form-control" placeholder="اسم المشروع " name="topic" value="{{program.Name}}">
+										<input class="form-control" placeholder="اسم المشروع " name="topic" value="{{program.Name}}" {% if program.isAccepted %} disabled {% endif %}>
 										<span class="error-message-topic" style="color: red;"></span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label class="form-label">المجال<span style="color: red;">*</span></label>
-										<input class="form-control" type="text" placeholder="أدخل المجال" id="domain" name="domain" value="{{program.programtype}}">
+										<input class="form-control" type="text" placeholder="أدخل المجال" id="domain" name="domain" value="{{program.programtype}}" {% if program.isAccepted %} disabled {% endif %}>
 										<span class="error-message-domain" style="color: red;"></span>
 									</div>
 								</div> 
@@ -51,7 +51,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label class="form-label">اسم الجهة</label>
-										<input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" value="{{program.CompanyName}}" required>
+										<input class="form-control" type="text" placeholder="اسم الجهة " name="CompanyName" value="{{program.CompanyName}}" required {% if program.isAccepted %} disabled {% endif %}> 
 										<span class="error-message-company" style="color: red;"></span>
 									</div>
 								</div>
@@ -135,6 +135,17 @@
 								</div>
 							</div>
 							
+							{% if program.isAccepted %}	
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label class="form-label"> قيمة المشروع<span style="color: red;">*</span></label>
+										<input class="form-control" placeholder="قيمة العقد" type="number" name="price" required>
+										<span class="error-message-price" style="color: red;"></span>
+									</div>
+								</div>
+							</div>
+							{% endif %}
 						   
 							<div class="form-group">
 								<label class="form-label">وصف المشروع<span style="color: red;">*</span></label>    
@@ -205,13 +216,17 @@
 			var durationElement = document.querySelector('input[name="duration"]');
 			var num_ofinstructorsElement = document.querySelector('input[name="num_ofteam"]');
 			var subjectElement = document.querySelector('textarea[name="subject"]');
+			var priceElement = document.querySelector('input[name="price"]');
 
 			var questionDate = new Date(document.querySelector('input[name="questionDate"]').value);
 			var enddate = new Date(document.querySelector('input[name="enddate"]').value);
 			var proposalSubmission = new Date(document.querySelector('input[name="proposalSubmission"]').value);
 			var companyDate = new Date(document.querySelector('input[name="companyDate"]').value);
+			var price = parseFloat(priceElement.value);
 
-				
+                    if (isNaN(price) || price < 0) {
+                        return false;
+                    }
 					// Check topic 1
 					if (topicElement.value.length < 3) {
 						return false;
@@ -396,6 +411,18 @@
 					} else {
 					$(this).removeClass('is-invalid');
 					$(this).siblings('.error-message-duration').text('');
+					}
+				});
+
+			// price 
+				$('input[name="price"]').on('blur', function() {
+					var topic = $(this).val();
+					if (topic < 1) {
+					$(this).addClass('is-invalid');
+					$(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
+					} else {
+					$(this).removeClass('is-invalid');
+					$(this).siblings('.error-message-price').text('');
 					}
 				});
  			//  check dates 8

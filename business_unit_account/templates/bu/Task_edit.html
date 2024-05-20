@@ -26,26 +26,26 @@
 					<!-- END PAGE HEADER -->
 						
                         <!-- ROW -->
-					<div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
-						<form method="post" onsubmit="return validateForm();" id="orderform"  enctype="multipart/form-data">
+			    <div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
+				    <form method="post"  id="orderform"  enctype="multipart/form-data">
+
                             {% csrf_token %}
                         <div class="modal-footer">
-							<a href="" name="submit" class="btn btn-danger">إغلاق</a>
-							<button  class="btn btn-primary projectnotify">تعديل الطلب</button>
+							<a href="{% url 'business_unit_account:task-detail'  task_id=task.task_id %}" class="btn btn-danger">إغلاق</a>
+							<button  type="submit" class="btn btn-primary">تعديل الطلب</button>
 						</div>
 							
-						<body onload="toggleOtherInput(); toggleOtherdomain();" >
-							<!--   -->
+
 						<div class="modal-body border-top">
 							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-label">نوع المهمة<span style="color: red;">*</span></label>
-										<input type="text" class="form-control" placeholder="نوع المهمة" name="tasktype" value="{{ task.task_type }}" disabled>
-										<span class="error-message" style="color: red;"></span>
-									</div>
-								</div>
-								<div class="col-md-6">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">نوع المهمة<span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" placeholder="نوع المهمة" name="tasktype" value="{{ task.task_type }}" disabled>
+                                            <span class="error-message" style="color: red;"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
 
 									<div class="form-group">
 										<label class="form-label">إسم المهمة <span style="color: red;">*</span></label>
@@ -53,31 +53,30 @@
 										<span class="error-message" style="color: red;"></span>
 									</div>
 								</div>
-
 							</div>
 							
 							
-							<div class="form-group">
-								<label class="form-label">وصف المهمة<span style="color: red;">*</span></label>    
-								<textarea class="form-control" rows="4" cols="105" name="taskdescription" required>{{ task.task_description }}</textarea>
-								<span class="error-message-subject" style="color: red;"></span>
-							</div>
+                                <div class="form-group">
+                                    <label class="form-label">وصف المهمة<span style="color: red;">*</span></label>    
+                                    <textarea class="form-control" rows="4" cols="105" name="taskdescription" required>{{ task.task_description }}</textarea>
+                                    <span class="error-message-subject" style="color: red;"></span>
+                                </div>
 
-							<div class="form-group">
-								<label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
-								<div class="form-group">
-								  <label class="form-label"></label>
-								  <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
-								  <span class="error-message-attachment" style="color: red;"></span>
-								  <div id="fileList" class="file-list"></div>
-								</div>
-							  </div>
+                                <div class="form-group">
+                                    <label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+                                    <div class="form-group">
+                                    <label class="form-label"></label>
+                                    <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+                                    <span class="error-message-attachment" style="color: red;"></span>
+                                    <div id="fileList" class="file-list"></div>
+                                    </div>
+                                </div>
 		
-							  <div class="row">
+							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label class="form-label">تاريخ بداية المهمة <span style="color: red;">*</span></label>
-										<input class="form-control flatpickr date" placeholder="YYYY-MM-DD" type="date" data-input name="startdate" required value="{{task.start_date|date:'Y-m-d'}}" disabled>
+										<input class="form-control flatpickr date" placeholder="YYYY-MM-DD" type="date" data-input name="startdate"  value="{{task.start_date|date:'Y-m-d'}}" disabled>
 										<span class="error-message-startdate" style="color: red;"></span>
 									</div>
 								</div>
@@ -92,636 +91,18 @@
 
 							<div class="form-group">
 								<label class="form-label">ملاحظات</label>    
-								<textarea class="form-control" rows="4" cols="105" placeholder="ملاحظات" name="notes"  value="{{task.notes}}"></textarea>
+								<textarea class="form-control" rows="4" cols="105" placeholder="ملاحظات" name="notes"  value="{{task.notes}}"></textarea>	
+							</div>
 								
-							  </div>
-									
-
-								
-						
-							
 						</div>
-					</body>
-						
 					</form>
-				
-					</div>
 				</div>
-			</div>
-					
-                      
+  
         {% endblock %}
 
 
 		
 		{% block scripts %}
-		<!-- INTERNAL TIMEPICKER JS -->
-        <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
-		<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
-
-		<!-- INTERNAL DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
-		<script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
-		<script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
-
-		<!-- INTERNAL FILE-UPLOADS JS -->
-		<script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
-        <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
-
-		<!-- INTERNAL FILE-UPLOADS JS -->
-        <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
-		<script src="{% static 'assets/js/filupload.js'%}"></script>
-
-		<!-- INTERNAL SUMOSELECT JS -->
-		<script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
-        
-		<!-- INTERNAL INTLTELINPUT JS -->
-		<script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
-
-		<!-- INTERNAL JQUERY TRANSFER JS -->
-		<script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
-
-		<!-- INTERNAL MULTI JS -->
-		<script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
-
-		<!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
-		<script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
-
-		<!-- INTERNAL FORM ADVANCED ELEMENT JS -->
-		<script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
-		<script src="{% static 'assets/js/form-elements.js'%}"></script>
-		<script src="{% static 'assets/js/select2.js'%}"></script>
-
-		<!-- INTERNAL MULTIPLE SELECT JS -->
-		<script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
-		<script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script> 
-
-        <!-- THEME COLOR JS -->
-		<script src="{% static 'assets/js/themeColors.js'%}"></script>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
-
-        
-          <!-- INTERNAL DATA TABLES  -->
-          <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap5.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js'%}"></script>
-          <script src="{% static 'assets/plugins/datatable/responsive.bootstrap5.min.js'%}"></script>
-          <script src="{% static 'assets/js/datatables.js'%}"></script>
-          <script src="{% static 'assets/js/client/client-list.js'%}"></script>
-
-          
-
-		
-			 <script>
-            $(document).ready(function () {
-                  // Set minimum and maximum time values (8:00 AM and 10:00 PM)
-                  var minTime = '08:00';
-                  var maxTime = '22:00';
-  
-                  // Set the min and max attributes for the time inputs
-                  $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
-              });
-          </script>
-
-  <!-- filter -->
-  <script>
-    $(document).ready(function() {
-         $('#status_filter').change(function() {
-             var selectedDepartment = $(this).val();
-
-             if (selectedDepartment.includes("-")) {
-                 var values = selectedDepartment.split('-'); // Splitting at the hyphen to get individual values
-                 var firstValue = values[0].trim(); // First value after splitting
-                 var secondValue = values[1].trim(); // Second value after splitting
-                 
-                 $('tbody tr').hide();
-                 // Show rows matching either the first or second value
-                 $('tbody tr').filter(function() {
-                     var status = $(this).find('td:nth-child(5)').text().trim();
-                     return status === firstValue || status === secondValue;
-                 }).show();
-             } else if (selectedDepartment === 'all') {
-                 // Show all rows if 'all' is selected
-                 $('tbody tr').show();
-             } else {
-                 // Hide all rows
-                 $('tbody tr').hide();
-                 // Show only rows with the selected status
-                 $('tbody tr').filter(function() {
-                     return $(this).find('td:nth-child(5)').text().trim() === selectedDepartment;
-                 }).show();
-             }
-         });
-     });
-</script>
-
-<script>
-    $(document).ready(function() {
-         $('#status_filter2').change(function() {
-             var selectedDepartment = $(this).val();
-             if (selectedDepartment === 'all') {
-                 // Show all rows if 'all' is selected
-                 $('tbody tr').show();
-             } else {
-                 // Hide all rows
-                 $('tbody tr').hide();
-                 // Show only rows with the selected status
-                 $('tbody tr').filter(function() {
-                     return $(this).find('td:nth-child(6)').text().trim() === selectedDepartment;
-                 }).show();
-             }
-         });
-     });
- </script>
-        
-    
-<script>
-    jQuery(document).ready(function ($) {
-        // Initialize Selectize on #mySelect
-        var $select = $('#mySelect').selectize();
-    
-        // Event listener for the checkbox change
-        $('#openToAllCheckbox').change(function() {
-            // Retrieve the selectize instance
-            var selectize = $('#mySelect')[0].selectize;
-    
-            // Clear selected options if checkbox is checked
-            if ($(this).prop('checked')) {
-                selectize.clear();
-                selectize.disable(); // Disable the selectize control
-                $('.error-message-instructor').text(''); // Clear error message
-            } else {
-                selectize.enable(); // Enable the selectize control
-            }
-        });
-    
-        // Event listener for changes in #num_ofinstructors and #mySelect
-        $('#num_ofinstructors, #mySelect').on('change', function() {
-            validateInstructors();
-        });
-    
-        // Validation function for instructors
-        function validateInstructors() {
-            var num_ofinstructors = parseInt($('#num_ofinstructors').val());
-            var selectedCount = $('#mySelect').val().length;
-            
-            if (selectedCount !== num_ofinstructors) {
-                $('.error-message-instructor').text('يرجى اختيار عدد المدربين المطلوب');
-            } else {
-                $('.error-message-instructor').text('');
-            }
-        }
-    });
-</script>
-    
-
-<script>
-    // Function to validate the form on submission
-function validateForm() {
-    // Retrieve form elements
-    var topicElement = document.querySelector('input[name="topic"]');
-    var numoftraineeElement = document.querySelector('input[name="numoftrainee"]');
-    var priceElement = document.querySelector('input[name="price"]');
-    var pricefortraineeElement = document.querySelector('input[name="pricefortrainee"]');
-    var startDateElement = document.querySelector('input[name="startdate"]');
-    var endDateElement = document.querySelector('input[name="enddate"]');
-    var startTimeElement = document.querySelector('input[name="starttime"]');
-    var endTimeElement = document.querySelector('input[name="endtime"]');
-    var subjectElement = document.querySelector('textarea[name="subject"]');
-    var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-    var selectElement = document.getElementById("options");
-    var selectdomain = document.getElementById("domain");
-    var otherdomainElement = document.querySelector('input[name="otherdomain"]');
-    var otherTextElement = document.querySelector('input[name="otherText"]');
-
-     // select other reqtype
-     if (selectElement.value === "other") {
-        if (otherTextElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(otherTextElement.value.trim()) || /^[0-9]/.test(otherTextElement.value.trim())) {
-            return false;
-        } 
-    }   
-
-    //select  other domain
-    if (selectdomain.value === "اخرى") {
-        if (otherdomainElement.value.length < 5) {
-            return false;
-        } else if (/^\d+$/.test(otherdomainElement.value.trim()) || /^[0-9]/.test(otherdomainElement.value.trim())) {
-            return false;
-        } 
-    }   
-    
-    // Check topic
-    if (topicElement.value.length < 5) {
-        return false;
-    } else if (/^\d+$/.test(topicElement.value.trim()) || /^[0-9]/.test(topicElement.value.trim())) {
-        return false;
-    } 
-
-    // Check numoftrainee
-    var numoftrainee = parseInt(numoftraineeElement.value);
-    if (isNaN(numoftrainee) || numoftrainee < 1) {
-        return false;
-    } 
-
-    // check num_ofinstructorsElement
-    var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-    if (isNaN(num_ofinstructors) || num_ofinstructors < 1) {
-        return false;
-    } 
-
-    // Check price
-    var price = parseFloat(priceElement.value);
-    if (isNaN(price) || price < 0) {
-        return false;
-    } 
-
-    // check pricefortrainee
-    var pricefortrainee = parseFloat(pricefortraineeElement.value);
-    if (isNaN(pricefortrainee) || pricefortrainee < 0) {
-        return false;
-    } 
-
-    // Check start date and end date
-    var startDate = new Date(startDateElement.value);
-    var endDate = new Date(endDateElement.value);
-
-    if (startDate > endDate) {
-        return false; 
-    } 
-
-    // Check start time and end time
-    var startTimeParts = startTimeElement.value.split(':');
-    var endTimeParts = endTimeElement.value.split(':');
-    var startHour = parseInt(startTimeParts[0]);
-    var startMinute = parseInt(startTimeParts[1]);
-    var endHour = parseInt(endTimeParts[0]);
-    var endMinute = parseInt(endTimeParts[1]);
-
-    if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-        return false;
-    } 
-
-    // Check subject
-    if (subjectElement.value.length < 5) {
-        return false;
-    } else if (/^\d+$/.test(subjectElement.value.trim())) {
-        return false;
-    }
-
-    if (!validateInstructorsCount()) {
-        console.log("Instructors count validation failed");
-        return false;
-    }
-    
-    // Skip validation if the file input is empty
-    if (!fileInput.files.length) {
-        errorMessage.textContent = '';
-        return true; // No validation needed for an empty file input
-    }
-
-    var fileInput = document.querySelector('input[name="attachment"]');
-    var errorMessage = document.querySelector('.error-message-attachment');
-
-    var allowedExtensions = ['.pdf', '.doc', '.pptx' , '.docx' , '.xlsx'];
-    var filePath = fileInput.value.toLowerCase();
-
-    var isValidExtension = allowedExtensions.some(function (extension) {
-        return filePath.endsWith(extension);
-    });
-
-    if (!isValidExtension) {
-        errorMessage.textContent = 'يجب أن يكون الملف بامتداد  .pdf , .pptx , .doc , .docx , .xlsx ';
-        fileInput.value = '';
-        return false;
-    } else {
-        errorMessage.textContent = '';
-    }
-
-return true;
-
-}
-
-
-function validateInstructorsCount() {
-    var num_ofinstructorsElement = document.querySelector('input[name="num_ofinstructors"]');
-    var num_ofinstructors = parseInt(num_ofinstructorsElement.value);
-    var selectedInstructors = document.getElementById('mySelect').options;
-    var selectedCount = selectedInstructors.length;
-
-    var openToAllCheckboxElement = document.getElementById('openToAllCheckbox');
-    if(openToAllCheckboxElement.checked){
-        return true;
-    }
-
-    return selectedCount === num_ofinstructors;
-}
-
-// **************************** select other order
-function toggleOtherInput() {
-    var selectElement = document.getElementById("options");
-    var otherInput = document.getElementById("otherInput");
-    var otherText = document.getElementById("otherText");
-
-    if (selectElement.value === "other") {
-        otherInput.style.display = "block";
-        otherText.setAttribute("required", "required");
-    } else {
-        otherInput.style.display = "none"; 
-        otherText.removeAttribute("required");
-    }
-}
-
-// **************************** select other domain
-function toggleOtherdomain() {
-    var selectElement = document.getElementById("domain");
-    var otherInput = document.getElementById("other-domain");
-    var otherdomain = document.getElementById("otherdomain");
-
-    if (selectElement.value === "اخرى") {
-        otherInput.style.display = "block";
-        otherdomain.setAttribute("required", "required"); 
-    } else {
-        otherInput.style.display = "none"; 
-        otherdomain.removeAttribute("required");
-    }
-}
-
-</script>
-<!-- **************************** AJAX -->
-<script>  
-    $(document).ready(function() {
-       
-        $('input[name="topic"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic.length < 5) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-topic').text('يجب ملئ الحقل و ان يكون اكثر من خمسة حروف');
-            }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-topic').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-            }else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-topic').text('');
-            }
-        });
-        
-
-        $('input[name="price"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic < 0) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-price').text('يجب ملئ الحقل برقم صحيح');
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-price').text('');
-            }
-        });
-
-        $('input[name="pricefortrainee"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic < 0) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-pricefortrainee').text('يجب ملئ الحقل برقم صحيح');
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-pricefortrainee').text('');
-            }
-        });
-       
-        $('input[name="numoftrainee"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic < 1) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-numoftrainee').text('يجب ملئ الحقل برقم صحيح');
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-numoftrainee').text('');
-            }
-        });
-
-        $('input[name="num_ofinstructors"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic < 1) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-num_ofinstructors').text('يجب ملئ الحقل برقم صحيح');
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-num_ofinstructors').text('');
-            }
-        });
-
-        $('input[name="startdate"]').on('blur', function() {
-            var startDate = $(this).val();
-            var endDate = $('input[name="enddate"]').val();
-
-            if (startDate === '' || endDate === '') {
-                $(this).removeClass('is-invalid');
-                $(this).siblings('.error-message-startdate').text('');
-            } else {
-                startDate = new Date(startDate);
-                endDate = new Date(endDate);
-
-                if (startDate > endDate) {
-                    $(this).addClass('is-invalid');
-                    $(this).siblings('.error-message-startdate').text('يجب أن يكون تاريخ البدء قبل تاريخ الانتهاء');
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).siblings('.error-message-startdate').text('');
-                }
-            }
-        });
-       
-        $('input[name="enddate"]').on('blur', function() {
-            var startDate = $('input[name="startdate"]').val();
-            var endDate = $(this).val();
-
-            if (startDate === '' || endDate === '') {
-                $(this).removeClass('is-invalid');
-                $(this).siblings('.error-message-enddate').text('');
-            } else {
-                startDate = new Date(startDate);
-                endDate = new Date(endDate);
-
-                if (startDate > endDate) {
-                    $(this).addClass('is-invalid');
-                    $(this).siblings('.error-message-enddate').text('يجب أن يأتي تاريخ الانتهاء بعد تاريخ البدء');
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).siblings('.error-message-enddate').text('');
-                }
-            }
-        });
-
-        $('input[name="starttime"]').on('blur', function() {
-            var startTime = $(this).val();
-            var endTime = $('input[name="endtime"]').val();
-
-            if (startTime === '' || endTime === '') {
-                $(this).removeClass('is-invalid');
-                $(this).siblings('.error-message-starttime').text('');
-            } else {
-                var startParts = startTime.split(':');
-                var endParts = endTime.split(':');
-
-                var startHour = parseInt(startParts[0]);
-                var startMinute = parseInt(startParts[1]);
-                var endHour = parseInt(endParts[0]);
-                var endMinute = parseInt(endParts[1]);
-
-                if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-                    $(this).addClass('is-invalid');
-                    $(this).siblings('.error-message-starttime').text('يجب أن يكون وقت البدء قبل وقت الانتهاء');
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).siblings('.error-message-starttime').text('');
-                }
-            }
-        });
-
-        $('input[name="endtime"]').on('blur', function() {
-            var startTime = $('input[name="starttime"]').val();
-            var endTime = $(this).val();
-
-            if (startTime === '' || endTime === '') {
-                $(this).removeClass('is-invalid');
-                $(this).siblings('.error-message-endtime').text('');
-            } else {
-                var startParts = startTime.split(':');
-                var endParts = endTime.split(':');
-
-                var startHour = parseInt(startParts[0]);
-                var startMinute = parseInt(startParts[1]);
-                var endHour = parseInt(endParts[0]);
-                var endMinute = parseInt(endParts[1]);
-
-                if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
-                    $(this).addClass('is-invalid');
-                    $(this).siblings('.error-message-endtime').text('يجب أن يأتي وقت الانتهاء بعد وقت البدء');
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).siblings('.error-message-endtime').text('');
-                }
-            }
-        });
-
-        $('textarea[name="subject"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic.length < 5) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-subject').text('يجب أن يكون على الأقل خمسة أحرف');
-            }else if (/^\d+$/.test(topic.trim())) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-subject').text('لا يمكن أن يكون جميع الحروف أرقام'); 
-            } else {
-                $(this).removeClass('is-invalid');
-                $(this).siblings('.error-message-subject').text('');
-            }
-        });
-        
-        $('input[name="otherText"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic.length < 5) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-other').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
-            }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-other').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-other').text('');
-            }
-        });
-        
-        $('input[name="otherdomain"]').on('blur', function() {
-            var topic = $(this).val();
-            if (topic.length < 5) {
-            $(this).addClass('is-invalid');
-            $(this).siblings('.error-message-domain').text('يجب ملئ الحقل و ان يكون على الأقل خمسة أحرف');
-            }else if (/^\d+$/.test(topic.trim()) || /^[0-9]/.test(topic.trim())) {
-                $(this).addClass('is-invalid');
-                $(this).siblings('.error-message-domain').text('يجب أن يبدأ بحرف ولا يمكن أن يكون جميع الحروف أرقام'); 
-            } else {
-            $(this).removeClass('is-invalid');
-            $(this).siblings('.error-message-domain').text('');
-            }
-        });
-    });
-</script>
-   
-<script>
-    let dropdowns = document.querySelectorAll('.dropdown-button');
-    dropdowns.forEach(dropdown => {
-        dropdown.addEventListener('click', () => {
-            let content = dropdown.nextElementSibling;
-            content.style.display = content.style.display === 'none' ? 'block' : 'none';
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Initialize flatpickr for date inputs
-        flatpickr('.flatpickr[data-input][data-date]', {
-            dateFormat: "d-m-Y",
-            minDate: "today",
-        });
-
-        // Initialize flatpickr for time inputs
-        flatpickr('.flatpickr[data-input][data-time]', {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-        });
-    });
-    
-    $(function() {
-          $(document).ready(function () {
-            var todaysDate = new Date();
-            var year = todaysDate.getFullYear();
-            var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
-            var day = ("0" + todaysDate.getDate()).slice(-2);
-            var maxDate = (year +"-"+ month +"-"+ day);
-            $('.date').attr('min',maxDate);
-          });
-        });
-
-</script>
-
-<script>
-    $(document).ready(function () {
-        flatpickr('.flatpickr', {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: 'H:i',
-            minTime: '08:00',
-            maxTime: '22:00',
-            onClose: function (selectedDates, dateStr, instance) {
-                if (dateStr < '08:00' || dateStr > '22:00') {
-                    instance.clear();
-                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
-                } else {
-                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
-                }
-            }
-        });
-
-});
-
-</script>
-		
-		
 				<!-- INTERNAL TIMEPICKER JS -->
 				<script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
 				<script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
@@ -776,5 +157,36 @@ function toggleOtherdomain() {
 				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
 		
 			  
+                <script>
+                    $(document).ready(function () {
+                        // Set minimum and maximum time values (8:00 AM and 10:00 PM)
+                        var minTime = '08:00';
+                        var maxTime = '22:00';
+        
+                        // Set the min and max attributes for the time inputs
+                        $('#starttime, #endtime').attr('min', minTime).attr('max', maxTime);
+                    });
+                </script>
+
+                <script>
+                    $(document).ready(function () {
+                        flatpickr('.flatpickr', {
+                            enableTime: true,
+                            noCalendar: true,
+                            dateFormat: 'H:i',
+                            minTime: '08:00',
+                            maxTime: '22:00',
+                            onClose: function (selectedDates, dateStr, instance) {
+                                if (dateStr < '08:00' || dateStr > '22:00') {
+                                    instance.clear();
+                                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
+                                } else {
+                                    $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
+                                }
+                            }
+                        });
+
+                });
+                </script>
 		
-		{% endblock %}
+        {% endblock %}

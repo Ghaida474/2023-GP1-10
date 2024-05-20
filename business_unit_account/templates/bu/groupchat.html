@@ -1,119 +1,121 @@
-{% load static %}
 {% include 'bu/components/layouts/styles.html' %} 
 <head>
     <title>المحادثات</title>
 </head>
-
 <style>
-    .video-call-button {
-      position: relative;
-      display: inline-block;
-      font-size: 24px;
-      color: #ffffff;
-      background-color: #007bff;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      outline: none;
-      padding: 10px;
-    }
-  
-    .video-call-button:hover {
-      background-color: #0056b3;
-    }
-    .dropdown {
-    position: absolute;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    background-color: #f9f9f9;
-    min-width: 100px;
-    border: 1px solid #007bff; /* Change border color to blue */
-    border-radius: 10px;
-  }
-  
-  .dropdown-content {
-    padding: 10px;
-  }
-  
-  .dropdown-option {
-    cursor: pointer;
-    border-bottom: 1px solid #007bff; /* Add blue border to separate options */
-  }
-  
-  .dropdown-option:last-child {
-    border-bottom: none; /* Remove bottom border from last option */
-  }
-  
-  .dropdown-option:hover {
-    background-color: #aec3db; /* Change background color on hover */
-  }
-  
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 20%;
-      position: relative; /* Add this line to make positioning relative */
-      text-align: right;
-  }
-  
-  .modal-content .close {
-      position: absolute;
-      top: 10px;
-      left: 10px; /* Change 'right' to 'left' */
-      cursor: pointer;
-  }
-  
-  
-  /* CSS for input field */
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  /* CSS for buttons */
-  .modal-content button {
+  .video-call-button {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    color: #ffffff;
     background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 50%;
     cursor: pointer;
-    
+    outline: none;
+    padding: 10px;
   }
-  
-  .modal-content button:hover {
+
+  .video-call-button:hover {
     background-color: #0056b3;
   }
+  .dropdown {
+  position: absolute;
+  left:7%;
+  top: 9%; /* Position the dropdown below the button */
+  z-index: 2000;
+  display: none;
+  background-color: #f9f9f9;
+  min-width: 100px;
+  border: 1px solid #007bff; /* Change border color to blue */
+  border-radius: 10px;
+}
+
+.dropdown-content {
+  padding: 10px;
+}
+
+.dropdown-option {
+  cursor: pointer;
+  border-bottom: 1px solid #007bff; /* Add blue border to separate options */
+}
+
+.dropdown-option:last-child {
+  border-bottom: none; /* Remove bottom border from last option */
+}
+
+.dropdown-option:hover {
+  background-color: #aec3db; /* Change background color on hover */
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20%;
+    position: relative; /* Add this line to make positioning relative */
+    text-align: right;
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Change 'right' to 'left' */
+    cursor: pointer;
+}
+
+
+/* CSS for input field */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* CSS for buttons */
+.modal-content button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   
-  
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+
+
   
 </style>
-  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
 <script>
-    console.log('in bu chatgroup.html');
+    console.log('in faculty_staff chatgroup.html');
     window.username = '{{ username|safe }}';
     window.secret = '{{ pass|safe }}';
     window.chatid = '{{ chatgroup_id|safe }}';
     window.access_key = '{{ access_key|safe }}';
     window.template = 'chatgroup';
-
+    window.program_id = '{{ program_id|safe }}';
+    
     console.log('window.username',window.username);
     console.log('window.secret',window.secret);
     console.log('window.chatid',window.chatid);
@@ -145,10 +147,12 @@
 
     // Handle click on dropdown options
     document.getElementById('newMeeting').addEventListener('click', function() {
-     
-      window.location.href = "{% url 'business_unit_account:videocall' %}";
-      
-    });
+    // Send an AJAX request to trigger the joinroom_notification and videocall views
+   // <a  href="{% url 'faculty_staff_account:project_view' program_id=program_id %}" 
+   
+    window.location.href = `{% url 'business_unit_account:joinroom_notification' %}?program_id=${program_id}`;
+    
+});
 
 const modal = document.getElementById('myModal');
 
@@ -183,7 +187,7 @@ const roomCode = document.getElementById('roomCode').value;
 console.log("roomCode");
 
 if (roomCode) {
-  window.location.href = `{% url 'business_unit_account:videocall' %}?roomCode=${roomCode}`;
+  window.location.href = `{% url 'business_unit_account:videocall' %}?roomID=${roomCode}`;
 
 }
 });
@@ -201,23 +205,39 @@ if (roomCode) {
   });
 </script>
 {% block content %}
-    <!-- <button class="video-call-button" id="videoCallButton" style=" position: absolute; margin-left: 130px; margin-bottom: -70px;  margin-top: 20px; z-index: 999;"><i class="fas fa-video"></i></button> -->
+
+
+ <button class="video-call-button" id="videoCallButton" style=" position: absolute; margin-left: 130px; margin-bottom: -70px;  margin-top: 20px; z-index: 999;"><i class="fas fa-video"></i></button> 
     
     <div style="margin-top: 60px;">
     <a  href="{% url 'business_unit_account:project_view' program_id=program_id %}" class="btn btn-primary" style="margin-left: 28px;">رجوع</a>
     </div>
 
     <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-content">
+          <div class="dropdown-content">
           <div class="dropdown-option" id="newMeeting">بدء إجتماع جديد</div>
           <div class="dropdown-option" id="joinMeeting">انضم الى إجتماع </div>
         </div>
-      </div>    
-    
-    <div style="padding: 100px;">
-    {% include 'index.html' %} 
+    </div>    
+      
+      
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="roomCodeForm">
+          <label for="roomCode">ادخل رمز الإجتماع</label>
+          <input type="text" id="roomCode" name="roomCode" required>
+          <button type="submit" style="margin-right: 85px;">انضم</button>
+        </form>
+      </div>
     </div>
-    {% endblock %}
+
+
+<div style="padding: 100px;">
+    {% include 'index.html' %} 
+</div>
+
+
+{% endblock %}
 
 {% include 'bu/components/layouts/footer.html' %}
-

@@ -1,0 +1,172 @@
+{% extends 'kai/components/base.html' %}
+{% load static %}
+
+{% block styles %}
+<style>
+    body {	
+        overflow-x: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+            <!-- PAGE HEADER -->
+            <div class="page-header d-lg-flex d-block">
+                <div class="page-leftheader">
+                    <div class="page-title">تعديل المهمة</div>
+                </div> 
+            </div>
+            <!-- END PAGE HEADER -->
+                
+                <!-- ROW -->
+            <div class="card" style="box-shadow:1px 1px 2px 1px #0084BD; background-color: #F5FBFF;">						
+                <form method="post"  enctype="multipart/form-data">
+                
+                    <div class="modal-footer">
+                        <a href="{% url 'head-kai-account:task-detail'  task_id=task.task_id %}" class="btn btn-danger">إغلاق</a>
+                        <button type="submit" class="btn btn-primary projectnotify">تعديل الطلب</button>
+                    </div>
+                    {% csrf_token %}
+                
+              
+                    <div class="modal-body border-top">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">نوع المهمة<span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" placeholder="نوع المهمة" name="tasktype" value="{{ task.task_type }}" disabled>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label class="form-label">إسم المهمة <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" placeholder=" إسم المهمة " name="task_name" value="{{ task.task_name }}" disabled>
+                                    <span class="error-message" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    
+                        <div class="form-group">
+                            <label class="form-label">وصف المهمة<span style="color: red;">*</span></label>    
+                            <textarea class="form-control" rows="4" cols="105" name="taskdescription" required>{{ task.task_description }}</textarea>
+                            <span class="error-message-subject" style="color: red;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ارفاق ملفات المهمة<small style="color: red;">.pdf, .pptx, .doc, .docx, .xlsx</small></label>
+                            <div class="form-group">
+                            <label class="form-label"></label>
+                            <input class="form-control" type="file" name="attachment" accept=".pdf, .pptx, .doc, .docx, .xlsx" multiple>
+                            <span class="error-message-attachment" style="color: red;"></span>
+                            <div id="fileList" class="file-list"></div>
+                            </div>
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">تاريخ بداية المهمة <span style="color: red;">*</span></label>
+                                    <input class="form-control flatpickr date" placeholder="YYYY-MM-DD" type="date" data-input name="startdate" required value="{{task.start_date|date:'Y-m-d'}}" disabled>
+                                    <span class="error-message-startdate" style="color: red;"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">تاريخ إنتهاء المهمة <span style="color: red;">*</span></label>
+                                    <input class="form-control flatpickr date" placeholder="DD-MM-YYYY" type="date" data-input name="enddate"  required value="{{task.end_date|date:'Y-m-d'}}" >
+                                    <span class="error-message-enddate" style="color: red;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ملاحظات</label>    
+                            <textarea class="form-control" rows="4" cols="105" placeholder="ملاحظات" name="notes"  value="{{task.notes}}"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>      
+{% endblock %}
+
+
+
+{% block scripts %}
+    <!-- INTERNAL TIMEPICKER JS -->
+    <script src="{% static 'assets/plugins/time-picker/jquery.timepicker.js'%}"></script>
+    <script src="{% static 'assets/plugins/time-picker/toggles.min.js'%}"></script>
+
+    <!-- INTERNAL DATEPICKER JS -->
+    <script src="{% static 'assets/plugins/date-picker/date-picker.js'%}"></script>
+    <script src="{% static 'assets/plugins/date-picker/jquery-ui.js'%}"></script>
+    <script src="{% static 'assets/plugins/input-mask/jquery.maskedinput.js'%}"></script>
+
+    <!-- INTERNAL FILE-UPLOADS JS -->
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.ui.widget.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.fileupload.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.iframe-transport.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/jquery.fancy-fileupload.js'%}"></script>
+    <script src="{% static 'assets/plugins/fancyuploder/fancy-uploader.js'%}"></script>
+
+    <!-- INTERNAL FILE-UPLOADS JS -->
+    <script src="{% static 'assets/plugins/fileupload/js/dropify.js'%}"></script>
+    <script src="{% static 'assets/js/filupload.js'%}"></script>
+
+    <!-- INTERNAL SUMOSELECT JS -->
+    <script src="{% static 'assets/plugins/sumoselect/jquery.sumoselect.js'%}"></script>
+
+    <!-- INTERNAL INTLTELINPUT JS -->
+    <script src="{% static 'assets/plugins/intl-tel-input-master/intlTelInput.js'%}"></script>
+    <script src="{% static 'assets/plugins/intl-tel-input-master/country-select.js'%}"></script>
+    <script src="{% static 'assets/plugins/intl-tel-input-master/utils.js'%}"></script>
+
+    <!-- INTERNAL JQUERY TRANSFER JS -->
+    <script src="{% static 'assets/plugins/jQuerytransfer/jquery.transfer.js'%}"></script>
+
+    <!-- INTERNAL MULTI JS -->
+    <script src="{% static 'assets/plugins/multi/multi.min.js'%}"></script>
+
+    <!-- INTERNAL BOOTSTRAP-DATEPICKER JS -->
+    <script src="{% static 'assets/plugins/bootstrap-datepicker/bootstrap-datepicker.js'%}"></script>
+
+    <!-- INTERNAL FORM ADVANCED ELEMENT JS -->
+    <script src="{% static 'assets/js/formelementadvnced.js'%}"></script>
+    <script src="{% static 'assets/js/form-elements.js'%}"></script>
+    <script src="{% static 'assets/js/select2.js'%}"></script>
+
+    <!-- INTERNAL MULTIPLE SELECT JS -->
+    <script src="{% static 'assets/plugins/multipleselect/multiple-select.js'%}"></script>
+    <script src="{% static 'assets/plugins/multipleselect/multi-select.js'%}"></script>
+
+    <!-- THEME COLOR JS -->
+    <script src="{% static 'assets/js/themeColors.js'%}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+    <script>
+        $(document).ready(function () {
+            flatpickr('.flatpickr', {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: 'H:i',
+                minTime: '08:00',
+                maxTime: '22:00',
+                onClose: function (selectedDates, dateStr, instance) {
+                    if (dateStr < '08:00' || dateStr > '22:00') {
+                        instance.clear();
+                        $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('Please select a time between 8 AM and 10 PM');
+                    } else {
+                        $(instance.input).siblings('.error-message-starttime, .error-message-endtime').text('');
+                    }
+                }
+            });
+
+    });
+    </script>
+            
+{% endblock %}

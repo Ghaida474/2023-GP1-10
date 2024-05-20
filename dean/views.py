@@ -3,12 +3,13 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 import requests
-from app.models import FacultyStaff,Collage
+from app.models import FacultyStaff,Collage , Project , Trainingprogram
 from app.forms import updateFASform,previousworkform,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.http import FileResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
+from datetime import date, datetime
 
 
 @login_required
@@ -111,20 +112,16 @@ def createDirect(request,direct_username):
 ################### Video calls ###################
 
 @login_required
-def callsDashboard(request):
-        #return redirect('business_unit_account:callsDashboard')
-    return render(request, 'dean/calls-dashboard.html', {'name': request.user.first_name})
-
-@login_required
-def videocall(request):
-    return render(request, 'dean/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
-
-@login_required
 def joinroom(request):
     if request.method == 'POST':
         roomID = request.POST['roomID']
         return redirect("/dean_account/dean-account-home/videocall?roomID=" + roomID)
     return render(request, 'dean/joinroom.html')
+
+@login_required
+def videocall(request):
+    context = {'name': request.user.first_name + " " + request.user.last_name,'collageid': request.user.collageid, 'BUhead': request.user.is_buhead , 'id':request.user.id}
+    return render(request, 'dean/videocall.html', context )
 
 @login_required
 def dean_account_home (request):
@@ -137,8 +134,89 @@ def dean_account_home (request):
     faculty = collage.nofaculty
     emp = staff + faculty
     count = len(collage.departments)
+    departments = len(collage.departments)
+    ################################# revenue
+    collageID = user.collageid.collageid
+    # Get the current year
+    current_year = datetime.now().year
 
-    context = {'user': user , 'collage':collage , "emp":emp , 'department':count }
+    # Years range from 2020 to the current year
+    years_range = range(2020, current_year + 1)
+
+    project_counts_by_year = {}
+    program_counts_by_year = {}
+
+    project_cost_by_year = {}
+    program_cost_by_year = {}
+
+    for year in years_range:
+      
+      projects = Project.objects.filter( isAccepted=True, collageid=collageID)
+      programs = Trainingprogram.objects.filter(enddate__year=year, iskaiaccepted=True, collageid=collageID)
+
+      project_count = projects.count()
+      program_count = programs.count()
+
+      project_counts_by_year[year] = project_count
+      program_counts_by_year[year] = program_count
+
+      revenuePerYearP = 0 
+
+      for project in projects:
+
+          tax = project.taxpercentage *project.totalcost
+          kai = project.kaipercentage *project.totalcost
+          revenue = project.totalcost-(tax+kai)
+
+          revenuePerYearP = revenuePerYearP + revenue
+
+      if isinstance(revenuePerYearP, (int, float)):
+       project_cost_by_year[year] = revenuePerYearP
+      else:
+       project_cost_by_year[year] = 0
+
+      revenuePerYearT = 0 
+
+      for program in programs:
+          
+        if program.attendeescount is not None and program.totalcost is not None:
+         total = program.attendeescount * program.totalcost
+         facultycost = program.num_ofinstructors * (program.enddate - program.startdate).days * program.cost
+         tax = program.taxpercentage * total
+         kai = program.kaipercentage * total
+         revenue = total - (facultycost + tax + kai)
+
+         revenuePerYearT = revenuePerYearT + revenue
+
+      if isinstance(revenuePerYearT, (int, float)):
+       program_cost_by_year[year] = revenuePerYearT
+      else:
+       program_cost_by_year[year] = 0
+
+    years_range_list = list(years_range)
+
+    total_project_count = 0
+    for count in project_counts_by_year.values():
+     total_project_count += count
+
+    total_project_cost = 0
+    for cost in project_cost_by_year.values():
+     total_project_cost += cost
+
+    total_program_count = 0
+    for count in program_counts_by_year.values():
+     total_program_count += count
+
+    total_program_cost = 0
+    for cost in program_cost_by_year.values():
+     total_program_cost += cost
+
+    context = {'user': user , 'collage':collage , "emp":emp , 'department':departments,
+        'project_count':total_project_count,
+        'project_cost':total_project_cost,
+        'program_count':total_program_count,
+        'program_cost':total_program_cost,
+        'projectAndprogram_cost':total_project_cost + total_program_cost}
     return render(request, 'dean/Home.html', context)
       
 @login_required
@@ -151,7 +229,6 @@ def change_new_user_password(request):
         user.save()
         return redirect('dean_account:dean-account-home')
     return render(request, 'dean/new-use-reset-password.html')
-
 
 @login_required
 def profile_view(request):
@@ -298,8 +375,13 @@ def changepassword_view(request):
 
 @login_required
 def facultyinfo_view(request,faculty_id):
+    user = request.user
+    collage_id = user.collageid.collageid
     faculty_member = get_object_or_404(FacultyStaff, id=faculty_id)
+    programs = Trainingprogram.objects.filter(collageid=collage_id,instructorid__contains=[faculty_id])
+    projects = Project.objects.filter(collageid=collage_id,Teamid__contains=[faculty_id])
     collage_id = faculty_member.collageid.collageid
     collage = Collage.objects.get(collageid=collage_id)
     collagename = collage.name 
-    return render(request, 'dean/faculty-view.html', {'faculty_member': faculty_member , 'collagename': collagename})
+    return render(request, 'dean/faculty-view.html', {'faculty_member': faculty_member , 'collagename': collagename ,'programs':programs,'projects':projects })
+

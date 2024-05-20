@@ -11,6 +11,7 @@
 								<div class="page-rightheader ms-md-auto">
 									<div class="d-flex align-items-end flex-wrap my-auto end-content breadcrumb-end">
 										<div class="d-flex">
+											
 											<div class="header-datepicker me-3">
 												<div class="input-group" style="width: 200px;">
 													<div class="input-group-prepend">
@@ -31,7 +32,8 @@
 													</div>
 													<p  type="text" id="time" class="form-control input-small" ></p>
 												</div>
-											</div>
+											</div> 
+
 										</div>
 									</div>
 								</div>
@@ -39,7 +41,44 @@
 							<!-- PAGE-HEADER END -->
 
 							<!-- ROW -->
-							<h2>To be continued...</h2>
+
+							<div class="row">
+							
+								<div class="card" style=" width:690px; height: 1360px; box-shadow:1px 1px 2px 1px #0084BD; margin-right: 30px; box-shadow: inset; background-color: aliceblue;">
+									<div class="card-header border-0">
+										<h4 class="card-title">الأرباح</h4>
+									</div>
+											<div class="card-body">
+												{% for data in collage_data %}
+												<h4>{{ data.collage.name }}</h4>
+												<p>{{ data.project_count }}  عدد المشاريع المنفذة</p>
+												<p>{{ data.revenue_per_year_p }}  الارباح من المشاريع</p>
+												<p>{{ data.program_count }}  عدد البرامج التدريبية المنفذة</p>
+												<p>{{ data.revenue_per_year_t }}  الارباح من البرامج التدريبية</p>
+											{% endfor %}
+											</div>
+										</div>
+							
+							<div class="col-xl-4 col-md-12 col-lg-6">
+								<div class="card" style="margin-right:30px; width:320px; height:700px; box-shadow: inset;box-shadow:1px 1px 2px 1px #0084BD; background-color: aliceblue;">
+									<div class="card-header border-0">
+										<h4 class="card-title">نسبة الأرباح</h4>
+									</div>
+									<div class="card-body">
+										<canvas id="pie-chart" width="220" height="250"></canvas>
+										<br><br>
+										<div class="chart-widget-list" id="widget-label">
+											{% for data in collage_data %}
+											<p>
+												<span class="legend-text">{{ data.collage.name }}  {{data.allRevenue}}</span>
+											</p>
+											{% endfor %}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+							
 								
 							<!-- END ROW -->
         {% endblock %}
@@ -88,4 +127,39 @@
 			document.getElementById("date").innerHTML = d.toLocaleDateString('ar', dateOptions);
 			document.getElementById("time").innerHTML = d.toLocaleTimeString('ar', timeOptions);
 		</script>
+
+<script>
+    // Initialize arrays to store data
+    var allRevenues = [];
+    var collageNames = [];
+
+    // Iterate through each collage data
+    "{% for data in collage_data %}"
+        allRevenues.push('{{ data.allRevenue }}');
+        collageNames.push('{{ data.collage.name }}');
+    "{% endfor %}"
+
+    // Get the canvas context
+    var ctx = document.getElementById('pie-chart').getContext('2d');
+
+    // Create the doughnut chart
+    var revenuePieChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: allRevenues,
+                backgroundColor: ["#5969ff",
+						"#ff407b",
+						"#FFC940",
+						"#6EF983",
+						"#67434E",
+						"#0A2148",
+						"#BB6BF9",],
+            }],
+            labels: collageNames
+        },
+        options: {}
+    });
+</script>
+
     {% endblock %}

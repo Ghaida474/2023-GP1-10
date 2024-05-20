@@ -38,7 +38,7 @@ def addFaculty (request):
       lastName = request.POST.get('lastName')
       firstNameENG = request.POST.get('firstNameENG')
       lastNameENG = request.POST.get('lastNameENG')
-      email = request.POST.get('email')
+      email = request.POST.get('email').lower()  
       phonenumber = request.POST.get('phonenumber')
       gender = request.POST.get('gender')
       nationality = request.POST.get('nationality')
@@ -86,12 +86,12 @@ def addFaculty (request):
             major = deparment,
             collageid = getcollage,
             is_buhead = isbu, 
-            bu_assistant = assistant,
             username = username[0],
             department_field = deparment,
             rank = rank,
             first_nameeng = firstNameENG,
             last_nameeng = lastNameENG,
+            new_user = True,
             workstatus = 'على رأس العمل',
             date_joined = timezone.now().date() ,
       )
@@ -130,7 +130,7 @@ def addKai (request):
     if request.method == 'POST':
       firstName = request.POST.get('firstName')
       lastName = request.POST.get('lastName')
-      email = request.POST.get('email')
+      email = request.POST.get('email').lower()  
       phonenumber = request.POST.get('phonenumber')
       gender = request.POST.get('gender')
       nationality = request.POST.get('nationality')
@@ -144,6 +144,15 @@ def addKai (request):
 
       username = email.split('@')
 
+      is_department_head = False  
+      is_staff = False
+      if position == 'عميد معهد الملك عبدالله':
+          is_department_head = True
+      
+      if position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله':
+          is_staff = True
+
+
       new_kai = Kaibuemployee(
             password = random_password,
             is_superuser = False,
@@ -155,11 +164,13 @@ def addKai (request):
             gender =  gender,
             nationality = nationality,
             adminemail = request.user.email,
-            is_staff = True,
+            is_staff = is_staff,
             kaiemployeeid = empNum,
             position = position, 
             username = username[0],
-            date_joined = timezone.now().date() ,
+            date_joined = timezone.now().date(),
+            new_user = True,
+            is_department_head =is_department_head
       )
       new_kai.save()
       print('new_kai',new_kai)
@@ -199,7 +210,7 @@ def addCollage (request):
             nofloor = request.POST.get('floor')
             nodisk = request.POST.get('disknum')
             nobuilding = request.POST.get('buildingnum')
-            buemail = request.POST.get('buemail')
+            buemail = request.POST.get('buemail').lower()  
             buphonenumber = request.POST.get('buphonenumber')
             domain = request.POST.getlist('domains[]')
             departments =  request.POST.getlist('departments[]')
@@ -307,7 +318,7 @@ def editfaculty (request , id ):
             lastName = request.POST.get('lastName')
             firstNameENG = request.POST.get('firstNameENG')
             lastNameENG = request.POST.get('lastNameENG')
-            email = request.POST.get('email')
+            email = request.POST.get('email').lower()  
             phonenumber = request.POST.get('phonenumber')
             gender = request.POST.get('gender')
             nationality = request.POST.get('nationality')
@@ -348,7 +359,6 @@ def editfaculty (request , id ):
             editfaculty.major = deparment
             collageid = getcollage
             editfaculty.is_buhead = isbu
-            editfaculty.bu_assistant = assistant
             editfaculty.username = username[0]
             editfaculty.department_field = deparment
             editfaculty.rank = rank
@@ -375,7 +385,7 @@ def editkai (request , id ):
         if request.method == 'POST':
             firstName = request.POST.get('firstName')
             lastName = request.POST.get('lastName')
-            email = request.POST.get('email')
+            email = request.POST.get('email').lower()  
             phonenumber = request.POST.get('phonenumber')
             gender = request.POST.get('gender')
             nationality = request.POST.get('nationality')
@@ -383,6 +393,14 @@ def editkai (request , id ):
             empNum = request.POST.get('empNum')      
             username = email.split('@')
             oldussername = editkai.username
+
+            is_department_head = False  
+            is_staff = False
+            if position == 'عميد معهد الملك عبدالله':
+                is_department_head = True
+            
+            if position == 'موظف بقسم وحدات الأعمال بمعهد الملك عبدالله':
+                is_staff = True
 
             editkai.first_name = firstName
             editkai.last_name = lastName
@@ -394,6 +412,8 @@ def editkai (request , id ):
             editkai.kaiemployeeid = empNum,
             editkai.position = position
             editkai.username = username[0]
+            editkai.is_department_head = is_department_head
+            editkai.is_staff = is_staff
             editkai.save()
             kaiUpdateapi(request , editkai , oldussername)
             print('editkai',editkai)
@@ -506,7 +526,7 @@ def editcollage (request , id ):
             nodisk = request.POST.get('disknum')
             nobuilding = request.POST.get('buildingnum')
             departments =  request.POST.getlist('departments[]')
-            buemail = request.POST.get('buemail')
+            buemail = request.POST.get('buemail').lower()  
             buphonenumber = request.POST.get('buphonenumber')
             domain = request.POST.getlist('domains[]')
 
@@ -576,6 +596,10 @@ def deletefaculty (request , id ):
     try:
             getusername = FacultyStaff.objects.get(id = id)
             deletefromApi(request , getusername.username)
+            if getusername.is_buhead:
+                deluser = Collage.objects.get( collageid = getusername.collageid.collageid)
+                deluser.userid = None
+                deluser.save()
             with connection.cursor() as cursor:
                  cursor.execute('DELETE FROM public."Faculty_Staff" WHERE id = %s', [id])           
             return redirect('admin_account:facultyList')
@@ -649,18 +673,9 @@ def checkBU(request, collage_id):
     return JsonResponse({'success_message': False})
 
 @login_required
-def checkAssistant(request, collage_id):
-    try:
-        checkifAssistant = FacultyStaff.objects.get(collageid=collage_id, bu_assistant=True)
-        if checkifAssistant:
-            return JsonResponse({'success_message': True})
-    except FacultyStaff.DoesNotExist:
-        pass  
-    return JsonResponse({'success_message': False})
-
-@login_required
 def checkEmail(request, email):
     try:
+        email = email.lower()  
         checkifEmail = FacultyStaff.objects.filter(email=email).exists() or \
                        Kaibuemployee.objects.filter(email=email).exists()
 
@@ -685,6 +700,16 @@ def checkposition(request):
         pass  
     return JsonResponse({'success_message': False})
 
+@login_required
+def checkDean(request):
+    try:
+        checkifDean = Kaibuemployee.objects.filter(is_department_head = True).exists()
+        if checkifDean:
+            return JsonResponse({'success_message': True})
+    except Kaibuemployee.DoesNotExist:
+        pass  
+    return JsonResponse({'success_message': False})
+
 def generate_random_password(length=12):
     # Define the character set for the password
     characters = string.ascii_letters + string.digits + string.punctuation
@@ -702,7 +727,7 @@ def send_email_to_new_user(request, email, password , is_buhead = None):
         collage = Collage.objects.get(collageid = faculty.collageid.collageid)
         bupassword = generate_random_password()
         collage.password = bupassword
-        collage.userid = faculty.id
+        collage.userid = faculty
         collage.password = make_password(collage.password)
         collage.save()
 

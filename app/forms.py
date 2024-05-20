@@ -17,7 +17,7 @@ ROLE_CHOICES= [
 
 class emailcheckform(forms.Form):
      email= forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'البريد الإلكتروني'}))
-     role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
+    #  role= forms.CharField(label='Role', widget =forms.Select(choices=ROLE_CHOICES , attrs={'class': 'form-select text-center'}))
 
 class ForgetPasswordForm(forms.Form):
   role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.Select())

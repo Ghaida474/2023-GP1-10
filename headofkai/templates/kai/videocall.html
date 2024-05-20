@@ -1,16 +1,69 @@
+{% extends 'kai/components/base.html' %}
+{% load static %}
+{% block content %}
+
 <html>
 
 <head>
-    <style>
-        #root {
-            width: 100vw;
-            height: 100vh;
-            }
-    </style>
+
+        <style>
+            /* Resetting default margin and padding */
+    html {
+        margin: 0;
+        padding: 0;
+    }
+    body{
+      margin-left: 100px;
+      margin-right: 0px;
+    }
+    /* Making the root container fill the viewport */
+    #root {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Styling the video call container */
+    .zego-video-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: left;
+        align-items: left;
+        background-color: #f0f0f0; /* Light gray background color */
+    }
+    
+    /* Styling the video call controls */
+    .zego-video-tool-box {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    /* Styling the buttons */
+    .zego-video-tool-box button {
+        margin-right: 10px;
+        padding: 10px;
+        background-color: #0e5cb0; /* Blue button color */
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .zego-video-tool-box button:hover {
+        background-color: #acc5e1; /* Darker blue on hover */
+    }
+    
+        </style>
 </head>
 
 
 <body>
+    
     <div id="root"></div>
 </body>
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
@@ -30,11 +83,12 @@ window.onload = function () {
         // @param 3: Room ID
         // @param 4: User ID
         // @param 5: Username
-    const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
-    const userID = Math.floor(Math.random() * 10000) + "";
+        //getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+    const roomID = getUrlParams(window.location.href)['roomID'] || "{{ roomID }}" || (Math.floor(Math.random() * 10000) + "");
+    const userID =  "{{ id }}"
     const userName = "{{ name }}"
-    const appID = 468346473;
-    const serverSecret = "9c46818110a965281412195980bd2ab7";
+    const appID = 1358908174;
+    const serverSecret = "343140fbc06d6f501040b60a365fdf7b";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
 
     
@@ -57,7 +111,7 @@ window.onload = function () {
            	showScreenSharingButton: true,
            	showTextChat: true,
            	showUserList: true,
-           	maxUsers: 2,
+           	maxUsers: 100,
            	layout: "Auto",
            	showLayoutButton: false,
          
@@ -66,3 +120,4 @@ window.onload = function () {
 </script>
 
 </html>
+{% endblock %}

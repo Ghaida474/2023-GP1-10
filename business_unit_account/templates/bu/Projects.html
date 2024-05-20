@@ -28,17 +28,58 @@
    
  
     
-        <div class="tab-menu-heading hremp-tabs p-0 ">
-            <div class="tabs-menu1" >
-                <!-- Tabs -->
-                <ul class="nav panel-tabs" style=" margin-right: 200px;" >
-                    <li class="ms-4" ><a href="#tab1" class="active"  data-bs-toggle="tab">المشاريع</a></li>
-                    <li><a href="#tab2" data-bs-toggle="tab">المشاريع قيد العمل</a></li> 
-                    <li><a href="#tab3" data-bs-toggle="tab">المشاريع تم التعميد عليها</a></li>
-                    <li><a href="#tab4" data-bs-toggle="tab">المشاريع لم تم التعميد عليها</a></li>
-                </ul>
-            </div>
-        </div>
+                    <div class="tab-menu-heading hremp-tabs p-0 ">
+                        <div class="tabs-menu1" >
+                            <!-- Tabs -->
+                            <ul class="nav panel-tabs" style=" margin-right: 200px;" >
+                                
+                                <li class="ms-4 position-relative">
+                                    <a href="#tab1" class="active" data-bs-toggle="tab">
+                                        المشاريع
+                                    </a>
+                                    {% if combined_program_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ combined_program_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                                
+                                <li class="ms-4 position-relative">
+                                    <a href="#tab2"  data-bs-toggle="tab">
+                                        المشاريع قيد العمل
+                                    </a>
+                                    {% if started_projects_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ started_projects_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                                
+                                <li class="ms-4 position-relative">
+                                    <a href="#tab3"  data-bs-toggle="tab">
+                                        المشاريع تم التعميد عليها
+                                    </a>
+                                    {% if accepted_projects_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ accepted_projects_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+
+                                <li class="ms-4 position-relative">
+                                    <a href="#tab4"  data-bs-toggle="tab">
+                                        المشاريع لم يتم التعميد عليها
+                                    </a>
+                                    {% if notaccepted_projects_ids.count > 0 %}
+                                        <span class="badge badge-pill" style="position: absolute; top: -5px; right: 0; background-color:red; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                            {{ notaccepted_projects_ids.count }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
 
                  
                     <div class="panel-body tabs-menu-body hremp-tabs1 p-0">
@@ -74,30 +115,61 @@
 														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
-												<tbody>
-													{% for program in all_projects %}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{{program.programtype}}</td>
-                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
-                                                                <td>
-                                                                    {{ program.status }}
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" name="update_status" value="accept">
-                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                                </td> 
-                                                            </tr>
-													{% empty %}
+                                                {% if all_projects %}  
+                                                    {% if combined_program_ids %} 
+                                                        <tbody>         
+                                                        {% for program in all_projects %}
+                                                                {% if program.programid in combined_program_ids %} 
+                                                                    <tr style="background-color: rgba(61, 138, 190, 0.1);">
+                                                                            <td>
+                                                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                                    <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>{{program.programtype}}</td>
+                                                                            <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                            <td>
+                                                                                {{ program.status }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="update_status" value="accept">
+                                                                                <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                            </td> 
+                                                                        </tr>
+                                                                {% endif %}
+                                                            {% endfor %} 
+                                                        </tbody>
+                                                    {% endif %}
+                                                    
+                                                    {% if combined_program_ids_noNotification %} 
+                                                        <tbody>
+                                                            {% for program in combined_program_ids_noNotification %}
+                                                                    <tr>
+                                                                            <td>
+                                                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                                    <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>{{program.programtype}}</td>
+                                                                            <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                            <td>
+                                                                                {{ program.status }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="update_status" value="accept">
+                                                                                <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                            </td> 
+                                                                        </tr>
+                                                                
+                                                            {% endfor %}   
+                                                        </tbody>  
+                                                    {% endif %} 
+
+												{% else %}
 													<tr >
                                                         <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
-                                                    </tr>      
-												  {% endfor %}    
-												</tbody>
+                                                    </tr>    
+                                                {% endif %}  
                                             </table>
 										</div>
                                     </div>
@@ -118,37 +190,66 @@
 														<th class="border-bottom-0">الإطلاع على التفاصيل</th>	
 													</tr>
 												</thead>
+                                                {% if started_projects %}  
+                                                    {% if started_projects_ids %}
+                                                        <tbody> 
+                                                            {% for program in started_projects %}
+                                                                {% if program.programid in started_projects_ids %}
+                                                                <tr  style="background-color: rgba(61, 138, 190, 0.1);">
+                                                                            <td>
+                                                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                                    <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>{{program.programtype}}</td>
+                                                                            <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                            <td>
+                                                                                {{ program.status }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="update_status" value="accept">
+                                                                                <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                            </td> 
+                                                                        </tr>
+                                                                {% endif %}
+                                                            {% endfor %} 
+                                                        </tbody> 
+                                                    {% endif %}
 
-												<tbody>
-													{% for program in started_projects %}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{{program.programtype}}</td>
-                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
-                                                                <td>
-                                                                    {{ program.status }}
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" name="update_status" value="accept">
-                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                                </td> 
-                                                            </tr>
-													{% empty %}
+                                                    {% if started_program_ids_noNotification %}
+                                                        <tbody> 
+                                                            {% for program in started_program_ids_noNotification %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                    <td>
+                                                                        {{ program.status }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                            {% endfor %}   
+                                                        </tbody> 
+                                                    {% endif %}
+												{% else %}
 													<tr >
                                                         <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
                                                     </tr>      
-												  {% endfor %}    
-												</tbody>
+												{% endif %}    
 											</table>
 										</div> 
 									</div>  
 							    </div> 
 						    </div> 
-
+                             <!-- started_program_ids_noNotification -->
+                            
                             <div class="tab-pane" id="tab3">
                                 <div class="card-body">
                                     <div class="col-xl-12 col-md-12 col-lg-12">  
@@ -164,30 +265,59 @@
 													</tr>
 												</thead>
 
-												<tbody>
-													{% for program in Accepted_projects %}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="me-3 mt-0 mt-sm-2 d-block">
-                                                                        <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
-                                                                    </div>
-                                                                </td>
-                                                                <td>{{program.programtype}}</td>
-                                                                <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
-                                                                <td>
-                                                                    {{ program.status }}
-                                                                </td>
-                                                                <td>
-                                                                    <input type="hidden" name="update_status" value="accept">
-                                                                    <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
-                                                                </td> 
-                                                            </tr>
-													{% empty %}
+                                                {% if Accepted_projects %}  
+                                                    {% if accepted_projects_ids %}
+                                                        <tbody> 
+                                                            {% for program in Accepted_projects %}
+                                                                {% if program.programid in accepted_projects_ids %}
+                                                                <tr  style="background-color: rgba(61, 138, 190, 0.1);">
+                                                                            <td>
+                                                                                <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                                    <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>{{program.programtype}}</td>
+                                                                            <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                            <td>
+                                                                                {{ program.status }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="hidden" name="update_status" value="accept">
+                                                                                <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                            </td> 
+                                                                        </tr>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    {% endif %}
+                                                    {% if accepted_program_ids_noNotification %}
+                                                        <tbody> 
+                                                            {% for program in accepted_program_ids_noNotification %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="me-3 mt-0 mt-sm-2 d-block">
+                                                                            <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{program.programtype}}</td>
+                                                                    <td>{{program.OfferingDate | date:"M. d, Y"}}</td>
+                                                                    <td>
+                                                                        {{ program.status }}
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="hidden" name="update_status" value="accept">
+                                                                        <a href="{% url 'business_unit_account:project_view' program_id=program.programid %}" type="button" class="btn btn-outline-info" style="margin-right: 50px;"><i style="width:40px;"class="feather feather-eye text-nowrap"></i></a> 
+                                                                    </td> 
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    {% endif %}
+												{% else %}
 													<tr >
                                                         <td colspan="7" style="margin-right: 60px;">لا يوجد مشاريع </td>
                                                     </tr>      
-												  {% endfor %}    
-												</tbody>
+												{% endif %}    
+												
 											</table>
 										</div> 
 									</div>  
@@ -211,7 +341,7 @@
 
 												<tbody>
 													{% for program in notAccepted_projects %}
-                                                            <tr>
+                                                    <tr {% if program.programid in notaccepted_projects_ids %} style="background-color: rgba(61, 138, 190, 0.1);"{% endif %}>
                                                                 <td>
                                                                     <div class="me-3 mt-0 mt-sm-2 d-block">
                                                                         <h6 class="mb-1 fs-14">{{ program.Name }}</h6>
@@ -327,7 +457,7 @@
                                 <label class="form-label">الفريق <span style="color: red;">*</span></label>
                                 <select class="form-control select2"  id="mySelect" name="instructor" data-placeholder= "اختار الفريق" multiple required>
                                     {% for faculty_member in faculty %}  
-                                        {% if not faculty_member.is_buhead  and not faculty_member.bu_assistant %}
+                                        {% if not faculty_member.is_buhead %}
                                             <option value= "{{faculty_member.id}}" >
                                                 {{faculty_member.first_name}} {{faculty_member.last_name}} | <small>{{faculty_member.major}}</small>
                                             </option> 

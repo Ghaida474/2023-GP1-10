@@ -1,4 +1,3 @@
-from datetime import timezone
 from django.http import Http404
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
@@ -8,21 +7,30 @@ from app.forms import updateKai,ChangePasswordForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.messages import get_messages
-from app.models import FacultyStaff,Collage, Trainingprogram,Register,Trainees,StatusDateCheck, Notification , Kaibuemployee , Task , TaskToUser
-from django.shortcuts import get_object_or_404
+from app.models import Files,FacultyStaff,Collage, Trainingprogram,Register,Trainees,StatusDateCheck, Notification , Kaibuemployee , Task , TaskToUser , Project
 from django.http import Http404, HttpResponse
-from django.http import FileResponse
 import mimetypes
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
 import base64
+from datetime import timezone
 from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime
 from django.views.decorators.http import require_POST
 
-################### coomunication  ###################
+import smtplib
+import ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from django.conf import settings
+from django.http import HttpResponse
+import certifi
+
+from django.db.models import Q, Case, When, IntegerField
+from django.db.models import Case, When, Value, IntegerField, DateTimeField, CharField
+from collections import OrderedDict
+
+################### comunication  ###################
 @login_required
 def chat(request):
     username = request.user.username
@@ -120,27 +128,104 @@ def createDirect(request,direct_username):
     return render(request, 'kai_staff/chat.html' , context)
 
 @login_required
-def callsDashboard(request):
-    return render(request, 'kai_staff/calls-dashboard.html', {'name': request.user.first_name})
-
-@login_required
 def videocall(request):
-    return render(request, 'kai_staff/videocall.html', {'name': request.user.first_name + " " + request.user.last_name})
+    notifications = viewNotifications(request)
+    context = {'name': request.user.first_name + " " + request.user.last_name , 'id':request.user.id}
+    context.update(notifications)
+    return render(request, 'kai_staff/videocall.html', context)
 
 @login_required
 def joinroom(request):
+    notifications = viewNotifications(request)
     if request.method == 'POST':
         roomID = request.POST['roomID']
         return redirect("/kai_staff/kaistaff-home/videocall?roomID=" + roomID)
-    return render(request, 'kai_staff/joinroom.html')
+    return render(request, 'kai_staff/joinroom.html' , notifications)
 
 ################### Profile  ###################
+
+def viewNotifications(request):
+    user = request.user
+    trainingprogram = Trainingprogram.objects.filter()
+    
+    notifications_in_programss = Notification.objects.filter(
+       kaitarget=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False)
+    
+    notifications_in_tasks = Notification.objects.filter(
+        kaitarget=user,
+        taskid__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+    )
+    
+    # Get the program IDs from combined_programs
+    program_ids = [program.programid for program in trainingprogram]
+    print('program_ids',program_ids)
+    # Filter notifications for combined_programs
+    notifications_in_programs = notifications_in_programss.filter(training_program__programid__in=program_ids)
+    print('notifications_in_programs',notifications_in_programs)
+    # Retrieve the programid(s) for combined programs
+    program_ids = notifications_in_programs.values_list('training_program__programid', flat=True).distinct()
+    print('program_ids',program_ids)
+
+    all_notifications_needs_to_be_shown = Notification.objects.filter( kaitarget=user, need_to_be_shown=True)
+    all_notifications_needs_to_be_shown_count = Notification.objects.filter( kaitarget=user, need_to_be_shown=True,isread=False ).count()
+     
+    return {'notifications_in_tasks':notifications_in_tasks,'program_ids': program_ids ,'all_notifications_needs_to_be_shown': all_notifications_needs_to_be_shown ,'all_notifications_needs_to_be_shown_count': all_notifications_needs_to_be_shown_count}
+
 @login_required
 def kaistaff_home (request):
     user = request.user
     if user.new_user:
         return redirect('kai_staff:change_new_user_password')
-    return render(request, 'kai_staff/Home.html', {'user': user })
+    
+    # ################################## revenue
+    collages = Collage.objects.all()
+    collage_data = []
+
+    for collage in collages:
+
+        projects = Project.objects.filter(isAccepted=True, collageid=collage.collageid)
+        programs = Trainingprogram.objects.filter(iskaiaccepted=True, collageid=collage.collageid)
+
+        project_count = projects.count()
+        program_count = programs.count()
+
+        revenueP = 0 
+
+        for project in projects:
+            tax = project.taxpercentage * project.totalcost
+            kai = project.kaipercentage * project.totalcost
+            revenue = project.totalcost - (tax + kai)
+            revenueP += revenue
+
+        revenueT = 0 
+
+        for program in programs:
+            if program.attendeescount is not None and program.totalcost is not None:
+                total = program.attendeescount * program.totalcost
+                facultycost = program.num_ofinstructors * (program.enddate - program.startdate).days * program.cost
+                tax = program.taxpercentage * total
+                kai = program.kaipercentage * total
+                revenue = total - (facultycost + tax + kai)
+                revenueT += revenue
+        
+        collage_data.append({
+            'collage': collage,
+            'project_count': project_count,
+            'program_count': program_count,
+            'revenue_per_year_p': revenueP,
+            'revenue_per_year_t': revenueT,
+            'allRevenue':revenueP + revenueT,
+        })
+
+    context = {'user': user, 'collage_data': collage_data  }
+    notifications = viewNotifications(request)
+    context.update(notifications)
+    return render(request, 'kai_staff/Home.html', context)
 
 @login_required
 def change_new_user_password(request):
@@ -156,7 +241,10 @@ def change_new_user_password(request):
 @login_required
 def profile_view(request):
     user = request.user
-    return render(request, 'kai_staff/profile.html' ,{'user': user}) 
+    context = {'user': user}
+    notifications = viewNotifications(request)
+    context.update(notifications)
+    return render(request, 'kai_staff/profile.html' ,context) 
 
 @login_required
 def editprofile_view(request):
@@ -171,8 +259,10 @@ def editprofile_view(request):
             if form.is_valid():          
                 form.save()
                 return redirect('kai_staff:profile')
-            
-    return render(request, 'kai_staff/edit-profile.html', {'form': form , 'user' : user})
+    context = {'user': user , 'form': form  }
+    notifications = viewNotifications(request)
+    context.update(notifications)       
+    return render(request, 'kai_staff/edit-profile.html', context)
 
 @login_required
 def changepassword_view(request):
@@ -188,22 +278,27 @@ def changepassword_view(request):
             update_session_auth_hash(request, user)
             success = True
             # return redirect('kai_staff:profile')
-
-    return render(request, 'kai_staff/change-password.html', {'user': user, 'form': form , 'success':success})
+    context = {'user': user , 'form': form , 'success':success }
+    notifications = viewNotifications(request)
+    context.update(notifications)  
+    return render(request, 'kai_staff/change-password.html', context)
 
 ################### Training program  ###################
+
 @login_required
 def traningprogram_view(request):
     user = request.user
     programs = StatusDateCheck.objects.filter()
-   
+    
     for program in programs:
         Collage_id = program.training_program.collageid
         collage = Collage.objects.get(collageid = Collage_id)
         collagename = collage.name
         program.collagename = collagename
-        
-    return render(request, 'kai_staff/TraningPrograms.html', {'user': user , 'programs':programs})
+    context = {'user': user , 'programs':programs }
+    notifications = viewNotifications(request)
+    context.update(notifications)  
+    return render(request, 'kai_staff/TraningPrograms.html',context )
 
 @login_required
 def view_certifications(request, register_id):
@@ -235,6 +330,7 @@ def view_certifications(request, register_id):
 
 @login_required
 def program_view(request , program_id):
+    user = request.user
     program = get_object_or_404(Trainingprogram, programid=program_id)
     instructors = program.instructorid
     
@@ -261,7 +357,20 @@ def program_view(request , program_id):
             traniees_names.append("")
 
     program.traniees_names = traniees_names
-    return render(request, 'kai_staff/TraningProgram-view.html', {'program': program})
+
+    notifications = Notification.objects.filter(training_program=program, kaitarget=user)
+    print("Notifications Found:", notifications.count())
+    for notification in notifications:
+        notification.isread = True
+        notification.isopened = True
+        notification.save()
+        notification.refresh_from_db()
+        print(f'Notification ID: {notification.id}, isopened: {notification.isopened}, isread: {notification.isread}')
+    
+    context = {'program': program}
+    notifications = viewNotifications(request)
+    context.update(notifications)  
+    return render(request, 'kai_staff/TraningProgram-view.html', context)
 
 @login_required
 def save_certifications(request, program_id, trainee_id):
@@ -319,18 +428,34 @@ def accept_program(request, id):
     program.dataofkaiacceptance=timezone.now().date()
     program.save()
 
-    # Check if all IdStatusDate objects associated with the same training program have been accepted
-    
-    # If all have been accepted, update StatusDateCheck objects
     status_date_checks = StatusDateCheck.objects.filter(training_program=id)
     status_date_checks.filter(status="تم قبول الطلب من قبل المعهد").update(indicator='T' , date=timezone.now().date())
     status_date_checks.filter(status="انتظار قبول المعهد").update(indicator='T')
     status_date_checks.filter(status="تم نشر البرنامج").update(indicator='C')
+
+    user = request.user
+    head=FacultyStaff.objects.get(is_buhead=True, collageid=program.collageid)
+    collage = Collage.objects.get(collageid=head.collageid.collageid)
+    first_name =user.first_name
+    last_name =user.last_name
+
+    new_notification = Notification( 
+            training_program=program,
+            notification_message= f" القبول من قبل {first_name} {last_name} ,تم القبول الطلب من قبل المعهد",
+            function_indicator=1,
+            need_to_be_opened=True,
+            need_to_be_shown=True,
+            bu_target = head)
+    new_notification.save()
+    if collage.sendNotificationByEmail:
+        send_custom_email(request, collage.buemail, 'قبول من المعهد ', f" القبول من قبل {first_name} {last_name} ,تم القبول الطلب من قبل المعهد")
+
     return redirect('kai_staff:program_view' , program_id = program.programid)
 
 @login_required
 @require_POST
 def rejecte_program(request, id):
+    user = request.user
     rejection_reason = request.POST.get('rejectionReason')
     program = get_object_or_404(Trainingprogram, programid=id)
     program.status ="تم رفض الطلب من قبل المعهد"
@@ -338,16 +463,59 @@ def rejecte_program(request, id):
     program.iskaiaccepted=False
     program.dataofkairejection=datetime.now().date()
     program.save()
+    
+    head=FacultyStaff.objects.get(is_buhead=True, collageid=program.collageid)
+    collage = Collage.objects.get(collageid=head.collageid.collageid)
+    first_name =user.first_name
+    last_name =user.last_name
+
+    new_notification = Notification( 
+            training_program=program,
+            notification_message= f" الرفض من قبل {first_name} {last_name} ,تم رفض الطلب من قبل المعهد",
+            function_indicator=1,
+            need_to_be_opened=True,
+            need_to_be_shown=True,
+            bu_target = head)
+    new_notification.save()
+    if collage.sendNotificationByEmail:
+        send_custom_email(request, collage.buemail, 'رفض من المعهد ', f" الرفض من قبل {first_name} {last_name} ,تم رفض الطلب من قبل المعهد")
+
     return redirect('kai_staff:traning-program')
 
 
-################Tasks ###################
+################ Tasks ###################
 
-from django.db.models import Case, When, Value, IntegerField, DateTimeField, CharField
+def view_tasktfile(request, task_id, file_id):
+    file = get_object_or_404(Files, fileid=file_id, taskid=task_id)
+    attachment_name = file.attachment_name
+    file_extension = attachment_name.split('.')[-1] if '.' in attachment_name else ''
+    content_type, _ = mimetypes.guess_type(attachment_name)
+
+    if content_type:
+        content_type_header = content_type
+    else:
+        if file_extension.lower() == 'pdf':
+            content_type_header = 'application/pdf'
+        elif file_extension.lower() == 'pptx':
+            content_type_header = 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        elif file_extension.lower() in ['doc', 'docx']:
+            content_type_header = 'application/msword'
+        else:
+            content_type_header = 'application/octet-stream'
+
+    response = HttpResponse(file.attachment, content_type=content_type_header)
+    response['Content-Disposition'] = f'inline; filename="{attachment_name}"'
+    return response
+
+
 @login_required
 def task_view(request):
     user = request.user
     current_date = timezone.now()
+
+    allKaistaff = Kaibuemployee.objects.filter(is_staff=True).exclude(pk=user.pk)  # Returns a queryset (iterable)
+    departmenthead = Kaibuemployee.objects.filter(is_department_head=True)  # Returns a queryset (iterable)
+    kaiHead = Kaibuemployee.objects.filter(position='رئيس قسم وحدات الأعمال بمعهد الملك عبدالله')  # Already correct
 
     notifications_in_tasks = Notification.objects.filter(
         kaitarget=user,
@@ -355,6 +523,21 @@ def task_view(request):
         need_to_be_opened=True,
         isopened=False
     )
+    notifications_in_programs = Notification.objects.filter(
+        kaitarget=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+        )
+    notifications_in_programs = notifications_in_programs.values_list('training_program__programid', flat=True).distinct()
+    all_notifications_that_needs_to_be_shown = Notification.objects.filter(kaitarget=user, need_to_be_shown=True)
+
+    all_notifications_that_needs_to_be_shown_count = Notification.objects.filter(
+        kaitarget=user, 
+        need_to_be_shown=True,
+        isread=False
+        ).count()
+    
     LATE = 'متأخرة'
     URGENT = 'عاجلة'
     COMPLETED = 'منجزة'
@@ -367,9 +550,6 @@ def task_view(request):
     default=Value(2),
     output_field=IntegerField()
     )
-
-
-    
 
     allTasksAssignedByUser = Task.objects.filter(
     kai_initiation=user.id
@@ -391,13 +571,6 @@ def task_view(request):
 
     #######
     
-    
-
-
-
-
-
-
     all_tasks_related_to_user = Task.objects.filter(Q(kai_initiation=user.id) | Q(kai_ids__contains=[int(user.id)]))
    
     all_tasks_related_to_user_that_ended = Task.objects.filter(Q(status='منجزة') & (Q(kai_initiation=user.id) | Q(kai_ids__contains=[int(user.id)])))
@@ -436,15 +609,10 @@ def task_view(request):
     notifications_in_assigned_by_user_tasks_count = len(notifications_in_assigned_by_user_tasks)
     notifications_in_assigned_to_user_tasks_count = len(notifications_in_assigned_to_user_tasks)
     notifications_in_related_ended_user_tasks_count = len(notifications_in_related_ended_user_tasks)
-    
 
-    
-
-
-    
     userEliment=get_object_or_404(Kaibuemployee, pk=user.id)
     allCollages = Collage.objects.all()
-    Dean = Kaibuemployee.objects.filter(position='رئيس المعهد')
+    Dean = Kaibuemployee.objects.filter(position='عميد معهد الملك عبدالله')
     otherCollagesBUHeads = FacultyStaff.objects.filter(is_buhead=True)
     allTasksAssignedByUser = Task.objects.filter(kai_initiation=user.id)
     allTasksAssignedToUser = Task.objects.filter(kai_ids__contains=[user.id])
@@ -464,17 +632,16 @@ def task_view(request):
         faculty_ids = []
         full_accomplishment1 = request.POST.get('isfull_accomplishment')
         
-        
-
-
-       
-        
+        attachment_data = []
         if 'attachment' in request.FILES:
-            attachment = request.FILES['attachment'].read()
-            attachment_name = request.FILES['attachment'].name
-        else:
-            attachment = None
-            attachment_name = ''
+            attachments = request.FILES.getlist('attachment')
+
+            for attachment_file in attachments:
+                attachment_data.append({
+                    'content': attachment_file.read(),
+                    'name': attachment_file.name,
+                })
+
         requiredprocedure = request.POST.get('requiredprocedure')
         priority = request.POST.get('priority')
         assiningto = request.POST.getlist('assiningto')
@@ -493,8 +660,6 @@ def task_view(request):
                 faculty_id = assign.split('.')[1]
                 faculty_ids.append(faculty_id)
         
-        
-        
         tempStatus = ''
         tempStatus2=''
         if ToAll == True:
@@ -507,13 +672,7 @@ def task_view(request):
             tempStatus = 'تم إسناد المهمة'
             tempStatus2='مسندة'
 
-        
-        
-
         print(tasktype, tasktopic,taskdescription, isclassifide, notes, priority , assiningto, startdate, enddate)
-
-
-
 
         new_task = Task(
            task_name = tasktopic,
@@ -530,14 +689,33 @@ def task_view(request):
            kai_ids =  kai_ids ,
            status=tempStatus2,
            is_main_task = True,
-           attachment = attachment,
+           #attachment = attachment,
            toall=ToAll,
            full_accomplishment = full_accomplishment1 
         )
         new_task.save()
+
+        if attachment_data:
+                for attachmentt in attachment_data:
+                    new_file = Files(
+                            attachment = attachmentt['content'],
+                            attachment_name = attachmentt['name'],
+                            taskid = new_task
+                    )
+                    new_file.save()
          
-        
         status_message_notfy = f"تم اسناد مهمة {new_task.task_name} إليك الرجاء إنجاز المهمة"
+        body = f'''\
+        السلام عليكم،
+
+        نود إعلامكم بأن مهمة جديدة بعنوان {new_task.task_name} قد تم تكليفها إليكم. نأمل منكم البدء في تنفيذ المهمة وفقاً للمتطلبات المحددة.
+
+        نشكركم مقدماً على جهودكم ونتطلع إلى إنجازكم لهذا العمل بالجودة والكفاءة المعهودة.
+
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+        '''
 
         for id in kai_ids:
             instructor = Kaibuemployee.objects.get(id=id)
@@ -545,46 +723,33 @@ def task_view(request):
             new_notification = Notification(
             kaitarget=instructor,
             taskid=new_task,
-            notification_message=status_message_notfy,
-                         
+            notification_message=status_message_notfy,       
             need_to_be_opened=True,
             function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
             need_to_be_shown=True,
-
             )
             new_notification.save()
             print( new_notification.need_to_be_shown)
             print("in the loop")
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'مهمة مسندة', status_message)
+            if instructor.sendNotificationByEmail  :
+                send_custom_email(request, instructor.email, 'مهمة مسندة', body)
         
         for id in faculty_ids:
             instructor =FacultyStaff.objects.get(id=id)
 
             new_notification = Notification(
-            faculty_target=instructor,
-            taskid=new_task,
-            notification_message=status_message_notfy,
-                         
-            need_to_be_opened=True,
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
-
-            )
+                bu_target=instructor,
+                taskid=new_task,
+                notification_message=status_message_notfy,
+                function_indicator=2,      
+                need_to_be_opened=True,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
             new_notification.save()
-            print("in the loop")
-            print(new_notification.need_to_be_shown)
-          
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'مهمة مسندة', status_message)
-
-
-
-
-
-
-
-
+            bu_collage = instructor.collageid
+            if bu_collage and bu_collage.sendNotificationByEmail  :
+                    send_custom_email(request, bu_collage.buemail, 'مهمة مسندة', body)
 
         status_message = f"تم إنشاء المهمة من قبل {user.first_name} {user.last_name}"
         new_task.statusarray.append(status_message)
@@ -596,8 +761,6 @@ def task_view(request):
 
         new_task.save()
 
-
-
         for id in new_task.faculty_ids:
             faculty = FacultyStaff.objects.get(pk = id)
 
@@ -605,7 +768,6 @@ def task_view(request):
                 main_task=new_task,
                 faculty_user = faculty,
                 status='مسندة'
-
             )
             new_taskToUser.save()
         
@@ -615,23 +777,15 @@ def task_view(request):
                 main_task=new_task,
                 kai_user=kaiuser,
                 status='مسندة',
-
             )
             new_taskToUser.save()
         return redirect('kai_staff:tasks')
     current_date =timezone.now().date()
 
-    
-    
-
-       
-    
-            
-        
-
-
-
     return render(request, 'kai_staff/Tasks.html', {'user': user, 'allCollages':allCollages, 'allTasksAssignedByUser':allTasksAssignedByUser, 'allTasksAssignedToUser':allTasksAssignedToUser, 'all_tasks_related_to_user':all_tasks_related_to_user, 'allFaculties':allFaculties, 'allKaiEmployees':allKaiEmployees, 'otherCollagesBUHeads':otherCollagesBUHeads, 'Dean':Dean, 'notifications_in_tasks':notifications_in_tasks,
+                                                    'notifications_in_programs':notifications_in_programs,
+                                                    'all_notifications_that_needs_to_be_shown':all_notifications_that_needs_to_be_shown,
+                                                    'all_notifications_that_needs_to_be_shown_count':all_notifications_that_needs_to_be_shown_count,
                                                      'notifications_in_assigned_by_user_tasks_count': notifications_in_assigned_by_user_tasks_count,
                                                      'notifications_in_assigned_to_user_tasks_count':notifications_in_assigned_to_user_tasks_count,
                                                      'notifications_in_related_ended_user_tasks_count':notifications_in_related_ended_user_tasks_count,
@@ -640,14 +794,22 @@ def task_view(request):
                                                      'notifications_in_related_ended_user_tasks':notifications_in_related_ended_user_tasks,
                                                      'combined_tasks_ids':combined_tasks_ids,
                                                      'current_date':current_date,
+                                                      'allKaistaff':allKaistaff, 
+                                                      'departmenthead':departmenthead, 
+                                                      'kaiHead':kaiHead
 
                                                      })
 
-from django.db.models import Q, Case, When, IntegerField
+
 
 @login_required
 def task_details(request, task_id):
     user = request.user
+    allKaistaff = Kaibuemployee.objects.filter(is_staff=True).exclude(pk=user.pk)  # Returns a queryset (iterable)
+    departmenthead = Kaibuemployee.objects.filter(is_department_head=True)  # Returns a queryset (iterable)
+    kaiHead = Kaibuemployee.objects.filter(position='رئيس قسم وحدات الأعمال بمعهد الملك عبدالله')  # Already correct
+    file = Files.objects.filter(taskid=task_id)
+    completedTasksByUseres = TaskToUser.objects.filter(main_task=task_id, status = 'منجزة')
 
     notifications_in_tasks = Notification.objects.filter(
         kaitarget=user,
@@ -655,6 +817,22 @@ def task_details(request, task_id):
         need_to_be_opened=True,
         isopened=False
     )
+
+    notifications_in_programs = Notification.objects.filter(
+        kaitarget=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+        )
+    
+    notifications_in_programs = notifications_in_programs.values_list('training_program__programid', flat=True).distinct()
+    all_notifications_that_needs_to_be_shown = Notification.objects.filter(kaitarget=user, need_to_be_shown=True)
+
+    all_notifications_that_needs_to_be_shown_count = Notification.objects.filter(
+        kaitarget=user, 
+        need_to_be_shown=True,
+        isread=False
+        ).count()
     
     givenTask = get_object_or_404(Task, pk=task_id)
     allCollages = Collage.objects.all()
@@ -702,8 +880,6 @@ def task_details(request, task_id):
     number_of_tasks_to_retrieve = givenTask.countrejection
     recent_rejected_tasks = rejected_tasks[:number_of_tasks_to_retrieve]
 
-    
-
     otherCollagesBUHeads= FacultyStaff.objects.filter(is_buhead=True)
     allTasksAssignedToUser = Task.objects.filter(faculty_ids__contains=[int(user.id)])
     all_tasks_related_to_user = Task.objects.filter(Q(kai_initiation=user.id) | Q(kai_ids__contains=[int(user.id)]))
@@ -714,12 +890,9 @@ def task_details(request, task_id):
     (Q(main_task=givenTask) & Q(kai_initiation=user) & Q(status='مسندة')) |( Q(status='KAi مرسله إلى موظفين ال ') & Q(kai_initiation=user))
 )
    
-   
     not_completed_subtasks_count = Task.objects.filter(
     (Q(main_task=givenTask) & Q(kai_initiation=user) & (Q(status='مسندة')) | (Q(status='KAi مرسله إلى موظفين ال ')) & Q(kai_initiation=user) )
 ).count()
-
-
 
     Faculty_user = None
     Kai_user = None
@@ -728,17 +901,12 @@ def task_details(request, task_id):
     if givenTask.kai_ids and len(givenTask.kai_ids) > 0:
         Kai_user = Kaibuemployee.objects.filter(pk__in=givenTask.kai_ids)
 
-    
     userAssignment = TaskToUser.objects.filter(main_task_id=task_id, kai_user=user, status='مسندة').count()
     userAccompleshment = TaskToUser.objects.filter(main_task_id=task_id, kai_user=user, status='منجزة').count()
     userrejection = TaskToUser.objects.filter(main_task_id=task_id, kai_user=user, status='مرفوضة').count()
 
-
-
-    
     main_task_instance = get_object_or_404(Task, pk=task_id)
     task_hierarchy = build_task_hierarchy(givenTask)
-
 
     def flatten_hierarchy(task, hierarchy, result=None):
         if result is None:
@@ -753,7 +921,6 @@ def task_details(request, task_id):
     # Flatten the hierarchy
     flat_hierarchy = flatten_hierarchy(givenTask, task_hierarchy)
 
-
     if request.method == 'POST':
         tasktype = request.POST.get('tasktype')
         tasktopic = request.POST.get('tasktopic')
@@ -765,18 +932,9 @@ def task_details(request, task_id):
         kai_ids = []
         faculty_ids = []
         full_accomplishment1 = request.POST.get('isfull_accomplishment')
-        
+
         
 
-
-       
-        
-        if 'attachment' in request.FILES:
-            attachment = request.FILES['attachment'].read()
-            attachment_name = request.FILES['attachment'].name
-        else:
-            attachment = None
-            attachment_name = ''
         requiredprocedure = request.POST.get('requiredprocedure')
         priority = request.POST.get('priority')
         assiningto = request.POST.getlist('assiningto')
@@ -817,13 +975,6 @@ def task_details(request, task_id):
             tempStatus = 'تم إسناد المهمة الفرعية'
             tempStatus2='مسندة'
 
-        
-
-        
-
-
-
-
         new_task = Task(
            task_name = tasktopic,
            task_type = tasktype,
@@ -839,7 +990,7 @@ def task_details(request, task_id):
            kai_ids =  kai_ids ,
            status=tempStatus2,
            is_main_task = False,
-           attachment = attachment,
+           #attachment = attachment,
            main_task=main_task_instance,
            toall=ToAll,
            full_accomplishment = full_accomplishment1 
@@ -847,9 +998,37 @@ def task_details(request, task_id):
         )
         new_task.save()
 
+        attachment_data = []
+        if 'attachment' in request.FILES:
+            attachments = request.FILES.getlist('attachment')
 
+            for attachment_file in attachments:
+                attachment_data.append({
+                    'content': attachment_file.read(),
+                    'name': attachment_file.name,
+                })
+        if attachment_data:
+                for attachmentt in attachment_data:
+                    new_file = Files(
+                            attachment = attachmentt['content'],
+                            attachment_name = attachmentt['name'],
+                            taskid = new_task
+                    )
+                    new_file.save()
 
         status_message_notfy = f"تم اسناد مهمة {new_task.task_name} إليك الرجاء إنجاز المهمة"
+        
+        body = f'''\
+        السلام عليكم،
+
+        نود إعلامكم بأن مهمة جديدة بعنوان {new_task.task_name}  قد تم تكليفها إليكم. نأمل منكم البدء في تنفيذ المهمة وفقاً للمتطلبات المحددة.  
+
+        نشكركم مقدماً على جهودكم ونتطلع إلى إنجازكم لهذا العمل بالجودة والكفاءة المعهودة.
+
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+        '''
 
         for id in kai_ids:
             instructor = Kaibuemployee.objects.get(id=id)
@@ -857,39 +1036,31 @@ def task_details(request, task_id):
             new_notification = Notification(
             kaitarget=instructor,
             taskid=new_task,
-            notification_message=status_message_notfy,
-                         
+            notification_message=status_message_notfy,          
             need_to_be_opened=True,
             function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
             need_to_be_shown=True,
-
             )
             new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'مهمة مسندة', status_message_notfy)
+            if instructor.sendNotificationByEmail:
+                send_custom_email(request, instructor.email, 'مهمة مسندة', body)
         
         for id in faculty_ids:
             instructor =FacultyStaff.objects.get(id=id)
-
+            
             new_notification = Notification(
-            faculty_target=instructor,
-            taskid=new_task,
-            notification_message=status_message_notfy,
-                         
-            need_to_be_opened=True,
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
-
-            )
+                bu_target=instructor,
+                taskid=new_task,
+                notification_message=status_message_notfy,
+                function_indicator=2,     
+                need_to_be_opened=True,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
             new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'مهمة مسندة', status_message_notfy)
-
-
-
-
-
-    
+            bu_collage = instructor.collageid
+            if bu_collage and bu_collage.sendNotificationByEmail:
+                    send_custom_email(request, bu_collage.buemail, 'مهمة مسندة', body)
 
         print(new_task.kai_ids)
         print(new_task.faculty_ids)
@@ -911,7 +1082,6 @@ def task_details(request, task_id):
                 main_task=new_task,
                 faculty_user = faculty,
                 status='مسندة'
-
             )
             new_taskToUser.save()
         
@@ -921,7 +1091,6 @@ def task_details(request, task_id):
                 main_task=new_task,
                 kai_user=kaiuser,
                 status='مسندة',
-
             )
             new_taskToUser.save()
         return redirect('kai_staff:task-detail', task_id=task_id)
@@ -931,17 +1100,8 @@ def task_details(request, task_id):
     zipped_names_reasons = zip(pending_requestor_names, pending_reasons)
     current_date = timezone.now().date()
 
+    return render(request, 'kai_staff/Task_view.html',{'givenTask':givenTask, 'allCollages':allCollages, 'otherCollagesBUHeads':otherCollagesBUHeads,'all_tasks_related_to_user':all_tasks_related_to_user, 'allTasksAssignedToUser':allTasksAssignedToUser, 'subTasksCount':subTasksCount,'NotCompletedSubTasks':NotCompletedSubTasks, 'Faculty_user':Faculty_user, 'Kai_user':Kai_user, 'userAssignment':userAssignment,'userAccompleshment':userAccompleshment, 'userrejection':userrejection, 'pending_requestor_names':pending_requestor_names, 'zipped_names_reasons':zipped_names_reasons, 'status_with_dates':status_with_dates, 'flat_hierarchy':flat_hierarchy, 'not_completed_subtasks_count':not_completed_subtasks_count, 'recent_rejected_tasks':recent_rejected_tasks, 'notifications_in_tasks':notifications_in_tasks, 'current_date':current_date, 'allKaistaff':allKaistaff, 'departmenthead':departmenthead, 'kaiHead':kaiHead, 'completedTasksByUseres':completedTasksByUseres})
 
-
-
-
-
-
-
-    return render(request, 'kai_staff/Task_view.html',{'givenTask':givenTask, 'allCollages':allCollages, 'otherCollagesBUHeads':otherCollagesBUHeads,'all_tasks_related_to_user':all_tasks_related_to_user, 'allTasksAssignedToUser':allTasksAssignedToUser, 'subTasksCount':subTasksCount,'NotCompletedSubTasks':NotCompletedSubTasks, 'Faculty_user':Faculty_user, 'Kai_user':Kai_user, 'userAssignment':userAssignment,'userAccompleshment':userAccompleshment, 'userrejection':userrejection, 'pending_requestor_names':pending_requestor_names, 'zipped_names_reasons':zipped_names_reasons, 'status_with_dates':status_with_dates, 'flat_hierarchy':flat_hierarchy, 'not_completed_subtasks_count':not_completed_subtasks_count, 'recent_rejected_tasks':recent_rejected_tasks, 'notifications_in_tasks':notifications_in_tasks, 'current_date':current_date})
-
-
-from collections import OrderedDict
 
 def build_task_hierarchy(task, hierarchy=None, level=0):
     if hierarchy is None:
@@ -960,7 +1120,6 @@ def build_task_hierarchy(task, hierarchy=None, level=0):
     
     return hierarchy
 
-
 @login_required
 def retrieve_task(request, task_id):
     user = request.user
@@ -969,70 +1128,44 @@ def retrieve_task(request, task_id):
     tempCount = allSubTaskes.count()
     today = timezone.localdate()
 
-
-
     notifications = Notification.objects.filter(
-            taskid=givenTask,
-            
-                
-                
+            taskid=givenTask, 
             )
     for notification in notifications:
         notification.need_to_be_opened=False
         notification.isread = True
         notification.save()
+    
+    kaiids = list(givenTask.kai_ids)
+    facultyids = list(givenTask.faculty_ids)
 
     print("Notifications Found:", notifications.count())
 
     status_message_notfy=f"تم استرجاع المهمة {givenTask.task_name}"
+    body = f'''\
+    إشعار بتحديث حالة المهمة
 
-   
+    السلام عليكم،
 
+    نود إعلامكم بأنه قد تم استرجاع المهمة {givenTask.task_name} ولم تعد مكلفين بها. نأمل التأكد من تحديث أولويات العمل الخاصة بكم وفقًا لهذا التغيير. 
 
-    for id in givenTask.kai_ids:
-            instructor = Kaibuemployee.objects.get(id=id)
+    نشكركم على جهودكم ونتطلع إلى تعاونكم في المهام القادمة.
 
-            new_notification = Notification(
-            kaitarget=instructor,
-            taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
-            
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
+    لديكم أي استفسارات أو تحتاجون إلى مزيد من المعلومات، يرجى التواصل معنا.
 
-            )
-            new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'إسترجاع المهمة', status_message_notfy)
-        
-    for id in givenTask.faculty_ids :
-            instructor =FacultyStaff.objects.get(id=id)
+    مع خالص التقدير والاحترام,
+    
+    بوابة الأعمال
 
-            new_notification = Notification(
-            faculty_target=instructor,
-            taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
-            
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
+    '''
 
-            )
-            new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'مهمة مسندة', status_message_notfy)
-
-
-
-
+    
     AllTaskToUser = TaskToUser.objects.filter(main_task=task_id)
     for subTask in AllTaskToUser:
         subTask.status ='مسترجعة'
         subTask.addeddate= today
         subTask.save()
     
-
     for task in allSubTaskes:
         print("Inside subtask loop")
         task.status = 'مسترجعة'
@@ -1054,14 +1187,10 @@ def retrieve_task(request, task_id):
     givenTask.status='مسترجعة'
     givenTask.save()
 
-
-    
     if tempCount > 0:
         status_message = f" تم إسترجاع جميع المهام التابعة قبل {user.first_name} {user.last_name}"
         givenTask.statusarray.append(status_message)
         givenTask.datearray.append(today)
-
-
 
     status_message = f" تم إسترجاع المهمة قبل {user.first_name} {user.last_name}"
     
@@ -1072,23 +1201,65 @@ def retrieve_task(request, task_id):
     givenTask.kai_ids.clear()
     givenTask.faculty_ids.clear()
     givenTask.save()
+
+    for id in kaiids:
+            instructor = Kaibuemployee.objects.get(id=id)
+            print(instructor.first_name)
+
+            new_notification = Notification(
+            kaitarget=instructor,
+            taskid=givenTask,
+            notification_message=status_message_notfy,
+            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
+            need_to_be_shown=True,
+            )
+            new_notification.save()
+            if instructor.sendNotificationByEmail  :
+                send_custom_email(request, instructor.email, 'إسترجاع المهمة', body)
+        
+    for id in facultyids :
+            instructor =FacultyStaff.objects.get(id=id)
+            print(instructor.first_name)
+
+            new_notification = Notification(
+                bu_target=instructor,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator=2,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
+            new_notification.save()
+            bu_collage = instructor.collageid
+            if bu_collage and bu_collage.sendNotificationByEmail  :
+                    send_custom_email(request, bu_collage.buemail, 'إسترجاع المهمة', body)
     
-
-
     return redirect('kai_staff:tasks')
 
 @login_required
 def reject_task(request, task_id):
     user = request.user
     givenTask = get_object_or_404(Task, pk=task_id)
+    
+    body = f'''\
+    إشعار برفض المهمة
 
+    السلام عليكم،
+
+    نود إحاطتكم علمًا بأن المهمة بعنوان {givenTask.task_name}  قد تم رفضها من قبل  {user.first_name} {user.last_name}. نرجو من الجهة المعنية إعادة تكليف المهمة لشخص آخر أو العمل على حلها. 
+
+    نشكركم على تعاونكم ونتطلع إلى معالجة هذا الأمر بأسرع وقت ممكن.
+
+    بوابة الأعمال
+
+    
+    '''
+    
     notifications = Notification.objects.filter(
                 taskid=givenTask,
                 kaitarget=user,
                 need_to_be_opened=True,
-              
             )
-    
     
     print("Notifications Found:", notifications.count())
 
@@ -1100,49 +1271,43 @@ def reject_task(request, task_id):
 
                 notification.refresh_from_db()
 
-
-
     status_message_notfy = f"تم رفض المهمة {givenTask.task_name} من قبل {user.first_name} {user.last_name} الرجاء اعادة اسناد المهمةاو حلها"
-    if givenTask.faculty_initiation:
-        new_notification = Notification(
-            faculty_target=givenTask.faculty_initiation ,
-            taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
-            need_to_be_opened=True,
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
+    if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
 
-            )
-        new_notification.save()
-        if givenTask.faculty_initiation.sendnotificationbyemail:
-                send_custom_email(request, givenTask.faculty_initiation .email, 'رفض المهمة', status_message_notfy)
-        
-        
-    if givenTask.kai_initiation:
+        instructor = givenTask.faculty_initiation
+
         new_notification = Notification(
+                bu_target=givenTask.faculty_initiation,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator = 202, 
+                need_to_be_opened=True,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
+        new_notification.save()
+        bu_collage = givenTask.faculty_initiation.collageid
+        if bu_collage and bu_collage.sendNotificationByEmail  :
+                send_custom_email(request, bu_collage.buemail, 'رفض المهمة', body)
+
+    if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:        
+            new_notification = Notification(
             kaitarget=givenTask.kai_initiation,
             taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
+            notification_message=status_message_notfy,        
             need_to_be_opened=True,
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
+            function_indicator = 202,  # this is an indicator that will be used when instructor accept or decline a program
             need_to_be_shown=True,
-
             )
-        new_notification.save()
-        if givenTask.kai_initiation.sendnotificationbyemail:
-                send_custom_email(request, givenTask.kai_initiation.email, 'رفض المهمة', status_message_notfy)
+            new_notification.save()
+            if givenTask.kai_initiation.sendNotificationByEmail  :
+                send_custom_email(request, givenTask.kai_initiation.email, 'رفض المهمة', body)
         
-
-
-
     tasktouser =TaskToUser.objects.filter(main_task=task_id, kai_user=user)
 
     notcompletedtasks_count = TaskToUser.objects.filter(main_task=task_id, status='مسندة').count()
 
     completedtask_count = TaskToUser.objects.filter(main_task=task_id, status='منجزة').count()
-   
     
     reason=''
     if request.method == 'POST':
@@ -1151,7 +1316,6 @@ def reject_task(request, task_id):
     givenTask.kai_ids.remove(int(user.id))
     givenTask.save()
 
-    
     today = timezone.localdate()
     print(len(givenTask.kai_ids))
     print(len(givenTask.kai_ids))
@@ -1191,7 +1355,6 @@ def Task_completion(request, task_id):
     user = request.user
     givenTask = get_object_or_404(Task, pk=task_id)
 
-
     notifications = Notification.objects.filter(
                 taskid=givenTask,
                 kaitarget=user,
@@ -1210,79 +1373,107 @@ def Task_completion(request, task_id):
                 notification.refresh_from_db()
 
                 print(f'Notification ID: {notification.id}, isopened: {notification.isopened}, isread: {notification.isread}')
-
-
    
     tasktouserid =TaskToUser.objects.filter(main_task=task_id, kai_user=user)
     today = timezone.localdate()
 
     notcompletedtasks = TaskToUser.objects.filter(main_task=task_id, status='مسندة')
+
     countnotcompletedtasks = notcompletedtasks.count()
     status_message=''
     taskdescription=''
+    status_message=''
+    Task_completion_description=''
     attachment=None
+    attachment_Task_completion= None
+    other_attachments_name =''
     if request.method == 'POST':
-        taskdescription = request.POST.get('taskdescription')
-        if 'attachment' in request.FILES:
-            attachment = request.FILES['attachment'].read()
-            attachment_name = request.FILES['attachment'].name
+        Task_completion_description = request.POST.get('Task_completion_description')
+        if 'attachment_Task_completion' in request.FILES:
+            attachment_Task_completion = request.FILES['attachment_Task_completion'].read()
+            attachment_name = request.FILES['attachment_Task_completion'].name
         else:
-            attachment = None
+            attachment_Task_completion = None
             attachment_name = ''
+
+
+        attachment_data=[]
+        if 'other_attachment_Task_completion' in request.FILES:
+            attachments = request.FILES.getlist('other_attachment_Task_completion')
+
+            for attachment_file in attachments:
+                attachment_data.append({
+                    'content': attachment_file.read(),
+                    'name': attachment_file.name,
+                })
+        if attachment_data:
+                for attachmentt in attachment_data:
+                    new_file = Files(
+                            attachment = attachmentt['content'],
+                            attachment_name = attachmentt['name'],
+                            taskid = givenTask
+                    )
+                    new_file.save()
+
     for task in tasktouserid:
         if task.status != 'مرفوضة':
             task.status = 'منجزة'
             task.addeddate= today
-            task.addedtext=taskdescription
-            task.attachment=attachment
+            task.addedtext=Task_completion_description
+            task.attachment=attachment_Task_completion
             task.save()
-    
+            print(f"Updating task {task.id} with status {task.status}, date {task.addeddate}, description {task.addedtext}")
 
-    
-    
     if givenTask.full_accomplishment:
         if countnotcompletedtasks-1 > 0 or givenTask.countrejection > 0:
             status_message = f" تم إنجاز جزئياً المهمة من قبل {user.first_name} {user.last_name}"
             givenTask.status = 'منجزة جزئياً'
             givenTask.save()
 
-
             status_message_notfy=f" تم إنجاز جزئياً المهمة {givenTask.task_name} من قبل {user.first_name} {user.last_name}"
-         
+            body = f'''\
+            إشعار بإنجاز جزئي للمهمة
 
-            if givenTask.faculty_initiation:
+            السلام عليكم،
+
+            نود إعلامكم بأن المهمة {givenTask.task_name}  قد تم إنجازها جزئيًا من قبل {user.first_name} {user.last_name} . نشكرهم على ما تم إنجازه حتى الآن ونتطلع إلى استكمال باقي العمل في الوقت المحدد.
+
+            نرجو من الفريق المعني متابعة المهام المتبقية وضمان اكتمالها وفقًا للمعايير المطلوبة.
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+
+    
+           '''
+
+            if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
+                instructor =givenTask.faculty_initiation
+
                 new_notification = Notification(
-                  faculty_target=givenTask.faculty_initiation ,
-                  taskid=givenTask,
-                   notification_message=status_message_notfy,
-                         
-                   
-                   function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                   need_to_be_shown=True,
-
-                 )
+                    bu_target=instructor,
+                    taskid=givenTask,
+                    notification_message=status_message_notfy,
+                    function_indicator=2,
+                    # this is an indicator that will be used when instructor accept or decline a program
+                    need_to_be_shown=True,
+                    )
                 new_notification.save()
-                if givenTask.faculty_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.faculty_initiation .email, ' إنجاز المهمة جزئياً', status_message_notfy)
-        
-        
-            if givenTask.kai_initiation:
+                bu_collage = instructor.collageid
+                if bu_collage and bu_collage.sendNotificationByEmail:
+                        send_custom_email(request, bu_collage.buemail, ' إنجاز المهمة جزئياً', body)
+
+            if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:                
                 new_notification = Notification(
                      kaitarget=givenTask.kai_initiation,
                      taskid=givenTask,
                      notification_message=status_message_notfy,
-                         
-            
                      function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
                 new_notification.save()
-                if givenTask.kai_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة جزئياً', status_message_notfy)
+                if givenTask.kai_initiation.sendNotificationByEmail: 
+                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة جزئياً', body)
         
-
-
             if givenTask.countrejection: 
                 givenTask.status = 'منجزة جزئياً، مرفوضة من البعض'
                 givenTask.save()
@@ -1293,156 +1484,191 @@ def Task_completion(request, task_id):
             givenTask.save()
 
             status_message_notfy=f" تم إنجاز جزئياً المهمة {givenTask.task_name} من قبل {user.first_name} {user.last_name}"
+            body = f'''\
+            إشعار بإنجاز جزئي للمهمة
+
+            السلام عليكم،
+
+            نود إعلامكم بأن المهمة {givenTask.task_name}  قد تم إنجازها جزئيًا من قبل {user.first_name} {user.last_name} . نشكرهم على ما تم إنجازه حتى الآن ونتطلع إلى استكمال باقي العمل في الوقت المحدد.
+
+            نرجو من الفريق المعني متابعة المهام المتبقية وضمان اكتمالها وفقًا للمعايير المطلوبة.
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+
+    
+           '''
          
-
-            if givenTask.faculty_initiation:
+            if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
                 new_notification = Notification(
-                  faculty_target=givenTask.faculty_initiation ,
-                  taskid=givenTask,
-                   notification_message=status_message_notfy,
-                         
-                   
-                   function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                   need_to_be_shown=True,
-
-                 )
+                bu_target=givenTask.faculty_initiation,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator=2,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                    )
                 new_notification.save()
-                if givenTask.faculty_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.faculty_initiation .email, ' إنجاز المهمة جزئياً', status_message_notfy)
-        
-        
-            if givenTask.kai_initiation:
+                bu_collage = givenTask.faculty_initiation.collageid
+                if bu_collage and bu_collage.sendNotificationByEmail:
+                        send_custom_email(request, bu_collage.buemail, ' إنجاز المهمة جزئياً', body)
+
+            if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:                
                 new_notification = Notification(
                      kaitarget=givenTask.kai_initiation,
                      taskid=givenTask,
                      notification_message=status_message_notfy,
-                         
-            
                      function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
                 new_notification.save()
-                if givenTask.kai_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة جزئياً', status_message_notfy)
+                if givenTask.kai_initiation.sendNotificationByEmail:
+                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة جزئياً', body)
             
             status_message_notfy=f" تم إنجاز  المهمة {givenTask.task_name}"
-         
+            body = f'''\
+            إشعار بإنجاز  للمهمة
 
-            if givenTask.faculty_initiation:
+            السلام عليكم،
+
+            نود إعلامكم بأن المهمة {givenTask.task_name}  قد تم إنجازها  من قبل {user.first_name} {user.last_name} . نشكرهم على ما تم إنجازه حتى الآن ونتطلع إلى استكمال باقي العمل في الوقت المحدد.
+
+            نرجو من الفريق المعني متابعة المهام المتبقية وضمان اكتمالها وفقًا للمعايير المطلوبة.
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+
+    
+           '''
+            
+            if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
+                instructor = givenTask.faculty_initiation
                 new_notification = Notification(
-                  faculty_target=givenTask.faculty_initiation ,
-                  taskid=givenTask,
-                   notification_message=status_message_notfy,
-                         
-                   
-                   function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                   need_to_be_shown=True,
-
-                 )
+                bu_target=givenTask.faculty_initiation,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator=2,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
                 new_notification.save()
-                if givenTask.faculty_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.faculty_initiation .email, ' إنجاز المهمة ', status_message_notfy)
-        
-        
-            if givenTask.kai_initiation:
+                bu_collage = givenTask.faculty_initiation.collageid
+                if bu_collage and bu_collage.sendNotificationByEmail:
+                        send_custom_email(request, bu_collage.buemail, ' إنجاز المهمة ', body)
+
+            if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:                
                 new_notification = Notification(
                      kaitarget=givenTask.kai_initiation,
                      taskid=givenTask,
                      notification_message=status_message_notfy,
-                         
-            
                      function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
                 new_notification.save()
-                if givenTask.kai_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة جزئياً', status_message_notfy)
-        
-        
-
+                if givenTask.kai_initiation.sendNotificationByEmail:
+                    send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة ', status_message_notfy)
 
     else:
+        allTaskNotifications = Notification.objects.filter(taskid=givenTask)
+        for notification in allTaskNotifications:
+            notification.need_to_be_opened=False
+            notification.isread = True
+            notification.save()
+
+
         status_message = f" تم إنجاز المهمة من قبل {user.first_name} {user.last_name}"
         givenTask.status = 'منجزة'
         givenTask.save()
 
         status_message_notfy=f" تم إنجاز  المهمة {givenTask.task_name}"
+        body = f'''\
+            إشعار بإنجاز  للمهمة
+
+            السلام عليكم،
+
+            نود إعلامكم بأن المهمة {givenTask.task_name}  قد تم إنجازها  من قبل {user.first_name} {user.last_name} . نشكرهم على ما تم إنجازه حتى الآن ونتطلع إلى استكمال باقي العمل في الوقت المحدد.
+
+            نرجو من الفريق المعني متابعة المهام المتبقية وضمان اكتمالها وفقًا للمعايير المطلوبة.
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+
+    
+           '''
          
-
-        if givenTask.faculty_initiation:
+        if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
                 new_notification = Notification(
-                  faculty_target=givenTask.faculty_initiation ,
-                  taskid=givenTask,
-                   notification_message=status_message_notfy,
-                         
-                   
-                   function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                   need_to_be_shown=True,
-
-                 )
+                bu_target=givenTask.faculty_initiation,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator=2,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
                 new_notification.save()
-                if givenTask.faculty_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.faculty_initiation .email, ' إنجاز المهمة ', status_message_notfy)
+                bu_collage = givenTask.faculty_initiation.collageid
+                if bu_collage and bu_collage.sendNotificationByEmail:
+                        send_custom_email(request, bu_collage.buemail, ' إنجاز المهمة ', body)
         
+        body = f'''\
+            إشعار بإنجاز  للمهمة
+
+            السلام عليكم،
+
+            نود إعلامكم بأن المهمة {givenTask.task_name}  قد تم إنجازها  من قبل {user.first_name} {user.last_name} . نشكرهم على ما تم إنجازه حتى الآن ونتطلع إلى استكمال باقي العمل في الوقت المحدد.
+
+            نرجو من الفريق المعني متابعة المهام المتبقية وضمان اكتمالها وفقًا للمعايير المطلوبة.
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+
+    
+           '''
         
-        if givenTask.kai_initiation:
+        if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:                
                 new_notification = Notification(
                      kaitarget=givenTask.kai_initiation,
                      taskid=givenTask,
                      notification_message=status_message_notfy,
-                         
-            
                      function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
                 new_notification.save()
-                if givenTask.kai_initiation.sendnotificationbyemail:
+                if givenTask.kai_initiation.sendNotificationByEmail:
                     send_custom_email(request, givenTask.kai_initiation.email, ' إنجاز المهمة ', status_message_notfy)
         for id in givenTask.kai_ids:
             instructor = Kaibuemployee.objects.get(id=id)
             new_notification = Notification(
                      kaitarget=instructor ,
-                  
                      taskid=givenTask,
                      notification_message=status_message_notfy,
-                         
-            
                      function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
             new_notification.save()
-            if instructor.sendnotificationbyemail:
-                    send_custom_email(request, instructor.email, ' إنجاز المهمة ', status_message_notfy)
+            if instructor.sendNotificationByEmail:
+                    send_custom_email(request, instructor.email, ' إنجاز المهمة ', body)
 
         for id in givenTask.faculty_ids :
             
             instructor =FacultyStaff.objects.get(id=id)
             new_notification = Notification(
-                     faculty_target=instructor,
-                     
-                     taskid=givenTask,
-                     notification_message=status_message_notfy,
-                         
-            
-                     function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                     need_to_be_shown=True,
-
+                bu_target=instructor,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator=2,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
                 )
             new_notification.save()
-            if instructor.sendnotificationbyemail:
-                    send_custom_email(request, instructor.email, ' إنجاز المهمة ', status_message_notfy)
+            bu_collage = instructor.collageid
+            if bu_collage and bu_collage.sendNotificationByEmail:
+                    send_custom_email(request, bu_collage.buemail, ' إنجاز المهمة ', body)
 
-        
-    
     today = timezone.localdate()
     givenTask.statusarray.append(status_message)
     givenTask.datearray.append(today)
     givenTask.save()
-
 
     return redirect('kai_staff:tasks')
 
@@ -1459,12 +1685,11 @@ def MainTask_completion(request, task_id):
             task.status = 'منتهية'
             task.save()
     today = timezone.localdate()
-    status_message = f"{user.first_name} {user.last_name}إنهاءالمهمة من قبل"
+    status_message = f"{user.first_name} {user.last_name} إنهاءالمهمة من قبل"
     givenTask.statusarray.append(status_message)
     givenTask.datearray.append(today)
     givenTask.save()
     return redirect('kai_staff:tasks')
-
 
 @login_required
 @require_POST
@@ -1472,41 +1697,49 @@ def ask_for_pending(request, task_id):
     user = request.user
     givenTask = get_object_or_404(Task, pk=task_id)
 
-
     status_message_notfy=f"طلب تعليق المهمة {givenTask.task_name} من قبل {user.first_name} {user.last_name}"
-         
+    
+    body = f'''\
+    إشعار طلب تعليق المهمة
 
-    if givenTask.faculty_initiation:
-                new_notification = Notification(
-                  faculty_target=givenTask.faculty_initiation ,
-                  taskid=givenTask,
-                   notification_message=status_message_notfy,
-                   need_to_be_opened=True,
-                         
-                   
-                   function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                   need_to_be_shown=True,
+    السلام عليكم،
 
-                 )
-                new_notification.save()
-                if givenTask.faculty_initiation.sendnotificationbyemail:
-                    send_custom_email(request, givenTask.faculty_initiation .email, 'طلب تعليق المهمة', status_message_notfy)
-        
-        
-    if givenTask.kai_initiation:
+ نود اعلامكم بان هناك طلب تعليق المهمة {givenTask.task_name}   من قبل  {user.first_name} {user.last_name}. نرجو من الجهة المعنية أداء الإجراء المناسب. 
+
+    نشكركم على تعاونكم ونتطلع إلى معالجة هذا الأمر بأسرع وقت ممكن.
+
+    بوابة الأعمال
+
+    
+    '''
+
+    if hasattr(givenTask, 'faculty_initiation') and givenTask.faculty_initiation:
+            instructor = givenTask.faculty_initiation
+            new_notification = Notification(
+                bu_target=givenTask.faculty_initiation,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                function_indicator = 101,     
+                need_to_be_opened=True,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
+            new_notification.save()
+            bu_collage = givenTask.faculty_initiation.collageid
+            if bu_collage and bu_collage.sendNotificationByEmail  :
+                    send_custom_email(request, bu_collage.buemail, 'طلب تعليق المهمة', body)
+
+    if hasattr(givenTask, 'kai_initiation') and givenTask.kai_initiation:                
                 new_notification = Notification(
                      kaitarget=givenTask.kai_initiation,
                      taskid=givenTask,
                      notification_message=status_message_notfy,
                      need_to_be_opened=True,
-                         
-            
-                     function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
+                     function_indicator = 101,  # this is an indicator that will be used when instructor accept or decline a program
                      need_to_be_shown=True,
-
                 )
                 new_notification.save()
-                if givenTask.kai_initiation.sendnotificationbyemail:
+                if givenTask.kai_initiation.sendNotificationByEmail  :
                     send_custom_email(request, givenTask.kai_initiation.email,'طلب تعليق المهمة', status_message_notfy)
         
     pending_reasons = request.POST.get('pending_reasons')
@@ -1551,7 +1784,7 @@ def accepte_pending_request(request, task_id):
                 taskid=givenTask,
                 kaitarget=user,
                 need_to_be_opened=True,
-              
+                function_indicator = 101, 
             )
     
     print("Notifications Found:", notifications.count())
@@ -1563,8 +1796,21 @@ def accepte_pending_request(request, task_id):
                 notification.save()
 
                 notification.refresh_from_db()
-    
 
+    body = f'''\
+    إشعار قبول تعليق المهمة
+
+    السلام عليكم،
+
+ نود اعلامكم بانه تم قبول طلب تعليق المهمة {givenTask.task_name}   من قبل  {user.first_name} {user.last_name}. 
+
+    نشكركم على تعاونكم ونتطلع إلى معالجة هذا الأمر بأسرع وقت ممكن.
+
+    بوابة الأعمال
+
+    
+    '''
+    
     status_message_notfy=f"تم قبول طلب تعليق المهمة {givenTask.task_name}"
     
     pending_requestor_names = []
@@ -1587,18 +1833,13 @@ def accepte_pending_request(request, task_id):
                           kaitarget= inPending,
                           taskid=givenTask,
                           notification_message=status_message_notfy,
-                          
-                         
-            
-                         function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
+                          # this is an indicator that will be used when instructor accept or decline a program
                          need_to_be_shown=True,
-
                     )
                     new_notification.save()
-                    if inPending.sendnotificationbyemail:
-                        send_custom_email(request, inPending.email,'قبول تعليق المهمة', status_message_notfy)
+                    if inPending.sendNotificationByEmail  :
+                        send_custom_email(request, inPending.email,'قبول تعليق المهمة', body)
     
-
                 except Kaibuemployee.DoesNotExist:
             # Handle the case where the Kaibuemployee does not exist
                     print(f"Kaibuemployee with id {user_id} does not exist.")
@@ -1607,20 +1848,19 @@ def accepte_pending_request(request, task_id):
                 try:
             # Query the FacultyStaff table
                     inPending = FacultyStaff.objects.get(pk=user_id)
+                    instructor = inPending
                     new_notification = Notification(
-                          faculty_target= inPending,
-                          taskid=givenTask,
-                          notification_message=status_message_notfy,
-                         
-                         
-            
-                         function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                         need_to_be_shown=True,
-
-                    )
+                bu_target=instructor,
+                taskid=givenTask,
+                notification_message=status_message_notfy,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
                     new_notification.save()
-                    if inPending.sendnotificationbyemail:
-                        send_custom_email(request, inPending.email,'قبول تعليق المهمة', status_message_notfy)
+                    bu_collage = instructor.collageid
+                    if bu_collage and bu_collage.sendNotificationByEmail  :
+                            send_custom_email(request, bu_collage.buemail, 'قبول تعليق المهمة', body)
+
                 except FacultyStaff.DoesNotExist:
             # Handle the case where the FacultyStaff does not exist
                     print(f"FacultyStaff with id {user_id} does not exist.")
@@ -1633,7 +1873,6 @@ def accepte_pending_request(request, task_id):
             if inPending:
                 pending_requestor_names.append(f"{inPending.first_name} {inPending.last_name}")
         
-            
     givenTask.pending_status='مهمة معلقة'
     givenTask.statusarray.append('تم قبول تعليق المهمة')
     today = timezone.localdate()
@@ -1650,7 +1889,7 @@ def reject_pending_request(request, task_id):
                 taskid=givenTask,
                 kaitarget=user,
                 need_to_be_opened=True,
-              
+                function_indicator = 101, 
             )
     
     print("Notifications Found:", notifications.count())
@@ -1664,6 +1903,19 @@ def reject_pending_request(request, task_id):
                 notification.refresh_from_db()
 
     status_message_notfy=f"تم رفض تعليق المهمة {givenTask.task_name}"
+    body = f'''\
+    إشعار رفض تعليق المهمة
+
+    السلام عليكم،
+
+ نود اعلامكم بانه تم رفض طلب تعليق المهمة {givenTask.task_name}   من قبل  {user.first_name} {user.last_name}. 
+
+    نشكركم على تعاونكم ونتطلع إلى معالجة هذا الأمر بأسرع وقت ممكن.
+
+    بوابة الأعمال
+
+    
+    '''
     pending_requestor_names = []
     if givenTask.pending_rquestids is not None:
         for user_id_modified in givenTask.pending_rquestids:
@@ -1684,18 +1936,13 @@ def reject_pending_request(request, task_id):
                           kaitarget= inPending,
                           taskid=givenTask,
                           notification_message=status_message_notfy,
-                          
-                         
-            
                          function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                          need_to_be_shown=True,
-
                     )
                     new_notification.save()
-                    if inPending.sendnotificationbyemail:
-                        send_custom_email(request, inPending.email,'رفض تعليق المهمة', status_message_notfy)
+                    if inPending.sendNotificationByEmail  :
+                        send_custom_email(request, inPending.email,'رفض تعليق المهمة', body)
     
-
                 except Kaibuemployee.DoesNotExist:
             # Handle the case where the Kaibuemployee does not exist
                     print(f"Kaibuemployee with id {user_id} does not exist.")
@@ -1704,20 +1951,20 @@ def reject_pending_request(request, task_id):
                 try:
             # Query the FacultyStaff table
                     inPending = FacultyStaff.objects.get(pk=user_id)
+                    instructor=inPending
                     new_notification = Notification(
-                          faculty_target= inPending,
-                          taskid=givenTask,
-                          notification_message=status_message_notfy,
-                         
-                         
-            
-                         function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                         need_to_be_shown=True,
-
-                    )
+                bu_target=instructor,
+                taskid=givenTask,
+                notification_message=status_message_notfy,    
+                need_to_be_opened=True,
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
+                )
                     new_notification.save()
-                    if inPending.sendnotificationbyemail:
-                        send_custom_email(request, inPending.email,'رفض تعليق المهمة', status_message_notfy)
+                    bu_collage = instructor.collageid
+                    if bu_collage and bu_collage.sendNotificationByEmail  :
+                            send_custom_email(request, bu_collage.buemail, 'رفض تعليق المهمة', body)
+
                 except FacultyStaff.DoesNotExist:
             # Handle the case where the FacultyStaff does not exist
                     print(f"FacultyStaff with id {user_id} does not exist.")
@@ -1730,7 +1977,6 @@ def reject_pending_request(request, task_id):
             if inPending:
                 pending_requestor_names.append(f"{inPending.first_name} {inPending.last_name}")
         
-
     givenTask.pending_status='رفض المهمة المعلقة'
     givenTask.statusarray.append('تم رفض تعليق المهمة')
     today = timezone.localdate()
@@ -1749,71 +1995,65 @@ def editTask(request, task_id):
         need_to_be_opened=True,
         isopened=False
     )
+
+    notifications_in_programs = Notification.objects.filter(
+        kaitarget=user,
+        training_program__isnull=False,
+        need_to_be_opened=True,
+        isopened=False
+        )
+    notifications_in_programs = notifications_in_programs.values_list('training_program__programid', flat=True).distinct()
+    all_notifications_that_needs_to_be_shown = Notification.objects.filter(kaitarget=user, need_to_be_shown=True)
+
+    all_notifications_that_needs_to_be_shown_count = Notification.objects.filter(
+        kaitarget=user, 
+        need_to_be_shown=True,
+        isread=False
+        ).count()
     
     givenTask = get_object_or_404(Task, pk=task_id)
 
     status_message_notfy=f" تم تعديل تفاصيل البرنامج{givenTask.task_name}"
 
-   
-
-
-    for id in givenTask.kai_ids:
-            instructor = Kaibuemployee.objects.get(id=id)
-
-            new_notification = Notification(
-            kaitarget=instructor,
-            taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
-            
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
-
-            )
-            new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'تعديل تفاصيل البرنامج', status_message_notfy)
-        
-    for id in givenTask.faculty_ids :
-            instructor =FacultyStaff.objects.get(id=id)
-
-            new_notification = Notification(
-            faculty_target=instructor,
-            taskid=givenTask,
-            notification_message=status_message_notfy,
-                         
-            
-            function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-            need_to_be_shown=True,
-
-            )
-            new_notification.save()
-            if instructor.sendnotificationbyemail:
-                send_custom_email(request, instructor.email, 'تعديل تفاصيل البرنامج', status_message_notfy)
-
-
     context = {
         'task': givenTask,
         'notifications_in_tasks':notifications_in_tasks,
+        'notifications_in_programs':notifications_in_programs,
+        'all_notifications_that_needs_to_be_shown':all_notifications_that_needs_to_be_shown,
+        'all_notifications_that_needs_to_be_shown_count':all_notifications_that_needs_to_be_shown_count, 
         
         # Include other context variables here as needed
     }
 
     if request.method == 'POST':
-
-    # Get the updated form data
         givenTask.task_description = request.POST['taskdescription'] 
-        givenTask.start_date = request.POST['startdate']
         givenTask.end_date = request.POST['enddate']
         givenTask.save()
         status_message = f" تم تعديل تفاصيل المهمة من قبل {user.first_name} {user.last_name} "
         givenTask.statusarray.append(status_message)
         today = timezone.localdate()
         givenTask.datearray.append(today)
-        
+        attachment_data = []
+        if 'attachment' in request.FILES:
+            attachments = request.FILES.getlist('attachment')
+
+            for attachment_file in attachments:
+                attachment_data.append({
+                    'content': attachment_file.read(),
+                    'name': attachment_file.name,
+                })
+        if attachment_data:
+                for attachmentt in attachment_data:
+                    new_file = Files(
+                            attachment = attachmentt['content'],
+                            attachment_name = attachmentt['name'],
+                            taskid = givenTask
+                    )
+                    new_file.save()
+        return redirect('head-kai-account:task-detail', task_id=task_id)
 
     # Correct usage of render
-    return render(request, 'kai_staff/Task_edit.html', context)
+    return render(request, 'kai/Task_edit.html', context)
 
 
 @login_required
@@ -1823,11 +2063,23 @@ def send_to_new_Instructor(request, task_id ):
     givenTask.countrejection = 0
     givenTask.save()
 
+    body = f'''\
+        السلام عليكم،
+
+        نود إعلامكم بأن مهمة جديدة بعنوان {givenTask.task_name}  قد تم تكليفها إليكم. نأمل منكم البدء في تنفيذ المهمة وفقاً للمتطلبات المحددة.  
+
+        نشكركم مقدماً على جهودكم ونتطلع إلى إنجازكم لهذا العمل بالجودة والكفاءة المعهودة.
+
+        مع خالص التقدير والاحترام,
+
+        بوابة الأعمال
+        '''
+
     notifications = Notification.objects.filter(
                 taskid=givenTask,
                 kaitarget=user,
                 need_to_be_opened=True,
-              
+                function_indicator = 202, 
             )
     
     print("Notifications Found:", notifications.count())
@@ -1840,14 +2092,12 @@ def send_to_new_Instructor(request, task_id ):
 
                 notification.refresh_from_db()
 
-
     notcompletedtasks = TaskToUser.objects.filter(main_task=task_id, status='مسندة')
     countnotcompletedtasks = notcompletedtasks.count()
 
     if request.method == 'POST':
         checkbox_clicked = 'no-assignment' in request.POST
         if checkbox_clicked:
-
 
             if givenTask.status =='منجزة جزئياً، مرفوضة من البعض' or givenTask.status == 'منجزة جزئياً':
                 if countnotcompletedtasks>0:
@@ -1875,9 +2125,6 @@ def send_to_new_Instructor(request, task_id ):
                 givenTask.datearray.append(today)
                 givenTask.save()
 
-            
-
-
             if givenTask.status=='مرفوضة':
 
                 givenTask.status='مسترجعة'
@@ -1889,8 +2136,7 @@ def send_to_new_Instructor(request, task_id ):
     
         else:
             
-        
-            assiningto = request.POST.getlist('assigningto')
+            assiningto = request.POST.getlist('assiningto2')
             ToAll = False
             kai_ids=[]
             faculty_ids=[]
@@ -1913,6 +2159,7 @@ def send_to_new_Instructor(request, task_id ):
                     if faculty_id not in givenTask.faculty_ids:
                         givenTask.faculty_ids.append(faculty_id)
                         faculty_ids.append(faculty_id)
+                    
         
             tempStatus = ''
             tempStatus2=''
@@ -1927,10 +2174,10 @@ def send_to_new_Instructor(request, task_id ):
             else:
                 tempStatus = 'تم إعادة إسناد المهمة '
                 tempStatus2='مسندة'
-
         
             for id in faculty_ids:
                 faculty = FacultyStaff.objects.get(pk = id)
+                instructor=faculty
                 allTaskToUserByFacultyAndGivenTask= TaskToUser.objects.filter(main_task_id=task_id, faculty_user=faculty)
                 allTaskToUserByFacultyAndGivenTask.delete()
 
@@ -1945,19 +2192,19 @@ def send_to_new_Instructor(request, task_id ):
                 status_message_notfy = f"تم اسناد مهمة {givenTask.task_name} إليك الرجاء إنجاز المهمة"
 
                 new_notification = Notification(
-                faculty_target=faculty,
+                bu_target=instructor,
                 taskid=givenTask,
                 notification_message=status_message_notfy,
-                         
-                
-                function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
-                need_to_be_shown=True,
+                function_indicator=2,    
                 need_to_be_opened=True,
-
+                # this is an indicator that will be used when instructor accept or decline a program
+                need_to_be_shown=True,
                 )
                 new_notification.save()
+                bu_collage = instructor.collageid
+                if bu_collage and bu_collage.sendNotificationByEmail  :
+                        send_custom_email(request, bu_collage.buemail, 'مهمة مسندة', body)
 
-        
             for id in kai_ids:
                 kaiuser = Kaibuemployee.objects.get(pk = id)
                 allTaskToUserByKAIUserAndGivenTask= TaskToUser.objects.filter(main_task_id=task_id, kai_user=kaiuser)
@@ -1966,7 +2213,6 @@ def send_to_new_Instructor(request, task_id ):
                     main_task=givenTask,
                     kai_user=kaiuser,
                     status='مسندة',
-
                 )
                 new_taskToUser.save()
                 print('facultyTaskToUser')
@@ -1980,14 +2226,11 @@ def send_to_new_Instructor(request, task_id ):
                 function_indicator=2, # this is an indicator that will be used when instructor accept or decline a program
                 need_to_be_shown=True,
                 need_to_be_opened=True,
-
                 )
                 new_notification.save()
                 new_notification.save()
-                if kaiuser.sendnotificationbyemail:
+                if kaiuser.sendNotificationByEmail  :
                     send_custom_email(request, kaiuser.email, 'مهمة مسندة', status_message)
-
-
 
             if givenTask.status =='منجزة جزئياً، مرفوضة من البعض':
                 givenTask.status =  'منجزة جزئياً'
@@ -2002,19 +2245,11 @@ def send_to_new_Instructor(request, task_id ):
 
 ###################### Email #####################
 
-import smtplib
-import ssl
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from django.conf import settings
-from django.http import HttpResponse
-import certifi
-
 def send_custom_email(request, receiver_email, topic, message):   
            
     subject = topic
     body = message
-
+    receiver_email = '442200922@student.ksu.edu.sa' 
     # Create MIMEText object with the body text and charset
     body_mime = MIMEText(body, 'plain', 'utf-8')
 
@@ -2041,31 +2276,37 @@ def send_custom_email(request, receiver_email, topic, message):
         return HttpResponse("Email could not be sent.", status=500)
 
 ###########app heder notification######################
+
 @login_required
 def update_notifications_ajax(request):
     # Retrieve the logged-in user
     user = request.user
-
-
-    
-
-    all_notifications_that_needs_to_be_shown = Notification.objects.filter(kaitarget=user, need_to_be_shown=True)
-
+    all_notifications_that_needs_to_be_shown = Notification.objects.filter( kaitarget=user, need_to_be_shown=True)
     for totify in all_notifications_that_needs_to_be_shown:
         totify.isread = True
         totify.save()
 
-    
     return HttpResponse(status=204)
 
 @login_required
 def update_notifications_ajax_Delete(request, notification_id):
-    # Retrieve the logged-in user
     user = request.user
-
     givenNotification = get_object_or_404(Notification, id=notification_id)
     givenNotification.need_to_be_shown=False
-    givenNotification.save()
-
-    
+    givenNotification.save()    
     return HttpResponse(status=204)
+
+@login_required
+def email_notification_settings(request):
+    user = request.user
+    if request.method == 'POST':
+        user_response = request.POST.get('emailNotif')
+        if user_response == 'yes':
+            print('yes')
+            user.sendNotificationByEmail = True
+        elif user_response == 'no':
+            print('no')
+            user.sendNotificationByEmail = False
+        user.save()
+    return redirect('kai_staff:kaistaff-home')
+    

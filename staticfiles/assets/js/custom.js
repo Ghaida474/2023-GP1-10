@@ -600,9 +600,8 @@ $(document).ready(function () {
 		(document.getElementById("style")?.setAttribute("href", "static/assets/plugins/bootstrap/css/bootstrap.rtl.css"));
 
 	}
-	
 	/***************** RTL HAs Class *********************/
-
+	
 /******* Transparent Bg-Image Style *******/
 
 // Bg-Image1 Style
