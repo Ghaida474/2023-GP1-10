@@ -3,7 +3,7 @@ GitHub Username: Ghaida474
 Email: Ghaida.qader@gmail.com
 
 Alanoud Alghayth
-GitHub Username: anoudd
+GitHub Username: alanoudalghayth
 Email: alanoudalghayth.p@gmail.com
 
 Lina Alshiddi
